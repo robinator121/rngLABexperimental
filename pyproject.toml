@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rnglab-research"
+version = "0.17.0.dev1"
+description = "RNGLab: Computational Randomness, Physical Entropy Acquisition & Stochastic Simulation Integrity"
+authors = [{ name = "Hevele Imre Róbert", email = "roberthevele@gmail.com" }]
+readme = "README.md"
+license = { text = "AGPL-3.0-or-later" }
+requires-python = ">=3.11"
+dependencies = ["numpy>=2,<3", "scipy>=1.13,<2", "cryptography>=43,<51"]
+
+[project.scripts]
+rnglab14-api = "rnglab14.api:main"
+rnglab12 = "rnglab12.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib"
