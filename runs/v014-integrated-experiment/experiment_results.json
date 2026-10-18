@@ -1,0 +1,743 @@
+{
+  "experiment_title": "RNGLab v0.14 Integrated Scientific Verification",
+  "started_at": "2026-10-18T10:14:28.609111+00:00",
+  "completed_at": "2026-10-18T10:14:31.345386+00:00",
+  "base_seed": 101,
+  "sources_evaluated": [
+    "PCG64_Reference",
+    "ChaCha20_FullRounds",
+    "ChaCha8_ReducedRounds",
+    "GeigerMuller_Pulse",
+    "Hash_Conditioned",
+    "Degraded_MarkovBias"
+  ],
+  "application_results": {
+    "PCG64_Reference": {
+      "pi_mc": {
+        "total_samples": 10000,
+        "inside_circle": 7837,
+        "estimated_pi": 3.1348,
+        "true_pi": 3.141593,
+        "error": -0.006793,
+        "relative_error": 0.002162,
+        "standard_error": 0.016469,
+        "z_score": -0.4125,
+        "confidence_interval_95": [
+          3.102522,
+          3.167078
+        ],
+        "provenance_hash": "34e1d1f2fb92dc6e4df279bc337de9beee3c13f47d517d1627533e37c5b1cb41"
+      },
+      "ising_2d": {
+        "L": 8,
+        "temperature": 2.269,
+        "total_sweeps": 300,
+        "burn_in_sweeps": 50,
+        "energy_mean": -1.57975,
+        "energy_variance": 4.335956,
+        "specific_heat": 0.842201,
+        "magnetization_mean": 0.84925,
+        "magnetization_variance": 0.014259,
+        "susceptibility": 0.402188,
+        "acceptance_rate": 0.1429,
+        "effective_sample_size_energy": 55.33,
+        "healthy": true
+      },
+      "vmc_harmonic": {
+        "alpha": 0.5,
+        "total_steps": 3000,
+        "burn_in": 500,
+        "acceptance_rate": 0.7257,
+        "energy_mean": 0.5,
+        "energy_std": 0.0,
+        "x2_mean": 0.520705,
+        "x4_mean": 0.770476,
+        "exact_energy": 0.5,
+        "exact_x2": 0.5,
+        "energy_bias": 0.0,
+        "x2_bias": 0.020705,
+        "observable_masking_detected": false
+      },
+      "pimc_harmonic": {
+        "beads_M": 16,
+        "temperature_T": 0.5,
+        "beta": 2.0,
+        "total_sweeps": 1500,
+        "burn_in": 300,
+        "acceptance_rate": 0.6953,
+        "virial_energy_mean": 0.890437,
+        "virial_energy_std": 0.544666,
+        "thermodynamic_energy_mean": 4.099448,
+        "exact_quantum_energy": 0.656518,
+        "energy_bias": 0.233919,
+        "radius_of_gyration": 0.369944,
+        "provenance_hash": "555b2d49fa3e6afe7fc6884a5dbae80c98641ecbd724f2692cca859a7f287216"
+      },
+      "decision_support": {
+        "total_scenarios": 2000,
+        "option_names": [
+          "Conservative_A",
+          "Growth_B",
+          "Speculative_C"
+        ],
+        "estimated_means": {
+          "Conservative_A": 100.3131,
+          "Growth_B": 119.2005,
+          "Speculative_C": 104.7215
+        },
+        "estimated_var_95": {
+          "Conservative_A": 75.4455,
+          "Growth_B": 52.8569,
+          "Speculative_C": 45.0982
+        },
+        "selected_option": "Growth_B",
+        "optimal_option": "Growth_B",
+        "ranking_correct": true,
+        "decision_regret": 0.0,
+        "confidence_spread": 14.479,
+        "provenance_hash": "ae4cb00300b24a172068b194c0bd8a1e1cf5701b725900f87c24a2f8ccf7faa0"
+      }
+    },
+    "ChaCha20_FullRounds": {
+      "pi_mc": {
+        "total_samples": 10000,
+        "inside_circle": 7816,
+        "estimated_pi": 3.1264,
+        "true_pi": 3.141593,
+        "error": -0.015193,
+        "relative_error": 0.004836,
+        "standard_error": 0.016526,
+        "z_score": -0.9193,
+        "confidence_interval_95": [
+          3.094009,
+          3.158791
+        ],
+        "provenance_hash": "591876bf6894b6dc252e406c340a0ecddd5a9afd409be1e7d68ed2401c596287"
+      },
+      "ising_2d": {
+        "L": 8,
+        "temperature": 2.269,
+        "total_sweeps": 300,
+        "burn_in_sweeps": 50,
+        "energy_mean": -1.55175,
+        "energy_variance": 4.967604,
+        "specific_heat": 0.96489,
+        "magnetization_mean": 0.83275,
+        "magnetization_variance": 0.018715,
+        "susceptibility": 0.527878,
+        "acceptance_rate": 0.1664,
+        "effective_sample_size_energy": 38.82,
+        "healthy": true
+      },
+      "vmc_harmonic": {
+        "alpha": 0.5,
+        "total_steps": 3000,
+        "burn_in": 500,
+        "acceptance_rate": 0.7343,
+        "energy_mean": 0.5,
+        "energy_std": 0.0,
+        "x2_mean": 0.551095,
+        "x4_mean": 1.026304,
+        "exact_energy": 0.5,
+        "exact_x2": 0.5,
+        "energy_bias": 0.0,
+        "x2_bias": 0.051095,
+        "observable_masking_detected": true
+      },
+      "pimc_harmonic": {
+        "beads_M": 16,
+        "temperature_T": 0.5,
+        "beta": 2.0,
+        "total_sweeps": 1500,
+        "burn_in": 300,
+        "acceptance_rate": 0.6963,
+        "virial_energy_mean": 0.493841,
+        "virial_energy_std": 0.115752,
+        "thermodynamic_energy_mean": 3.7092,
+        "exact_quantum_energy": 0.656518,
+        "energy_bias": -0.162676,
+        "radius_of_gyration": 0.384655,
+        "provenance_hash": "0e71e56ed9e46f0c2afcfcaa255dab277b8508457ed1d724ee3030ed4c820925"
+      },
+      "decision_support": {
+        "total_scenarios": 2000,
+        "option_names": [
+          "Conservative_A",
+          "Growth_B",
+          "Speculative_C"
+        ],
+        "estimated_means": {
+          "Conservative_A": 100.0594,
+          "Growth_B": 119.054,
+          "Speculative_C": 104.6177
+        },
+        "estimated_var_95": {
+          "Conservative_A": 74.4055,
+          "Growth_B": 53.2668,
+          "Speculative_C": 47.0624
+        },
+        "selected_option": "Growth_B",
+        "optimal_option": "Growth_B",
+        "ranking_correct": true,
+        "decision_regret": 0.0,
+        "confidence_spread": 14.4363,
+        "provenance_hash": "d19accb82adeed791120a23a40779c721f814a001cac2559413b9e014e547906"
+      }
+    },
+    "ChaCha8_ReducedRounds": {
+      "pi_mc": {
+        "total_samples": 10000,
+        "inside_circle": 7900,
+        "estimated_pi": 3.16,
+        "true_pi": 3.141593,
+        "error": 0.018407,
+        "relative_error": 0.005859,
+        "standard_error": 0.016292,
+        "z_score": 1.1298,
+        "confidence_interval_95": [
+          3.128068,
+          3.191932
+        ],
+        "provenance_hash": "216931a9e80de8562882618ba5c46993897d2dd512a8369a93b4a5ea952c6900"
+      },
+      "ising_2d": {
+        "L": 8,
+        "temperature": 2.269,
+        "total_sweeps": 300,
+        "burn_in_sweeps": 50,
+        "energy_mean": -1.4705,
+        "energy_variance": 5.654304,
+        "specific_heat": 1.098273,
+        "magnetization_mean": 0.7465,
+        "magnetization_variance": 0.057285,
+        "susceptibility": 1.615785,
+        "acceptance_rate": 0.1725,
+        "effective_sample_size_energy": 21.76,
+        "healthy": true
+      },
+      "vmc_harmonic": {
+        "alpha": 0.5,
+        "total_steps": 3000,
+        "burn_in": 500,
+        "acceptance_rate": 0.7287,
+        "energy_mean": 0.5,
+        "energy_std": 0.0,
+        "x2_mean": 0.526856,
+        "x4_mean": 0.812266,
+        "exact_energy": 0.5,
+        "exact_x2": 0.5,
+        "energy_bias": 0.0,
+        "x2_bias": 0.026856,
+        "observable_masking_detected": false
+      },
+      "pimc_harmonic": {
+        "beads_M": 16,
+        "temperature_T": 0.5,
+        "beta": 2.0,
+        "total_sweeps": 1500,
+        "burn_in": 300,
+        "acceptance_rate": 0.7013,
+        "virial_energy_mean": 0.58292,
+        "virial_energy_std": 0.173196,
+        "thermodynamic_energy_mean": 3.809782,
+        "exact_quantum_energy": 0.656518,
+        "energy_bias": -0.073597,
+        "radius_of_gyration": 0.381872,
+        "provenance_hash": "d27a42e1c325808c5886f89f685b53bbdac43c2e850e49dc7e66f698457ccae3"
+      },
+      "decision_support": {
+        "total_scenarios": 2000,
+        "option_names": [
+          "Conservative_A",
+          "Growth_B",
+          "Speculative_C"
+        ],
+        "estimated_means": {
+          "Conservative_A": 100.2991,
+          "Growth_B": 120.1724,
+          "Speculative_C": 103.4466
+        },
+        "estimated_var_95": {
+          "Conservative_A": 75.1082,
+          "Growth_B": 54.5957,
+          "Speculative_C": 45.0988
+        },
+        "selected_option": "Growth_B",
+        "optimal_option": "Growth_B",
+        "ranking_correct": true,
+        "decision_regret": 0.0,
+        "confidence_spread": 16.7258,
+        "provenance_hash": "9525414e116e4695f00b95dea9f729cf042ce8e3b508f83a82e94d830ba5b316"
+      }
+    },
+    "GeigerMuller_Pulse": {
+      "pi_mc": {
+        "total_samples": 10000,
+        "inside_circle": 7807,
+        "estimated_pi": 3.1228,
+        "true_pi": 3.141593,
+        "error": -0.018793,
+        "relative_error": 0.005982,
+        "standard_error": 0.016551,
+        "z_score": -1.1354,
+        "confidence_interval_95": [
+          3.090361,
+          3.155239
+        ],
+        "provenance_hash": "9c1507f26cda6e426177a5df241cd773fd2e694b4fb586850ead5b8b4ef99aae"
+      },
+      "ising_2d": {
+        "L": 8,
+        "temperature": 2.269,
+        "total_sweeps": 300,
+        "burn_in_sweeps": 50,
+        "energy_mean": -1.55625,
+        "energy_variance": 4.1605,
+        "specific_heat": 0.808121,
+        "magnetization_mean": 0.831375,
+        "magnetization_variance": 0.016585,
+        "susceptibility": 0.467805,
+        "acceptance_rate": 0.1581,
+        "effective_sample_size_energy": 20.44,
+        "healthy": true
+      },
+      "vmc_harmonic": {
+        "alpha": 0.5,
+        "total_steps": 3000,
+        "burn_in": 500,
+        "acceptance_rate": 0.7383,
+        "energy_mean": 0.5,
+        "energy_std": 0.0,
+        "x2_mean": 0.52697,
+        "x4_mean": 0.834953,
+        "exact_energy": 0.5,
+        "exact_x2": 0.5,
+        "energy_bias": 0.0,
+        "x2_bias": 0.02697,
+        "observable_masking_detected": false
+      },
+      "pimc_harmonic": {
+        "beads_M": 16,
+        "temperature_T": 0.5,
+        "beta": 2.0,
+        "total_sweeps": 1500,
+        "burn_in": 300,
+        "acceptance_rate": 0.7018,
+        "virial_energy_mean": 0.567684,
+        "virial_energy_std": 0.191013,
+        "thermodynamic_energy_mean": 3.78956,
+        "exact_quantum_energy": 0.656518,
+        "energy_bias": -0.088834,
+        "radius_of_gyration": 0.36376,
+        "provenance_hash": "34032fbc1778dd00eb07cd4a2c1bd99ba7439841fc5f7e68ae35a8ccf90a465f"
+      },
+      "decision_support": {
+        "total_scenarios": 2000,
+        "option_names": [
+          "Conservative_A",
+          "Growth_B",
+          "Speculative_C"
+        ],
+        "estimated_means": {
+          "Conservative_A": 99.969,
+          "Growth_B": 117.4645,
+          "Speculative_C": 105.3217
+        },
+        "estimated_var_95": {
+          "Conservative_A": 76.293,
+          "Growth_B": 54.9287,
+          "Speculative_C": 47.7408
+        },
+        "selected_option": "Growth_B",
+        "optimal_option": "Growth_B",
+        "ranking_correct": true,
+        "decision_regret": 0.0,
+        "confidence_spread": 12.1428,
+        "provenance_hash": "a4f849a492c57bd3583bda481f9801edd5ba8e01f0c24843ef50e6252064d04c"
+      }
+    },
+    "Hash_Conditioned": {
+      "pi_mc": {
+        "total_samples": 10000,
+        "inside_circle": 7831,
+        "estimated_pi": 3.1324,
+        "true_pi": 3.141593,
+        "error": -0.009193,
+        "relative_error": 0.002926,
+        "standard_error": 0.016485,
+        "z_score": -0.5576,
+        "confidence_interval_95": [
+          3.100089,
+          3.164711
+        ],
+        "provenance_hash": "82497eb19a598e2790c37b332252a4161ac5cad8d9645093866312dc69190ae2"
+      },
+      "ising_2d": {
+        "L": 8,
+        "temperature": 2.269,
+        "total_sweeps": 300,
+        "burn_in_sweeps": 50,
+        "energy_mean": -1.4215,
+        "energy_variance": 6.903616,
+        "specific_heat": 1.340935,
+        "magnetization_mean": 0.7125,
+        "magnetization_variance": 0.069664,
+        "susceptibility": 1.964963,
+        "acceptance_rate": 0.1985,
+        "effective_sample_size_energy": 14.0,
+        "healthy": true
+      },
+      "vmc_harmonic": {
+        "alpha": 0.5,
+        "total_steps": 3000,
+        "burn_in": 500,
+        "acceptance_rate": 0.7353,
+        "energy_mean": 0.5,
+        "energy_std": 0.0,
+        "x2_mean": 0.534757,
+        "x4_mean": 0.773427,
+        "exact_energy": 0.5,
+        "exact_x2": 0.5,
+        "energy_bias": 0.0,
+        "x2_bias": 0.034757,
+        "observable_masking_detected": false
+      },
+      "pimc_harmonic": {
+        "beads_M": 16,
+        "temperature_T": 0.5,
+        "beta": 2.0,
+        "total_sweeps": 1500,
+        "burn_in": 300,
+        "acceptance_rate": 0.7014,
+        "virial_energy_mean": 0.561103,
+        "virial_energy_std": 0.169086,
+        "thermodynamic_energy_mean": 3.773116,
+        "exact_quantum_energy": 0.656518,
+        "energy_bias": -0.095414,
+        "radius_of_gyration": 0.374406,
+        "provenance_hash": "6dacea0c89c6c7d9a7e045dd6b96ac3c0c82973d8e1d2bb82c74efe8274eaac6"
+      },
+      "decision_support": {
+        "total_scenarios": 2000,
+        "option_names": [
+          "Conservative_A",
+          "Growth_B",
+          "Speculative_C"
+        ],
+        "estimated_means": {
+          "Conservative_A": 100.2404,
+          "Growth_B": 119.8529,
+          "Speculative_C": 104.6381
+        },
+        "estimated_var_95": {
+          "Conservative_A": 76.2686,
+          "Growth_B": 52.9256,
+          "Speculative_C": 46.5779
+        },
+        "selected_option": "Growth_B",
+        "optimal_option": "Growth_B",
+        "ranking_correct": true,
+        "decision_regret": 0.0,
+        "confidence_spread": 15.2148,
+        "provenance_hash": "f8fd01aa1b84239dae993389a74330a907f52eb7dbc0dc688b8bfb2eae6f29e1"
+      }
+    },
+    "Degraded_MarkovBias": {
+      "pi_mc": {
+        "total_samples": 10000,
+        "inside_circle": 6368,
+        "estimated_pi": 2.5472,
+        "true_pi": 3.141593,
+        "error": -0.594393,
+        "relative_error": 0.189201,
+        "standard_error": 0.019237,
+        "z_score": -30.8986,
+        "confidence_interval_95": [
+          2.509497,
+          2.584903
+        ],
+        "provenance_hash": "132ed604bc1104b1f00961980df34958551e840cd225ae096d25557ae6d1eb08"
+      },
+      "ising_2d": {
+        "L": 8,
+        "temperature": 2.269,
+        "total_sweeps": 300,
+        "burn_in_sweeps": 50,
+        "energy_mean": -1.48775,
+        "energy_variance": 5.275396,
+        "specific_heat": 1.024675,
+        "magnetization_mean": 0.79475,
+        "magnetization_variance": 0.026896,
+        "susceptibility": 0.758632,
+        "acceptance_rate": 0.1942,
+        "effective_sample_size_energy": 21.31,
+        "healthy": true
+      },
+      "vmc_harmonic": {
+        "alpha": 0.5,
+        "total_steps": 3000,
+        "burn_in": 500,
+        "acceptance_rate": 0.692,
+        "energy_mean": 0.5,
+        "energy_std": 0.0,
+        "x2_mean": 0.629631,
+        "x4_mean": 1.107337,
+        "exact_energy": 0.5,
+        "exact_x2": 0.5,
+        "energy_bias": 0.0,
+        "x2_bias": 0.129631,
+        "observable_masking_detected": true
+      },
+      "pimc_harmonic": {
+        "beads_M": 16,
+        "temperature_T": 0.5,
+        "beta": 2.0,
+        "total_sweeps": 1500,
+        "burn_in": 300,
+        "acceptance_rate": 0.6761,
+        "virial_energy_mean": 65.470838,
+        "virial_energy_std": 19.959569,
+        "thermodynamic_energy_mean": 68.732889,
+        "exact_quantum_energy": 0.656518,
+        "energy_bias": 64.81432,
+        "radius_of_gyration": 0.330492,
+        "provenance_hash": "47abc12329c5a4197f5536c54324b81038a1c11ad34f2770a5d6e93a2f1edf6f"
+      },
+      "decision_support": {
+        "total_scenarios": 2000,
+        "option_names": [
+          "Conservative_A",
+          "Growth_B",
+          "Speculative_C"
+        ],
+        "estimated_means": {
+          "Conservative_A": 99.7905,
+          "Growth_B": 118.5182,
+          "Speculative_C": 104.865
+        },
+        "estimated_var_95": {
+          "Conservative_A": 78.5962,
+          "Growth_B": 62.138,
+          "Speculative_C": 53.4609
+        },
+        "selected_option": "Growth_B",
+        "optimal_option": "Growth_B",
+        "ranking_correct": true,
+        "decision_regret": 0.0,
+        "confidence_spread": 13.6532,
+        "provenance_hash": "4c5642a731f809e2e5ef10ae8c9cabc085ac7649e946b7e91aa51e26b2bce212"
+      }
+    }
+  },
+  "dual_monitoring_report": {
+    "total_snapshots": 100,
+    "q1_nominal_count": 49,
+    "q2_early_warning_count": 14,
+    "q3_synchronized_count": 37,
+    "q4_hazardous_gap_count": 0,
+    "hazardous_gap_rate": 0.0,
+    "early_warning_rate": 0.14,
+    "mean_early_warning_lead_time_steps": 14.0,
+    "mean_detection_lag_steps": 0.0,
+    "combined_monitoring_superior": true
+  },
+  "forecasting_reports": {
+    "linear_drift_NoChangeBaseline": {
+      "model_name": "NoChangeBaseline",
+      "total_evaluations": 5,
+      "uncensored_events_count": 0,
+      "censored_events_count": 5,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    },
+    "linear_drift_LinearExtrapolation": {
+      "model_name": "LinearExtrapolation",
+      "total_evaluations": 5,
+      "uncensored_events_count": 0,
+      "censored_events_count": 5,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    },
+    "linear_drift_CUSUMChangePoint": {
+      "model_name": "CUSUMChangePoint",
+      "total_evaluations": 5,
+      "uncensored_events_count": 0,
+      "censored_events_count": 5,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    },
+    "linear_drift_LipschitzStructuralBound": {
+      "model_name": "LipschitzStructuralBound",
+      "total_evaluations": 5,
+      "uncensored_events_count": 0,
+      "censored_events_count": 5,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    },
+    "stepwise_failure_NoChangeBaseline": {
+      "model_name": "NoChangeBaseline",
+      "total_evaluations": 5,
+      "uncensored_events_count": 5,
+      "censored_events_count": 0,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 1140.0,
+      "event_rmse": 1472.07,
+      "lower_bound_coverage_95": 0.4,
+      "false_reassurance_count": 3,
+      "false_reassurance_rate": 0.6,
+      "is_well_calibrated": false
+    },
+    "stepwise_failure_LinearExtrapolation": {
+      "model_name": "LinearExtrapolation",
+      "total_evaluations": 5,
+      "uncensored_events_count": 2,
+      "censored_events_count": 0,
+      "abstention_count": 3,
+      "abstention_rate": 0.6,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    },
+    "stepwise_failure_CUSUMChangePoint": {
+      "model_name": "CUSUMChangePoint",
+      "total_evaluations": 5,
+      "uncensored_events_count": 5,
+      "censored_events_count": 0,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 1140.0,
+      "event_rmse": 1472.07,
+      "lower_bound_coverage_95": 0.4,
+      "false_reassurance_count": 3,
+      "false_reassurance_rate": 0.6,
+      "is_well_calibrated": false
+    },
+    "stepwise_failure_LipschitzStructuralBound": {
+      "model_name": "LipschitzStructuralBound",
+      "total_evaluations": 5,
+      "uncensored_events_count": 5,
+      "censored_events_count": 0,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 180.0,
+      "event_rmse": 234.52,
+      "lower_bound_coverage_95": 0.4,
+      "false_reassurance_count": 3,
+      "false_reassurance_rate": 0.6,
+      "is_well_calibrated": false
+    },
+    "constant_bias_NoChangeBaseline": {
+      "model_name": "NoChangeBaseline",
+      "total_evaluations": 5,
+      "uncensored_events_count": 0,
+      "censored_events_count": 5,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    },
+    "constant_bias_LinearExtrapolation": {
+      "model_name": "LinearExtrapolation",
+      "total_evaluations": 5,
+      "uncensored_events_count": 0,
+      "censored_events_count": 5,
+      "abstention_count": 5,
+      "abstention_rate": 1.0,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    },
+    "constant_bias_CUSUMChangePoint": {
+      "model_name": "CUSUMChangePoint",
+      "total_evaluations": 5,
+      "uncensored_events_count": 0,
+      "censored_events_count": 5,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    },
+    "constant_bias_LipschitzStructuralBound": {
+      "model_name": "LipschitzStructuralBound",
+      "total_evaluations": 5,
+      "uncensored_events_count": 0,
+      "censored_events_count": 5,
+      "abstention_count": 0,
+      "abstention_rate": 0.0,
+      "event_mae": 0.0,
+      "event_rmse": 0.0,
+      "lower_bound_coverage_95": 1.0,
+      "false_reassurance_count": 0,
+      "false_reassurance_rate": 0.0,
+      "is_well_calibrated": true
+    }
+  },
+  "multi_testing_report": {
+    "nominal_p_values": {
+      "Pi_MC_PCG64_Reference": 0.679973,
+      "Pi_MC_ChaCha20_FullRounds": 0.357939,
+      "Pi_MC_ChaCha8_ReducedRounds": 0.258561,
+      "Pi_MC_GeigerMuller_Pulse": 0.256208,
+      "Pi_MC_Hash_Conditioned": 0.577118,
+      "Pi_MC_Degraded_MarkovBias": 0.0
+    },
+    "holm_bonferroni_rejections": {
+      "Pi_MC_PCG64_Reference": false,
+      "Pi_MC_ChaCha20_FullRounds": false,
+      "Pi_MC_ChaCha8_ReducedRounds": false,
+      "Pi_MC_GeigerMuller_Pulse": false,
+      "Pi_MC_Hash_Conditioned": false,
+      "Pi_MC_Degraded_MarkovBias": true
+    },
+    "benjamini_hochberg_fdr_rejections": {
+      "Pi_MC_PCG64_Reference": false,
+      "Pi_MC_ChaCha20_FullRounds": false,
+      "Pi_MC_ChaCha8_ReducedRounds": false,
+      "Pi_MC_GeigerMuller_Pulse": false,
+      "Pi_MC_Hash_Conditioned": false,
+      "Pi_MC_Degraded_MarkovBias": true
+    },
+    "total_hypotheses": 6,
+    "fwer_alpha": 0.05
+  },
+  "provenance_sha256": "570aa3e7a1e432ba979454c75cf0c90859175810f75678b4c529a023f6f83a6e"
+}
