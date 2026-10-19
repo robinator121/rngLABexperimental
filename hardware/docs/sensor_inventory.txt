@@ -1,0 +1,53 @@
+Assorted 3 mm and 5 mm LED Kit (310 pieces, including resistors)
+Set of 4 SYB-500 Breadboards
+Breadboard Power Supply Module
+Breadboard Jumper Wire Set
+Plusivo Resistor Kit (250 pieces)
+1602 LCD Display with I2C Interface and Yellow-Green Backlight
+10 kΩ WH148 Variable Resistor (Potentiometer)
+Metal On/Off Toggle Switch
+5V Passive Buzzer
+3.3V Passive Buzzer
+Plusivo Microcontroller Starter Kit
+HC-SR04+ Ultrasonic Distance Sensor (3.3V/5V Compatible)
+HW-611 E/P280 Barometric Pressure Sensor Module
+MPU6050 3-Axis Accelerometer and Gyroscope Module (Pre-Soldered Pins)
+HC-SR505 Mini PIR Motion Sensor
+SG90 90° Micro Servo Motor
+130-18105 DC Motor
+Arduino UNO R3 Compatible Development Board (ATmega328P + ATmega16U2, Including 50 cm USB Cable)á
+ESP32 Development Board with Wi-Fi
+
+
+------------------------------
+------------------------------
+------------------------------
+------------------------------
+
+What to measure:
+
+Termikus zaj (Johnson–Nyquist-zaj)	Thermal noise	Measure electrical noise across a resistor using an amplifier and fast ADC
+Dióda lavinazaja	Avalanche diode noise	Measure random current fluctuations in a reverse-biased diode or transistor
+Fotodióda sörétzaja	Photodiode shot noise	Measure fluctuations caused by discrete photon arrivals
+Képérzékelő sötétzaja	CMOS sensor dark noise	Record RAW camera frames in darkness and analyze pixel noise
+Rádiófrekvenciás háttérzaj	Radio-frequency background noise	Capture raw RF samples using an SDR receiver
+Légköri részecskék érkezési időközei	Atmospheric particle arrival intervals	Timestamp individual particle-detection pulses from an optical particle counter
+Szenzorok elektromos mérési zaja	Sensor electronic measurement noise	Record raw analog readings from light, temperature or other sensors
+Órajel-fáziszaj és időzítési jitter	Clock phase noise and timing jitter	Measure timing fluctuations between independent oscillators
+
+
+
+
+
+
+------------------------------
+------------------------------
+------------------------------
+------------------------------
+------------------------------
+------------------------------
+------------------------------
+
+
+
+

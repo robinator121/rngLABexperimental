@@ -1,0 +1,10 @@
+# Exact tested Python 3.14.7 environment; version pin set, not a hash-locked supply-chain artifact.
+setuptools==84.0.0
+numpy==2.5.4
+scipy==1.18.1
+cryptography==50.0.2
+pytest==9.1.1
+# Optional plots (QA uses this Matplotlib version)
+matplotlib==3.11.2
+# Optional live transport; no hardware was opened in the recorded run.
+pyserial==3.5
