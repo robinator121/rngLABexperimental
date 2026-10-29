@@ -1,0 +1,83 @@
+{
+  "id": "rnglab-v013-standards-foundation",
+  "version": 1,
+  "title": "RNGLab v0.13 Standards and Development Foundation",
+  "hypothesis": "A standards-traceable architecture can integrate verified v0.12 components with physical entropy analysis, standardized DRBGs, application reliability and predictive monitoring.",
+  "mode": "exploratory",
+  "research_lane": "supervisor",
+  "seeds": [12],
+  "constraints": [
+    "This first objective produces specifications and proposals only.",
+    "Do not claim to have inspected source code unless source evidence is verified.",
+    "Preserve v0.12, historical results, frozen protocols and audit records.",
+    "No numerical research, service changes, package installation, merges or networked generated-code execution.",
+    "No external network calls or unapproved services.",
+    "Do not claim NIST certification or scientific confirmation.",
+    "Return the required JSON artifact in the isolated task workspace."
+  ],
+  "tasks": [
+    {
+      "id": "standards-plan",
+      "title": "Define v0.13 standards and feature requirements",
+      "description": "Develop a traceable requirements plan for NIST SP 800-90A Rev.1, SP 800-90B, SP 800-90C, statistical testing and applicable BSI/ISO references. Include source interfaces, TRNG and conditioned TRNG, HMAC_DRBG, hybrid reseeding, min-entropy, health testing, defect injection, source-versus-application alarms, MC/QMC integration, Remaining Useful Samples and scientific reproducibility. Use the known v0.12 history as background only; identify code-reuse claims as unverified until a source inventory is supplied. Return exactly one file, stage.json, containing valid serialized JSON with keys summary, standards, features, reuse_candidates, limitations, open_questions.",
+      "kind": "local",
+      "depends_on": [],
+      "outputs": ["stage.json"],
+      "allowed_paths": ["stage.json"],
+      "commands": [],
+      "frozen_files": [],
+      "acceptance": [{
+        "type": "json",
+        "path": "stage.json",
+        "required_keys": [
+          "summary",
+          "standards",
+          "features",
+          "reuse_candidates",
+          "limitations",
+          "open_questions"
+        ]
+      }],
+      "restart_safe": true,
+      "enable_external": false,
+      "budgets": {
+        "max_iterations": 2,
+        "max_retries": 1,
+        "max_seconds": 180,
+        "max_provider_calls": 3
+      }
+    },
+    {
+      "id": "implementation-contract",
+      "title": "Prepare first verifiable code-development milestone",
+      "description": "Turn the preceding requirements plan into a bounded implementation contract for an isolated v0.13 code workspace. Define the source-inventory prerequisite, allowed writable paths, reference tests, exact acceptance criteria, Git diff review, standards coverage evidence and rollback process. Prioritize the RNG source interface and NIST 800-90B reference-tool adapter. Identify unavailable evidence and do not claim code was implemented. Return exactly one stage.json containing valid serialized JSON with keys summary, work_packages, acceptance_tests, permitted_paths, risks, review_requirements, next_actions.",
+      "kind": "local",
+      "depends_on": ["standards-plan"],
+      "outputs": ["stage.json"],
+      "allowed_paths": ["stage.json"],
+      "commands": [],
+      "frozen_files": [],
+      "acceptance": [{
+        "type": "json",
+        "path": "stage.json",
+        "required_keys": [
+          "summary",
+          "work_packages",
+          "acceptance_tests",
+          "permitted_paths",
+          "risks",
+          "review_requirements",
+          "next_actions"
+        ]
+      }],
+      "restart_safe": true,
+      "enable_external": false,
+      "budgets": {
+        "max_iterations": 2,
+        "max_retries": 1,
+        "max_seconds": 180,
+        "max_provider_calls": 3
+      }
+    }
+  ]
+}

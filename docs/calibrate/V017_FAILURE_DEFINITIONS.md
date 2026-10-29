@@ -1,0 +1,18 @@
+# Failure semantics
+An individual noisy estimate is not automatically a failed algorithm. CALIBRATE retains five separate endpoints:
+
+A. Accuracy excursion: absolute window-estimation error above a fixed scientifically interpretable tolerance (Ising energy/magnetization .1 per spin; susceptibility/heat capacity .2 in declared units; VMC x² .1,x⁴ .25,energy .02; PIMC energies/position .1). These are design tolerances, not healthy-calibrated significance claims.
+B. Cohort excess damage: paired faulty-minus-healthy squared loss against an exact reference, with paired bootstrap CI and practical margin tolerance². Individual path differences do not prove bias or causal harm by themselves. Assignment is a controlled software intervention with common random numbers; independence unit is the paired seed group.
+C. Coverage failure: systematic undercoverage across independently generated whole trajectories, tested against .95 by exact binomial lower-tail tests. Primary24 method/cell tests use Holm. A single noncovering interval is not systematic failure.
+D. Structural failure: a kernel analytically permits absorbing states/loss of intended ergodicity. With clipped shifted uphill uniform, probability is max(exp(-DeltaE/T)-delta,0). Fully aligned Ising states become absorbing when delta>=exp(-8/T). This is algorithm-level structural invalidity even if a finite path has not yet absorbed.
+E. Calibrated persistent excursion: two successive512-observation window means beyond max(practical tolerance,healthy whole-path rank threshold), checked every128 steps after specified burn-in. Each calibration trajectory contributes one maximum of adjacent minima of absolute errors. The full path, not its many windows, is the calibration unit.
+
+E is the declared operational prediction target. It means unusual persistent accuracy loss relative to a fixed healthy finite-run law, not a universal application catastrophe. A and E are reported separately; B and C require cohorts; D is a mathematical property. They are not merged into one arbitrary label.
+
+For399 calibration trajectories, rank ceil(400*.95)=380, threshold at the380th ordered score, strict greater-than crossing. Exchangeability gives a marginal whole-path rank statement averaged across calibration/test draws; ties make it conservative. It does not certify5% conditional false alarms for a realized frozen threshold. Validation ceilings and confidence statements are separately tested. Multiple observables do not jointly have5% any-alarm probability; simultaneous confidence across12 estimates is not a5% familywise alarm guarantee.
+
+Ising has exact finite-size references (L2,L3,L4), not infinite-lattice limits. VMC assumes m=hbar=omega=1,alpha=.5. Harmonic PIMC uses corrected finite-bead energies at beta2; continuum discretization error is not sampler error. Nonstationary and structural arms retain healthy-reference loss as causal damage, not a stationary-equilibrium interpretation.
+
+## Practical-tolerance limitation
+
+The frozen tolerances are transparent engineering choices for this benchmark, not externally established safety limits: energy error 0.1 J per spin; VMC x² error 0.1 against mean 0.5 (20%); PIMC energy error 0.1 in m=ħ=ω=1 units. Their practical importance depends on a downstream use case. They were fixed before confirmation, but broader healthy rank thresholds can make an inaccurate sampler appear normal relative to its own protocol. Absolute accuracy, valid uncertainty and calibrated anomaly probability must therefore be assessed separately. No user-level safety or application-loss threshold has been established.

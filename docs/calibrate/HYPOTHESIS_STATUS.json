@@ -1,0 +1,7 @@
+{
+  "H1": "PARTIAL / GLOBAL CRITERION FAILED:10/12 cells pass",
+  "H2": "SUPPORTED IN SEVEN SELECTED CELLS WITH VALIDATED FALSE-ALARM BOUND; no general claim",
+  "H3": "PARTIAL:references agree; uncertainty coverage remains contradicted for several methods",
+  "H4": "FULL HYPOTHESIS UNSUPPORTED:score improvement survives test; full decision-utility gate fails",
+  "H5": "UNSUPPORTED:OOD gain inconclusive,no useful continuation"
+}

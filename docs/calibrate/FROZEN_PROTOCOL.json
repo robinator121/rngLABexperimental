@@ -1,0 +1,125 @@
+{
+  "version": "0.17.0.dev1",
+  "root_namespace": "CALIBRATE-20261022-v1",
+  "workers": 2,
+  "threads_per_worker": 1,
+  "Ising": {
+    "lattices": [
+      2,
+      3,
+      4
+    ],
+    "temperatures": [
+      1.5,
+      2.269185314213022,
+      3.5
+    ],
+    "steps": 2048,
+    "burn": 512,
+    "window": 512,
+    "stride": 128,
+    "accuracy_tolerance": [
+      0.1,
+      0.1,
+      0.1,
+      0.2,
+      0.2
+    ]
+  },
+  "quantum": {
+    "models": [
+      "vmc",
+      "pimc4",
+      "pimc16"
+    ],
+    "steps": 4096,
+    "burn": 1024,
+    "window": 512,
+    "stride": 128
+  },
+  "counts": {
+    "pilot": 32,
+    "calibration": 399,
+    "healthy_confirmation": 512,
+    "fault_confirmation": 128
+  },
+  "faults": [
+    "mild_bias",
+    "coupled",
+    "correlation",
+    "periodic",
+    "structural_bias",
+    "unused_source"
+  ],
+  "hypotheses": {
+    "H1": "Whole-path healthy false declaration target .05; validation simultaneous upper95<=.10 for twelve primary cells",
+    "H2": "Paired harmful mild-bias declarations exceed healthy at Holm alpha.05 AND detection improvement>=.20; excess loss independently reported",
+    "H3": "Physical references independently agree; interval coverage validated separately, never assumed from formula validity",
+    "H4": "Frozen combined predictor beats train prevalence constant in test Brier by .01 with upper adjusted CI below -.01, and useful continuation>=.20 with risk gate and lower cost than always stop",
+    "H5": "Same combined candidate retains H4 score/utility advantage in excluded OOD families"
+  },
+  "statistics": {
+    "alpha": 0.05,
+    "primary_cells": 12,
+    "calibration_unit": "complete independent trajectory, one max-persistent score per observable",
+    "primary_H1_bound": "one-sided exact Bonferroni .05/12 upper",
+    "H2_family": "twelve mild-bias primary endpoints, Holm exact paired McNemar",
+    "bootstrap": 2000,
+    "rank_target": 0.05,
+    "tolerance_floor": true,
+    "within_path_points_are_not_replicates": true
+  },
+  "forecast": {
+    "L": 3,
+    "T": 2.269185314213022,
+    "steps": 2048,
+    "burn": 512,
+    "window": 512,
+    "stride": 128,
+    "cutoff": 1408,
+    "horizon": 512,
+    "families": [
+      "healthy",
+      "abrupt",
+      "drift"
+    ],
+    "OOD": [
+      "periodic",
+      "correlation"
+    ],
+    "counts": [
+      128,
+      128,
+      256,
+      256
+    ],
+    "gate": "L3/Tc whole-path H1 upper<=.10; otherwise do not run forecasting",
+    "primary_candidate": "combined",
+    "primary_baseline": "development prevalence constant",
+    "H4_H5_CI": "paired trajectory percentile bootstrap98.75% per endpoint; approximate family adjustment",
+    "continued_risk_validation_ceiling": 0.1,
+    "min_validation_continued": 32,
+    "continue_fraction_target": 0.2,
+    "costs": {
+      "continue_failure": 10,
+      "stop": 1,
+      "review_and_stop": 1.3,
+      "intervention": 0.5,
+      "intervention_failure_loss_no_mitigation": 10,
+      "intervention_failure_loss_hypothetical50percent": 5
+    },
+    "intervention_benefit_measured": false
+  },
+  "limits": {
+    "workers": 2,
+    "expected_peak_memory_GiB": 3,
+    "wall_budget_seconds": 1200,
+    "cloud": false,
+    "GPU": false,
+    "retry": 0
+  },
+  "references": [
+    "https://proceedings.mlr.press/v25/vovk12/vovk12.pdf",
+    "https://arxiv.org/abs/0811.1729"
+  ]
+}
