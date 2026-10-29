@@ -1,4 +1,6 @@
-# Adversarial validation
+# TRIDENT Methodological Verification Review
+
+> **Methodology Note:** This review document was drafted with AI-assisted code analysis tools and subsequently verified and audited by the author.
 
 {
   "checks": [

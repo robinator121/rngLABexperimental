@@ -1,6 +1,11 @@
-# Detector export assessment for RNGLab
+# Cosmic Ray / Muon Detector Acquisition & Waveform Assessment
 
-Analyzed 19 October 2026 · Full local file · Descriptive assessment, no TRNG validation
+**Acquisition Author:** Hevele Imre Róbert  
+**Date of Acquisition:** October 19, 2026 (14:05:19 – 14:27:23 CEST)  
+**Location:** University of Debrecen, Debrecen, Hungary  
+**Hardware & Instrument Setup:** Cosmic ray / particle detector bench with fast scintillation front-end, high-voltage bias, and high-speed 16-bit digitizer exporting uncalibrated pulse waveforms over USB/serial.  
+**Measurement Dataset:** Continuous live acquisition spanning 22 minutes 4 seconds, yielding 117,962 records and 120.7 million waveform codes (file size: 606.6 MB, SHA-256: `feba450d95b074d3b0fff50df8357a682e90ea62614a5948e3e4e106149b4e10`).  
+**Status:** Descriptive physical assessment; no TRNG cryptographic certification claimed.
 
 ## What the data supports
 

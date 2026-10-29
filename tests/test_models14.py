@@ -10,6 +10,7 @@ from rnglab14.models import (
     run_pi_monte_carlo,
 )
 from rnglab14.sources import (
+    DegradedFaultSource,
     MersenneTwisterSource,
     PCG64Source,
     StochasticChannels,
@@ -55,6 +56,41 @@ class ModelsV14Tests(unittest.TestCase):
         self.assertAlmostEqual(res.energy_mean, 0.5, places=4)
         self.assertEqual(res.energy_std, 0.0)
         self.assertFalse(res.observable_masking_detected)
+
+    def test_vmc_zero_variance_masking_contrast_with_imperfect_wavefunction(self):
+        """Zero-variance property at alpha=0.5 causes an energetic blind spot to corrupted proposals,
+        whereas an imperfect trial wavefunction (alpha=0.6) immediately detects the coordinate defect.
+        """
+        # Inject positive bias into proposal channel
+        corrupted_prop_1 = DegradedFaultSource(PCG64Source(seed=42), bias_delta=0.25)
+        channels_exact = StochasticChannels(
+            proposal=corrupted_prop_1,
+            acceptance=PCG64Source(seed=99),
+            initialization=PCG64Source(seed=1),
+        )
+        vmc_exact = HarmonicOscillatorVMC(alpha=0.5, delta=1.0)
+        res_exact = vmc_exact.run_simulation(channels_exact, steps=3000, burn_in=500)
+
+        # At exact ground state (alpha=0.5), E_L(x)=0.5 identically, so variance is zero
+        # despite severe coordinate sampling bias (<x^2> bias > 1.0)
+        self.assertAlmostEqual(res_exact.energy_mean, 0.5, places=6)
+        self.assertEqual(res_exact.energy_std, 0.0)
+        self.assertGreater(abs(res_exact.x2_bias), 1.0)
+
+        # With an imperfect trial wavefunction (alpha=0.6), E_L(x) depends on x^2
+        corrupted_prop_2 = DegradedFaultSource(PCG64Source(seed=42), bias_delta=0.25)
+        channels_imperfect = StochasticChannels(
+            proposal=corrupted_prop_2,
+            acceptance=PCG64Source(seed=99),
+            initialization=PCG64Source(seed=1),
+        )
+        vmc_imperfect = HarmonicOscillatorVMC(alpha=0.6, delta=1.0)
+        res_imperfect = vmc_imperfect.run_simulation(channels_imperfect, steps=3000, burn_in=500)
+
+        # For alpha=0.6, energy variance is nonzero and energy bias shifts noticeably
+        self.assertGreater(res_imperfect.energy_std, 0.2)
+        self.assertGreater(abs(res_imperfect.energy_bias), 0.15)
+        self.assertGreater(abs(res_imperfect.x2_bias), 0.8)
 
     def test_path_integral_monte_carlo_harmonic_oscillator(self):
         channels = StochasticChannels(

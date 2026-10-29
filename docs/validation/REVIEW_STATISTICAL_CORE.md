@@ -1,6 +1,9 @@
 > **SUPERSEDED v014 report — known incorrect/unverified claims.** Preserved for traceability; do not use as current validation. See [v014.1 corrections](V0141_CORRECTIONS.md).
 
 # RNGLab v0.14 Internal Methodological Review & Mathematical Verification
+
+> **Methodology Note:** This review document was drafted with AI-assisted code analysis tools and subsequently verified and audited by the author.
+
 **Scope:** Verification of mathematical foundations (MATH-01 to MATH-06), investigation of the MATH-03 performance contradiction, experimental validity, and multi-testing error controls.  
 **Author:** Hevele Imre Róbert  
 **Date:** October 2026  

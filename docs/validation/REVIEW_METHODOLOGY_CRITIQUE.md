@@ -1,5 +1,7 @@
 # RNGLab v0.14 — Methodological Critique & Hardening Review
 
+> **Methodology Note:** This review document was drafted with AI-assisted code analysis tools and subsequently verified and audited by the author.
+
 **Document Identifier:** RNGLAB-DOC-v014-CRITIQUE-01  
 **Classification:** Methodological Review, Failure Mode Analysis & Defect Assessment  
 **Target Release:** RNGLab v0.14 (`feat/v014-scientific-integration`)  

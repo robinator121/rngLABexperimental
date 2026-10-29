@@ -1,5 +1,7 @@
 # CALIBRATE Methodological Verification Review
 
+> **Methodology Note:** This review document was drafted with AI-assisted code analysis tools and subsequently verified and audited by the author.
+
 178 deterministic alternate checks passed: all primary max-persistent scores,rank thresholds,simultaneous bounds,paired discordance statistics,unused-channel null identities,exact Ising energy references,PIMC normal-mode references,forecast events/eligibility/prefix features,development-only normalization,Brier reductions and namespace uniqueness. Original v0.16 seal also reverified. Source and complete artifact hashes accompany the package.
 
 These calculations are separately implemented using independent dual-pipeline verification. This provides algorithmic cross-checking prior to external peer review. Independent researchers are encouraged to reproduce and inspect the source.
