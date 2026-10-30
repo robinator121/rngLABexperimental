@@ -1,0 +1,564 @@
+{
+  "protocol": "rnglab-phase2-analytic-dependence-v1",
+  "rows": [
+    {
+      "condition": "phi0p0",
+      "phi": 0.0,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 1.5980638435837304e-05,
+      "exact_variance_replica_means": 1.6434502522881613e-05,
+      "empirical_to_exact_variance_ratio": 0.972383460563385,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.8944876515248744,
+        1.0527158907961423
+      ],
+      "bias": -8.827577081760296e-06,
+      "bias_ci95": [
+        -0.0002539648247733077,
+        0.00023630967060978713
+      ],
+      "exact_mean_skewness": 0.0283271283255105,
+      "empirical_mean_skewness": -0.03101845484036872,
+      "method": "BM32",
+      "batch": 32,
+      "batch_count": 256,
+      "critical": 1.9693105698498752,
+      "coverage_count": 976,
+      "coverage": 0.953125,
+      "coverage_ci95": [
+        0.9383281919605021,
+        0.9652389748101035
+      ],
+      "mean_estimated_variance": 1.6498864666643644e-05,
+      "exact_expected_estimated_variance": 1.6434502522881613e-05,
+      "mean_estimated_variance_ci95": [
+        1.6404984949644283e-05,
+        1.6592744383643006e-05
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 1.0039162818389191,
+      "BM_expectation_validation_z_score": 1.3453056015791116,
+      "estimated_to_empirical_variance_ratio": 1.0324283809365333,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.9534325164672225,
+        1.1217824651443338
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 1.0
+    },
+    {
+      "condition": "phi0p0",
+      "phi": 0.0,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 1.5980638435837304e-05,
+      "exact_variance_replica_means": 1.6434502522881613e-05,
+      "empirical_to_exact_variance_ratio": 0.972383460563385,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.8944876515248744,
+        1.0527158907961423
+      ],
+      "bias": -8.827577081760296e-06,
+      "bias_ci95": [
+        -0.0002539648247733077,
+        0.00023630967060978713
+      ],
+      "exact_mean_skewness": 0.0283271283255105,
+      "empirical_mean_skewness": -0.03101845484036872,
+      "method": "BM128",
+      "batch": 128,
+      "batch_count": 64,
+      "critical": 1.998340542520741,
+      "coverage_count": 979,
+      "coverage": 0.9560546875,
+      "coverage_ci95": [
+        0.9416370180790965,
+        0.9677683681895404
+      ],
+      "mean_estimated_variance": 1.6600872665547996e-05,
+      "exact_expected_estimated_variance": 1.6434502522881613e-05,
+      "mean_estimated_variance_ci95": [
+        1.642174085625285e-05,
+        1.6780004474843143e-05
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 1.0101232235313937,
+      "BM_expectation_validation_z_score": 1.822488924649907,
+      "estimated_to_empirical_variance_ratio": 1.0388116051934313,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.9593144277749162,
+        1.1295109155829917
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 1.0
+    },
+    {
+      "condition": "phi0p0",
+      "phi": 0.0,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 1.5980638435837304e-05,
+      "exact_variance_replica_means": 1.6434502522881613e-05,
+      "empirical_to_exact_variance_ratio": 0.972383460563385,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.8944876515248744,
+        1.0527158907961423
+      ],
+      "bias": -8.827577081760296e-06,
+      "bias_ci95": [
+        -0.0002539648247733077,
+        0.00023630967060978713
+      ],
+      "exact_mean_skewness": 0.0283271283255105,
+      "empirical_mean_skewness": -0.03101845484036872,
+      "method": "BM512",
+      "batch": 512,
+      "batch_count": 16,
+      "critical": 2.131449545559776,
+      "coverage_count": 980,
+      "coverage": 0.95703125,
+      "coverage_ci95": [
+        0.9427431961566021,
+        0.9686081666741218
+      ],
+      "mean_estimated_variance": 1.6715249823541118e-05,
+      "exact_expected_estimated_variance": 1.6434502522881613e-05,
+      "mean_estimated_variance_ci95": [
+        1.6347942235841628e-05,
+        1.708255741124061e-05
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 1.0170827988415605,
+      "BM_expectation_validation_z_score": 1.4998502870287984,
+      "estimated_to_empirical_variance_ratio": 1.045968838520019,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.9649030332716702,
+        1.1410116036429474
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 1.0
+    },
+    {
+      "condition": "phi0p0",
+      "phi": 0.0,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 1.5980638435837304e-05,
+      "exact_variance_replica_means": 1.6434502522881613e-05,
+      "empirical_to_exact_variance_ratio": 0.972383460563385,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.8944876515248744,
+        1.0527158907961423
+      ],
+      "bias": -8.827577081760296e-06,
+      "bias_ci95": [
+        -0.0002539648247733077,
+        0.00023630967060978713
+      ],
+      "exact_mean_skewness": 0.0283271283255105,
+      "empirical_mean_skewness": -0.03101845484036872,
+      "method": "oracle_known_variance_normal",
+      "critical": 1.959963984540054,
+      "coverage_count": 975,
+      "coverage": 0.9521484375,
+      "coverage_ci95": [
+        0.9372283270872118,
+        0.9643926779885551
+      ],
+      "mean_estimated_variance": 1.6434502522881613e-05,
+      "estimated_to_empirical_variance_ratio": 1.0284008732734042,
+      "scope": "exact finite-n variance; normal interval still has distributional approximation"
+    },
+    {
+      "condition": "phi0p997",
+      "phi": 0.997,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 0.004818297479085004,
+      "exact_variance_replica_means": 0.004976651188666151,
+      "empirical_to_exact_variance_ratio": 0.9681806693742607,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.8611191963029358,
+        1.0761577802310698
+      ],
+      "bias": -0.0022201875951745054,
+      "bias_ci95": [
+        -0.006476750419194159,
+        0.0020363752288451486
+      ],
+      "exact_mean_skewness": 0.845778272327354,
+      "empirical_mean_skewness": 0.8607751296967069,
+      "method": "BM32",
+      "batch": 32,
+      "batch_count": 256,
+      "critical": 1.9693105698498752,
+      "coverage_count": 438,
+      "coverage": 0.427734375,
+      "coverage_ci95": [
+        0.3971882571363766,
+        0.45869707565812495
+      ],
+      "mean_estimated_variance": 0.0004342679795038152,
+      "exact_expected_estimated_variance": 0.000441923856701265,
+      "mean_estimated_variance_ci95": [
+        0.00041619195286476073,
+        0.00045234400614286966
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 0.9826760264661949,
+      "BM_expectation_validation_z_score": -0.8311017697818021,
+      "estimated_to_empirical_variance_ratio": 0.09012892653242381,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.08254021596364697,
+        0.09940367637137627
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 0.08879944363143322
+    },
+    {
+      "condition": "phi0p997",
+      "phi": 0.997,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 0.004818297479085004,
+      "exact_variance_replica_means": 0.004976651188666151,
+      "empirical_to_exact_variance_ratio": 0.9681806693742607,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.8611191963029358,
+        1.0761577802310698
+      ],
+      "bias": -0.0022201875951745054,
+      "bias_ci95": [
+        -0.006476750419194159,
+        0.0020363752288451486
+      ],
+      "exact_mean_skewness": 0.845778272327354,
+      "empirical_mean_skewness": 0.8607751296967069,
+      "method": "BM128",
+      "batch": 128,
+      "batch_count": 64,
+      "critical": 1.998340542520741,
+      "coverage_count": 698,
+      "coverage": 0.681640625,
+      "coverage_ci95": [
+        0.6521283074910604,
+        0.7101045231058363
+      ],
+      "mean_estimated_variance": 0.00145567856711634,
+      "exact_expected_estimated_variance": 0.0014821589562534006,
+      "mean_estimated_variance_ci95": [
+        0.0013883263846136147,
+        0.0015230307496190653
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 0.9821339074157082,
+      "BM_expectation_validation_z_score": -0.7714981887070285,
+      "estimated_to_empirical_variance_ratio": 0.30211471446814314,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.2766503062064273,
+        0.3328970732731466
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 0.2978225517651059
+    },
+    {
+      "condition": "phi0p997",
+      "phi": 0.997,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 0.004818297479085004,
+      "exact_variance_replica_means": 0.004976651188666151,
+      "empirical_to_exact_variance_ratio": 0.9681806693742607,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.8611191963029358,
+        1.0761577802310698
+      ],
+      "bias": -0.0022201875951745054,
+      "bias_ci95": [
+        -0.006476750419194159,
+        0.0020363752288451486
+      ],
+      "exact_mean_skewness": 0.845778272327354,
+      "empirical_mean_skewness": 0.8607751296967069,
+      "method": "BM512",
+      "batch": 512,
+      "batch_count": 16,
+      "critical": 2.131449545559776,
+      "coverage_count": 861,
+      "coverage": 0.8408203125,
+      "coverage_ci95": [
+        0.8169506527259174,
+        0.8627111241634586
+      ],
+      "mean_estimated_variance": 0.0033512332323890693,
+      "exact_expected_estimated_variance": 0.0034071348827967455,
+      "mean_estimated_variance_ci95": [
+        0.0031520434294466868,
+        0.0035504230353314518
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 0.9835927686074496,
+      "BM_expectation_validation_z_score": -0.5507059251484987,
+      "estimated_to_empirical_variance_ratio": 0.6955222766829808,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.6382631788174502,
+        0.766692391536322
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 0.6846240079184515
+    },
+    {
+      "condition": "phi0p997",
+      "phi": 0.997,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 0.004818297479085004,
+      "exact_variance_replica_means": 0.004976651188666151,
+      "empirical_to_exact_variance_ratio": 0.9681806693742607,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.8611191963029358,
+        1.0761577802310698
+      ],
+      "bias": -0.0022201875951745054,
+      "bias_ci95": [
+        -0.006476750419194159,
+        0.0020363752288451486
+      ],
+      "exact_mean_skewness": 0.845778272327354,
+      "empirical_mean_skewness": 0.8607751296967069,
+      "method": "oracle_known_variance_normal",
+      "critical": 1.959963984540054,
+      "coverage_count": 985,
+      "coverage": 0.9619140625,
+      "coverage_ci95": [
+        0.9483008183356173,
+        0.9727795703370036
+      ],
+      "mean_estimated_variance": 0.004976651188666151,
+      "estimated_to_empirical_variance_ratio": 1.0328650753234974,
+      "scope": "exact finite-n variance; normal interval still has distributional approximation"
+    },
+    {
+      "condition": "phi0p999",
+      "phi": 0.999,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 0.015621820716310044,
+      "exact_variance_replica_means": 0.014321948249558014,
+      "empirical_to_exact_variance_ratio": 1.090760868849819,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.9163628437531598,
+        1.3111751314207454
+      ],
+      "bias": 0.0009070374264594783,
+      "bias_ci95": [
+        -0.006757360902781472,
+        0.008571435755700428
+      ],
+      "exact_mean_skewness": 1.4297954234812893,
+      "empirical_mean_skewness": 1.7864340935463798,
+      "method": "BM32",
+      "batch": 32,
+      "batch_count": 256,
+      "critical": 1.9693105698498752,
+      "coverage_count": 249,
+      "coverage": 0.2431640625,
+      "coverage_ci95": [
+        0.21716948266421893,
+        0.270643850408687
+      ],
+      "mean_estimated_variance": 0.00042746768352862964,
+      "exact_expected_estimated_variance": 0.000424924573909468,
+      "mean_estimated_variance_ci95": [
+        0.00039873111967562346,
+        0.00045620424738163583
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 1.0059848494893202,
+      "BM_expectation_validation_z_score": 0.17365706840922493,
+      "estimated_to_empirical_variance_ratio": 0.027363499510804766,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.0238364147307031,
+        0.031241501293322135
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 0.029669467205523624
+    },
+    {
+      "condition": "phi0p999",
+      "phi": 0.999,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 0.015621820716310044,
+      "exact_variance_replica_means": 0.014321948249558014,
+      "empirical_to_exact_variance_ratio": 1.090760868849819,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.9163628437531598,
+        1.3111751314207454
+      ],
+      "bias": 0.0009070374264594783,
+      "bias_ci95": [
+        -0.006757360902781472,
+        0.008571435755700428
+      ],
+      "exact_mean_skewness": 1.4297954234812893,
+      "empirical_mean_skewness": 1.7864340935463798,
+      "method": "BM128",
+      "batch": 128,
+      "batch_count": 64,
+      "critical": 1.998340542520741,
+      "coverage_count": 479,
+      "coverage": 0.4677734375,
+      "coverage_ci95": [
+        0.43685465855701666,
+        0.4988779576728838
+      ],
+      "mean_estimated_variance": 0.001608498434324269,
+      "exact_expected_estimated_variance": 0.0015989157637152146,
+      "mean_estimated_variance_ci95": [
+        0.00149566677801203,
+        0.001721330090636508
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 1.005993230429343,
+      "BM_expectation_validation_z_score": 0.16665479661069374,
+      "estimated_to_empirical_variance_ratio": 0.10296485048281905,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.08994472567135788,
+        0.11746533951017142
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 0.1116409398954893
+    },
+    {
+      "condition": "phi0p999",
+      "phi": 0.999,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 0.015621820716310044,
+      "exact_variance_replica_means": 0.014321948249558014,
+      "empirical_to_exact_variance_ratio": 1.090760868849819,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.9163628437531598,
+        1.3111751314207454
+      ],
+      "bias": 0.0009070374264594783,
+      "bias_ci95": [
+        -0.006757360902781472,
+        0.008571435755700428
+      ],
+      "exact_mean_skewness": 1.4297954234812893,
+      "empirical_mean_skewness": 1.7864340935463798,
+      "method": "BM512",
+      "batch": 512,
+      "batch_count": 16,
+      "critical": 2.131449545559776,
+      "coverage_count": 723,
+      "coverage": 0.7060546875,
+      "coverage_ci95": [
+        0.6770991941238493,
+        0.7338202619506589
+      ],
+      "mean_estimated_variance": 0.0052072480330988815,
+      "exact_expected_estimated_variance": 0.005135682726867646,
+      "mean_estimated_variance_ci95": [
+        0.004788336756465229,
+        0.005626159309732534
+      ],
+      "measured_to_exact_expected_BM_variance_ratio": 1.0139349157721207,
+      "BM_expectation_validation_z_score": 0.3352298663614571,
+      "estimated_to_empirical_variance_ratio": 0.33333169850440203,
+      "estimated_to_empirical_variance_ratio_bootstrap_ci95": [
+        0.2924126495703176,
+        0.37912787451709734
+      ],
+      "exact_expected_BM_to_true_MCvariance_ratio": 0.35858827565768764
+    },
+    {
+      "condition": "phi0p999",
+      "phi": 0.999,
+      "replicas": 1024,
+      "retained": 8192,
+      "CV_mean_target": 0.6554741522981733,
+      "CV_marginal_variance_exact": 0.13463144466744617,
+      "empirical_variance_replica_means": 0.015621820716310044,
+      "exact_variance_replica_means": 0.014321948249558014,
+      "empirical_to_exact_variance_ratio": 1.090760868849819,
+      "empirical_to_exact_variance_ratio_bootstrap_ci95": [
+        0.9163628437531598,
+        1.3111751314207454
+      ],
+      "bias": 0.0009070374264594783,
+      "bias_ci95": [
+        -0.006757360902781472,
+        0.008571435755700428
+      ],
+      "exact_mean_skewness": 1.4297954234812893,
+      "empirical_mean_skewness": 1.7864340935463798,
+      "method": "oracle_known_variance_normal",
+      "critical": 1.959963984540054,
+      "coverage_count": 971,
+      "coverage": 0.9482421875,
+      "coverage_ci95": [
+        0.9328431194695355,
+        0.9609928512496367
+      ],
+      "mean_estimated_variance": 0.014321948249558014,
+      "estimated_to_empirical_variance_ratio": 0.9167912312938727,
+      "scope": "exact finite-n variance; normal interval still has distributional approximation"
+    }
+  ],
+  "elapsed_seconds": 17.39359124499606,
+  "reference": {
+    "M": 16,
+    "beta": 2.0,
+    "energy_mean": 0.6554741522981733,
+    "centroid_component_variance": 0.125,
+    "shape_mean": 0.15547415229817324,
+    "shape_variance": 0.009631444667446172,
+    "CV_variance": 0.13463144466744617,
+    "shape_third_cumulant": 0.0016535248017022918,
+    "shape_weights": [
+      0.046540115485911866,
+      0.012990275061656887,
+      0.006248709590131138,
+      0.003875968992248063,
+      0.0028092494980232505,
+      0.002277804000954073,
+      0.002022190874247019,
+      0.0019455252918287938,
+      0.002022190874247019,
+      0.002277804000954073,
+      0.002809249498023249,
+      0.003875968992248061,
+      0.006248709590131138,
+      0.01299027506165688,
+      0.046540115485911714
+    ],
+    "normal_mode_precision": [
+      0.125,
+      1.3429274798194117,
+      4.81129150101524,
+      10.002065082158563,
+      16.124999999999996,
+      22.247934917841437,
+      27.43870849898476,
+      30.907072520180588,
+      32.125,
+      30.907072520180588,
+      27.43870849898476,
+      22.247934917841448,
+      16.125000000000004,
+      10.002065082158563,
+      4.811291501015242,
+      1.3429274798194162
+    ]
+  }
+}

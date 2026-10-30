@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "LOCAL_WORKSPACE/work/phase2-env/venv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-v",
+    "--durations=20",
+    "--junitxml=LOCAL_WORKSPACE/outputs/phase2-20261030/environment/pytest-centroid-full.xml"
+  ],
+  "cwd": "LOCAL_WORKSPACE/work/phase2-env/repo",
+  "returncode": 0,
+  "wall_seconds": 10.67335828099749
+}

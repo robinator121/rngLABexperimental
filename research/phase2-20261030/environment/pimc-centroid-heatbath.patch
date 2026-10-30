@@ -1,0 +1,317 @@
+diff --git a/src/rnglab14/models/__init__.py b/src/rnglab14/models/__init__.py
+index dd54438..f1986f5 100644
+--- a/src/rnglab14/models/__init__.py
++++ b/src/rnglab14/models/__init__.py
+@@ -3,7 +3,7 @@
+ from .decision_support import DecisionEvaluationResult, DecisionOption, MonteCarloDecisionSupport
+ from .ising_2d import Ising2D, IsingObservableResult
+ from .pi_mc import PiMCResult, run_pi_monte_carlo
+-from .pimc_harmonic import PathIntegralHarmonicOscillator, PIMCResult
++from .pimc_harmonic import PathIntegralHarmonicOscillator, PIMCResult, harmonic_centroid_heatbath
+ from .vmc_harmonic import HarmonicOscillatorVMC, VMCResult
+ 
+ __all__ = [
+@@ -15,6 +15,7 @@ __all__ = [
+     "VMCResult",
+     "PathIntegralHarmonicOscillator",
+     "PIMCResult",
++    "harmonic_centroid_heatbath",
+     "MonteCarloDecisionSupport",
+     "DecisionOption",
+     "DecisionEvaluationResult",
+diff --git a/src/rnglab14/models/pimc_harmonic.py b/src/rnglab14/models/pimc_harmonic.py
+index 7de98ed..cec1288 100644
+--- a/src/rnglab14/models/pimc_harmonic.py
++++ b/src/rnglab14/models/pimc_harmonic.py
+@@ -15,6 +15,7 @@ from __future__ import annotations
+ 
+ from dataclasses import dataclass
+ import math
++import struct
+ from typing import Optional, Union
+ 
+ import numpy as np
+@@ -57,6 +58,46 @@ def harmonic_energy_estimators(path: np.ndarray, beta: float) -> tuple[np.ndarra
+     return thermo, virial
+ 
+ 
++def harmonic_centroid_heatbath(path: np.ndarray, beta: float,
++                              source: RandomSource) -> np.ndarray:
++    """Return a path with a refreshed harmonic centroid; do not mutate input.
++
++    Writing x_j = c + y_j, sum(y_j)=0, the primitive harmonic action factors
++    as S(y) + beta*c**2/2. Thus c ~ Normal(0, 1/beta) is the exact conditional
++    law at every bead count. Internal coordinates and springs are preserved
++    up to floating-point rounding; no Metropolis acceptance draw is needed.
++
++    Consume exactly 16 bytes from the supplied source: two big-endian 64-bit
++    words map to 53-bit uniforms u,v in [0,1), then use the cosine Box-Muller
++    variate sqrt(-2*log1p(-u))*cos(2*pi*v)/sqrt(beta). The sine variate is
++    discarded. Correct conditional sampling assumes IID uniform source words
++    independent of the retained internal coordinates. This interface does not
++    verify those assumptions, certify entropy, or establish full-path mixing.
++    """
++    x = np.asarray(path, dtype=float)
++    if x.ndim != 1 or x.size < 1 or not np.isfinite(x).all():
++        raise ValueError("finite one-dimensional nonempty path required")
++    if not math.isfinite(beta) or beta <= 0:
++        raise ValueError("finite positive beta required")
++    if not isinstance(source, RandomSource):
++        raise TypeError("explicit RandomSource required")
++    # Scale before summing to avoid overflow in the mean of large finite paths.
++    centroid = math.fsum(float(value)/x.size for value in x)
++    with np.errstate(over="ignore", invalid="ignore"):
++        internal = x - centroid
++    if not np.isfinite(internal).all():
++        raise ValueError("centered path must remain finite")
++    a, b = struct.unpack(">QQ", source.read_bytes(16))
++    u, v = (a >> 11)*2.0**-53, (b >> 11)*2.0**-53
++    new_centroid = (math.sqrt(-2.0*math.log1p(-u))
++                    * math.cos(2.0*math.pi*v)/math.sqrt(beta))
++    with np.errstate(over="ignore", invalid="ignore"):
++        updated = internal + new_centroid
++    if not np.isfinite(updated).all():
++        raise ValueError("updated path must remain finite")
++    return updated
++
++
+ def sample_exact_finite_bead_paths(source: RandomSource, beads: int, beta: float,
+                                  independent_paths: int) -> np.ndarray:
+     """Exact Gaussian finite-bead reference conditional on IID source words.
+@@ -127,6 +168,8 @@ class PIMCResult:
+     discretization_bias: float
+     virial_uncertainty: dict
+     thermodynamic_uncertainty: dict
++    sampler_protocol: str = "LOCAL_METROPOLIS_V1"
++    centroid_update: Optional[dict] = None
+ 
+ 
+ class PathIntegralHarmonicOscillator:
+@@ -174,10 +217,22 @@ class PathIntegralHarmonicOscillator:
+         source_or_channels: Union[RandomSource, StochasticChannels],
+         sweeps: int = 2000,
+         burn_in: int = 500,
++        *,
++        centroid_source: Optional[RandomSource] = None,
+     ) -> PIMCResult:
++        """Run local Metropolis, optionally followed by one centroid Gibbs update.
++
++        The default preserves the existing transition and source consumption.
++        A supplied centroid_source is used after each local sweep, including
++        burn-in. Its separate argument does not prove independent origin; it
++        may alias a local channel, and corrupted/dependent input can invalidate
++        the conditional Gaussian update. This option is harmonic-model specific.
++        """
+         if (type(sweeps) is not int or type(burn_in) is not int or burn_in < 0
+                 or sweeps - burn_in < 32):
+             raise ValueError("integer sweeps/burn_in and at least 32 retained sweeps required")
++        if centroid_source is not None and not isinstance(centroid_source, RandomSource):
++            raise TypeError("centroid_source must be an explicit RandomSource or None")
+         if isinstance(source_or_channels, StochasticChannels):
+             prop_src = source_or_channels.proposal
+             acc_src = source_or_channels.acceptance
+@@ -187,6 +242,8 @@ class PathIntegralHarmonicOscillator:
+             acc_src = source_or_channels
+             init_src = source_or_channels
+ 
++        centroid_before = centroid_source.consumed_bytes if centroid_source is not None else None
++        centroid_digest_before = centroid_source.stream_digest if centroid_source is not None else None
+         M = self.M
+         dtau = self.dtau
+         delta = self.delta
+@@ -239,6 +296,9 @@ class PathIntegralHarmonicOscillator:
+                         self.path[j] = x_new
+                         accepted += 1
+ 
++            if centroid_source is not None:
++                self.path[:] = harmonic_centroid_heatbath(self.path, self.beta, centroid_source)
++
+             if sweep >= burn_in:
+                 e_thermo, e_virial = harmonic_energy_estimators(self.path, self.beta)
+                 x_cm = float(np.mean(self.path))
+@@ -274,4 +334,22 @@ class PathIntegralHarmonicOscillator:
+             discretization_bias=self.finite_bead_energy - self.exact_energy,
+             virial_uncertainty=summarize_series(v_arr, reference=self.finite_bead_energy),
+             thermodynamic_uncertainty=summarize_series(t_arr, reference=self.finite_bead_energy),
++            sampler_protocol=("LOCAL_METROPOLIS_CENTROID_HEATBATH_V1"
++                              if centroid_source is not None else "LOCAL_METROPOLIS_V1"),
++            centroid_update=({
++                "enabled": True,
++                "schedule": "once after every local sweep, including burn-in",
++                "total_updates": sweeps,
++                "draw_bytes_per_update": 16,
++                "centroid_draw_bytes": 16*sweeps,
++                "source_manifest": centroid_source.manifest.to_dict(),
++                "source_digest_before": centroid_digest_before,
++                "source_digest_after": centroid_source.stream_digest,
++                "source_byte_counter_delta": centroid_source.consumed_bytes-centroid_before,
++                "source_shared_with_local_channels": any(
++                    centroid_source is s for s in (prop_src, acc_src, init_src)),
++                "independence_verified": False,
++                "assumptions": ("IID uniform source words independent of retained internal coordinates; "
++                                "no entropy or full-path mixing certification"),
++            } if centroid_source is not None else {"enabled": False}),
+         )
+diff --git a/tests/test_pimc_centroid_heatbath.py b/tests/test_pimc_centroid_heatbath.py
+new file mode 100644
+index 0000000..1938239
+--- /dev/null
++++ b/tests/test_pimc_centroid_heatbath.py
+@@ -0,0 +1,157 @@
++"""Analytical invariance and source-consumption checks for optional centroid Gibbs updates."""
++from dataclasses import asdict
++import hashlib
++import math
++import struct
++
++import numpy as np
++import pytest
++
++from rnglab14.models import PathIntegralHarmonicOscillator, harmonic_centroid_heatbath
++from rnglab14.sources import PCG64Source, RandomSource, SourceBudgetExceeded, SourceManifest, StochasticChannels
++
++
++class FixedBytes(RandomSource):
++    def __init__(self, raw, max_bytes=None):
++        super().__init__(SourceManifest("fixture", "test_fixture", True, False), max_bytes=max_bytes)
++        self.raw = raw
++
++    def _read_bytes(self, n):
++        result, self.raw = self.raw[:n], self.raw[n:]
++        return result
++
++
++def _channels():
++    return StochasticChannels(PCG64Source(701), PCG64Source(702), PCG64Source(703))
++
++
++def test_exact_box_muller_mapping_internal_coordinates_and_action_factorization():
++    path = np.array([-2.0, -1.0, 0.0, 7.0])
++    original = path.copy()
++    beta = 2.0
++    # First uniform exactly 1/2, second exactly zero: c_new=sqrt(log(4)/beta).
++    raw = struct.pack(">QQ", 1 << 63, 0)
++    source = FixedBytes(raw)
++    updated = harmonic_centroid_heatbath(path, beta, source)
++    old_c, new_c = path.mean(), math.sqrt(math.log(4)/beta)
++    assert updated.mean() == pytest.approx(new_c, abs=2e-15)
++    assert updated-updated.mean() == pytest.approx(path-old_c, abs=2e-15)
++    assert np.roll(updated, -1)-updated == pytest.approx(np.roll(path, -1)-path, abs=2e-15)
++    assert np.array_equal(path, original)
++    def action(x):
++        return len(x)/(2*beta)*np.sum((np.roll(x, -1)-x)**2) + beta/(2*len(x))*np.sum(x*x)
++    assert action(updated)-action(path) == pytest.approx(beta/2*(new_c*new_c-old_c*old_c), abs=2e-13)
++    assert source.consumed_bytes == 16
++    assert source.stream_digest == hashlib.sha256(raw).hexdigest()
++
++
++def test_zero_uniform_is_finite_and_source_budget_is_atomic():
++    source = FixedBytes(struct.pack(">QQ", 0, (1 << 64)-1))
++    updated = harmonic_centroid_heatbath([4.0, 6.0], 2.0, source)
++    assert updated == pytest.approx([-1.0, 1.0])
++    limited = FixedBytes(b"\0"*16, max_bytes=15)
++    with pytest.raises(SourceBudgetExceeded):
++        harmonic_centroid_heatbath([1.0, 2.0], 2.0, limited)
++    assert limited.consumed_bytes == 0
++    assert limited.raw == b"\0"*16
++
++
++@pytest.mark.parametrize("path,beta", [([], 2.0), (1.0, 2.0), ([[1.0]], 2.0),
++    ([math.nan], 2.0), ([math.inf], 2.0), ([1.0], 0), ([1.0], -1),
++    ([1.0], math.nan), ([1.0], math.inf)])
++def test_invalid_domains_fail_before_consumption(path, beta):
++    source = PCG64Source(22)
++    with pytest.raises(ValueError):
++        harmonic_centroid_heatbath(path, beta, source)
++    assert source.consumed_bytes == 0
++
++
++def test_explicit_source_required_and_deterministic_replay():
++    with pytest.raises(TypeError, match="RandomSource"):
++        harmonic_centroid_heatbath([1.0], 2.0, None)
++    a, b = PCG64Source(1901), PCG64Source(1901)
++    x, y = np.array([-3.0, 0.0, 2.0]), np.array([-3.0, 0.0, 2.0])
++    for _ in range(15):
++        x = harmonic_centroid_heatbath(x, 3.0, a)
++        y = harmonic_centroid_heatbath(y, 3.0, b)
++        assert np.array_equal(x, y)
++    assert a.consumed_bytes == b.consumed_bytes == 240
++    assert a.stream_digest == b.stream_digest
++
++
++@pytest.mark.parametrize("beta", [0.2, 2.0, 8.0])
++def test_centroid_moments_against_analytic_gaussian_standard_errors(beta):
++    n = 12000
++    source = PCG64Source(391103)
++    path = np.array([-2.0, -1.0, 1.0, 2.0])
++    centroids = np.array([harmonic_centroid_heatbath(path, beta, source).mean() for _ in range(n)])
++    # Under the explicit IID-source assumption, Var(c)=1/beta,
++    # Var(c^2)=2/beta^2 and Var(c^4)=96/beta^4. Six-SE bounds are
++    # deliberately loose regression checks, not uncertainty calibration claims.
++    assert abs(centroids.mean()) < 6/math.sqrt(n*beta)
++    assert abs(np.mean(centroids**2)-1/beta) < 6*math.sqrt(2/n)/beta
++    assert abs(np.mean(centroids**4)-3/beta**2) < 6*math.sqrt(96/n)/beta**2
++
++
++def test_heatbath_preserves_independent_gaussian_target_covariance():
++    beads, beta, n = 4, 2.0, 10000
++    eye = np.eye(beads)
++    difference = np.roll(eye, -1, axis=0)-eye
++    covariance = np.linalg.inv(beta/beads*eye+beads/beta*(difference.T @ difference))
++    # Independent numerical construction of the finite-action Gaussian target.
++    initial = np.random.default_rng(183310).multivariate_normal(np.zeros(beads), covariance, size=n)
++    source = PCG64Source(985381)
++    updated = np.array([harmonic_centroid_heatbath(x, beta, source) for x in initial])
++    # Exact Gaussian and Wishart marginal standard errors; no sampler output
++    # from the implementation is used to define either the target or tolerance.
++    mean_se = np.sqrt(np.diag(covariance)/n)
++    covariance_se = np.sqrt((covariance**2+np.outer(np.diag(covariance), np.diag(covariance)))/(n-1))
++    assert np.all(np.abs(updated.mean(axis=0)) < 6*mean_se)
++    assert np.all(np.abs(np.cov(updated, rowvar=False)-covariance) < 6*covariance_se)
++
++
++def test_default_legacy_stream_consumption_and_optional_argument_are_unchanged():
++    channels, explicit_channels = _channels(), _channels()
++    default = PathIntegralHarmonicOscillator(beads=4).run_simulation(channels, sweeps=128, burn_in=32)
++    explicit = PathIntegralHarmonicOscillator(beads=4).run_simulation(
++        explicit_channels, sweeps=128, burn_in=32, centroid_source=None)
++    assert asdict(default) == asdict(explicit)
++    # Frozen from the unchanged dd96adba implementation before adding this option.
++    assert default.virial_energy_mean == 0.828529
++    assert default.thermodynamic_energy_mean == 0.990092
++    assert default.provenance_hash == "7bf770bcaf05922c8ce3055fce4d43f0d083ce1cf25971531e37e94d69b98c74"
++    assert [s.consumed_bytes for s in (channels.proposal, channels.acceptance, channels.initialization)] == [4096, 2384, 32]
++    assert default.sampler_protocol == "LOCAL_METROPOLIS_V1"
++    assert default.centroid_update == {"enabled": False}
++
++
++def test_optional_simulation_schedule_replay_and_unverified_independence_metadata():
++    first_model, second_model = PathIntegralHarmonicOscillator(beads=4), PathIntegralHarmonicOscillator(beads=4)
++    a, b = PCG64Source(17100), PCG64Source(17100)
++    first = first_model.run_simulation(_channels(), sweeps=64, burn_in=16, centroid_source=a)
++    second = second_model.run_simulation(_channels(), sweeps=64, burn_in=16, centroid_source=b)
++    assert np.array_equal(first_model.path, second_model.path)
++    assert first.virial_energy_mean == second.virial_energy_mean
++    assert first.virial_uncertainty == second.virial_uncertainty
++    assert first.sampler_protocol == "LOCAL_METROPOLIS_CENTROID_HEATBATH_V1"
++    meta = first.centroid_update
++    assert meta["total_updates"] == 64  # includes the 16 burn-in sweeps
++    assert meta["centroid_draw_bytes"] == meta["source_byte_counter_delta"] == 1024
++    assert meta["source_digest_after"] == a.stream_digest == b.stream_digest
++    assert meta["source_shared_with_local_channels"] is False
++    assert meta["independence_verified"] is False
++    assert first.virial_uncertainty["stationarity_verified"] is False
++    shared = PCG64Source(1519)
++    result = PathIntegralHarmonicOscillator(beads=4).run_simulation(
++        shared, sweeps=32, burn_in=0, centroid_source=shared)
++    assert result.centroid_update["source_shared_with_local_channels"] is True
++    assert result.centroid_update["independence_verified"] is False
++    assert result.centroid_update["source_byte_counter_delta"] == shared.consumed_bytes
++    assert result.centroid_update["source_byte_counter_delta"] > result.centroid_update["centroid_draw_bytes"]
++
++
++def test_invalid_optional_source_fails_before_any_local_consumption():
++    source = PCG64Source(22)
++    with pytest.raises(TypeError, match="RandomSource"):
++        PathIntegralHarmonicOscillator(beads=4).run_simulation(source, centroid_source=object())
++    assert source.consumed_bytes == 0

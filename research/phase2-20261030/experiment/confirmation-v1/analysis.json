@@ -1,0 +1,1622 @@
+[
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "naive_IID",
+    "replicas": 1024,
+    "covered": 261,
+    "coverage": 0.2548828125,
+    "coverage_ci95": [
+      0.22843858415995127,
+      0.2827439623584579
+    ],
+    "abstentions": 0,
+    "mean": 0.6537865615312126,
+    "target": 0.655474152298174,
+    "bias": -0.0016875907669613444,
+    "bias_ci95": [
+      -0.007693677977800794,
+      0.004318496443878105
+    ],
+    "empirical_variance_chain_means": 0.009593095818328214,
+    "mean_estimated_variance": 0.0002250822704876555,
+    "estimated_to_empirical_variance_ratio": 0.023462944053745577,
+    "variance_ratio_bootstrap_ci95": [
+      0.020817969737398457,
+      0.02650944880558404
+    ],
+    "median_estimated_tau": 1.0,
+    "median_estimated_ESS": 8192.0
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM32",
+    "replicas": 1024,
+    "covered": 661,
+    "coverage": 0.6455078125,
+    "coverage_ci95": [
+      0.6153351481700826,
+      0.6748410920268929
+    ],
+    "abstentions": 0,
+    "mean": 0.6537865615312126,
+    "target": 0.655474152298174,
+    "bias": -0.0016875907669613444,
+    "bias_ci95": [
+      -0.007693677977800794,
+      0.004318496443878105
+    ],
+    "empirical_variance_chain_means": 0.009593095818328214,
+    "mean_estimated_variance": 0.0019112829615138564,
+    "estimated_to_empirical_variance_ratio": 0.199235262287512,
+    "variance_ratio_bootstrap_ci95": [
+      0.17738330220415427,
+      0.22451542412124093
+    ],
+    "median_estimated_tau": 8.233368691813782,
+    "median_estimated_ESS": 994.9754849572657,
+    "batches": 256,
+    "batch": 32
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM128",
+    "replicas": 1024,
+    "covered": 797,
+    "coverage": 0.7783203125,
+    "coverage_ci95": [
+      0.751609538712458,
+      0.8034204000032714
+    ],
+    "abstentions": 0,
+    "mean": 0.6537865615312126,
+    "target": 0.655474152298174,
+    "bias": -0.0016875907669613444,
+    "bias_ci95": [
+      -0.007693677977800794,
+      0.004318496443878105
+    ],
+    "empirical_variance_chain_means": 0.009593095818328214,
+    "mean_estimated_variance": 0.003488753399940627,
+    "estimated_to_empirical_variance_ratio": 0.36367336113490534,
+    "variance_ratio_bootstrap_ci95": [
+      0.32478349847873333,
+      0.4093936304863876
+    ],
+    "median_estimated_tau": 14.246809467341809,
+    "median_estimated_ESS": 575.0064010994836,
+    "batches": 64,
+    "batch": 128
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM512",
+    "replicas": 1024,
+    "covered": 909,
+    "coverage": 0.8876953125,
+    "coverage_ci95": [
+      0.8667436738831216,
+      0.9063861991574566
+    ],
+    "abstentions": 0,
+    "mean": 0.6537865615312126,
+    "target": 0.655474152298174,
+    "bias": -0.0016875907669613444,
+    "bias_ci95": [
+      -0.007693677977800794,
+      0.004318496443878105
+    ],
+    "empirical_variance_chain_means": 0.009593095818328214,
+    "mean_estimated_variance": 0.006136552756604609,
+    "estimated_to_empirical_variance_ratio": 0.6396842972088674,
+    "variance_ratio_bootstrap_ci95": [
+      0.5728074147633955,
+      0.7172658703549923
+    ],
+    "median_estimated_tau": 21.345155343555156,
+    "median_estimated_ESS": 383.7873216771328,
+    "batches": 16,
+    "batch": 512
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM1024",
+    "replicas": 1024,
+    "covered": 941,
+    "coverage": 0.9189453125,
+    "coverage_ci95": [
+      0.9005098023813461,
+      0.9349258510634543
+    ],
+    "abstentions": 0,
+    "mean": 0.6537865615312126,
+    "target": 0.655474152298174,
+    "bias": -0.0016875907669613444,
+    "bias_ci95": [
+      -0.007693677977800794,
+      0.004318496443878105
+    ],
+    "empirical_variance_chain_means": 0.009593095818328214,
+    "mean_estimated_variance": 0.007424302239476958,
+    "estimated_to_empirical_variance_ratio": 0.7739214097384872,
+    "variance_ratio_bootstrap_ci95": [
+      0.6913167956836096,
+      0.8659056575398351
+    ],
+    "median_estimated_tau": 23.599400565218204,
+    "median_estimated_ESS": 347.12816301244555,
+    "batches": 8,
+    "batch": 1024
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "Geyer_IMS_sensitivity",
+    "replicas": 1024,
+    "covered": 849,
+    "coverage": 0.8291015625,
+    "coverage_ci95": [
+      0.8046207681115696,
+      0.8516730179844142
+    ],
+    "abstentions": 0,
+    "mean": 0.6537865615312126,
+    "target": 0.655474152298174,
+    "bias": -0.0016875907669613444,
+    "bias_ci95": [
+      -0.007693677977800794,
+      0.004318496443878105
+    ],
+    "empirical_variance_chain_means": 0.009593095818328214,
+    "mean_estimated_variance": 0.00567352081888934,
+    "estimated_to_empirical_variance_ratio": 0.591417090617371,
+    "variance_ratio_bootstrap_ci95": [
+      0.5310474679470785,
+      0.6589355598112624
+    ],
+    "median_estimated_tau": 15.95209350867494,
+    "median_estimated_ESS": 513.5376141954796,
+    "reversibility_required_for_standard_theory": true,
+    "median_positive_pairs": 63.5
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "OBM512",
+    "replicas": 1024,
+    "covered": 877,
+    "coverage": 0.8564453125,
+    "coverage_ci95": [
+      0.8334575786786311,
+      0.8773610252050935
+    ],
+    "abstentions": 0,
+    "mean": 0.6537865615312126,
+    "target": 0.655474152298174,
+    "bias": -0.0016875907669613444,
+    "bias_ci95": [
+      -0.007693677977800794,
+      0.004318496443878105
+    ],
+    "empirical_variance_chain_means": 0.009593095818328214,
+    "mean_estimated_variance": 0.006158615063493236,
+    "estimated_to_empirical_variance_ratio": 0.6419841081673358,
+    "variance_ratio_bootstrap_ci95": [
+      0.5743066325785577,
+      0.7191191301470665
+    ],
+    "median_estimated_tau": 21.282687504051445,
+    "median_estimated_ESS": 384.91399318295066,
+    "batch": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "Bartlett512",
+    "replicas": 1024,
+    "covered": 865,
+    "coverage": 0.8447265625,
+    "coverage_ci95": [
+      0.82106990653607,
+      0.8663811344191531
+    ],
+    "abstentions": 0,
+    "mean": 0.6537865615312126,
+    "target": 0.655474152298174,
+    "bias": -0.0016875907669613444,
+    "bias_ci95": [
+      -0.007693677977800794,
+      0.004318496443878105
+    ],
+    "empirical_variance_chain_means": 0.009593095818328214,
+    "mean_estimated_variance": 0.005728375649449742,
+    "estimated_to_empirical_variance_ratio": 0.5971352478837249,
+    "variance_ratio_bootstrap_ci95": [
+      0.534115910950995,
+      0.6685899984093107
+    ],
+    "median_estimated_tau": 20.077849264907147,
+    "median_estimated_ESS": 408.0118290207308,
+    "bandwidth": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "naive_IID",
+    "replicas": 1024,
+    "covered": 71,
+    "coverage": 0.0693359375,
+    "coverage_ci95": [
+      0.05454564163707277,
+      0.08665660428113345
+    ],
+    "abstentions": 0,
+    "mean": 0.6546670725702768,
+    "target": 0.6554741522981742,
+    "bias": -0.0008070797278973973,
+    "bias_ci95": [
+      -0.006224425153957024,
+      0.004610265698162229
+    ],
+    "empirical_variance_chain_means": 0.007804562646547896,
+    "mean_estimated_variance": 1.5444994021282918e-05,
+    "estimated_to_empirical_variance_ratio": 0.0019789698309506847,
+    "variance_ratio_bootstrap_ci95": [
+      0.0017916377889431643,
+      0.0021939284990445834
+    ],
+    "median_estimated_tau": 1.0,
+    "median_estimated_ESS": 8192.0
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM32",
+    "replicas": 1024,
+    "covered": 365,
+    "coverage": 0.3564453125,
+    "coverage_ci95": [
+      0.3270703574306893,
+      0.38664836384601237
+    ],
+    "abstentions": 0,
+    "mean": 0.6546670725702768,
+    "target": 0.6554741522981742,
+    "bias": -0.0008070797278973973,
+    "bias_ci95": [
+      -0.006224425153957024,
+      0.004610265698162229
+    ],
+    "empirical_variance_chain_means": 0.007804562646547896,
+    "mean_estimated_variance": 0.0004614964500521499,
+    "estimated_to_empirical_variance_ratio": 0.05913162222565776,
+    "variance_ratio_bootstrap_ci95": [
+      0.0535576210932727,
+      0.06543676412609145
+    ],
+    "median_estimated_tau": 29.3757634301838,
+    "median_estimated_ESS": 278.86934817826847,
+    "batches": 256,
+    "batch": 32
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM128",
+    "replicas": 1024,
+    "covered": 634,
+    "coverage": 0.619140625,
+    "coverage_ci95": [
+      0.5886018493035834,
+      0.6489923364034854
+    ],
+    "abstentions": 0,
+    "mean": 0.6546670725702768,
+    "target": 0.6554741522981742,
+    "bias": -0.0008070797278973973,
+    "bias_ci95": [
+      -0.006224425153957024,
+      0.004610265698162229
+    ],
+    "empirical_variance_chain_means": 0.007804562646547896,
+    "mean_estimated_variance": 0.0015914640270815363,
+    "estimated_to_empirical_variance_ratio": 0.20391456884332534,
+    "variance_ratio_bootstrap_ci95": [
+      0.18482567596312305,
+      0.2249496986766517
+    ],
+    "median_estimated_tau": 97.6704180253035,
+    "median_estimated_ESS": 83.87391887211422,
+    "batches": 64,
+    "batch": 128
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM512",
+    "replicas": 1024,
+    "covered": 811,
+    "coverage": 0.7919921875,
+    "coverage_ci95": [
+      0.7658212868541585,
+      0.8164723222183208
+    ],
+    "abstentions": 0,
+    "mean": 0.6546670725702768,
+    "target": 0.6554741522981742,
+    "bias": -0.0008070797278973973,
+    "bias_ci95": [
+      -0.006224425153957024,
+      0.004610265698162229
+    ],
+    "empirical_variance_chain_means": 0.007804562646547896,
+    "mean_estimated_variance": 0.004142984191483834,
+    "estimated_to_empirical_variance_ratio": 0.5308413013144757,
+    "variance_ratio_bootstrap_ci95": [
+      0.48353258042915953,
+      0.5820335868934031
+    ],
+    "median_estimated_tau": 222.51523030617264,
+    "median_estimated_ESS": 36.81545749848308,
+    "batches": 16,
+    "batch": 512
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM1024",
+    "replicas": 1024,
+    "covered": 858,
+    "coverage": 0.837890625,
+    "coverage_ci95": [
+      0.8138643277721576,
+      0.8599554783739677
+    ],
+    "abstentions": 0,
+    "mean": 0.6546670725702768,
+    "target": 0.6554741522981742,
+    "bias": -0.0008070797278973973,
+    "bias_ci95": [
+      -0.006224425153957024,
+      0.004610265698162229
+    ],
+    "empirical_variance_chain_means": 0.007804562646547896,
+    "mean_estimated_variance": 0.005426156203086104,
+    "estimated_to_empirical_variance_ratio": 0.6952543593824818,
+    "variance_ratio_bootstrap_ci95": [
+      0.6304297150838829,
+      0.7645792107063406
+    ],
+    "median_estimated_tau": 261.1171322611139,
+    "median_estimated_ESS": 31.37295031221239,
+    "batches": 8,
+    "batch": 1024
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "Geyer_IMS_sensitivity",
+    "replicas": 1024,
+    "covered": 825,
+    "coverage": 0.8056640625,
+    "coverage_ci95": [
+      0.7800756284489803,
+      0.8294814345124274
+    ],
+    "abstentions": 0,
+    "mean": 0.6546670725702768,
+    "target": 0.6554741522981742,
+    "bias": -0.0008070797278973973,
+    "bias_ci95": [
+      -0.006224425153957024,
+      0.004610265698162229
+    ],
+    "empirical_variance_chain_means": 0.007804562646547896,
+    "mean_estimated_variance": 0.006313925025837247,
+    "estimated_to_empirical_variance_ratio": 0.8090043365376808,
+    "variance_ratio_bootstrap_ci95": [
+      0.7415542988919896,
+      0.8854693759245839
+    ],
+    "median_estimated_tau": 281.4285799357501,
+    "median_estimated_ESS": 29.10863071314158,
+    "reversibility_required_for_standard_theory": true,
+    "median_positive_pairs": 233.5
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "OBM512",
+    "replicas": 1024,
+    "covered": 790,
+    "coverage": 0.771484375,
+    "coverage_ci95": [
+      0.7445187305036205,
+      0.7968793022863534
+    ],
+    "abstentions": 0,
+    "mean": 0.6546670725702768,
+    "target": 0.6554741522981742,
+    "bias": -0.0008070797278973973,
+    "bias_ci95": [
+      -0.006224425153957024,
+      0.004610265698162229
+    ],
+    "empirical_variance_chain_means": 0.007804562646547896,
+    "mean_estimated_variance": 0.004161339227413423,
+    "estimated_to_empirical_variance_ratio": 0.5331931353327097,
+    "variance_ratio_bootstrap_ci95": [
+      0.48540552943164017,
+      0.5852910153295602
+    ],
+    "median_estimated_tau": 220.49911578808712,
+    "median_estimated_ESS": 37.152078080518415,
+    "batch": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "Bartlett512",
+    "replicas": 1024,
+    "covered": 781,
+    "coverage": 0.7626953125,
+    "coverage_ci95": [
+      0.7354160654300798,
+      0.7884551692687288
+    ],
+    "abstentions": 0,
+    "mean": 0.6546670725702768,
+    "target": 0.6554741522981742,
+    "bias": -0.0008070797278973973,
+    "bias_ci95": [
+      -0.006224425153957024,
+      0.004610265698162229
+    ],
+    "empirical_variance_chain_means": 0.007804562646547896,
+    "mean_estimated_variance": 0.003853220642841262,
+    "estimated_to_empirical_variance_ratio": 0.4937138462903637,
+    "variance_ratio_bootstrap_ci95": [
+      0.45020228098035237,
+      0.5416054674501289
+    ],
+    "median_estimated_tau": 207.8607210704202,
+    "median_estimated_ESS": 39.41100550461849,
+    "bandwidth": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "naive_IID",
+    "replicas": 1024,
+    "covered": 497,
+    "coverage": 0.4853515625,
+    "coverage_ci95": [
+      0.45433171820784374,
+      0.5164558317863783
+    ],
+    "abstentions": 0,
+    "mean": 0.6562279373033735,
+    "target": 0.655474152298174,
+    "bias": 0.0007537850051995143,
+    "bias_ci95": [
+      -0.0020978200784610955,
+      0.003605390088860124
+    ],
+    "empirical_variance_chain_means": 0.0021624908313870764,
+    "mean_estimated_variance": 0.0002260059663303048,
+    "estimated_to_empirical_variance_ratio": 0.10451187262853681,
+    "variance_ratio_bootstrap_ci95": [
+      0.09627575073935572,
+      0.11366103699453578
+    ],
+    "median_estimated_tau": 1.0,
+    "median_estimated_ESS": 8192.0
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM32",
+    "replicas": 1024,
+    "covered": 915,
+    "coverage": 0.8935546875,
+    "coverage_ci95": [
+      0.873032779955955,
+      0.9117799636278313
+    ],
+    "abstentions": 0,
+    "mean": 0.6562279373033735,
+    "target": 0.655474152298174,
+    "bias": 0.0007537850051995143,
+    "bias_ci95": [
+      -0.0020978200784610955,
+      0.003605390088860124
+    ],
+    "empirical_variance_chain_means": 0.0021624908313870764,
+    "mean_estimated_variance": 0.0014913928462560013,
+    "estimated_to_empirical_variance_ratio": 0.6896643558481051,
+    "variance_ratio_bootstrap_ci95": [
+      0.6348364529521394,
+      0.7495745166816689
+    ],
+    "median_estimated_tau": 6.553950857230439,
+    "median_estimated_ESS": 1249.9330829024082,
+    "batches": 256,
+    "batch": 32
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM128",
+    "replicas": 1024,
+    "covered": 957,
+    "coverage": 0.9345703125,
+    "coverage_ci95": [
+      0.9176479942167196,
+      0.9489366411892627
+    ],
+    "abstentions": 0,
+    "mean": 0.6562279373033735,
+    "target": 0.655474152298174,
+    "bias": 0.0007537850051995143,
+    "bias_ci95": [
+      -0.0020978200784610955,
+      0.003605390088860124
+    ],
+    "empirical_variance_chain_means": 0.0021624908313870764,
+    "mean_estimated_variance": 0.001980180737268604,
+    "estimated_to_empirical_variance_ratio": 0.9156943967242007,
+    "variance_ratio_bootstrap_ci95": [
+      0.8430782296931293,
+      0.9962891404868691
+    ],
+    "median_estimated_tau": 8.652837758847996,
+    "median_estimated_ESS": 946.741432543675,
+    "batches": 64,
+    "batch": 128
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM512",
+    "replicas": 1024,
+    "covered": 975,
+    "coverage": 0.9521484375,
+    "coverage_ci95": [
+      0.9372283270872118,
+      0.9643926779885551
+    ],
+    "abstentions": 0,
+    "mean": 0.6562279373033735,
+    "target": 0.655474152298174,
+    "bias": 0.0007537850051995143,
+    "bias_ci95": [
+      -0.0020978200784610955,
+      0.003605390088860124
+    ],
+    "empirical_variance_chain_means": 0.0021624908313870764,
+    "mean_estimated_variance": 0.0021710769965449647,
+    "estimated_to_empirical_variance_ratio": 1.0039704978320676,
+    "variance_ratio_bootstrap_ci95": [
+      0.9217694621047758,
+      1.0939786705187602
+    ],
+    "median_estimated_tau": 9.089401829663085,
+    "median_estimated_ESS": 901.269490159749,
+    "batches": 16,
+    "batch": 512
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM1024",
+    "replicas": 1024,
+    "covered": 980,
+    "coverage": 0.95703125,
+    "coverage_ci95": [
+      0.9427431961566021,
+      0.9686081666741218
+    ],
+    "abstentions": 0,
+    "mean": 0.6562279373033735,
+    "target": 0.655474152298174,
+    "bias": 0.0007537850051995143,
+    "bias_ci95": [
+      -0.0020978200784610955,
+      0.003605390088860124
+    ],
+    "empirical_variance_chain_means": 0.0021624908313870764,
+    "mean_estimated_variance": 0.0022267295082869947,
+    "estimated_to_empirical_variance_ratio": 1.029705872490897,
+    "variance_ratio_bootstrap_ci95": [
+      0.9450283727454961,
+      1.1275503794616246
+    ],
+    "median_estimated_tau": 9.001183102062349,
+    "median_estimated_ESS": 910.1027618075337,
+    "batches": 8,
+    "batch": 1024
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "Geyer_IMS_sensitivity",
+    "replicas": 1024,
+    "covered": 954,
+    "coverage": 0.931640625,
+    "coverage_ci95": [
+      0.9144181880022219,
+      0.9463263125863369
+    ],
+    "abstentions": 0,
+    "mean": 0.6562279373033735,
+    "target": 0.655474152298174,
+    "bias": 0.0007537850051995143,
+    "bias_ci95": [
+      -0.0020978200784610955,
+      0.003605390088860124
+    ],
+    "empirical_variance_chain_means": 0.0021624908313870764,
+    "mean_estimated_variance": 0.0020242359661409286,
+    "estimated_to_empirical_variance_ratio": 0.9360668432719007,
+    "variance_ratio_bootstrap_ci95": [
+      0.8612901239681381,
+      1.017211693030766
+    ],
+    "median_estimated_tau": 8.687812181537538,
+    "median_estimated_ESS": 942.9304616267264,
+    "reversibility_required_for_standard_theory": true,
+    "median_positive_pairs": 23.0
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "OBM512",
+    "replicas": 1024,
+    "covered": 956,
+    "coverage": 0.93359375,
+    "coverage_ci95": [
+      0.9165704691028043,
+      0.9480674727720988
+    ],
+    "abstentions": 0,
+    "mean": 0.6562279373033735,
+    "target": 0.655474152298174,
+    "bias": 0.0007537850051995143,
+    "bias_ci95": [
+      -0.0020978200784610955,
+      0.003605390088860124
+    ],
+    "empirical_variance_chain_means": 0.0021624908313870764,
+    "mean_estimated_variance": 0.002157100202746397,
+    "estimated_to_empirical_variance_ratio": 0.9975072131810049,
+    "variance_ratio_bootstrap_ci95": [
+      0.9161289727082288,
+      1.0877847057560648
+    ],
+    "median_estimated_tau": 9.003707563611322,
+    "median_estimated_ESS": 909.8474092998316,
+    "batch": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "Bartlett512",
+    "replicas": 1024,
+    "covered": 947,
+    "coverage": 0.9248046875,
+    "coverage_ci95": [
+      0.906912468329201,
+      0.9402044795106571
+    ],
+    "abstentions": 0,
+    "mean": 0.6562279373033735,
+    "target": 0.655474152298174,
+    "bias": 0.0007537850051995143,
+    "bias_ci95": [
+      -0.0020978200784610955,
+      0.003605390088860124
+    ],
+    "empirical_variance_chain_means": 0.0021624908313870764,
+    "mean_estimated_variance": 0.0020217737871364334,
+    "estimated_to_empirical_variance_ratio": 0.9349282585580335,
+    "variance_ratio_bootstrap_ci95": [
+      0.8584814147742627,
+      1.0194705848957717
+    ],
+    "median_estimated_tau": 8.541314160883111,
+    "median_estimated_ESS": 959.1029983706298,
+    "bandwidth": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "naive_IID",
+    "replicas": 1024,
+    "covered": 685,
+    "coverage": 0.6689453125,
+    "coverage_ci95": [
+      0.6391793665273127,
+      0.6977363298556429
+    ],
+    "abstentions": 0,
+    "mean": 0.6555408569716544,
+    "target": 0.6554741522981742,
+    "bias": 6.670467348024456e-05,
+    "bias_ci95": [
+      -0.00043461627212150206,
+      0.0005680256190819912
+    ],
+    "empirical_variance_chain_means": 6.683550203433734e-05,
+    "mean_estimated_variance": 1.643413913710015e-05,
+    "estimated_to_empirical_variance_ratio": 0.2458893647369771,
+    "variance_ratio_bootstrap_ci95": [
+      0.2257616983499344,
+      0.2691050433148886
+    ],
+    "median_estimated_tau": 1.0,
+    "median_estimated_ESS": 8192.0
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM32",
+    "replicas": 1024,
+    "covered": 886,
+    "coverage": 0.865234375,
+    "coverage_ci95": [
+      0.8427798466279717,
+      0.8855641707353284
+    ],
+    "abstentions": 0,
+    "mean": 0.6555408569716544,
+    "target": 0.6554741522981742,
+    "bias": 6.670467348024456e-05,
+    "bias_ci95": [
+      -0.00043461627212150206,
+      0.0005680256190819912
+    ],
+    "empirical_variance_chain_means": 6.683550203433734e-05,
+    "mean_estimated_variance": 3.870598853495603e-05,
+    "estimated_to_empirical_variance_ratio": 0.5791231808967408,
+    "variance_ratio_bootstrap_ci95": [
+      0.5319642570334142,
+      0.6325189556697014
+    ],
+    "median_estimated_tau": 2.314724144759562,
+    "median_estimated_ESS": 3539.083313066899,
+    "batches": 256,
+    "batch": 32
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM128",
+    "replicas": 1024,
+    "covered": 951,
+    "coverage": 0.9287109375,
+    "coverage_ci95": [
+      0.9111964215868434,
+      0.9437077906538147
+    ],
+    "abstentions": 0,
+    "mean": 0.6555408569716544,
+    "target": 0.6554741522981742,
+    "bias": 6.670467348024456e-05,
+    "bias_ci95": [
+      -0.00043461627212150206,
+      0.0005680256190819912
+    ],
+    "empirical_variance_chain_means": 6.683550203433734e-05,
+    "mean_estimated_variance": 5.632996422707716e-05,
+    "estimated_to_empirical_variance_ratio": 0.8428150086781294,
+    "variance_ratio_bootstrap_ci95": [
+      0.7731058989710682,
+      0.9214583364342288
+    ],
+    "median_estimated_tau": 3.290254924689176,
+    "median_estimated_ESS": 2489.77681274143,
+    "batches": 64,
+    "batch": 128
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM512",
+    "replicas": 1024,
+    "covered": 964,
+    "coverage": 0.94140625,
+    "coverage_ci95": [
+      0.9252183906681828,
+      0.954992526079022
+    ],
+    "abstentions": 0,
+    "mean": 0.6555408569716544,
+    "target": 0.6554741522981742,
+    "bias": 6.670467348024456e-05,
+    "bias_ci95": [
+      -0.00043461627212150206,
+      0.0005680256190819912
+    ],
+    "empirical_variance_chain_means": 6.683550203433734e-05,
+    "mean_estimated_variance": 6.309814458249776e-05,
+    "estimated_to_empirical_variance_ratio": 0.9440812541526287,
+    "variance_ratio_bootstrap_ci95": [
+      0.865367741593758,
+      1.0358858076643502
+    ],
+    "median_estimated_tau": 3.588741504215128,
+    "median_estimated_ESS": 2282.6943644843,
+    "batches": 16,
+    "batch": 512
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM1024",
+    "replicas": 1024,
+    "covered": 964,
+    "coverage": 0.94140625,
+    "coverage_ci95": [
+      0.9252183906681828,
+      0.954992526079022
+    ],
+    "abstentions": 0,
+    "mean": 0.6555408569716544,
+    "target": 0.6554741522981742,
+    "bias": 6.670467348024456e-05,
+    "bias_ci95": [
+      -0.00043461627212150206,
+      0.0005680256190819912
+    ],
+    "empirical_variance_chain_means": 6.683550203433734e-05,
+    "mean_estimated_variance": 6.429804705241277e-05,
+    "estimated_to_empirical_variance_ratio": 0.9620343245028529,
+    "variance_ratio_bootstrap_ci95": [
+      0.8783550858250484,
+      1.0601656388514475
+    ],
+    "median_estimated_tau": 3.424392131194532,
+    "median_estimated_ESS": 2392.255705219042,
+    "batches": 8,
+    "batch": 1024
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "Geyer_IMS_sensitivity",
+    "replicas": 1024,
+    "covered": 931,
+    "coverage": 0.9091796875,
+    "coverage_ci95": [
+      0.8898942476313914,
+      0.9260717112114175
+    ],
+    "abstentions": 0,
+    "mean": 0.6555408569716544,
+    "target": 0.6554741522981742,
+    "bias": 6.670467348024456e-05,
+    "bias_ci95": [
+      -0.00043461627212150206,
+      0.0005680256190819912
+    ],
+    "empirical_variance_chain_means": 6.683550203433734e-05,
+    "mean_estimated_variance": 5.2786927957662404e-05,
+    "estimated_to_empirical_variance_ratio": 0.7898037173498397,
+    "variance_ratio_bootstrap_ci95": [
+      0.7253245339852668,
+      0.8621969107656948
+    ],
+    "median_estimated_tau": 3.05636410510876,
+    "median_estimated_ESS": 2680.309399308071,
+    "reversibility_required_for_standard_theory": true,
+    "median_positive_pairs": 23.0
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "OBM512",
+    "replicas": 1024,
+    "covered": 937,
+    "coverage": 0.9150390625,
+    "coverage_ci95": [
+      0.8962556844187854,
+      0.9313922095009012
+    ],
+    "abstentions": 0,
+    "mean": 0.6555408569716544,
+    "target": 0.6554741522981742,
+    "bias": 6.670467348024456e-05,
+    "bias_ci95": [
+      -0.00043461627212150206,
+      0.0005680256190819912
+    ],
+    "empirical_variance_chain_means": 6.683550203433734e-05,
+    "mean_estimated_variance": 6.270490771875812e-05,
+    "estimated_to_empirical_variance_ratio": 0.938197601725845,
+    "variance_ratio_bootstrap_ci95": [
+      0.8603566772165686,
+      1.0283362872914672
+    ],
+    "median_estimated_tau": 3.511349227724847,
+    "median_estimated_ESS": 2333.0067704937765,
+    "batch": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "Bartlett512",
+    "replicas": 1024,
+    "covered": 937,
+    "coverage": 0.9150390625,
+    "coverage_ci95": [
+      0.8962556844187854,
+      0.9313922095009012
+    ],
+    "abstentions": 0,
+    "mean": 0.6555408569716544,
+    "target": 0.6554741522981742,
+    "bias": 6.670467348024456e-05,
+    "bias_ci95": [
+      -0.00043461627212150206,
+      0.0005680256190819912
+    ],
+    "empirical_variance_chain_means": 6.683550203433734e-05,
+    "mean_estimated_variance": 5.881910477669735e-05,
+    "estimated_to_empirical_variance_ratio": 0.8800577984209426,
+    "variance_ratio_bootstrap_ci95": [
+      0.8068093439935181,
+      0.9655365798780604
+    ],
+    "median_estimated_tau": 3.325832849316564,
+    "median_estimated_ESS": 2463.142462973847,
+    "bandwidth": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "naive_IID",
+    "replicas": 1024,
+    "covered": 988,
+    "coverage": 0.96484375,
+    "coverage_ci95": [
+      0.9516591211320553,
+      0.9752578620290685
+    ],
+    "abstentions": 0,
+    "mean": 0.6551439557929101,
+    "target": 0.655474152298174,
+    "bias": -0.0003301965052638911,
+    "bias_ci95": [
+      -0.001214060372367574,
+      0.0005536673618397917
+    ],
+    "empirical_variance_chain_means": 0.00020775250752794487,
+    "mean_estimated_variance": 0.0002264100352572935,
+    "estimated_to_empirical_variance_ratio": 1.089806510406807,
+    "variance_ratio_bootstrap_ci95": [
+      0.9981490173569576,
+      1.1936424209131076
+    ],
+    "median_estimated_tau": 1.0,
+    "median_estimated_ESS": 8192.0
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM32",
+    "replicas": 1024,
+    "covered": 988,
+    "coverage": 0.96484375,
+    "coverage_ci95": [
+      0.9516591211320553,
+      0.9752578620290685
+    ],
+    "abstentions": 0,
+    "mean": 0.6551439557929101,
+    "target": 0.655474152298174,
+    "bias": -0.0003301965052638911,
+    "bias_ci95": [
+      -0.001214060372367574,
+      0.0005536673618397917
+    ],
+    "empirical_variance_chain_means": 0.00020775250752794487,
+    "mean_estimated_variance": 0.0002253696295832582,
+    "estimated_to_empirical_variance_ratio": 1.0847986013018094,
+    "variance_ratio_bootstrap_ci95": [
+      0.9932942191989153,
+      1.188012798734722
+    ],
+    "median_estimated_tau": 0.9958092602798838,
+    "median_estimated_ESS": 8226.4750187728,
+    "batches": 256,
+    "batch": 32
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM128",
+    "replicas": 1024,
+    "covered": 987,
+    "coverage": 0.9638671875,
+    "coverage_ci95": [
+      0.9505375380996797,
+      0.9744339923659319
+    ],
+    "abstentions": 0,
+    "mean": 0.6551439557929101,
+    "target": 0.655474152298174,
+    "bias": -0.0003301965052638911,
+    "bias_ci95": [
+      -0.001214060372367574,
+      0.0005536673618397917
+    ],
+    "empirical_variance_chain_means": 0.00020775250752794487,
+    "mean_estimated_variance": 0.00022507718317115415,
+    "estimated_to_empirical_variance_ratio": 1.083390933998132,
+    "variance_ratio_bootstrap_ci95": [
+      0.9923857991677251,
+      1.189853831661535
+    ],
+    "median_estimated_tau": 0.9829095115045012,
+    "median_estimated_ESS": 8334.439884686719,
+    "batches": 64,
+    "batch": 128
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM512",
+    "replicas": 1024,
+    "covered": 984,
+    "coverage": 0.9609375,
+    "coverage_ci95": [
+      0.94718552575106,
+      0.9719491834866174
+    ],
+    "abstentions": 0,
+    "mean": 0.6551439557929101,
+    "target": 0.655474152298174,
+    "bias": -0.0003301965052638911,
+    "bias_ci95": [
+      -0.001214060372367574,
+      0.0005536673618397917
+    ],
+    "empirical_variance_chain_means": 0.00020775250752794487,
+    "mean_estimated_variance": 0.00022264096811244383,
+    "estimated_to_empirical_variance_ratio": 1.0716644085872047,
+    "variance_ratio_bootstrap_ci95": [
+      0.9799162636415971,
+      1.1825405712466939
+    ],
+    "median_estimated_tau": 0.9464021817616572,
+    "median_estimated_ESS": 8655.939481382431,
+    "batches": 16,
+    "batch": 512
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "BM1024",
+    "replicas": 1024,
+    "covered": 980,
+    "coverage": 0.95703125,
+    "coverage_ci95": [
+      0.9427431961566021,
+      0.9686081666741218
+    ],
+    "abstentions": 0,
+    "mean": 0.6551439557929101,
+    "target": 0.655474152298174,
+    "bias": -0.0003301965052638911,
+    "bias_ci95": [
+      -0.001214060372367574,
+      0.0005536673618397917
+    ],
+    "empirical_variance_chain_means": 0.00020775250752794487,
+    "mean_estimated_variance": 0.00022066649804027726,
+    "estimated_to_empirical_variance_ratio": 1.0621604555631914,
+    "variance_ratio_bootstrap_ci95": [
+      0.9655934036600371,
+      1.1771817651024803
+    ],
+    "median_estimated_tau": 0.8883346855033798,
+    "median_estimated_ESS": 9221.749862290828,
+    "batches": 8,
+    "batch": 1024
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "Geyer_IMS_sensitivity",
+    "replicas": 1024,
+    "covered": 991,
+    "coverage": 0.9677734375,
+    "coverage_ci95": [
+      0.9550378132123148,
+      0.9777149869315892
+    ],
+    "abstentions": 0,
+    "mean": 0.6551439557929101,
+    "target": 0.655474152298174,
+    "bias": -0.0003301965052638911,
+    "bias_ci95": [
+      -0.001214060372367574,
+      0.0005536673618397917
+    ],
+    "empirical_variance_chain_means": 0.00020775250752794487,
+    "mean_estimated_variance": 0.00023022510143282514,
+    "estimated_to_empirical_variance_ratio": 1.1081700248641162,
+    "variance_ratio_bootstrap_ci95": [
+      1.0135755296423163,
+      1.2130082010740397
+    ],
+    "median_estimated_tau": 1.0119259184527394,
+    "median_estimated_ESS": 8095.454279465435,
+    "reversibility_required_for_standard_theory": true,
+    "median_positive_pairs": 1.0
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "OBM512",
+    "replicas": 1024,
+    "covered": 971,
+    "coverage": 0.9482421875,
+    "coverage_ci95": [
+      0.9328431194695355,
+      0.9609928512496367
+    ],
+    "abstentions": 0,
+    "mean": 0.6551439557929101,
+    "target": 0.655474152298174,
+    "bias": -0.0003301965052638911,
+    "bias_ci95": [
+      -0.001214060372367574,
+      0.0005536673618397917
+    ],
+    "empirical_variance_chain_means": 0.00020775250752794487,
+    "mean_estimated_variance": 0.00022025231581737715,
+    "estimated_to_empirical_variance_ratio": 1.0601668227169336,
+    "variance_ratio_bootstrap_ci95": [
+      0.9693463641578709,
+      1.164176444450914
+    ],
+    "median_estimated_tau": 0.9409752336784248,
+    "median_estimated_ESS": 8705.861451398243,
+    "batch": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "TD",
+    "method": "Bartlett512",
+    "replicas": 1024,
+    "covered": 966,
+    "coverage": 0.943359375,
+    "coverage_ci95": [
+      0.9273909472502245,
+      0.9567129830287484
+    ],
+    "abstentions": 0,
+    "mean": 0.6551439557929101,
+    "target": 0.655474152298174,
+    "bias": -0.0003301965052638911,
+    "bias_ci95": [
+      -0.001214060372367574,
+      0.0005536673618397917
+    ],
+    "empirical_variance_chain_means": 0.00020775250752794487,
+    "mean_estimated_variance": 0.00020755295924499426,
+    "estimated_to_empirical_variance_ratio": 0.9990394903757117,
+    "variance_ratio_bootstrap_ci95": [
+      0.9121535986680105,
+      1.0970035261931839
+    ],
+    "median_estimated_tau": 0.8903848818035316,
+    "median_estimated_ESS": 9200.515839500911,
+    "bandwidth": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "naive_IID",
+    "replicas": 1024,
+    "covered": 961,
+    "coverage": 0.9384765625,
+    "coverage_ci95": [
+      0.9219677805156263,
+      0.9524034321302178
+    ],
+    "abstentions": 0,
+    "mean": 0.6554586091267911,
+    "target": 0.6554741522981742,
+    "bias": -1.5543171383081145e-05,
+    "bias_ci95": [
+      -0.0002718870020175195,
+      0.00024080065925135722
+    ],
+    "empirical_variance_chain_means": 1.747516374869391e-05,
+    "mean_estimated_variance": 1.6446833759758928e-05,
+    "estimated_to_empirical_variance_ratio": 0.94115477235446,
+    "variance_ratio_bootstrap_ci95": [
+      0.8685012372423937,
+      1.0315594334489095
+    ],
+    "median_estimated_tau": 1.0,
+    "median_estimated_ESS": 8192.0
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM32",
+    "replicas": 1024,
+    "covered": 965,
+    "coverage": 0.9423828125,
+    "coverage_ci95": [
+      0.9263041036087585,
+      0.9558533328308063
+    ],
+    "abstentions": 0,
+    "mean": 0.6554586091267911,
+    "target": 0.6554741522981742,
+    "bias": -1.5543171383081145e-05,
+    "bias_ci95": [
+      -0.0002718870020175195,
+      0.00024080065925135722
+    ],
+    "empirical_variance_chain_means": 1.747516374869391e-05,
+    "mean_estimated_variance": 1.6507190374730794e-05,
+    "estimated_to_empirical_variance_ratio": 0.94460862353662,
+    "variance_ratio_bootstrap_ci95": [
+      0.8718096274919791,
+      1.0355563932301097
+    ],
+    "median_estimated_tau": 0.9996575851512834,
+    "median_estimated_ESS": 8194.806023858291,
+    "batches": 256,
+    "batch": 32
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM128",
+    "replicas": 1024,
+    "covered": 969,
+    "coverage": 0.9462890625,
+    "coverage_ci95": [
+      0.9306585400154328,
+      0.9592847053237007
+    ],
+    "abstentions": 0,
+    "mean": 0.6554586091267911,
+    "target": 0.6554741522981742,
+    "bias": -1.5543171383081145e-05,
+    "bias_ci95": [
+      -0.0002718870020175195,
+      0.00024080065925135722
+    ],
+    "empirical_variance_chain_means": 1.747516374869391e-05,
+    "mean_estimated_variance": 1.6481155086524003e-05,
+    "estimated_to_empirical_variance_ratio": 0.9431187783722943,
+    "variance_ratio_bootstrap_ci95": [
+      0.8706014521439865,
+      1.0339735400705232
+    ],
+    "median_estimated_tau": 0.9866071602177298,
+    "median_estimated_ESS": 8303.204254233762,
+    "batches": 64,
+    "batch": 128
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM512",
+    "replicas": 1024,
+    "covered": 969,
+    "coverage": 0.9462890625,
+    "coverage_ci95": [
+      0.9306585400154328,
+      0.9592847053237007
+    ],
+    "abstentions": 0,
+    "mean": 0.6554586091267911,
+    "target": 0.6554741522981742,
+    "bias": -1.5543171383081145e-05,
+    "bias_ci95": [
+      -0.0002718870020175195,
+      0.00024080065925135722
+    ],
+    "empirical_variance_chain_means": 1.747516374869391e-05,
+    "mean_estimated_variance": 1.644325370631795e-05,
+    "estimated_to_empirical_variance_ratio": 0.9409499071244419,
+    "variance_ratio_bootstrap_ci95": [
+      0.8649018091147448,
+      1.0334232440081057
+    ],
+    "median_estimated_tau": 0.958806090399517,
+    "median_estimated_ESS": 8543.965019636882,
+    "batches": 16,
+    "batch": 512
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "BM1024",
+    "replicas": 1024,
+    "covered": 963,
+    "coverage": 0.9404296875,
+    "coverage_ci95": [
+      0.9241337823600929,
+      0.954130589879593
+    ],
+    "abstentions": 0,
+    "mean": 0.6554586091267911,
+    "target": 0.6554741522981742,
+    "bias": -1.5543171383081145e-05,
+    "bias_ci95": [
+      -0.0002718870020175195,
+      0.00024080065925135722
+    ],
+    "empirical_variance_chain_means": 1.747516374869391e-05,
+    "mean_estimated_variance": 1.649892903329405e-05,
+    "estimated_to_empirical_variance_ratio": 0.9441358759529322,
+    "variance_ratio_bootstrap_ci95": [
+      0.8645463028532477,
+      1.0392130828171808
+    ],
+    "median_estimated_tau": 0.9046221313524624,
+    "median_estimated_ESS": 9055.714774601482,
+    "batches": 8,
+    "batch": 1024
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "Geyer_IMS_sensitivity",
+    "replicas": 1024,
+    "covered": 961,
+    "coverage": 0.9384765625,
+    "coverage_ci95": [
+      0.9219677805156263,
+      0.9524034321302178
+    ],
+    "abstentions": 0,
+    "mean": 0.6554586091267911,
+    "target": 0.6554741522981742,
+    "bias": -1.5543171383081145e-05,
+    "bias_ci95": [
+      -0.0002718870020175195,
+      0.00024080065925135722
+    ],
+    "empirical_variance_chain_means": 1.747516374869391e-05,
+    "mean_estimated_variance": 1.6750888237324364e-05,
+    "estimated_to_empirical_variance_ratio": 0.958554007173542,
+    "variance_ratio_bootstrap_ci95": [
+      0.8847104956959193,
+      1.051199743332139
+    ],
+    "median_estimated_tau": 1.0133680121298425,
+    "median_estimated_ESS": 8083.933875055249,
+    "reversibility_required_for_standard_theory": true,
+    "median_positive_pairs": 2.0
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "OBM512",
+    "replicas": 1024,
+    "covered": 958,
+    "coverage": 0.935546875,
+    "coverage_ci95": [
+      0.9187264676767314,
+      0.9498048422994035
+    ],
+    "abstentions": 0,
+    "mean": 0.6554586091267911,
+    "target": 0.6554741522981742,
+    "bias": -1.5543171383081145e-05,
+    "bias_ci95": [
+      -0.0002718870020175195,
+      0.00024080065925135722
+    ],
+    "empirical_variance_chain_means": 1.747516374869391e-05,
+    "mean_estimated_variance": 1.653520034559473e-05,
+    "estimated_to_empirical_variance_ratio": 0.9462114680802671,
+    "variance_ratio_bootstrap_ci95": [
+      0.871584206225065,
+      1.0383570432897797
+    ],
+    "median_estimated_tau": 0.9629945282178363,
+    "median_estimated_ESS": 8506.798299582642,
+    "batch": 512,
+    "interval": "asymptotic normal"
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "burn": 0,
+    "retained": 8192,
+    "observable": "CV",
+    "method": "Bartlett512",
+    "replicas": 1024,
+    "covered": 947,
+    "coverage": 0.9248046875,
+    "coverage_ci95": [
+      0.906912468329201,
+      0.9402044795106571
+    ],
+    "abstentions": 0,
+    "mean": 0.6554586091267911,
+    "target": 0.6554741522981742,
+    "bias": -1.5543171383081145e-05,
+    "bias_ci95": [
+      -0.0002718870020175195,
+      0.00024080065925135722
+    ],
+    "empirical_variance_chain_means": 1.747516374869391e-05,
+    "mean_estimated_variance": 1.5493512221515775e-05,
+    "estimated_to_empirical_variance_ratio": 0.8866018335692996,
+    "variance_ratio_bootstrap_ci95": [
+      0.8158185561611636,
+      0.9725634137150659
+    ],
+    "median_estimated_tau": 0.9044152138713988,
+    "median_estimated_ESS": 9057.786611950432,
+    "bandwidth": 512,
+    "interval": "asymptotic normal"
+  }
+]

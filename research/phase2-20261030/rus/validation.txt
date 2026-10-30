@@ -1,0 +1,10 @@
+test_binomial_probability_at_one_half_matches_integer_count (test_counterexample.CounterexampleChecks.test_binomial_probability_at_one_half_matches_integer_count) ... ok
+test_complementary_bernoulli_laws_have_same_two_sided_failure (test_counterexample.CounterexampleChecks.test_complementary_bernoulli_laws_have_same_two_sided_failure) ... ok
+test_failures_at_the_known_boundaries (test_counterexample.CounterexampleChecks.test_failures_at_the_known_boundaries) ... ok
+test_finite_horizon_probabilities_separate_the_two_laws (test_counterexample.CounterexampleChecks.test_finite_horizon_probabilities_separate_the_two_laws) ... ok
+test_seed_rule_is_unique_for_the_executed_replicas (test_counterexample.CounterexampleChecks.test_seed_rule_is_unique_for_the_executed_replicas) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.003s
+
+OK

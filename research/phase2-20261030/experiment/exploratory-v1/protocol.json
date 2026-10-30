@@ -1,0 +1,177 @@
+{
+  "classification": "exploratory; no final holdout used",
+  "timestamp_utc": "2026-10-30T14:15:56.191296+00:00",
+  "configs": [
+    {
+      "id": "local_stationary_d04",
+      "initial": "stationary",
+      "steps": 32768,
+      "replicas": 128,
+      "delta": 0.4
+    },
+    {
+      "id": "local_uniform_d04",
+      "initial": "uniform",
+      "steps": 12288,
+      "replicas": 128,
+      "delta": 0.4
+    },
+    {
+      "id": "local_zero_d04",
+      "initial": "zero",
+      "steps": 12288,
+      "replicas": 128,
+      "delta": 0.4
+    },
+    {
+      "id": "local_displaced_d04",
+      "initial": "displaced",
+      "steps": 12288,
+      "replicas": 128,
+      "delta": 0.4
+    },
+    {
+      "id": "local_stationary_d015",
+      "initial": "stationary",
+      "steps": 8192,
+      "replicas": 128,
+      "delta": 0.15
+    },
+    {
+      "id": "local_stationary_d10",
+      "initial": "stationary",
+      "steps": 8192,
+      "replicas": 128,
+      "delta": 1.0
+    },
+    {
+      "id": "centroid_refresh",
+      "initial": "stationary",
+      "steps": 8192,
+      "replicas": 128,
+      "delta": 0.4,
+      "refresh": true
+    },
+    {
+      "id": "reversible_scan",
+      "initial": "stationary",
+      "steps": 8192,
+      "replicas": 128,
+      "delta": 0.4,
+      "reverse_mix": true
+    },
+    {
+      "id": "iid_gaussian",
+      "initial": "stationary",
+      "steps": 8192,
+      "replicas": 128,
+      "iid": true
+    }
+  ],
+  "windows": {
+    "local_stationary_d04": [
+      [
+        "n2048",
+        0,
+        2048
+      ],
+      [
+        "n8192",
+        0,
+        8192
+      ],
+      [
+        "n32768",
+        0,
+        32768
+      ]
+    ],
+    "local_uniform_d04": [
+      [
+        "burn0_n8192",
+        0,
+        8192
+      ],
+      [
+        "burn1024_n8192",
+        1024,
+        8192
+      ],
+      [
+        "burn4096_n8192",
+        4096,
+        8192
+      ]
+    ],
+    "local_zero_d04": [
+      [
+        "burn0_n8192",
+        0,
+        8192
+      ],
+      [
+        "burn1024_n8192",
+        1024,
+        8192
+      ],
+      [
+        "burn4096_n8192",
+        4096,
+        8192
+      ]
+    ],
+    "local_displaced_d04": [
+      [
+        "burn0_n8192",
+        0,
+        8192
+      ],
+      [
+        "burn1024_n8192",
+        1024,
+        8192
+      ],
+      [
+        "burn4096_n8192",
+        4096,
+        8192
+      ]
+    ],
+    "local_stationary_d015": [
+      [
+        "n8192",
+        0,
+        8192
+      ]
+    ],
+    "local_stationary_d10": [
+      [
+        "n8192",
+        0,
+        8192
+      ]
+    ],
+    "centroid_refresh": [
+      [
+        "n8192",
+        0,
+        8192
+      ]
+    ],
+    "reversible_scan": [
+      [
+        "n8192",
+        0,
+        8192
+      ]
+    ],
+    "iid_gaussian": [
+      [
+        "n8192",
+        0,
+        8192
+      ]
+    ]
+  },
+  "budget": "128 replicas; <1GiB traces expected; single-process CPU; BLAS threads1"
+}

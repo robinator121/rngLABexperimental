@@ -1,0 +1,44 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.1.1, pluggy-1.7.0 -- LOCAL_WORKSPACE/work/phase2-env/venv/bin/python
+cachedir: .pytest_cache
+rootdir: LOCAL_WORKSPACE/outputs/phase2-20261030
+collecting ... collected 35 items
+
+experiment/test_study.py::test_finite_reference_via_precision_spectrum_and_logdet_derivative PASSED [  2%]
+experiment/test_study.py::test_action_difference_matches_full_gaussian_log_density PASSED [  5%]
+experiment/test_study.py::test_compiled_kernel_matches_separately_written_numpy_kernel[False-False] PASSED [  8%]
+experiment/test_study.py::test_compiled_kernel_matches_separately_written_numpy_kernel[True-False] PASSED [ 11%]
+experiment/test_study.py::test_compiled_kernel_matches_separately_written_numpy_kernel[False-True] PASSED [ 14%]
+experiment/test_study.py::test_energy_estimators_match_upstream_and_exact_gaussian_moments PASSED [ 17%]
+experiment/test_study.py::test_batch_variance_on_stationary_AR1_matches_exact_finite_sample_expectation PASSED [ 20%]
+experiment/test_study.py::test_batch_abstention_and_t_critical_match_declared_method PASSED [ 22%]
+experiment/test_study.py::test_centroid_refresh_preserves_shape_action_and_target_factorization PASSED [ 25%]
+experiment/test_fault_study.py::test_rolling_windows_match_direct_slices_and_recorded_cross_products PASSED [ 28%]
+experiment/test_fault_study.py::test_failure_requires_two_consecutive_windows_and_timestamps_second PASSED [ 31%]
+experiment/test_fault_study.py::test_failure_tolerance_is_strict_and_one_window_cannot_confirm PASSED [ 34%]
+experiment/test_fault_study.py::test_first_hit_strict_threshold_censoring_and_onset_endpoint_rule PASSED [ 37%]
+experiment/test_fault_study.py::test_small_fault_kernel_matches_independent_whole_action_implementation[0] PASSED [ 40%]
+experiment/test_fault_study.py::test_small_fault_kernel_matches_independent_whole_action_implementation[1] PASSED [ 42%]
+experiment/test_fault_study.py::test_small_fault_kernel_matches_independent_whole_action_implementation[2] PASSED [ 45%]
+experiment/test_fault_study.py::test_small_fault_kernel_matches_independent_whole_action_implementation[3] PASSED [ 48%]
+experiment/test_fault_study.py::test_source_transformations_use_raw_pair_and_clip_at_largest_float_below_one[1] PASSED [ 51%]
+experiment/test_fault_study.py::test_source_transformations_use_raw_pair_and_clip_at_largest_float_below_one[2] PASSED [ 54%]
+experiment/test_fault_study.py::test_source_transformations_use_raw_pair_and_clip_at_largest_float_below_one[3] PASSED [ 57%]
+experiment/test_fault_study.py::test_exact_2049_sweep_onset_preserves_every_prefault_raw_and_source_record[1] PASSED [ 60%]
+experiment/test_fault_study.py::test_exact_2049_sweep_onset_preserves_every_prefault_raw_and_source_record[2] PASSED [ 62%]
+experiment/test_fault_study.py::test_exact_2049_sweep_onset_preserves_every_prefault_raw_and_source_record[3] PASSED [ 65%]
+baseline/test_independent_checker.py::IndependentCheckerChecks::test_quadrature_matches_analytic_cauchy_integral PASSED [ 68%]
+baseline/test_independent_checker.py::IndependentCheckerChecks::test_student_t_critical_matches_standard_df5_value PASSED [ 71%]
+baseline/test_independent_checker.py::IndependentCheckerChecks::test_wilson_boundary_has_exact_zero_lower_endpoint PASSED [ 74%]
+rus/test_counterexample.py::CounterexampleChecks::test_binomial_probability_at_one_half_matches_integer_count PASSED [ 77%]
+rus/test_counterexample.py::CounterexampleChecks::test_complementary_bernoulli_laws_have_same_two_sided_failure PASSED [ 80%]
+rus/test_counterexample.py::CounterexampleChecks::test_failures_at_the_known_boundaries PASSED [ 82%]
+rus/test_counterexample.py::CounterexampleChecks::test_finite_horizon_probabilities_separate_the_two_laws PASSED [ 85%]
+rus/test_counterexample.py::CounterexampleChecks::test_seed_rule_is_unique_for_the_executed_replicas PASSED [ 88%]
+analytic-dependence/test_analytic_dependence.py::test_exact_finite_n_variance_and_third_cumulant_against_dense_gaussian_form PASSED [ 91%]
+analytic-dependence/test_analytic_dependence.py::test_expected_bm_variance_against_dense_batch_covariance PASSED [ 94%]
+analytic-dependence/test_analytic_dependence.py::test_independent_mode_moments_match_dense_harmonic_covariance PASSED [ 97%]
+analytic-dependence/test_analytic_dependence.py::test_rng_roles_and_replicate_seeds_disjoint_and_generator_loop_matches_scalar PASSED [100%]
+
+- generated xml file: LOCAL_WORKSPACE/outputs/phase2-20261030/environment/pytest-phase2-consolidated.xml -
+============================== 35 passed in 7.57s ==============================

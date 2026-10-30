@@ -1,0 +1,172 @@
+[
+  {
+    "condition": "local_stationary_d04",
+    "window": "n2048",
+    "centroid_component_variance": 0.03839308068338548,
+    "shape_variance": 0.00020367336218715307,
+    "twice_covariance": -6.70337010133221e-05,
+    "sum": 0.03852972034455931,
+    "CV_empirical_variance": 0.03852972034455932,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_stationary_d04",
+    "window": "n8192",
+    "centroid_component_variance": 0.008690774008128451,
+    "shape_variance": 5.220748546115456e-05,
+    "twice_covariance": 1.189758089238445e-06,
+    "sum": 0.008744171251678843,
+    "CV_empirical_variance": 0.008744171251678845,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_stationary_d04",
+    "window": "n32768",
+    "centroid_component_variance": 0.0021677612499127674,
+    "shape_variance": 1.3420579601424662e-05,
+    "twice_covariance": -3.092001143790396e-05,
+    "sum": 0.0021502618180762882,
+    "CV_empirical_variance": 0.002150261818076287,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_uniform_d04",
+    "window": "burn0_n8192",
+    "centroid_component_variance": 0.007923236394675768,
+    "shape_variance": 4.696479025375428e-05,
+    "twice_covariance": -1.1600508627195524e-05,
+    "sum": 0.007958600676302328,
+    "CV_empirical_variance": 0.007958600676302328,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_uniform_d04",
+    "window": "burn1024_n8192",
+    "centroid_component_variance": 0.007689571512857142,
+    "shape_variance": 4.723805405464171e-05,
+    "twice_covariance": -8.213247591438416e-05,
+    "sum": 0.0076546770909974,
+    "CV_empirical_variance": 0.007654677090997402,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_uniform_d04",
+    "window": "burn4096_n8192",
+    "centroid_component_variance": 0.007666083143785855,
+    "shape_variance": 6.13956522451377e-05,
+    "twice_covariance": -6.353672579667185e-05,
+    "sum": 0.007663942070234321,
+    "CV_empirical_variance": 0.007663942070234323,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_zero_d04",
+    "window": "burn0_n8192",
+    "centroid_component_variance": 0.008330024670949345,
+    "shape_variance": 5.553951261533854e-05,
+    "twice_covariance": 4.780610095623075e-05,
+    "sum": 0.008433370284520915,
+    "CV_empirical_variance": 0.008433370284520913,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_zero_d04",
+    "window": "burn1024_n8192",
+    "centroid_component_variance": 0.00784727395566491,
+    "shape_variance": 5.640322394920516e-05,
+    "twice_covariance": 5.746694805129181e-05,
+    "sum": 0.007961144127665406,
+    "CV_empirical_variance": 0.007961144127665408,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_zero_d04",
+    "window": "burn4096_n8192",
+    "centroid_component_variance": 0.007256489928769845,
+    "shape_variance": 6.705513512790644e-05,
+    "twice_covariance": 3.550979871126271e-05,
+    "sum": 0.007359054862609014,
+    "CV_empirical_variance": 0.007359054862609014,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_displaced_d04",
+    "window": "burn0_n8192",
+    "centroid_component_variance": 0.01155701110320322,
+    "shape_variance": 6.216893229236382e-05,
+    "twice_covariance": 3.929120016808337e-05,
+    "sum": 0.011658471235663668,
+    "CV_empirical_variance": 0.011658471235663664,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_displaced_d04",
+    "window": "burn1024_n8192",
+    "centroid_component_variance": 0.007155093695609956,
+    "shape_variance": 5.816091525956824e-05,
+    "twice_covariance": -8.145328700688285e-05,
+    "sum": 0.007131801323862642,
+    "CV_empirical_variance": 0.00713180132386264,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_displaced_d04",
+    "window": "burn4096_n8192",
+    "centroid_component_variance": 0.007209785864049402,
+    "shape_variance": 5.985648798680593e-05,
+    "twice_covariance": -8.010085939034924e-06,
+    "sum": 0.0072616322660971734,
+    "CV_empirical_variance": 0.007261632266097174,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_stationary_d015",
+    "window": "n8192",
+    "centroid_component_variance": 0.04464325213188434,
+    "shape_variance": 0.0003309286304249202,
+    "twice_covariance": -0.0003760977939808217,
+    "sum": 0.044598082968328435,
+    "CV_empirical_variance": 0.04459808296832844,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "local_stationary_d10",
+    "window": "n8192",
+    "centroid_component_variance": 0.003911920632457753,
+    "shape_variance": 2.7026088903499805e-05,
+    "twice_covariance": 1.0576487183151422e-05,
+    "sum": 0.003949523208544404,
+    "CV_empirical_variance": 0.003949523208544405,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "n8192",
+    "centroid_component_variance": 1.7831172451008977e-05,
+    "shape_variance": 4.526149182084523e-05,
+    "twice_covariance": 6.343582610722068e-07,
+    "sum": 6.372702253292642e-05,
+    "CV_empirical_variance": 6.37270225329265e-05,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "reversible_scan",
+    "window": "n8192",
+    "centroid_component_variance": 0.007269134534017681,
+    "shape_variance": 4.3096803925648696e-05,
+    "twice_covariance": 8.358850474678003e-05,
+    "sum": 0.007395819842690109,
+    "CV_empirical_variance": 0.007395819842690109,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "n8192",
+    "centroid_component_variance": 1.733693407225485e-05,
+    "shape_variance": 9.57812216105245e-07,
+    "twice_covariance": -7.538483256308544e-07,
+    "sum": 1.7540897962729244e-05,
+    "CV_empirical_variance": 1.7540897962729308e-05,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  }
+]

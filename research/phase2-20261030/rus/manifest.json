@@ -1,0 +1,51 @@
+{
+  "experiment_id": "phase2-rus-identifiability-counterexample-v1",
+  "timestamp_utc": "2026-10-30T14:13:37.312665+00:00",
+  "source_git_revision": "dd96adba23b8100aba9147d71fffc63932fc6b0d",
+  "software": {
+    "python": "3.14.7 (main, Aug 10 2026, 07:46:56) [GCC 16.1.1 20260728]",
+    "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+    "dependencies": "Python standard library"
+  },
+  "parameters_file": "rus_identifiability_results.json",
+  "independent_seed_manifest": "future_seed_manifest.json",
+  "validation_status": "Executed 1024 conditional future replicates per scenario and 5 deterministic tests passed",
+  "files": {
+    "RUS_identifiability_and_protocol.md": {
+      "bytes": 7884,
+      "sha256": "cc1fea0474c3847f51b4e483e82d6d20cea2fc2b7e875c1f2abdf3b7fe84fb06"
+    },
+    "conditional_failure_cdf.svg": {
+      "bytes": 3789,
+      "sha256": "43d36db49a9a8fd82ebbca7e918f0863100923c61f1ad6a0245e58dc2f458af8"
+    },
+    "conditional_future_outcomes.csv": {
+      "bytes": 59330,
+      "sha256": "fd944437ad4ac2ea5bdff5e81db932a59cd3e3e866021a22abb1bc205b850d91"
+    },
+    "future_seed_manifest.json": {
+      "bytes": 184882,
+      "sha256": "ce3aed14443b0f81e1861919ac08ca249ed9a1e8e4e5fb8204225bdb71e8f6ab"
+    },
+    "identical_observed_prefix.csv": {
+      "bytes": 3264,
+      "sha256": "bd9117198901b6af4d3371784a6666189933c16f2d227e92d03e2d87c4fec93f"
+    },
+    "rus_identifiability.py": {
+      "bytes": 8825,
+      "sha256": "b422d7d5247062953ecb5eec858a6d4a5e8d8fdf5f5af1f8bd607670d5c3d91a"
+    },
+    "rus_identifiability_results.json": {
+      "bytes": 3182,
+      "sha256": "23d73aef77cef837f3ea23addc6e5b5da298fa00808de326b687a5567f402af0"
+    },
+    "test_counterexample.py": {
+      "bytes": 1553,
+      "sha256": "44809309995ddc210098b1f697c86df61fb6dd6c978eebe3104370a01b76c72c"
+    },
+    "validation.txt": {
+      "bytes": 882,
+      "sha256": "34b277fa262f22dd0064e6dbb1db57a3e3a82428ffa0f35671eec9fd987620e8"
+    }
+  }
+}

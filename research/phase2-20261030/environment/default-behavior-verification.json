@@ -1,0 +1,160 @@
+{
+  "baseline_commit": "dd96adba23b8100aba9147d71fffc63932fc6b0d",
+  "configuration": {
+    "beads": 4,
+    "temperature": 0.5,
+    "displacement_delta": 0.5,
+    "sweeps": 128,
+    "burn_in": 32,
+    "proposal_seed": 701,
+    "acceptance_seed": 702,
+    "initialization_seed": 703
+  },
+  "all_original_result_fields_exactly_equal": true,
+  "source_byte_counts_and_digests_exactly_equal": true,
+  "baseline_and_post_patch_result": {
+    "beads_M": 4,
+    "temperature_T": 0.5,
+    "beta": 2.0,
+    "total_sweeps": 128,
+    "burn_in": 32,
+    "acceptance_rate": 0.8105,
+    "virial_energy_mean": 0.828529,
+    "virial_energy_std": 0.457194,
+    "thermodynamic_energy_mean": 0.990092,
+    "exact_quantum_energy": 0.656518,
+    "energy_bias": 0.172011,
+    "radius_of_gyration": 0.296339,
+    "provenance_hash": "7bf770bcaf05922c8ce3055fce4d43f0d083ce1cf25971531e37e94d69b98c74",
+    "exact_finite_bead_energy": 0.6405228758169934,
+    "discretization_bias": -0.015994766932672322,
+    "virial_uncertainty": {
+      "n": 96,
+      "mean": 0.82852859012779,
+      "sample_variance": 0.209026031935948,
+      "naive_mcse": 0.046662131320084295,
+      "reference": 0.6405228758169934,
+      "reference_status": "KNOWN",
+      "stationarity_verified": false,
+      "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+      "status": "ESTIMATED",
+      "geyer": {
+        "status": "ESTIMATED",
+        "method": "FFT Geyer initial-positive then initial-monotone pairs",
+        "mcse": 0.18592395330820946,
+        "ess": 5.983868733496018,
+        "tau": 16.043132674789295,
+        "long_run_variance": 3.318500775720312,
+        "positive_pairs": 9,
+        "n": 96,
+        "interval_95": [
+          0.4641243377803928,
+          1.1929328424751873
+        ],
+        "covered": true
+      },
+      "batch_means": {
+        "32": {
+          "batch_size": 32,
+          "batches": 3,
+          "prefix_n": 96,
+          "discarded_tail": 0,
+          "mcse": null,
+          "ess": null,
+          "interval_95": null,
+          "covered": null,
+          "prefix_mean": null,
+          "status": "INSUFFICIENT_BATCHES",
+          "minimum_batches": 8
+        },
+        "128": {
+          "batch_size": 128,
+          "batches": 0,
+          "prefix_n": 0,
+          "discarded_tail": 96,
+          "mcse": null,
+          "ess": null,
+          "interval_95": null,
+          "covered": null,
+          "prefix_mean": null,
+          "status": "INSUFFICIENT_BATCHES",
+          "minimum_batches": 8
+        }
+      }
+    },
+    "thermodynamic_uncertainty": {
+      "n": 96,
+      "mean": 0.9900923402697613,
+      "sample_variance": 0.408553448339955,
+      "naive_mcse": 0.06523622526537332,
+      "reference": 0.6405228758169934,
+      "reference_status": "KNOWN",
+      "stationarity_verified": false,
+      "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+      "status": "ESTIMATED",
+      "geyer": {
+        "status": "ESTIMATED",
+        "method": "FFT Geyer initial-positive then initial-monotone pairs",
+        "mcse": 0.20474259835582273,
+        "ess": 9.644613572723369,
+        "tau": 9.953742498455776,
+        "long_run_variance": 4.024275031823399,
+        "positive_pairs": 6,
+        "n": 96,
+        "interval_95": [
+          0.588804221391199,
+          1.3913804591483236
+        ],
+        "covered": true
+      },
+      "batch_means": {
+        "32": {
+          "batch_size": 32,
+          "batches": 3,
+          "prefix_n": 96,
+          "discarded_tail": 0,
+          "mcse": null,
+          "ess": null,
+          "interval_95": null,
+          "covered": null,
+          "prefix_mean": null,
+          "status": "INSUFFICIENT_BATCHES",
+          "minimum_batches": 8
+        },
+        "128": {
+          "batch_size": 128,
+          "batches": 0,
+          "prefix_n": 0,
+          "discarded_tail": 96,
+          "mcse": null,
+          "ess": null,
+          "interval_95": null,
+          "covered": null,
+          "prefix_mean": null,
+          "status": "INSUFFICIENT_BATCHES",
+          "minimum_batches": 8
+        }
+      }
+    }
+  },
+  "source_consumption": [
+    {
+      "bytes": 4096,
+      "digest": "7bf770bcaf05922c8ce3055fce4d43f0d083ce1cf25971531e37e94d69b98c74"
+    },
+    {
+      "bytes": 2384,
+      "digest": "b55bc7afe031fbc7d699912ba22b9ee37a5a660e5a148d6ae8e753128bb1b609"
+    },
+    {
+      "bytes": 32,
+      "digest": "8fb0007973141b842d2f67d0de884cf71542508c3e02fd2dc633c75d7d8cc580"
+    }
+  ],
+  "added_metadata": {
+    "sampler_protocol": "LOCAL_METROPOLIS_V1",
+    "centroid_update": {
+      "enabled": false
+    }
+  }
+}

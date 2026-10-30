@@ -1,0 +1,7 @@
+{
+  "healthy_monitor_gates_pass": true,
+  "elapsed_seconds": 102.37836490799964,
+  "thresholds_frozen_before_test": true,
+  "no_threshold_retuning": true,
+  "comparison_scope": "same nominal5% whole-run calibration; actual healthy test rates reported; no claim of all-source diagnostic superiority"
+}

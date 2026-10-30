@@ -1,0 +1,281 @@
+[
+  {
+    "condition": "phi0p0",
+    "phi": 0.0,
+    "batch": 32,
+    "critical_t": 1.9693105698498752,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 976,
+    "actual_BM_interval_entirely_below_target_count": 29,
+    "actual_BM_interval_entirely_above_target_count": 19,
+    "correlation_estimated_variance_with_energy_mean": 0.2818871682727039,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 1.6434502522881613e-05,
+      "coverage_count": 976,
+      "replicas": 1024,
+      "coverage": 0.953125,
+      "CP95": [
+        0.9383281919605021,
+        0.9652389748101035
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 1.6434502522881613e-05,
+      "coverage_count": 976,
+      "replicas": 1024,
+      "coverage": 0.953125,
+      "CP95": [
+        0.9383281919605021,
+        0.9652389748101035
+      ]
+    }
+  },
+  {
+    "condition": "phi0p0",
+    "phi": 0.0,
+    "batch": 128,
+    "critical_t": 1.998340542520741,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 979,
+    "actual_BM_interval_entirely_below_target_count": 26,
+    "actual_BM_interval_entirely_above_target_count": 19,
+    "correlation_estimated_variance_with_energy_mean": 0.16108070471498312,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 1.6434502522881613e-05,
+      "coverage_count": 977,
+      "replicas": 1024,
+      "coverage": 0.9541015625,
+      "CP95": [
+        0.9394295648840029,
+        0.9660837208436506
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 1.6434502522881613e-05,
+      "coverage_count": 977,
+      "replicas": 1024,
+      "coverage": 0.9541015625,
+      "CP95": [
+        0.9394295648840029,
+        0.9660837208436506
+      ]
+    }
+  },
+  {
+    "condition": "phi0p0",
+    "phi": 0.0,
+    "batch": 512,
+    "critical_t": 2.131449545559776,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 980,
+    "actual_BM_interval_entirely_below_target_count": 26,
+    "actual_BM_interval_entirely_above_target_count": 18,
+    "correlation_estimated_variance_with_energy_mean": 0.08518875372670402,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 1.6434502522881613e-05,
+      "coverage_count": 990,
+      "replicas": 1024,
+      "coverage": 0.966796875,
+      "CP95": [
+        0.9539091634863788,
+        0.976898460914776
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 1.6434502522881613e-05,
+      "coverage_count": 990,
+      "replicas": 1024,
+      "coverage": 0.966796875,
+      "CP95": [
+        0.9539091634863788,
+        0.976898460914776
+      ]
+    }
+  },
+  {
+    "condition": "phi0p997",
+    "phi": 0.997,
+    "batch": 32,
+    "critical_t": 1.9693105698498752,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 438,
+    "actual_BM_interval_entirely_below_target_count": 370,
+    "actual_BM_interval_entirely_above_target_count": 216,
+    "correlation_estimated_variance_with_energy_mean": 0.8514420876872785,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 0.000441923856701265,
+      "coverage_count": 453,
+      "replicas": 1024,
+      "coverage": 0.4423828125,
+      "CP95": [
+        0.41167720952206327,
+        0.4734205294715159
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 0.004976651188666151,
+      "coverage_count": 985,
+      "replicas": 1024,
+      "coverage": 0.9619140625,
+      "CP95": [
+        0.9483008183356173,
+        0.9727795703370036
+      ]
+    }
+  },
+  {
+    "condition": "phi0p997",
+    "phi": 0.997,
+    "batch": 128,
+    "critical_t": 1.998340542520741,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 698,
+    "actual_BM_interval_entirely_below_target_count": 248,
+    "actual_BM_interval_entirely_above_target_count": 78,
+    "correlation_estimated_variance_with_energy_mean": 0.8341645700322681,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 0.0014821589562534006,
+      "coverage_count": 775,
+      "replicas": 1024,
+      "coverage": 0.7568359375,
+      "CP95": [
+        0.729356149591313,
+        0.7828305173357811
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 0.004976651188666151,
+      "coverage_count": 988,
+      "replicas": 1024,
+      "coverage": 0.96484375,
+      "CP95": [
+        0.9516591211320553,
+        0.9752578620290685
+      ]
+    }
+  },
+  {
+    "condition": "phi0p997",
+    "phi": 0.997,
+    "batch": 512,
+    "critical_t": 2.131449545559776,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 861,
+    "actual_BM_interval_entirely_below_target_count": 152,
+    "actual_BM_interval_entirely_above_target_count": 11,
+    "correlation_estimated_variance_with_energy_mean": 0.7727727999510167,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 0.0034071348827967455,
+      "coverage_count": 966,
+      "replicas": 1024,
+      "coverage": 0.943359375,
+      "CP95": [
+        0.9273909472502245,
+        0.9567129830287484
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 0.004976651188666151,
+      "coverage_count": 996,
+      "replicas": 1024,
+      "coverage": 0.97265625,
+      "CP95": [
+        0.9607218459075371,
+        0.9817550598957157
+      ]
+    }
+  },
+  {
+    "condition": "phi0p999",
+    "phi": 0.999,
+    "batch": 32,
+    "critical_t": 1.9693105698498752,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 249,
+    "actual_BM_interval_entirely_below_target_count": 482,
+    "actual_BM_interval_entirely_above_target_count": 293,
+    "correlation_estimated_variance_with_energy_mean": 0.8755518464881291,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 0.000424924573909468,
+      "coverage_count": 270,
+      "replicas": 1024,
+      "coverage": 0.263671875,
+      "CP95": [
+        0.23690713303832064,
+        0.2918023856653268
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 0.014321948249558014,
+      "coverage_count": 973,
+      "replicas": 1024,
+      "coverage": 0.9501953125,
+      "CP95": [
+        0.9350329517554763,
+        0.9626956099459409
+      ]
+    }
+  },
+  {
+    "condition": "phi0p999",
+    "phi": 0.999,
+    "batch": 128,
+    "critical_t": 1.998340542520741,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 479,
+    "actual_BM_interval_entirely_below_target_count": 386,
+    "actual_BM_interval_entirely_above_target_count": 159,
+    "correlation_estimated_variance_with_energy_mean": 0.8687971063150082,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 0.0015989157637152146,
+      "coverage_count": 542,
+      "replicas": 1024,
+      "coverage": 0.529296875,
+      "CP95": [
+        0.49818976454009156,
+        0.5602351310401792
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 0.014321948249558014,
+      "coverage_count": 977,
+      "replicas": 1024,
+      "coverage": 0.9541015625,
+      "CP95": [
+        0.9394295648840029,
+        0.9660837208436506
+      ]
+    }
+  },
+  {
+    "condition": "phi0p999",
+    "phi": 0.999,
+    "batch": 512,
+    "critical_t": 2.131449545559776,
+    "classification": "post-hoc deterministic diagnostic on saved trajectories; not a newly held-out comparison",
+    "actual_BM_coverage_count": 723,
+    "actual_BM_interval_entirely_below_target_count": 255,
+    "actual_BM_interval_entirely_above_target_count": 46,
+    "correlation_estimated_variance_with_energy_mean": 0.8429960893252041,
+    "fixed_expected_BM_variance_interval": {
+      "variance": 0.005135682726867646,
+      "coverage_count": 886,
+      "replicas": 1024,
+      "coverage": 0.865234375,
+      "CP95": [
+        0.8427798466279717,
+        0.8855641707353284
+      ]
+    },
+    "fixed_exact_MCvariance_same_t_interval": {
+      "variance": 0.014321948249558014,
+      "coverage_count": 980,
+      "replicas": 1024,
+      "coverage": 0.95703125,
+      "CP95": [
+        0.9427431961566021,
+        0.9686081666741218
+      ]
+    }
+  }
+]

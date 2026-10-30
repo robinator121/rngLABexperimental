@@ -1,0 +1,79 @@
+{
+  "healthy": {
+    "source_summary": {
+      "mean_proposal": 0.5000086485996215,
+      "mean_acceptance": 0.5000663444657144,
+      "mean_cross_product": 3.2681060004561326e-06
+    },
+    "failure_summary": {
+      "events": 121,
+      "total": 512,
+      "before_onset": 17,
+      "new_after_onset": 104,
+      "right_censored": 391,
+      "CI95": [
+        0.200165881410772,
+        0.2755660377241222
+      ],
+      "median_new_failure_sweep": 6528.0
+    }
+  },
+  "acceptance_bias": {
+    "paired_mean_energy_change": -0.03958641394208949,
+    "paired_mean_change_CI95": [
+      -0.03998645091614209,
+      -0.03918637696803689
+    ],
+    "paired_coverage_change": -0.951171875,
+    "paired_coverage_change_bootstrap_CI95": [
+      -0.96875,
+      -0.931640625
+    ],
+    "source_summary": {
+      "mean_proposal": 0.5000086485996215,
+      "mean_acceptance": 0.5768627320530499,
+      "mean_cross_product": 4.179190552246665e-06
+    },
+    "failure_summary": {
+      "events": 487,
+      "total": 512,
+      "before_onset": 17,
+      "new_after_onset": 470,
+      "right_censored": 25,
+      "CI95": [
+        0.928761344158637,
+        0.9681552478035633
+      ],
+      "median_new_failure_sweep": 4608.0
+    }
+  },
+  "channel_coupling": {
+    "paired_mean_energy_change": 0.04252557385961679,
+    "paired_mean_change_CI95": [
+      0.04166365984459823,
+      0.04338748787463535
+    ],
+    "paired_coverage_change": -0.92578125,
+    "paired_coverage_change_bootstrap_CI95": [
+      -0.94921875,
+      -0.900390625
+    ],
+    "source_summary": {
+      "mean_proposal": 0.5000086485996215,
+      "mean_acceptance": 0.5000086485996215,
+      "mean_cross_product": 0.08332893128587772
+    },
+    "failure_summary": {
+      "events": 501,
+      "total": 512,
+      "before_onset": 17,
+      "new_after_onset": 484,
+      "right_censored": 11,
+      "CI95": [
+        0.9618842283245161,
+        0.989227445913908
+      ],
+      "median_new_failure_sweep": 3840.0
+    }
+  }
+}

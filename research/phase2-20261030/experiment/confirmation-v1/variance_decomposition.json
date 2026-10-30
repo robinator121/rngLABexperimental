@@ -1,0 +1,32 @@
+[
+  {
+    "condition": "local_stationary",
+    "window": "primary",
+    "centroid_component_variance": 0.007769716433250386,
+    "shape_variance": 5.03958364473468e-05,
+    "twice_covariance": -1.5549623149836385e-05,
+    "sum": 0.007804562646547897,
+    "CV_empirical_variance": 0.007804562646547896,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "centroid_refresh",
+    "window": "primary",
+    "centroid_component_variance": 1.4857223272472073e-05,
+    "shape_variance": 5.205793608618449e-05,
+    "twice_covariance": -7.965732431930356e-08,
+    "sum": 6.683550203433726e-05,
+    "CV_empirical_variance": 6.683550203433734e-05,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  },
+  {
+    "condition": "iid_gaussian",
+    "window": "primary",
+    "centroid_component_variance": 1.626654147954278e-05,
+    "shape_variance": 1.1726562766479586e-06,
+    "twice_covariance": 3.59659925031773e-08,
+    "sum": 1.7475163748693917e-05,
+    "CV_empirical_variance": 1.747516374869391e-05,
+    "scope": "between-replica variance of time averages, not same-time marginal decomposition"
+  }
+]

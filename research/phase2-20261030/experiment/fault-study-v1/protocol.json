@@ -1,0 +1,74 @@
+{
+  "experiment_id": "fault-study-v1",
+  "timestamp_utc": "2026-10-30T14:27:54.469438+00:00",
+  "code_sha256": "bdc648b60550e146d62ad63eb7fdb6def897687821ed404a4275a6055ce82008",
+  "study_code_sha256": "378ec5767b74dc9d4e83095c4b5685ff8f9d2dfcfa93d7a04abf0de272876b87",
+  "healthy_gate_sha256": "0e7b562235751486336328e08eefdb3a4c010212b01d0c2c71861bcc505ddd21",
+  "classification": "frozen secondary fault experiment; healthy acceptance gate passed; no calibration/test streams generated yet",
+  "model": {
+    "M": 16,
+    "beta": 2.0,
+    "delta": 0.4,
+    "initial": "exact Gaussian target",
+    "kernel": "local Metropolis plus exact centroid heat bath every sweep"
+  },
+  "calibration_replicas": 399,
+  "test_replicas": 512,
+  "total_sweeps": 10240,
+  "fault_start_sweep_1based": 2049,
+  "postfault_analysis_sweeps_1based": [
+    2049,
+    10240
+  ],
+  "primary_CI": "CV BM512 on8192 postonset sweeps; intended finiteM target",
+  "faults": {
+    "acceptance_bias": {
+      "code": 1,
+      "severity": 0.08,
+      "mapping": "u_accept -> min(u_accept+.08,nextafter(1,0))"
+    },
+    "channel_coupling": {
+      "code": 2,
+      "mapping": "u_accept=u_proposal (both margins uniform; joint law altered)"
+    }
+  },
+  "fault_scope": "offline experimental adapter; source role identified; no physical data or live instruments used",
+  "pairing": "healthy/fault conditions reuse initial/update/centroid/scan seeds within a replica; independent replica indices and disjoint cal/test/healthy-confirm namespaces",
+  "monitors": {
+    "window_sweeps": 1024,
+    "stride_sweeps": 256,
+    "nominal_whole_run_false_alarm": 0.05,
+    "source_marginal": "max absolute deviation of proposal or acceptance window mean from .5",
+    "source_cross_channel": "absolute window mean of (up-.5)*(ua-.5)",
+    "application_shape": "absolute window mean shape r_g\u00b2 deviation from finiteM target",
+    "threshold": "ceil((calibration_n+1)*.95)-th order statistic of entire-path max; strict > threshold; no retuning",
+    "healthy_validation_gate": "each monitor CP95 upper false-alarm bound<=.10 on512 healthy test paths; report actual rates, not exact equal FPR",
+    "postonset_windows": "classified by endpoint>=2049; earliest endpoint2304 spans1281-2304 and intentionally includes prefault data",
+    "multiple_monitors": "5% target is separate for each monitor, not a combined5% policy",
+    "paired_comparison": "whole-run alert indicator fault minus healthy with replica bootstrap95; secondary descriptive"
+  },
+  "application_failure": {
+    "observable": "CV energy",
+    "rolling_window": 1024,
+    "stride": 256,
+    "absolute_error_tolerance": 0.05,
+    "persistence_windows": 2,
+    "meaning": "prespecified numerical tolerance excursion, not a physical safety limit; distinct from calibrated anomaly monitor",
+    "censoring": "no event by10240 -> right censored; already failed before onset counted separately"
+  },
+  "primary_effects": [
+    "paired postonset CV mean difference with t CI across replicas",
+    "paired intended-target coverage change with replica bootstrap95"
+  ],
+  "secondary": [
+    "TD/shape mean and uncertainty",
+    "source marginal/cross-channel summaries",
+    "whole-run alarm rates and delays",
+    "failure occurrence and alert-vs-failure delays"
+  ],
+  "no_superiority_rule": "do not generalize application superiority; marginal-source and cross-channel monitors have different information; use paired comparisons and actual healthy false alarms",
+  "seed_stages": [
+    "fault-calibration-v1",
+    "fault-test-v1"
+  ]
+}

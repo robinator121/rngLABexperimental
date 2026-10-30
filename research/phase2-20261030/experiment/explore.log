@@ -1,0 +1,25 @@
+generated exploratory-v1/local_stationary_d04 R=128 n=32768 in 11.51s
+generated exploratory-v1/local_uniform_d04 R=128 n=12288 in 2.77s
+generated exploratory-v1/local_zero_d04 R=128 n=12288 in 2.81s
+generated exploratory-v1/local_displaced_d04 R=128 n=12288 in 2.79s
+generated exploratory-v1/local_stationary_d015 R=128 n=8192 in 1.77s
+generated exploratory-v1/local_stationary_d10 R=128 n=8192 in 1.72s
+generated exploratory-v1/centroid_refresh R=128 n=8192 in 1.88s
+generated exploratory-v1/reversible_scan R=128 n=8192 in 1.91s
+generated exploratory-v1/iid_gaussian R=128 n=8192 in 1.47s
+local_stationary_d04 n8192 108 128 0.5665460713275268
+local_stationary_d04 n32768 102 128 0.513339643479456
+local_uniform_d04 burn0_n8192 106 128 0.5631960599123773
+local_uniform_d04 burn1024_n8192 105 128 0.5963574596008553
+local_uniform_d04 burn4096_n8192 104 128 0.5548571145990527
+local_zero_d04 burn0_n8192 104 128 0.5619589973248988
+local_zero_d04 burn1024_n8192 114 128 0.6320573303178466
+local_zero_d04 burn4096_n8192 103 128 0.5832627712377465
+local_displaced_d04 burn0_n8192 122 128 1.554391656045118
+local_displaced_d04 burn1024_n8192 111 128 0.6907346752208465
+local_displaced_d04 burn4096_n8192 102 128 0.6096835855853865
+local_stationary_d015 n8192 68 128 0.13660680383469698
+local_stationary_d10 n8192 113 128 0.7383113071475288
+centroid_refresh n8192 122 128 1.0612402799596423
+reversible_scan n8192 107 128 0.6413544091625536
+iid_gaussian n8192 121 128 1.0173051638730193

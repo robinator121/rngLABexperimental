@@ -1,0 +1,39 @@
+{
+  "experiment_id": "phase2-baseline-independent-verification-v1",
+  "timestamp_utc": "2026-10-30T14:13:37.293187+00:00",
+  "source_git_revision": "dd96adba23b8100aba9147d71fffc63932fc6b0d",
+  "software": {
+    "python": "3.14.7 (main, Aug 10 2026, 07:46:56) [GCC 16.1.1 20260728]",
+    "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+    "dependencies": "Python standard library"
+  },
+  "parameters_file": "baseline_verification.json",
+  "independent_seed_manifest": "baseline_verification.json",
+  "validation_status": "Executed independent artifact checker and 3 deterministic quadrature tests passed",
+  "files": {
+    "baseline_verification.json": {
+      "bytes": 19879,
+      "sha256": "0dac8beb829a612859654c08f85cb539ba3a0847a4593f9a8a5dd7fc596ec883"
+    },
+    "baseline_verification_report.md": {
+      "bytes": 7752,
+      "sha256": "3e3bd1d0336c7a4e92b34b8067aa7f957c6276edf3fc8b2d68b2ccfd635f4301"
+    },
+    "recomputed_intervals.csv": {
+      "bytes": 74064,
+      "sha256": "a449b2f5b3263dc431d26d1d59309e7dd6628c43004f250be858890fa0c22eec"
+    },
+    "test_independent_checker.py": {
+      "bytes": 782,
+      "sha256": "07eaa1c1f14c89991645a1427fe4e06c4963cc526c6e89a7bda15676bf07e70d"
+    },
+    "validation.txt": {
+      "bytes": 577,
+      "sha256": "9a2dbef49f86b77dd0e8046424e8ff5895f5c1de5fd32c975bcfd9322b714316"
+    },
+    "verify_baseline.py": {
+      "bytes": 10374,
+      "sha256": "e3303f0d7bd3f006df7b73cd9b08be9ad8ebdd03edab613ad23a6556e00640da"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+phi0p0 BM32 976 / 1024 variance ratio 1.0324283809365333
+phi0p0 BM128 979 / 1024 variance ratio 1.0388116051934313
+phi0p0 BM512 980 / 1024 variance ratio 1.045968838520019
+phi0p0 oracle_known_variance_normal 975 / 1024 variance ratio 1.0284008732734042
+phi0p997 BM32 438 / 1024 variance ratio 0.09012892653242381
+phi0p997 BM128 698 / 1024 variance ratio 0.30211471446814314
+phi0p997 BM512 861 / 1024 variance ratio 0.6955222766829808
+phi0p997 oracle_known_variance_normal 985 / 1024 variance ratio 1.0328650753234974
+phi0p999 BM32 249 / 1024 variance ratio 0.027363499510804766
+phi0p999 BM128 479 / 1024 variance ratio 0.10296485048281905
+phi0p999 BM512 723 / 1024 variance ratio 0.33333169850440203
+phi0p999 oracle_known_variance_normal 971 / 1024 variance ratio 0.9167912312938727

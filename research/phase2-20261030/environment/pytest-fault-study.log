@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.1.1, pluggy-1.7.0 -- LOCAL_WORKSPACE/work/phase2-env/venv/bin/python
+cachedir: .pytest_cache
+rootdir: LOCAL_WORKSPACE/outputs/phase2-20261030/experiment
+collecting ... collected 14 items
+
+test_fault_study.py::test_rolling_windows_match_direct_slices_and_recorded_cross_products PASSED [  7%]
+test_fault_study.py::test_failure_requires_two_consecutive_windows_and_timestamps_second PASSED [ 14%]
+test_fault_study.py::test_failure_tolerance_is_strict_and_one_window_cannot_confirm PASSED [ 21%]
+test_fault_study.py::test_first_hit_strict_threshold_censoring_and_onset_endpoint_rule PASSED [ 28%]
+test_fault_study.py::test_small_fault_kernel_matches_independent_whole_action_implementation[0] PASSED [ 35%]
+test_fault_study.py::test_small_fault_kernel_matches_independent_whole_action_implementation[1] PASSED [ 42%]
+test_fault_study.py::test_small_fault_kernel_matches_independent_whole_action_implementation[2] PASSED [ 50%]
+test_fault_study.py::test_small_fault_kernel_matches_independent_whole_action_implementation[3] PASSED [ 57%]
+test_fault_study.py::test_source_transformations_use_raw_pair_and_clip_at_largest_float_below_one[1] PASSED [ 64%]
+test_fault_study.py::test_source_transformations_use_raw_pair_and_clip_at_largest_float_below_one[2] PASSED [ 71%]
+test_fault_study.py::test_source_transformations_use_raw_pair_and_clip_at_largest_float_below_one[3] PASSED [ 78%]
+test_fault_study.py::test_exact_2049_sweep_onset_preserves_every_prefault_raw_and_source_record[1] PASSED [ 85%]
+test_fault_study.py::test_exact_2049_sweep_onset_preserves_every_prefault_raw_and_source_record[2] PASSED [ 92%]
+test_fault_study.py::test_exact_2049_sweep_onset_preserves_every_prefault_raw_and_source_record[3] PASSED [100%]
+
+- generated xml file: LOCAL_WORKSPACE/outputs/phase2-20261030/environment/pytest-fault-study.xml -
+============================== 14 passed in 4.77s ==============================

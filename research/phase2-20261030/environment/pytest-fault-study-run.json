@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "LOCAL_WORKSPACE/work/phase2-env/venv/bin/python",
+    "-m",
+    "pytest",
+    "test_fault_study.py",
+    "-v",
+    "--junitxml=LOCAL_WORKSPACE/outputs/phase2-20261030/environment/pytest-fault-study.xml"
+  ],
+  "cwd": "LOCAL_WORKSPACE/outputs/phase2-20261030/experiment",
+  "returncode": 0,
+  "wall_seconds": 5.938225773992599
+}

@@ -1,0 +1,173 @@
+{
+  "recorded_date": "2026-10-30",
+  "python_version": "3.14.7 (main, Aug 10 2026, 07:46:56) [GCC 16.1.1 20260728]",
+  "python_executable": "LOCAL_WORKSPACE/work/phase2-env/venv/bin/python",
+  "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+  "machine": "x86_64",
+  "logical_cpu_count": 16,
+  "repository_copy": "LOCAL_WORKSPACE/work/phase2-env/repo",
+  "source_commit": "dd96adba23b8100aba9147d71fffc63932fc6b0d",
+  "key_versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "matplotlib": "3.11.2",
+    "cryptography": "50.0.2",
+    "pytest": "9.1.1",
+    "numba": "0.68.1",
+    "llvmlite": "0.50.0",
+    "pip": "26.2.1"
+  },
+  "all_distributions": [
+    {
+      "name": "cffi",
+      "version": "2.1.1"
+    },
+    {
+      "name": "contourpy",
+      "version": "1.4.0"
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.2"
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1"
+    },
+    {
+      "name": "fonttools",
+      "version": "4.68.0"
+    },
+    {
+      "name": "iniconfig",
+      "version": "2.3.1"
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.1"
+    },
+    {
+      "name": "llvmlite",
+      "version": "0.50.0"
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.11.2"
+    },
+    {
+      "name": "numba",
+      "version": "0.68.1"
+    },
+    {
+      "name": "numpy",
+      "version": "2.5.3"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3"
+    },
+    {
+      "name": "pillow",
+      "version": "13.0.0"
+    },
+    {
+      "name": "pip",
+      "version": "26.2.1"
+    },
+    {
+      "name": "pluggy",
+      "version": "1.7.0"
+    },
+    {
+      "name": "pycparser",
+      "version": "3.12"
+    },
+    {
+      "name": "Pygments",
+      "version": "2.21.0"
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.3"
+    },
+    {
+      "name": "pytest",
+      "version": "9.1.1"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "3.0.0"
+    },
+    {
+      "name": "scipy",
+      "version": "1.18.1"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.6"
+    }
+  ],
+  "pip_check_returncode": 0,
+  "numba_compilation_smoke": {
+    "result": 285.0,
+    "expected": 285.0,
+    "compiled_signatures": [
+      "(Array(float64, 1, 'C', False, aligned=True),)"
+    ]
+  },
+  "requirements_lock_sha256": "2daa617ad078690e8e204da503bdb137381f534f8f33d000192d6f7df4c9f6c2",
+  "source_changes": [
+    "src/rnglab14/models/__init__.py",
+    "src/rnglab14/models/pimc_harmonic.py",
+    "tests/test_pimc_centroid_heatbath.py"
+  ],
+  "git_status_after_baseline_tests": "",
+  "git_status_after_optional_patch_tests": " M src/rnglab14/models/__init__.py\n M src/rnglab14/models/pimc_harmonic.py\n?? tests/test_pimc_centroid_heatbath.py\n",
+  "optional_patch": {
+    "file": "pimc-centroid-heatbath.patch",
+    "sha256": "248b0b69c81ae4b8ec1cc7b67629f9a06c9348fa656fb9eb15f5e3491055aa14",
+    "applies_to_commit": "dd96adba23b8100aba9147d71fffc63932fc6b0d",
+    "pristine_apply_check_returncode": 0,
+    "targeted_tests": {
+      "passed": 51,
+      "pytest_seconds": 4.12
+    },
+    "final_full_tests": {
+      "passed": 257,
+      "pytest_seconds": 9.87
+    }
+  },
+  "fault_study_logic_tests": {
+    "file": "../experiment/test_fault_study.py",
+    "cases": 14,
+    "passed": 14,
+    "pytest_seconds": 4.77
+  },
+  "independent_artifact_validation": {
+    "validator_file": "../experiment/validate_artifacts.py",
+    "validator_sha256": "50fdfd5db2da4e2960de9b793b52f754b9e0f4747ec505765a1b1659775eff4b",
+    "result_file": "../experiment/artifact-validation.json",
+    "result_sha256": "d63affe598a8c8b0b349f9403c2e4ed3f40ec19d95f0664099ac3b9d054b42f9",
+    "checks": 132,
+    "passed": true
+  },
+  "phase2_consolidated_tests": {
+    "passed": 35,
+    "pytest_seconds": 7.57,
+    "components": {
+      "standalone_study": 9,
+      "fault_study": 14,
+      "baseline_checker": 3,
+      "rus_counterexample": 5,
+      "analytic_dependence": 4
+    },
+    "log": "pytest-phase2-consolidated.log",
+    "junit": "pytest-phase2-consolidated.xml",
+    "run_metadata": "pytest-phase2-consolidated-run.json",
+    "upstream_suite_excluded": true
+  }
+}

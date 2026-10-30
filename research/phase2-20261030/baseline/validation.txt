@@ -1,0 +1,8 @@
+test_quadrature_matches_analytic_cauchy_integral (test_independent_checker.IndependentCheckerChecks.test_quadrature_matches_analytic_cauchy_integral) ... ok
+test_student_t_critical_matches_standard_df5_value (test_independent_checker.IndependentCheckerChecks.test_student_t_critical_matches_standard_df5_value) ... ok
+test_wilson_boundary_has_exact_zero_lower_endpoint (test_independent_checker.IndependentCheckerChecks.test_wilson_boundary_has_exact_zero_lower_endpoint) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.041s
+
+OK

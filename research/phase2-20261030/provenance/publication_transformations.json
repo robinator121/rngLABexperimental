@@ -1,0 +1,1166 @@
+[
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/SHA256SUMS",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/SHA256SUMS",
+    "original_sha256": "e7a3bc5c6e23ec8c7cb8ceb10a4976df8147b74ab6a0e275b755e40e8bdb1077",
+    "published_sha256": "e7a3bc5c6e23ec8c7cb8ceb10a4976df8147b74ab6a0e275b755e40e8bdb1077",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/analytic-tests.xml",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/analytic-tests.xml",
+    "original_sha256": "62260a2c0b7b8a26bdae180c87c5da04d099e1f8ef1edf35873f9ddeb36933d2",
+    "published_sha256": "62260a2c0b7b8a26bdae180c87c5da04d099e1f8ef1edf35873f9ddeb36933d2",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/analytic_dependence.py",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/analytic_dependence.py",
+    "original_sha256": "4feb3c538fa756bb65055b0f8f5592ff54d5578928d11706a7ea8c4e5bdd75ac",
+    "published_sha256": "4feb3c538fa756bb65055b0f8f5592ff54d5578928d11706a7ea8c4e5bdd75ac",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/analytic_dependence_coverage_variance.png",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/analytic_dependence_coverage_variance.png",
+    "original_sha256": "b9d3f779f56ed90582a20b88136d695dbc5978951a4947460d865a28396b7ef9",
+    "published_sha256": "b9d3f779f56ed90582a20b88136d695dbc5978951a4947460d865a28396b7ef9",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/analytic_dependence_coverage_variance.svg",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/analytic_dependence_coverage_variance.svg",
+    "original_sha256": "aa2b604511208c625e68ceb97dc060207b6d587c015b4d00f5f34e53ddf3baa6",
+    "published_sha256": "aa2b604511208c625e68ceb97dc060207b6d587c015b4d00f5f34e53ddf3baa6",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/analytic_dependence_mean_distributions.png",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/analytic_dependence_mean_distributions.png",
+    "original_sha256": "bc31ee2df1db5d93b6ecb9e16266383e686ad1c111f663cf21b97a8d8d65a307",
+    "published_sha256": "bc31ee2df1db5d93b6ecb9e16266383e686ad1c111f663cf21b97a8d8d65a307",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/analytic_dependence_mean_distributions.svg",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/analytic_dependence_mean_distributions.svg",
+    "original_sha256": "1edd3b18e8b2aea67aced0a485696d16feccb912b2d65793eff595aa64c05345",
+    "published_sha256": "1edd3b18e8b2aea67aced0a485696d16feccb912b2d65793eff595aa64c05345",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/analytic_dependence_report.md",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/analytic_dependence_report.md",
+    "original_sha256": "15735a1806bf6fa435ea94d3e67b3480d6a31822f80ca10325f2f5a668a3c193",
+    "published_sha256": "dc37ddaeccfe6b24672d2c280458e28c16fe22e5f3bb31ddcbab1b173a27fd58",
+    "transformations": [
+      "private workspace prefixes normalized",
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/analyze_and_plot.py",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/analyze_and_plot.py",
+    "original_sha256": "0f6d9c1ab09cd997662c9cf074e503bda56fc0c9d4c572f18483ed0cd4f14efd",
+    "published_sha256": "0f6d9c1ab09cd997662c9cf074e503bda56fc0c9d4c572f18483ed0cd4f14efd",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/artifact-manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/artifact-manifest.json",
+    "original_sha256": "320a53fdc6b984fecd128f1529fdd4331c4fc34957f9c90264b61dc2f1678b87",
+    "published_sha256": "320a53fdc6b984fecd128f1529fdd4331c4fc34957f9c90264b61dc2f1678b87",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/execution.log",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/execution.log",
+    "original_sha256": "9164958d7a723a55e9d42b0b80b286e79b4f4417181a8b328f7b860d504f5930",
+    "published_sha256": "9164958d7a723a55e9d42b0b80b286e79b4f4417181a8b328f7b860d504f5930",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/manifest.json",
+    "original_sha256": "b7fa4a95bab4d22c7d5419487f7b402e5ba0b34f1c33c7147e93bcec54c67f04",
+    "published_sha256": "b7fa4a95bab4d22c7d5419487f7b402e5ba0b34f1c33c7147e93bcec54c67f04",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/phi0p0-manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/phi0p0-manifest.json",
+    "original_sha256": "7ce687e43a09a5e56eb3ea820c5fecab9a2858990342a5ebe3f51af5059f3028",
+    "published_sha256": "7ce687e43a09a5e56eb3ea820c5fecab9a2858990342a5ebe3f51af5059f3028",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/phi0p997-manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/phi0p997-manifest.json",
+    "original_sha256": "69618fbd07b1107ffaad3f05f6a72b102e8225a24ac656e9e8834b9dbc4385cc",
+    "published_sha256": "69618fbd07b1107ffaad3f05f6a72b102e8225a24ac656e9e8834b9dbc4385cc",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/phi0p999-manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/phi0p999-manifest.json",
+    "original_sha256": "9f8684bea3c4160ebc628e5823c6839be0fa21f01ea9d97ac15cc4d2e766b6bb",
+    "published_sha256": "9f8684bea3c4160ebc628e5823c6839be0fa21f01ea9d97ac15cc4d2e766b6bb",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/protocol.json",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/protocol.json",
+    "original_sha256": "874a46fe856ff4d79b6608983a93f930a4193f0eb508e41ec7e2eb0ecf95a3af",
+    "published_sha256": "874a46fe856ff4d79b6608983a93f930a4193f0eb508e41ec7e2eb0ecf95a3af",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/replica_endpoints.csv",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/replica_endpoints.csv",
+    "original_sha256": "892a42d129250439cee031aea947ba32b00d794b42be51369560a3a807722c20",
+    "published_sha256": "892a42d129250439cee031aea947ba32b00d794b42be51369560a3a807722c20",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/results.json",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/results.json",
+    "original_sha256": "6b720b4149238768fc298ab512e4b9cd472649f8046bbe5e2bbea6d2497d61f5",
+    "published_sha256": "6b720b4149238768fc298ab512e4b9cd472649f8046bbe5e2bbea6d2497d61f5",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/secondary_fixed_width_diagnostics.json",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/secondary_fixed_width_diagnostics.json",
+    "original_sha256": "e2f3ee8789647bf51dea22776bb4dba83f689c96c59b4ee8508461c425f09001",
+    "published_sha256": "e2f3ee8789647bf51dea22776bb4dba83f689c96c59b4ee8508461c425f09001",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/summary.csv",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/summary.csv",
+    "original_sha256": "fbbb3c283ffae2cbf3e80eaa754fb1df3a1ecd560fd37fb3e8f7565fbbc83ff7",
+    "published_sha256": "fbbb3c283ffae2cbf3e80eaa754fb1df3a1ecd560fd37fb3e8f7565fbbc83ff7",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/analytic-dependence/test_analytic_dependence.py",
+    "original_local_artifact": "outputs/phase2-20261030/analytic-dependence/test_analytic_dependence.py",
+    "original_sha256": "a9e258e80ead67463664845998c7bd32df1f14222053ce5fb187b3244e3f32b2",
+    "published_sha256": "a9e258e80ead67463664845998c7bd32df1f14222053ce5fb187b3244e3f32b2",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/baseline/baseline_verification.json",
+    "original_local_artifact": "outputs/phase2-20261030/baseline/baseline_verification.json",
+    "original_sha256": "0dac8beb829a612859654c08f85cb539ba3a0847a4593f9a8a5dd7fc596ec883",
+    "published_sha256": "0dac8beb829a612859654c08f85cb539ba3a0847a4593f9a8a5dd7fc596ec883",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/baseline/baseline_verification_report.md",
+    "original_local_artifact": "outputs/phase2-20261030/baseline/baseline_verification_report.md",
+    "original_sha256": "3e3bd1d0336c7a4e92b34b8067aa7f957c6276edf3fc8b2d68b2ccfd635f4301",
+    "published_sha256": "b5bd4e863dbfec627d8ab1c9becec0cdae64c5862819ae771b0a2ecf975617e3",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/baseline/manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/baseline/manifest.json",
+    "original_sha256": "4112b88d6e560c67ef6c2582d7bbf3128599d534ebbf7b49b64956b134f226a4",
+    "published_sha256": "4112b88d6e560c67ef6c2582d7bbf3128599d534ebbf7b49b64956b134f226a4",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/baseline/recomputed_intervals.csv",
+    "original_local_artifact": "outputs/phase2-20261030/baseline/recomputed_intervals.csv",
+    "original_sha256": "a449b2f5b3263dc431d26d1d59309e7dd6628c43004f250be858890fa0c22eec",
+    "published_sha256": "a449b2f5b3263dc431d26d1d59309e7dd6628c43004f250be858890fa0c22eec",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/baseline/test_independent_checker.py",
+    "original_local_artifact": "outputs/phase2-20261030/baseline/test_independent_checker.py",
+    "original_sha256": "07eaa1c1f14c89991645a1427fe4e06c4963cc526c6e89a7bda15676bf07e70d",
+    "published_sha256": "07eaa1c1f14c89991645a1427fe4e06c4963cc526c6e89a7bda15676bf07e70d",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/baseline/validation.txt",
+    "original_local_artifact": "outputs/phase2-20261030/baseline/validation.txt",
+    "original_sha256": "9a2dbef49f86b77dd0e8046424e8ff5895f5c1de5fd32c975bcfd9322b714316",
+    "published_sha256": "9a2dbef49f86b77dd0e8046424e8ff5895f5c1de5fd32c975bcfd9322b714316",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/baseline/verify_baseline.py",
+    "original_local_artifact": "outputs/phase2-20261030/baseline/verify_baseline.py",
+    "original_sha256": "e3303f0d7bd3f006df7b73cd9b08be9ad8ebdd03edab613ad23a6556e00640da",
+    "published_sha256": "e3303f0d7bd3f006df7b73cd9b08be9ad8ebdd03edab613ad23a6556e00640da",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/centroid_update_patch.md",
+    "original_local_artifact": "outputs/phase2-20261030/environment/centroid_update_patch.md",
+    "original_sha256": "ff1387ecb7f4d8355926a694d607f7d9bab9cb37f2c4b4582c7fe3a024936867",
+    "published_sha256": "6ce136d57824557247f5c94ace8041eb4f4c17c06cc33cf3ecea0b0329305bfd",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/default-behavior-verification.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/default-behavior-verification.json",
+    "original_sha256": "de625d8ce3ece95316f919d75e25295e77a7c549e4405c2f2c5b48f21320ed2f",
+    "published_sha256": "de625d8ce3ece95316f919d75e25295e77a7c549e4405c2f2c5b48f21320ed2f",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/environment-manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/environment-manifest.json",
+    "original_sha256": "b2af43c78fad8a66a15dbfc3080069e7204c3968ff06e62acb893616ff912568",
+    "published_sha256": "edabb8089d530169632f9159413dc799b5ef57ae6e8d9c54a575a27acdafe131",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/environment_report.md",
+    "original_local_artifact": "outputs/phase2-20261030/environment/environment_report.md",
+    "original_sha256": "c6ee328f235c50aed588092844a14a955ef7a320ef6be0a6d4dbbbf0c671378c",
+    "published_sha256": "8f91e9596d2d340a216dca88692ef5903f93993704969229b9667b3199e348d9",
+    "transformations": [
+      "private workspace prefixes normalized",
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/experiment-resource-snapshot.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/experiment-resource-snapshot.json",
+    "original_sha256": "31a92aafa00cdd9d4955dd08aff2f3de02812359f2efaf4313d01da1d2708cfe",
+    "published_sha256": "31a92aafa00cdd9d4955dd08aff2f3de02812359f2efaf4313d01da1d2708cfe",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/fault_study_review.md",
+    "original_local_artifact": "outputs/phase2-20261030/environment/fault_study_review.md",
+    "original_sha256": "4adf3700da9be60e22661b4a3edca7ff957e49309d84d055b06d9ce430782188",
+    "published_sha256": "8ae1ade5a336d292946a874016f251b9be0f902f6ee678d5b48dc97f7e370eb2",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/github-check-123650528387-annotations.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/github-check-123650528387-annotations.json",
+    "original_sha256": "26fa62d19d0818722e0ab1d7ba0173ae5c814d60f56c3b81b57f5821fcad9357",
+    "published_sha256": "26fa62d19d0818722e0ab1d7ba0173ae5c814d60f56c3b81b57f5821fcad9357",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/github-check-123650528841-annotations.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/github-check-123650528841-annotations.json",
+    "original_sha256": "26fa62d19d0818722e0ab1d7ba0173ae5c814d60f56c3b81b57f5821fcad9357",
+    "published_sha256": "26fa62d19d0818722e0ab1d7ba0173ae5c814d60f56c3b81b57f5821fcad9357",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/patch-apply-check.log",
+    "original_local_artifact": "outputs/phase2-20261030/environment/patch-apply-check.log",
+    "original_sha256": "1d9bf4be0b7639e7f710742542ca44a2ecb88dd8ddd9894b8b33bff929c7bca4",
+    "published_sha256": "1d9bf4be0b7639e7f710742542ca44a2ecb88dd8ddd9894b8b33bff929c7bca4",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pimc-centroid-heatbath.patch",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pimc-centroid-heatbath.patch",
+    "original_sha256": "248b0b69c81ae4b8ec1cc7b67629f9a06c9348fa656fb9eb15f5e3491055aa14",
+    "published_sha256": "248b0b69c81ae4b8ec1cc7b67629f9a06c9348fa656fb9eb15f5e3491055aa14",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pip-check.log",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pip-check.log",
+    "original_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+    "published_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-centroid-full-run.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-centroid-full-run.json",
+    "original_sha256": "c60c9348f06f3b21a168c9e8a63c0a5bf8fd0fade76e5df11854e3156e3e3256",
+    "published_sha256": "06c9b8882d0a5e67fa1957b53c1838c6ce1fdf6131ba1f64d17c32bfc606702b",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-centroid-full.log",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-centroid-full.log",
+    "original_sha256": "5ab0769a12501d9e35b867bd2336ab9dbb120a137c24722890aa52c85b2d8c02",
+    "published_sha256": "2e1dcaab3dda1c0e4eba81c9792aaf70910bc020f0ed76881b8d9892b4f5fd30",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-centroid-full.xml",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-centroid-full.xml",
+    "original_sha256": "724ed68b199761b5d4f1691ea8408beb137904fca9ac555a6ef620683c15f51a",
+    "published_sha256": "724ed68b199761b5d4f1691ea8408beb137904fca9ac555a6ef620683c15f51a",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-centroid-targeted-run.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-centroid-targeted-run.json",
+    "original_sha256": "a24ddd8fa382bf9f741bd4fe8934e1e6643624877249c48434d3c16c08884693",
+    "published_sha256": "b54e3feb0e246281416e521939838a436de4c4b8cc6c5959c580509b92ffe8de",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-centroid-targeted.log",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-centroid-targeted.log",
+    "original_sha256": "6d29ddbb8d0276b6d307f544dfe5d535d8813bbd77cd65d6458cc493e8720d7d",
+    "published_sha256": "556249f2b14999f81c39390d1931d10ba89d9993aa3cdd7d0f61699271eae94c",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-centroid-targeted.xml",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-centroid-targeted.xml",
+    "original_sha256": "c351976c9eb371bf4570b989eb288aec0af32c37383d648d9df12eec306b2f6d",
+    "published_sha256": "c351976c9eb371bf4570b989eb288aec0af32c37383d648d9df12eec306b2f6d",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-fault-study-run.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-fault-study-run.json",
+    "original_sha256": "fbdbdb4d5bffedc01cf41dbf5d68909bc107595d238af92758e52d1ba0798256",
+    "published_sha256": "e4529a7841d77cb29808c6c74a5eeba41f2106edcdb66b4d1f3cb3de2795387e",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-fault-study.log",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-fault-study.log",
+    "original_sha256": "fbc9f87a2202c8023b01eb3019b69cd7b4b1500a430ce4c0397bcd21a021f7de",
+    "published_sha256": "b67e633e8423a1d888d1f6efc9359227aa876c0ad29512291d4f5d4aa1ca4ed3",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-fault-study.xml",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-fault-study.xml",
+    "original_sha256": "02499ce73516b12cb9aaa402d32184c0cb7173e83a1ed0cf195b906b80fac517",
+    "published_sha256": "02499ce73516b12cb9aaa402d32184c0cb7173e83a1ed0cf195b906b80fac517",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-initial-run.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-initial-run.json",
+    "original_sha256": "bbf9a4d42ec00903e69691395e61b03f7ea05c4aea778c3e64209650b96a8acf",
+    "published_sha256": "dc8b3894b75fde21baf229de5844a525012e0d1a0f7363792baeb703591a6cc1",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-initial.log",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-initial.log",
+    "original_sha256": "dc669962ea3318c17d463a5b8df68bb38febc4469d729b6b3492c0ca88d77ef0",
+    "published_sha256": "56095f4f8ecc2d317c5d2b718af4207bea7840276ab118568799de00e69f23b7",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-initial.xml",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-initial.xml",
+    "original_sha256": "482d271abbcb31c72c48ea5df0f11f8e449360a866216a45ec88b2afe6cbffc4",
+    "published_sha256": "482d271abbcb31c72c48ea5df0f11f8e449360a866216a45ec88b2afe6cbffc4",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-phase2-consolidated-run.json",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-phase2-consolidated-run.json",
+    "original_sha256": "7ff25f697c2dbb5a529b1950c4f64171fbf23fd02a21cc280f9281687d391196",
+    "published_sha256": "4c7c5e32b2e978f9e77719f81ba04cf04b597233c15253fdb0ae6724581376d4",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-phase2-consolidated.log",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-phase2-consolidated.log",
+    "original_sha256": "55e250eb38d2b485482c2eda66cb2e8f4f42088115daed42752f2e81cbadf713",
+    "published_sha256": "001182affac1296633f328400bb0f0fc357424fa34a278aa974bf4bd01b7dda4",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/pytest-phase2-consolidated.xml",
+    "original_local_artifact": "outputs/phase2-20261030/environment/pytest-phase2-consolidated.xml",
+    "original_sha256": "1f7e65e39d00c7dcad272b0a5a7922feac58edae0fb89509874a11d3ca699253",
+    "published_sha256": "1f7e65e39d00c7dcad272b0a5a7922feac58edae0fb89509874a11d3ca699253",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/reproduction_resources.md",
+    "original_local_artifact": "outputs/phase2-20261030/environment/reproduction_resources.md",
+    "original_sha256": "b15177fdc9c0444dd373b41a56aad8d8066f43599045122f57a73bd7bb7a5097",
+    "published_sha256": "2d2e34e23f4f2312c90628d90ecb25c7b9b5f7bf69cecec2aa29e7c8f4a29a6e",
+    "transformations": [
+      "private workspace prefixes normalized",
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/environment/requirements-lock.txt",
+    "original_local_artifact": "outputs/phase2-20261030/environment/requirements-lock.txt",
+    "original_sha256": "2daa617ad078690e8e204da503bdb137381f534f8f33d000192d6f7df4c9f6c2",
+    "published_sha256": "2daa617ad078690e8e204da503bdb137381f534f8f33d000192d6f7df4c9f6c2",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/artifact-validation.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/artifact-validation.json",
+    "original_sha256": "d63affe598a8c8b0b349f9403c2e4ed3f40ec19d95f0664099ac3b9d054b42f9",
+    "published_sha256": "d63affe598a8c8b0b349f9403c2e4ed3f40ec19d95f0664099ac3b9d054b42f9",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/artifact-validation.log",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/artifact-validation.log",
+    "original_sha256": "fce078b8a7f7466bcdfd84bdc38c0223130814036a77434652996041c051d48b",
+    "published_sha256": "fce078b8a7f7466bcdfd84bdc38c0223130814036a77434652996041c051d48b",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/analysis.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/analysis.json",
+    "original_sha256": "0cb19bd774bcc2202c8967c51d46318e896db10752ed2de11f30c1ccb4ac3335",
+    "published_sha256": "0cb19bd774bcc2202c8967c51d46318e896db10752ed2de11f30c1ccb4ac3335",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/centroid_refresh.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/centroid_refresh.manifest.json",
+    "original_sha256": "9b1ee02ef23faf0ec5fe699846cc05ce4e8c0395863e0193ba75b211934659b9",
+    "published_sha256": "9b1ee02ef23faf0ec5fe699846cc05ce4e8c0395863e0193ba75b211934659b9",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/iid_gaussian.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/iid_gaussian.manifest.json",
+    "original_sha256": "ed300380aaa076d3268490e1f264efcfce1aeabaa6836f9c368b0a4afc4deb15",
+    "published_sha256": "ed300380aaa076d3268490e1f264efcfce1aeabaa6836f9c368b0a4afc4deb15",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/local_stationary.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/local_stationary.manifest.json",
+    "original_sha256": "cf0a0f77a77177761340399700239e5e203a324b68bf826b57ab8591f02ac6e1",
+    "published_sha256": "cf0a0f77a77177761340399700239e5e203a324b68bf826b57ab8591f02ac6e1",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/primary_decision.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/primary_decision.json",
+    "original_sha256": "0e7b562235751486336328e08eefdb3a4c010212b01d0c2c71861bcc505ddd21",
+    "published_sha256": "0e7b562235751486336328e08eefdb3a4c010212b01d0c2c71861bcc505ddd21",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/protocol.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/protocol.json",
+    "original_sha256": "468e816c1de68bb8975303b4f725cbffbc3ab34bc34ceef505ab84046025e984",
+    "published_sha256": "468e816c1de68bb8975303b4f725cbffbc3ab34bc34ceef505ab84046025e984",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/replicate_endpoints.csv",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/replicate_endpoints.csv",
+    "original_sha256": "25fcd65bd6b150569179c1610a16e70a3ff3976621bd94961df5f051ff994f85",
+    "published_sha256": "25fcd65bd6b150569179c1610a16e70a3ff3976621bd94961df5f051ff994f85",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/summary.csv",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/summary.csv",
+    "original_sha256": "ea8ed0111359dd39944890dd6cda8b4dde3b12e906b301703538e8ef4d3de271",
+    "published_sha256": "ea8ed0111359dd39944890dd6cda8b4dde3b12e906b301703538e8ef4d3de271",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation-v1/variance_decomposition.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation-v1/variance_decomposition.json",
+    "original_sha256": "e295cfea03da5a134a455d11740a857a2bc99ab8ec79393a6a93ec2745583ac0",
+    "published_sha256": "e295cfea03da5a134a455d11740a857a2bc99ab8ec79393a6a93ec2745583ac0",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/confirmation.log",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/confirmation.log",
+    "original_sha256": "4d08d8c8c48ad0232ccc105dc3f6a516bdbfb67c784c774f804eb528619e4d19",
+    "published_sha256": "4d08d8c8c48ad0232ccc105dc3f6a516bdbfb67c784c774f804eb528619e4d19",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/analysis.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/analysis.json",
+    "original_sha256": "2382032843322ab2084c5a317143272f5b6e4f532fc70089153bd2d5132b6a49",
+    "published_sha256": "2382032843322ab2084c5a317143272f5b6e4f532fc70089153bd2d5132b6a49",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/centroid_refresh.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/centroid_refresh.manifest.json",
+    "original_sha256": "86f7abc42fb86bf9c20ac887e2237b523bd649059deb2ff4f3a11884adf5ddda",
+    "published_sha256": "86f7abc42fb86bf9c20ac887e2237b523bd649059deb2ff4f3a11884adf5ddda",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/iid_gaussian.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/iid_gaussian.manifest.json",
+    "original_sha256": "ecc4e87ba605cfb8d9ed218f73dabdf5580beddd00243de82e728b815213c534",
+    "published_sha256": "ecc4e87ba605cfb8d9ed218f73dabdf5580beddd00243de82e728b815213c534",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/local_displaced_d04.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/local_displaced_d04.manifest.json",
+    "original_sha256": "722d76dc7d99f8c68991b692a6f99e5a2bd9770750eb725d2444510e986ecb95",
+    "published_sha256": "722d76dc7d99f8c68991b692a6f99e5a2bd9770750eb725d2444510e986ecb95",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/local_stationary_d015.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/local_stationary_d015.manifest.json",
+    "original_sha256": "fe17bf62ed6ebde49fc994f40b07ca060acbc59ffad604e669323c75e3a9aabc",
+    "published_sha256": "fe17bf62ed6ebde49fc994f40b07ca060acbc59ffad604e669323c75e3a9aabc",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/local_stationary_d04.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/local_stationary_d04.manifest.json",
+    "original_sha256": "5d6ad52ccd3882c1f1b8dd89a5fd56a3486aad2a0405d1ffbd0120166220d69e",
+    "published_sha256": "5d6ad52ccd3882c1f1b8dd89a5fd56a3486aad2a0405d1ffbd0120166220d69e",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/local_stationary_d10.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/local_stationary_d10.manifest.json",
+    "original_sha256": "dfca41ddf40c2ec17cd15f181ea1c1e9aa606c5c43ee17ba7a96ed61777145f1",
+    "published_sha256": "dfca41ddf40c2ec17cd15f181ea1c1e9aa606c5c43ee17ba7a96ed61777145f1",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/local_uniform_d04.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/local_uniform_d04.manifest.json",
+    "original_sha256": "a1ee411b07be062a52c0dc10fe6c4b6f628a762168f620dc53e43db7f7f7ea49",
+    "published_sha256": "a1ee411b07be062a52c0dc10fe6c4b6f628a762168f620dc53e43db7f7f7ea49",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/local_zero_d04.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/local_zero_d04.manifest.json",
+    "original_sha256": "cbd6275dad35783a08fbfb634c24633ae0c734b3a41d12e9e12bf3664ab47737",
+    "published_sha256": "cbd6275dad35783a08fbfb634c24633ae0c734b3a41d12e9e12bf3664ab47737",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/protocol.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/protocol.json",
+    "original_sha256": "f5c798d836a82b77ff8e54d79e465df0864ec06cb130b82f288ce47bc244be5f",
+    "published_sha256": "f5c798d836a82b77ff8e54d79e465df0864ec06cb130b82f288ce47bc244be5f",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/replicate_endpoints.csv",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/replicate_endpoints.csv",
+    "original_sha256": "33728096e57344119486bf435d6a215f1fac72557620f985b3fb9f2f1e936502",
+    "published_sha256": "33728096e57344119486bf435d6a215f1fac72557620f985b3fb9f2f1e936502",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/reversible_scan.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/reversible_scan.manifest.json",
+    "original_sha256": "fe17f4aebafdb5f9ca33d3e3fa6ac761d9cbeb6b6a9315f58c63ffa45f150d98",
+    "published_sha256": "fe17f4aebafdb5f9ca33d3e3fa6ac761d9cbeb6b6a9315f58c63ffa45f150d98",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/summary.csv",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/summary.csv",
+    "original_sha256": "30163f338e5fa04c3c990f8dfa7c8aab84d39a2b2c8c33227d9beb44397ee50d",
+    "published_sha256": "30163f338e5fa04c3c990f8dfa7c8aab84d39a2b2c8c33227d9beb44397ee50d",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/exploratory-v1/variance_decomposition.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/exploratory-v1/variance_decomposition.json",
+    "original_sha256": "a09446349fbdedf822ac7aa6bc9c41bd6811c598329d0997eaf74b228d2a1b7a",
+    "published_sha256": "a09446349fbdedf822ac7aa6bc9c41bd6811c598329d0997eaf74b228d2a1b7a",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/explore.log",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/explore.log",
+    "original_sha256": "7305c8b7f58f4e86279438455ed34a8f632340046afb7c8922b3c12afefd9a06",
+    "published_sha256": "7305c8b7f58f4e86279438455ed34a8f632340046afb7c8922b3c12afefd9a06",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/acceptance_bias.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/acceptance_bias.manifest.json",
+    "original_sha256": "8af235fa71a42598c4997c98c67d886924c52bc5db47fe58a6bcd82052f27eb0",
+    "published_sha256": "8af235fa71a42598c4997c98c67d886924c52bc5db47fe58a6bcd82052f27eb0",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/alarm_failure_times.csv",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/alarm_failure_times.csv",
+    "original_sha256": "f78932eef8b21920b7ce3ad7db881ea9ab255f4d87163ffe9fca76a8ba75d619",
+    "published_sha256": "f78932eef8b21920b7ce3ad7db881ea9ab255f4d87163ffe9fca76a8ba75d619",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/analysis.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/analysis.json",
+    "original_sha256": "fd4fd17288759e97fd292798b1e62a14243d16da43966b1be7d6aa73858bc760",
+    "published_sha256": "fd4fd17288759e97fd292798b1e62a14243d16da43966b1be7d6aa73858bc760",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/calibration.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/calibration.json",
+    "original_sha256": "e6990982481f6661a7f6171635702b60b5a57cf1853d6f6aea265f35b2073f92",
+    "published_sha256": "e6990982481f6661a7f6171635702b60b5a57cf1853d6f6aea265f35b2073f92",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/channel_coupling.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/channel_coupling.manifest.json",
+    "original_sha256": "81de036741e20dd34fc3ac0504f9498b08ed80b5ee7f1d172d66455f71bef799",
+    "published_sha256": "81de036741e20dd34fc3ac0504f9498b08ed80b5ee7f1d172d66455f71bef799",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/decision.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/decision.json",
+    "original_sha256": "d0a3efe1129852f573e108545ebbd07b60d7c9d67074f140986322a193f52a69",
+    "published_sha256": "d0a3efe1129852f573e108545ebbd07b60d7c9d67074f140986322a193f52a69",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/effects.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/effects.json",
+    "original_sha256": "1270f65da52d97e0451fda6c104dc8bba6c50e8b23dfe32aa97352e33e57d6bb",
+    "published_sha256": "1270f65da52d97e0451fda6c104dc8bba6c50e8b23dfe32aa97352e33e57d6bb",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/healthy.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/healthy.manifest.json",
+    "original_sha256": "540d23a2491669dfc315dc39c77228d27e2e8b13af28e0356d45c2a29fc21045",
+    "published_sha256": "540d23a2491669dfc315dc39c77228d27e2e8b13af28e0356d45c2a29fc21045",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/healthy_calibration.manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/healthy_calibration.manifest.json",
+    "original_sha256": "28160258dc37b3aa783a42c52653d1652157d48cea0d09f61fc0a9bcf52f6ec0",
+    "published_sha256": "28160258dc37b3aa783a42c52653d1652157d48cea0d09f61fc0a9bcf52f6ec0",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/monitor_results.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/monitor_results.json",
+    "original_sha256": "8eb9307cc437bc22f3c2128c0733b9f39d68157dbbfd16d364d9aa7c0ca9637e",
+    "published_sha256": "8eb9307cc437bc22f3c2128c0733b9f39d68157dbbfd16d364d9aa7c0ca9637e",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/paired_alarm_effects.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/paired_alarm_effects.json",
+    "original_sha256": "1e3f69ab609b5eb2f7872f2eeb0d20477afe8aa52970f1d2d4fd235ccf25a148",
+    "published_sha256": "1e3f69ab609b5eb2f7872f2eeb0d20477afe8aa52970f1d2d4fd235ccf25a148",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/protocol.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/protocol.json",
+    "original_sha256": "72ede91d8c4e82caa0454e4d50351272ee26a9e9b161bf4f694bc2c7f70614a1",
+    "published_sha256": "72ede91d8c4e82caa0454e4d50351272ee26a9e9b161bf4f694bc2c7f70614a1",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/replicate_endpoints.csv",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/replicate_endpoints.csv",
+    "original_sha256": "0b5cf89a25c26256aa9ff6bec75313442d47360f0e98cf000976a530c708bf32",
+    "published_sha256": "0b5cf89a25c26256aa9ff6bec75313442d47360f0e98cf000976a530c708bf32",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study-v1/summary.csv",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study-v1/summary.csv",
+    "original_sha256": "5655dafe91b8b86418f556c536021fce9a34f429b53d27e18e67ea05561706fd",
+    "published_sha256": "5655dafe91b8b86418f556c536021fce9a34f429b53d27e18e67ea05561706fd",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault-study.log",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault-study.log",
+    "original_sha256": "6d7423251128f766e19c266be026e6d3cabc7ef0b980ca95bfe5751d15a832fd",
+    "published_sha256": "6d7423251128f766e19c266be026e6d3cabc7ef0b980ca95bfe5751d15a832fd",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/fault_study.py",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/fault_study.py",
+    "original_sha256": "bdc648b60550e146d62ad63eb7fdb6def897687821ed404a4275a6055ce82008",
+    "published_sha256": "bdc648b60550e146d62ad63eb7fdb6def897687821ed404a4275a6055ce82008",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/confirmation_primary_endpoints.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/confirmation_primary_endpoints.png",
+    "original_sha256": "e18db43f7fd9ca3237f63a03481dc55ff6b3f0f22372bcf29ea485c7a9e41fcb",
+    "published_sha256": "e18db43f7fd9ca3237f63a03481dc55ff6b3f0f22372bcf29ea485c7a9e41fcb",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/confirmation_primary_endpoints.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/confirmation_primary_endpoints.svg",
+    "original_sha256": "92748dbefebec27452c862a46c18405cb108c54948ae34fe1fcc8523558e020f",
+    "published_sha256": "92748dbefebec27452c862a46c18405cb108c54948ae34fe1fcc8523558e020f",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_coverage_batch.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_coverage_batch.png",
+    "original_sha256": "7f74498b49a93f44ffece6354ae55be6c9ca9ec5b34f0090d25098541a6e1dd7",
+    "published_sha256": "7f74498b49a93f44ffece6354ae55be6c9ca9ec5b34f0090d25098541a6e1dd7",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_coverage_batch.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_coverage_batch.svg",
+    "original_sha256": "55daf84a76d6bf301f9ad86d1c8a3361b96cc98e8adafc6f286579c22edc1183",
+    "published_sha256": "55daf84a76d6bf301f9ad86d1c8a3361b96cc98e8adafc6f286579c22edc1183",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_coverage_length.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_coverage_length.png",
+    "original_sha256": "584c789c34dd8034eaccee9b97ba74657798dd08a265a68c12576920541f59d3",
+    "published_sha256": "584c789c34dd8034eaccee9b97ba74657798dd08a265a68c12576920541f59d3",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_coverage_length.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_coverage_length.svg",
+    "original_sha256": "6b5a4de784817ad3fc734bfcfe8fcca89185ba556b3f03ddf333db1b0684b01b",
+    "published_sha256": "6b5a4de784817ad3fc734bfcfe8fcca89185ba556b3f03ddf333db1b0684b01b",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_initialization_warmup.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_initialization_warmup.png",
+    "original_sha256": "6265c7b5c41c03710968c7f4b906f9533321fcdba964934105ec740df217b997",
+    "published_sha256": "6265c7b5c41c03710968c7f4b906f9533321fcdba964934105ec740df217b997",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_initialization_warmup.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_initialization_warmup.svg",
+    "original_sha256": "80bd8748cb6a41fe5217da5adaaf5bb5663425bd3a9d5211c87c19805e7003ae",
+    "published_sha256": "80bd8748cb6a41fe5217da5adaaf5bb5663425bd3a9d5211c87c19805e7003ae",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_known_mean_acf.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_known_mean_acf.png",
+    "original_sha256": "480c22aff0dbab9c9bad81a0b8703fc3f1c7eafd6b3beff41306e7a187ffd4f7",
+    "published_sha256": "480c22aff0dbab9c9bad81a0b8703fc3f1c7eafd6b3beff41306e7a187ffd4f7",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_known_mean_acf.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_known_mean_acf.svg",
+    "original_sha256": "fb864d56c3716d531ac843621cdaae11846251520e303750362a7825e4af1b2a",
+    "published_sha256": "fb864d56c3716d531ac843621cdaae11846251520e303750362a7825e4af1b2a",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_variance_decomposition.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_variance_decomposition.png",
+    "original_sha256": "b7172074fc76f1c7e23feee05e6707bdc81f9889cdfba53b68780246adb0345b",
+    "published_sha256": "b7172074fc76f1c7e23feee05e6707bdc81f9889cdfba53b68780246adb0345b",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_variance_decomposition.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_variance_decomposition.svg",
+    "original_sha256": "d7d5146f1fa731f3cad6ea76724bab13bbe1646ed0f93cffc3cf8ee2e1a75233",
+    "published_sha256": "d7d5146f1fa731f3cad6ea76724bab13bbe1646ed0f93cffc3cf8ee2e1a75233",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_variance_ratios.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_variance_ratios.png",
+    "original_sha256": "33522c7c758f12839f792357dbe15295cde8399e5940a3ee15bbf03eb9775b2d",
+    "published_sha256": "33522c7c758f12839f792357dbe15295cde8399e5940a3ee15bbf03eb9775b2d",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/exploratory_variance_ratios.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/exploratory_variance_ratios.svg",
+    "original_sha256": "c49ca89343e1fd9d4ccb6c5fe8bd324a7ec5a2f9758ccd3bcf41bdc003035fff",
+    "published_sha256": "c49ca89343e1fd9d4ccb6c5fe8bd324a7ec5a2f9758ccd3bcf41bdc003035fff",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_application_failure_partition.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_application_failure_partition.png",
+    "original_sha256": "7b13b207ffa29292abe6b768d5880f58e36095fbafb98ad61f4444659fb5e458",
+    "published_sha256": "7b13b207ffa29292abe6b768d5880f58e36095fbafb98ad61f4444659fb5e458",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_application_failure_partition.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_application_failure_partition.svg",
+    "original_sha256": "09a75c8f97874fd7c0f73bb50dbf9511e35e81310a91776280f2c7a85e83e051",
+    "published_sha256": "09a75c8f97874fd7c0f73bb50dbf9511e35e81310a91776280f2c7a85e83e051",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_conditional_crossing_failure_delays.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_conditional_crossing_failure_delays.png",
+    "original_sha256": "89ca5327fa10b4b2b30a84695c301e35c5e30b419cad4ff3da8ade1345f7c850",
+    "published_sha256": "89ca5327fa10b4b2b30a84695c301e35c5e30b419cad4ff3da8ade1345f7c850",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_conditional_crossing_failure_delays.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_conditional_crossing_failure_delays.svg",
+    "original_sha256": "42b6396fee7230a915982fa68aa6eb40a3eb779e18b3b135fe6cf793cc0fdcac",
+    "published_sha256": "42b6396fee7230a915982fa68aa6eb40a3eb779e18b3b135fe6cf793cc0fdcac",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_figure_manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_figure_manifest.json",
+    "original_sha256": "631d41b264bb494e8a069ad725d3a0d25dbba70a3615e358261c6ea4982765f4",
+    "published_sha256": "631d41b264bb494e8a069ad725d3a0d25dbba70a3615e358261c6ea4982765f4",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_first_alert_partition.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_first_alert_partition.png",
+    "original_sha256": "203f6d07f914a2c4e6b02b4e24c36f5aaee4b6201b6791b70f8272959c3e459b",
+    "published_sha256": "203f6d07f914a2c4e6b02b4e24c36f5aaee4b6201b6791b70f8272959c3e459b",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_first_alert_partition.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_first_alert_partition.svg",
+    "original_sha256": "e32f04f601065483575260d0b77d1bfc95d5480fb2b8986d5b307a61c1789755",
+    "published_sha256": "e32f04f601065483575260d0b77d1bfc95d5480fb2b8986d5b307a61c1789755",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_monitor_whole_run_rates.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_monitor_whole_run_rates.png",
+    "original_sha256": "50c2df7349e15f18e277a881058191fee8274ac32238e04d427458e116482e5b",
+    "published_sha256": "50c2df7349e15f18e277a881058191fee8274ac32238e04d427458e116482e5b",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_monitor_whole_run_rates.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_monitor_whole_run_rates.svg",
+    "original_sha256": "4d8f5c9b3a283ef07bc9cfb510ac7c6ea7f6224f06314fdf0c9725c3315591c3",
+    "published_sha256": "4d8f5c9b3a283ef07bc9cfb510ac7c6ea7f6224f06314fdf0c9725c3315591c3",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_primary_endpoints.png",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_primary_endpoints.png",
+    "original_sha256": "630e8fd7778f621cb3cd6befa014dd4e2b0b3894c7e717f82e86b3ceded876d3",
+    "published_sha256": "630e8fd7778f621cb3cd6befa014dd4e2b0b3894c7e717f82e86b3ceded876d3",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_primary_endpoints.svg",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_primary_endpoints.svg",
+    "original_sha256": "dd6ca1046eb7d9029f91ac81649742b04654102eb152be3f8b5c935996a45e01",
+    "published_sha256": "dd6ca1046eb7d9029f91ac81649742b04654102eb152be3f8b5c935996a45e01",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/fault_timing_summary.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/fault_timing_summary.json",
+    "original_sha256": "6609fa515321df01b05789631e73e1d02fafff374b956cd7722d475afa0fb112",
+    "published_sha256": "e201152b4f79244007b9acaa2931cab21ecdf1ff30bca07fcd79003b0440687b",
+    "transformations": [
+      "private workspace prefixes normalized"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/figures/figure_manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/figures/figure_manifest.json",
+    "original_sha256": "7eb5ac7a97143cf111c826b02348388971c13bb8bb7b6b67ee2d740ca9d181d1",
+    "published_sha256": "7eb5ac7a97143cf111c826b02348388971c13bb8bb7b6b67ee2d740ca9d181d1",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/plot_fault_results.py",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/plot_fault_results.py",
+    "original_sha256": "618bfe96dde24edafcf1a64a1465ad877df5d75cafe89956d7dd0a01679016ee",
+    "published_sha256": "618bfe96dde24edafcf1a64a1465ad877df5d75cafe89956d7dd0a01679016ee",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/plot_results.py",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/plot_results.py",
+    "original_sha256": "b2df1bfd5d565fb3fdf91e854364189e7474c50c0366a75b9ca47491cd74cd28",
+    "published_sha256": "b2df1bfd5d565fb3fdf91e854364189e7474c50c0366a75b9ca47491cd74cd28",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/study.py",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/study.py",
+    "original_sha256": "378ec5767b74dc9d4e83095c4b5685ff8f9d2dfcfa93d7a04abf0de272876b87",
+    "published_sha256": "378ec5767b74dc9d4e83095c4b5685ff8f9d2dfcfa93d7a04abf0de272876b87",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/test-study.log",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/test-study.log",
+    "original_sha256": "ae8038ae67d3675c3b3300273991907333cae6dbe9d75cb21dd1a85bc5c4b1df",
+    "published_sha256": "ae8038ae67d3675c3b3300273991907333cae6dbe9d75cb21dd1a85bc5c4b1df",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/test_fault_study.py",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/test_fault_study.py",
+    "original_sha256": "1ecd4ff05a4396ff6afac81bee956e868959100ec5097ffb6f15b1a2314daf84",
+    "published_sha256": "1ecd4ff05a4396ff6afac81bee956e868959100ec5097ffb6f15b1a2314daf84",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/test_study.py",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/test_study.py",
+    "original_sha256": "bcb710df07ab55ec947b07464e5f6b374e525a58cd9390c3a23e72a13a524f84",
+    "published_sha256": "bcb710df07ab55ec947b07464e5f6b374e525a58cd9390c3a23e72a13a524f84",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/experiment/validate_artifacts.py",
+    "original_local_artifact": "outputs/phase2-20261030/experiment/validate_artifacts.py",
+    "original_sha256": "50fdfd5db2da4e2960de9b793b52f754b9e0f4747ec505765a1b1659775eff4b",
+    "published_sha256": "50fdfd5db2da4e2960de9b793b52f754b9e0f4747ec505765a1b1659775eff4b",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/reports/Controlled_RNG_fault_report.md",
+    "original_local_artifact": "outputs/phase2-20261030/reports/Controlled_RNG_fault_report.md",
+    "original_sha256": "575c5b16bdf36e68d8ef415cd6cffd207738b4e637e36d5aaeb4f634f14dcecd",
+    "published_sha256": "da00440d799bc1da6279d679c922e4a323112ae0e88425ade06bb91e10c59349",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/reports/PIMC_root_cause_report.md",
+    "original_local_artifact": "outputs/phase2-20261030/reports/PIMC_root_cause_report.md",
+    "original_sha256": "8d565cdcfd946167f6d14e354dafd4f5b61ad9469493aa88e3873df969d64b96",
+    "published_sha256": "c3e0c8b29e3a490616cd80238f26938c24e2256f7144902ec4e20258431a69fb",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/reports/Research_advancement_and_next_milestone.md",
+    "original_local_artifact": "outputs/phase2-20261030/reports/Research_advancement_and_next_milestone.md",
+    "original_sha256": "fa1ea039a720502a5cfe33d0a6742d0e5bbc65e758b0c403fe5d9f350656fa5a",
+    "published_sha256": "8bb501212bf84533bd4bb0e93ef4f2320d8dd157aa2c329539cd96f52c76a5ab",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/RUS_identifiability_and_protocol.md",
+    "original_local_artifact": "outputs/phase2-20261030/rus/RUS_identifiability_and_protocol.md",
+    "original_sha256": "cc1fea0474c3847f51b4e483e82d6d20cea2fc2b7e875c1f2abdf3b7fe84fb06",
+    "published_sha256": "653286be1381ac240e9d58fb01aac59667355dfabceedaea96d767add9819565",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/conditional_failure_cdf.svg",
+    "original_local_artifact": "outputs/phase2-20261030/rus/conditional_failure_cdf.svg",
+    "original_sha256": "43d36db49a9a8fd82ebbca7e918f0863100923c61f1ad6a0245e58dc2f458af8",
+    "published_sha256": "43d36db49a9a8fd82ebbca7e918f0863100923c61f1ad6a0245e58dc2f458af8",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/conditional_future_outcomes.csv",
+    "original_local_artifact": "outputs/phase2-20261030/rus/conditional_future_outcomes.csv",
+    "original_sha256": "fd944437ad4ac2ea5bdff5e81db932a59cd3e3e866021a22abb1bc205b850d91",
+    "published_sha256": "fd944437ad4ac2ea5bdff5e81db932a59cd3e3e866021a22abb1bc205b850d91",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/future_seed_manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/rus/future_seed_manifest.json",
+    "original_sha256": "ce3aed14443b0f81e1861919ac08ca249ed9a1e8e4e5fb8204225bdb71e8f6ab",
+    "published_sha256": "ce3aed14443b0f81e1861919ac08ca249ed9a1e8e4e5fb8204225bdb71e8f6ab",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/identical_observed_prefix.csv",
+    "original_local_artifact": "outputs/phase2-20261030/rus/identical_observed_prefix.csv",
+    "original_sha256": "bd9117198901b6af4d3371784a6666189933c16f2d227e92d03e2d87c4fec93f",
+    "published_sha256": "bd9117198901b6af4d3371784a6666189933c16f2d227e92d03e2d87c4fec93f",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/manifest.json",
+    "original_local_artifact": "outputs/phase2-20261030/rus/manifest.json",
+    "original_sha256": "0e7d240a41d0eb37312b5c28918eef537456348fc633a913e457774d4e060b73",
+    "published_sha256": "0e7d240a41d0eb37312b5c28918eef537456348fc633a913e457774d4e060b73",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/rus_identifiability.py",
+    "original_local_artifact": "outputs/phase2-20261030/rus/rus_identifiability.py",
+    "original_sha256": "b422d7d5247062953ecb5eec858a6d4a5e8d8fdf5f5af1f8bd607670d5c3d91a",
+    "published_sha256": "b422d7d5247062953ecb5eec858a6d4a5e8d8fdf5f5af1f8bd607670d5c3d91a",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/rus_identifiability_results.json",
+    "original_local_artifact": "outputs/phase2-20261030/rus/rus_identifiability_results.json",
+    "original_sha256": "23d73aef77cef837f3ea23addc6e5b5da298fa00808de326b687a5567f402af0",
+    "published_sha256": "23d73aef77cef837f3ea23addc6e5b5da298fa00808de326b687a5567f402af0",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/test_counterexample.py",
+    "original_local_artifact": "outputs/phase2-20261030/rus/test_counterexample.py",
+    "original_sha256": "44809309995ddc210098b1f697c86df61fb6dd6c978eebe3104370a01b76c72c",
+    "published_sha256": "44809309995ddc210098b1f697c86df61fb6dd6c978eebe3104370a01b76c72c",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/rus/validation.txt",
+    "original_local_artifact": "outputs/phase2-20261030/rus/validation.txt",
+    "original_sha256": "34b277fa262f22dd0064e6dbb1db57a3e3a82428ffa0f35671eec9fd987620e8",
+    "published_sha256": "34b277fa262f22dd0064e6dbb1db57a3e3a82428ffa0f35671eec9fd987620e8",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/theory/PIMC_mathematical_reference_and_method_review.md",
+    "original_local_artifact": "outputs/phase2-20261030/theory/PIMC_mathematical_reference_and_method_review.md",
+    "original_sha256": "ec1924a22d67f74c38618936ca5326cc7d20c77b47eff705efafbce017990ca8",
+    "published_sha256": "4691e7e550081472472239ed3f4c7f817f49a78ca69e538bc79d3af0f04477c3",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase2-20261030/theory/harmonic_reference_checks.py",
+    "original_local_artifact": "outputs/phase2-20261030/theory/harmonic_reference_checks.py",
+    "original_sha256": "b716bb1cebd02301dc0eb57de9d1af32d510433c6d925f39e82f1c8f61c1bdbb",
+    "published_sha256": "b716bb1cebd02301dc0eb57de9d1af32d510433c6d925f39e82f1c8f61c1bdbb",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/theory/harmonic_reference_values.json",
+    "original_local_artifact": "outputs/phase2-20261030/theory/harmonic_reference_values.json",
+    "original_sha256": "236ac914e7e842c3970504cfe3264d809a863e4087b8e7f71f8c877c5caed119",
+    "published_sha256": "236ac914e7e842c3970504cfe3264d809a863e4087b8e7f71f8c877c5caed119",
+    "transformations": []
+  },
+  {
+    "published_path": "research/phase2-20261030/theory/study_code_review.md",
+    "original_local_artifact": "outputs/phase2-20261030/theory/study_code_review.md",
+    "original_sha256": "6496a44c8e0ea4df383745d04be3b4efbb3c0b57020c030336417e56bfb1b4e4",
+    "published_sha256": "538ad6c6e3d0204e33d9b6b7e703ef99ec17f001b0e2ac7f257f6e88d2a703f4",
+    "transformations": [
+      "publication context prepended"
+    ]
+  },
+  {
+    "published_path": "research/phase1-20261030/pimc_uncertainty_pilot.py",
+    "original_local_artifact": "outputs/pimc_uncertainty_pilot.py",
+    "original_sha256": "5d9de44557e9721609e15b2570f2c0f4be9419d6c481429c628e1c9869de1880",
+    "published_sha256": "5d9de44557e9721609e15b2570f2c0f4be9419d6c481429c628e1c9869de1880",
+    "transformations": [
+      "private workspace prefixes normalized and omitted-artifact links redirected where applicable"
+    ]
+  },
+  {
+    "published_path": "research/phase1-20261030/pimc-uncertainty-pilot-results.json",
+    "original_local_artifact": "outputs/pimc-uncertainty-pilot-results.json",
+    "original_sha256": "8409b4f3a0407318ea5c2498d880bf3ee8039c17eee2793451743e4caa6b6926",
+    "published_sha256": "8409b4f3a0407318ea5c2498d880bf3ee8039c17eee2793451743e4caa6b6926",
+    "transformations": [
+      "private workspace prefixes normalized and omitted-artifact links redirected where applicable"
+    ]
+  },
+  {
+    "published_path": "research/phase1-20261030/pimc-uncertainty-pilot-chain-summary.csv",
+    "original_local_artifact": "outputs/pimc-uncertainty-pilot-chain-summary.csv",
+    "original_sha256": "43b93950f1f3a48d4b694cf22b389df71c32809ce8c29ce34fea6d1d7f532e27",
+    "published_sha256": "dcda94a788b29c61b2b1f5a5dc4b0a67da2a2d825d37e3b1270bb66794bc4b24",
+    "transformations": [
+      "private workspace prefixes normalized and omitted-artifact links redirected where applicable"
+    ]
+  },
+  {
+    "published_path": "research/phase1-20261030/pimc-uncertainty-pilot-coverage.svg",
+    "original_local_artifact": "outputs/pimc-uncertainty-pilot-coverage.svg",
+    "original_sha256": "48cd0de5e89c9093b9fd930121dc81dfad649ceb6881d0e209dafc0d22591151",
+    "published_sha256": "48cd0de5e89c9093b9fd930121dc81dfad649ceb6881d0e209dafc0d22591151",
+    "transformations": [
+      "private workspace prefixes normalized and omitted-artifact links redirected where applicable"
+    ]
+  },
+  {
+    "published_path": "research/phase1-20261030/PIMC_uncertainty_pilot_methodology.md",
+    "original_local_artifact": "outputs/PIMC_uncertainty_pilot_methodology.md",
+    "original_sha256": "6f31a40ce6494cf023486a46801118b7606d25b7dcb51537fea0f940a6982d49",
+    "published_sha256": "69823641e5c00aad9ca286488b52ec0cd53fc62fb13ec08c4f873df646a13726",
+    "transformations": [
+      "private workspace prefixes normalized and omitted-artifact links redirected where applicable"
+    ]
+  },
+  {
+    "published_path": "research/phase1-20261030/RNGLab_research_status_2026-10-30.md",
+    "original_local_artifact": "outputs/RNGLab_research_status_2026-10-30.md",
+    "original_sha256": "a1f06e3547407ee31662585136a8249cec137a0f8e160590d886929f7243480d",
+    "published_sha256": "b0256dba075ab5a4ae471ee7078e56df255e7d6a9b677b0692d94e65b71dd541",
+    "transformations": [
+      "private workspace prefixes normalized and omitted-artifact links redirected where applicable"
+    ]
+  },
+  {
+    "published_path": "research/phase1-20261030/RNGLab_literature.bib",
+    "original_local_artifact": "outputs/RNGLab_literature.bib",
+    "original_sha256": "a14bfb67ea8bbacd1b4ecbd829bf38cde1c82209e0b3b7f2adddcd3048ed95c4",
+    "published_sha256": "a14bfb67ea8bbacd1b4ecbd829bf38cde1c82209e0b3b7f2adddcd3048ed95c4",
+    "transformations": [
+      "private workspace prefixes normalized and omitted-artifact links redirected where applicable"
+    ]
+  }
+]

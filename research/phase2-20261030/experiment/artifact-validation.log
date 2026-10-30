@@ -1,0 +1,134 @@
+PASS baseline audit JSON matches its manifest
+PASS baseline lists exactly ten original Phase I artifacts
+PASS original preserved: pimc_uncertainty_pilot.py
+PASS original preserved: pimc-uncertainty-pilot-results.json
+PASS original preserved: pimc-uncertainty-pilot-chain-summary.csv
+PASS original preserved: pimc-uncertainty-pilot-traces.csv.gz
+PASS original preserved: pimc-uncertainty-pilot-coverage.svg
+PASS original preserved: PIMC_uncertainty_pilot_methodology.md
+PASS original preserved: RNGLab_research_status_2026-10-30.md
+PASS original preserved: RNGLab_literature.bib
+PASS original preserved: physical-inventory-20261019-140519.json
+PASS original preserved: physical-inventory-20261019-143018.json
+PASS frozen confirmation protocol hash
+PASS frozen fault protocol hash
+PASS confirmation code hash
+PASS fault main study code hash
+PASS fault adapter code hash
+PASS fault prerequisite healthy decision hash
+PASS fault prerequisite healthy gate passed
+PASS confirmation model and primary design
+PASS fault model, counts and onset
+PASS stage identity: exploratory-v1/centroid_refresh
+PASS NPZ checksum: exploratory-v1/centroid_refresh
+PASS manifest code hash: exploratory-v1/centroid_refresh
+PASS manifest condition identity: exploratory-v1/centroid_refresh
+PASS seed rule and indices: exploratory-v1/centroid_refresh
+PASS NPZ array domain: exploratory-v1/centroid_refresh
+PASS stage identity: exploratory-v1/iid_gaussian
+PASS NPZ checksum: exploratory-v1/iid_gaussian
+PASS manifest code hash: exploratory-v1/iid_gaussian
+PASS manifest condition identity: exploratory-v1/iid_gaussian
+PASS seed rule and indices: exploratory-v1/iid_gaussian
+PASS NPZ array domain: exploratory-v1/iid_gaussian
+PASS stage identity: exploratory-v1/local_displaced_d04
+PASS NPZ checksum: exploratory-v1/local_displaced_d04
+PASS manifest code hash: exploratory-v1/local_displaced_d04
+PASS manifest condition identity: exploratory-v1/local_displaced_d04
+PASS seed rule and indices: exploratory-v1/local_displaced_d04
+PASS NPZ array domain: exploratory-v1/local_displaced_d04
+PASS stage identity: exploratory-v1/local_stationary_d015
+PASS NPZ checksum: exploratory-v1/local_stationary_d015
+PASS manifest code hash: exploratory-v1/local_stationary_d015
+PASS manifest condition identity: exploratory-v1/local_stationary_d015
+PASS seed rule and indices: exploratory-v1/local_stationary_d015
+PASS NPZ array domain: exploratory-v1/local_stationary_d015
+PASS stage identity: exploratory-v1/local_stationary_d04
+PASS NPZ checksum: exploratory-v1/local_stationary_d04
+PASS manifest code hash: exploratory-v1/local_stationary_d04
+PASS manifest condition identity: exploratory-v1/local_stationary_d04
+PASS seed rule and indices: exploratory-v1/local_stationary_d04
+PASS NPZ array domain: exploratory-v1/local_stationary_d04
+PASS stage identity: exploratory-v1/local_stationary_d10
+PASS NPZ checksum: exploratory-v1/local_stationary_d10
+PASS manifest code hash: exploratory-v1/local_stationary_d10
+PASS manifest condition identity: exploratory-v1/local_stationary_d10
+PASS seed rule and indices: exploratory-v1/local_stationary_d10
+PASS NPZ array domain: exploratory-v1/local_stationary_d10
+PASS stage identity: exploratory-v1/local_uniform_d04
+PASS NPZ checksum: exploratory-v1/local_uniform_d04
+PASS manifest code hash: exploratory-v1/local_uniform_d04
+PASS manifest condition identity: exploratory-v1/local_uniform_d04
+PASS seed rule and indices: exploratory-v1/local_uniform_d04
+PASS NPZ array domain: exploratory-v1/local_uniform_d04
+PASS stage identity: exploratory-v1/local_zero_d04
+PASS NPZ checksum: exploratory-v1/local_zero_d04
+PASS manifest code hash: exploratory-v1/local_zero_d04
+PASS manifest condition identity: exploratory-v1/local_zero_d04
+PASS seed rule and indices: exploratory-v1/local_zero_d04
+PASS NPZ array domain: exploratory-v1/local_zero_d04
+PASS stage identity: exploratory-v1/reversible_scan
+PASS NPZ checksum: exploratory-v1/reversible_scan
+PASS manifest code hash: exploratory-v1/reversible_scan
+PASS manifest condition identity: exploratory-v1/reversible_scan
+PASS seed rule and indices: exploratory-v1/reversible_scan
+PASS NPZ array domain: exploratory-v1/reversible_scan
+PASS stage identity: confirmation-v1/local_stationary
+PASS NPZ checksum: confirmation-v1/local_stationary
+PASS manifest code hash: confirmation-v1/local_stationary
+PASS manifest condition identity: confirmation-v1/local_stationary
+PASS seed rule and indices: confirmation-v1/local_stationary
+PASS NPZ array domain: confirmation-v1/local_stationary
+PASS stage identity: confirmation-v1/centroid_refresh
+PASS NPZ checksum: confirmation-v1/centroid_refresh
+PASS manifest code hash: confirmation-v1/centroid_refresh
+PASS manifest condition identity: confirmation-v1/centroid_refresh
+PASS seed rule and indices: confirmation-v1/centroid_refresh
+PASS NPZ array domain: confirmation-v1/centroid_refresh
+PASS stage identity: confirmation-v1/iid_gaussian
+PASS NPZ checksum: confirmation-v1/iid_gaussian
+PASS manifest code hash: confirmation-v1/iid_gaussian
+PASS manifest condition identity: confirmation-v1/iid_gaussian
+PASS seed rule and indices: confirmation-v1/iid_gaussian
+PASS NPZ array domain: confirmation-v1/iid_gaussian
+PASS stage identity: fault-study-v1/healthy_calibration
+PASS NPZ checksum: fault-study-v1/healthy_calibration
+PASS manifest code hash: fault-study-v1/healthy_calibration
+PASS manifest condition identity: fault-study-v1/healthy_calibration
+PASS seed rule and indices: fault-study-v1/healthy_calibration
+PASS NPZ array domain: fault-study-v1/healthy_calibration
+PASS stage identity: fault-study-v1/healthy
+PASS NPZ checksum: fault-study-v1/healthy
+PASS manifest code hash: fault-study-v1/healthy
+PASS manifest condition identity: fault-study-v1/healthy
+PASS seed rule and indices: fault-study-v1/healthy
+PASS NPZ array domain: fault-study-v1/healthy
+PASS stage identity: fault-study-v1/acceptance_bias
+PASS NPZ checksum: fault-study-v1/acceptance_bias
+PASS manifest code hash: fault-study-v1/acceptance_bias
+PASS manifest condition identity: fault-study-v1/acceptance_bias
+PASS seed rule and indices: fault-study-v1/acceptance_bias
+PASS NPZ array domain: fault-study-v1/acceptance_bias
+PASS stage identity: fault-study-v1/channel_coupling
+PASS NPZ checksum: fault-study-v1/channel_coupling
+PASS manifest code hash: fault-study-v1/channel_coupling
+PASS manifest condition identity: fault-study-v1/channel_coupling
+PASS seed rule and indices: fault-study-v1/channel_coupling
+PASS NPZ array domain: fault-study-v1/channel_coupling
+PASS all seed domains collision free; intentional same-stage condition pairing allowed
+PASS independent aggregate CV BM512: confirmation-v1/local_stationary
+PASS independent per-replica CV BM512: confirmation-v1/local_stationary
+PASS independent aggregate CV BM512: confirmation-v1/centroid_refresh
+PASS independent per-replica CV BM512: confirmation-v1/centroid_refresh
+PASS independent aggregate CV BM512: confirmation-v1/iid_gaussian
+PASS independent per-replica CV BM512: confirmation-v1/iid_gaussian
+PASS independent aggregate CV BM512: fault-study-v1/healthy
+PASS independent per-replica CV BM512: fault-study-v1/healthy
+PASS independent aggregate CV BM512: fault-study-v1/acceptance_bias
+PASS independent per-replica CV BM512: fault-study-v1/acceptance_bias
+PASS independent aggregate CV BM512: fault-study-v1/channel_coupling
+PASS independent per-replica CV BM512: fault-study-v1/channel_coupling
+PASS all-replica prefault raw/source bytes identical: acceptance_bias
+PASS all-replica prefault raw/source bytes identical: channel_coupling
+Overall passed: True
+Elapsed seconds: 26.981

@@ -1,0 +1,546 @@
+{
+  "experiment_id": "phase2-baseline-independent-verification-v1",
+  "timestamp_utc": "2026-10-30T14:06:25.997989+00:00",
+  "software": {
+    "python": "3.14.7 (main, Aug 10 2026, 07:46:56) [GCC 16.1.1 20260728]",
+    "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+    "dependencies": "stdlib only"
+  },
+  "source_revision": "rnglabexperimental main dd96adba23b8100aba9147d71fffc63932fc6b0d",
+  "validation_status": "All saved coverage counts, means, median MCSEs, Wilson intervals and seed derivations verified.",
+  "source_files": {
+    "pimc_uncertainty_pilot.py": {
+      "bytes": 17045,
+      "sha256": "5d9de44557e9721609e15b2570f2c0f4be9419d6c481429c628e1c9869de1880"
+    },
+    "pimc-uncertainty-pilot-results.json": {
+      "bytes": 11483,
+      "sha256": "8409b4f3a0407318ea5c2498d880bf3ee8039c17eee2793451743e4caa6b6926"
+    },
+    "pimc-uncertainty-pilot-chain-summary.csv": {
+      "bytes": 8027,
+      "sha256": "43b93950f1f3a48d4b694cf22b389df71c32809ce8c29ce34fea6d1d7f532e27"
+    },
+    "pimc-uncertainty-pilot-traces.csv.gz": {
+      "bytes": 16326248,
+      "sha256": "d465471c7d97c39c6571e4f37c5e4474511864c63a736605b08544996205d005"
+    },
+    "pimc-uncertainty-pilot-coverage.svg": {
+      "bytes": 10574,
+      "sha256": "48cd0de5e89c9093b9fd930121dc81dfad649ceb6881d0e209dafc0d22591151"
+    },
+    "PIMC_uncertainty_pilot_methodology.md": {
+      "bytes": 8273,
+      "sha256": "6f31a40ce6494cf023486a46801118b7606d25b7dcb51537fea0f940a6982d49"
+    },
+    "RNGLab_research_status_2026-10-30.md": {
+      "bytes": 33219,
+      "sha256": "a1f06e3547407ee31662585136a8249cec137a0f8e160590d886929f7243480d"
+    },
+    "RNGLab_literature.bib": {
+      "bytes": 7059,
+      "sha256": "a14bfb67ea8bbacd1b4ecbd829bf38cde1c82209e0b3b7f2adddcd3048ed95c4"
+    },
+    "physical-inventory-20261019-140519.json": {
+      "bytes": 1106,
+      "sha256": "6d45497ace48c6d91fd824e82f901b3e465505da971d2c8dc6502e2b8c374caa"
+    },
+    "physical-inventory-20261019-143018.json": {
+      "bytes": 1092,
+      "sha256": "dea4269dfd4cd9d4ad9b4caa230e3c79f51656dbf5e985dc54df9b6d37fd0467"
+    }
+  },
+  "trace_rows": 786432,
+  "unique_replica_traces": 64,
+  "seed_count": 64,
+  "unique_128bit_seed_count": 64,
+  "seed_sha256": [
+    "6ef159b896da6c5f04d6a98f50efd6b07578167b3db281ba25e02a05d3b5e68b",
+    "1454e81d31911d047a2a7276d6a1d2ac57d36a8686255a484d328c24da2f3d3e",
+    "a2ca7ee0f204ed567a5b62fc2d94d8e49fc493b00c7171f1e2a3460fb250be2e",
+    "ce8961179eb4352c48c74d3bd1acd8ccf035fcc2c5824fd032ede08597300b72",
+    "843c395d342d449ba9af444b45719bc4756426dcbd36f799b3ac69d5884071f8",
+    "6f82f042d489abe2d0c9766930502b2c6fa8b99a78ec9ce67c0d5e293510c3dc",
+    "c1fa1bf2939d76d8b97562006d59f4bf8214ad8ac2df622188a91216fd2b4e7c",
+    "330ca0d9f0fdc09e98083175e764ec94b139eb6b60365c08424a4e28997bc0f4",
+    "ed38b02849d44e774cb50ec37c3c23290e089442f421926e8804a7efebd1d681",
+    "4b8d9872bd03d401fed08a2c5067b0d3025ffa1bd6e5c63b08cb86faaa394f07",
+    "f83f3bf354ec0ebbf54acaeac3b62cb3383ef8ce6d7fda527f1da0f2aa30944b",
+    "2ed7a7d1b4cd40b960daa98dffe8799318191db690325bad5d1dc9ac8d5193ed",
+    "17e01d552e91bb381c4a472a1b8ffef4dc8394bef0eea7dc3a4293a814ca6e5a",
+    "ddbe6544bd36445c1e84c8c3e8e6edd088897817a0c770fa826316459eb343ad",
+    "be3144e9598417350ca125b1483fa37c486887c8700c94b182cbcbb6455dfb17",
+    "aac70222e234be91f33ea75d294b97f6ce5b5bc4427cd184002532f77be4761d",
+    "caed3bc5d88d831c71a3468387ce8fd60cfe140a3f97d8164a0d3d85457323b2",
+    "a8fcf49a2baabfb25b9064f8ee06147c153f222eba93658d05a1f51696d3d7ad",
+    "339fb7eaf7c7ac6626c73d87c1813897f93a862ee30e3c0baf1768235a6ed570",
+    "97b58e6273005c1ac200edc2f16d6ef990a8ff38fc728719c887a9f60c163a2c",
+    "b7776012b77ac2dee864ef4d37bd0aeca44aae7e0d8819a5921ab8c0e748f426",
+    "4e9c4751970155b81d7af2e105d1f09f4178d775ace9c0d6e5567c646847cb5e",
+    "e84bc8e2bffb8fe946f736769cb06854d1ffcad985d544338a01790ecadbd5cb",
+    "c4c42f6bbfd7e0e661073f5595d8e8604c424034069b612d7bd30c3ac2236cc7",
+    "56eb79b9e5fba0896543a67dd77755b9db5916f13761a636cfffa34368a40bc6",
+    "385525c5b5b8679a4ebae6d22bf75bca96555c59ac9a0273a6fc6519509c5129",
+    "4d81505843ce58609ac52c8d90f7a8b4a31c5014abb4e0dcec16d733a5413807",
+    "b3e2edf415603cc671fdc7aa45cf82f94607a03e8f6343d06b2af46dfe392a85",
+    "0778639262d28454226f001b533d6b5ca4a86386f552e8eb2ff07f0d4799d844",
+    "f6c31fe0471ab81d68dcdd71749d3ba15e11e22f6a75dc1047effc1fa9083fa7",
+    "4bbf49148d80779eb8a824c5446f416b6a28485e64fa4fb861f52fa1e6df51ca",
+    "e9f9a23fbc7e4843be5963a1b742d1322ed2efc4f6ea89e6e5101db63df1d049",
+    "0fc56e2e2750456e654eea3c8ebf74a3786548d04feffb2397f7c445108cef56",
+    "de89c3c5286ece9a5ef61bad88e987f084056cb8da957dfcb5e50955152b27d9",
+    "757684dd935354bd3615ea35897fed9bcb4c98e426bf09bad5457a68724670dd",
+    "5f7e0e8c8575a039478b3e175b17d935e1f8aa06080c3a617ef5cd4a2c421994",
+    "b988f50045d03e7842dea55368c8e5e55910b083ad10e2168e342d77818921b4",
+    "b3361dec4d78348e95b9974ec73f92c4c52f2f50033ab5e12bbf1a2be6a1396e",
+    "a91752c233c5b072200ebd66b45a7aeb0c282df5a5b6c499ce5dcfc8f7d19d08",
+    "aa05bbf6151455533c34b960dc92ee7d9dbd0defe7139a431b2f4611bb0546f4",
+    "08f39753627e2d5c67ad7b1cfa149597b1b1c36d2bdf0c7760af4efb07487344",
+    "db3e730c12d613ec915d6d48829a27e0e11f336ffe4b1a8403dfe893b837f7c5",
+    "d188c08c0ce8709adfba15e9c5aee3c5a7720f21b20d1d32cbdad06cea0bf514",
+    "0bbf1fa5e6c105fcb6cb7d973b995b31fbcc2ffbc8fac5015d1d498c6ab4175e",
+    "ddee87f3da66c79e976ae32a0ebd12ea5d809befb2fc1f7cbc396c7726bdcefb",
+    "38ede503218b170e82a9a89cb837b6217b58cb8bf2fb6b717db7da1255b8bd89",
+    "3fcf2df584fecaa9e9bdc57141e7e3a57f6f812524b850763f0171adf6c89170",
+    "286e91643a97948118523cb3209e6605ff7fa32263ef695fa0ec564c6009af80",
+    "bc42ea6191ca073ed0145d4d5a4a1f6e2eea1a03fc5f6407bf96a11704f773d0",
+    "3faf9f1f964306588298231b8b44e34731d4ebbcd309f551e849bd63a23ced22",
+    "71b3633f31f6d81cda629c88e2fe14e20f3d5e22920d6ebf398c15c4265c1f81",
+    "857f9bd153bd1ef702bd0dbb174e124971c7afd1409e67901dce213e4697318e",
+    "cd77209835aef0da1bbcb921d54f2686304e4146d4c357491f1f5d6f60825510",
+    "c31d90da49eadc6d236607b584d82b33ec0004863e52d2b02ead7a0424b241b6",
+    "f69c2e65918e899467889297a8ba0c296e9a14f906328d6d865e20f66ff62efa",
+    "432b1b0bda11dda350d9a0d0b0274d4ace99e9c31a6687f8bf360b6b6d47d646",
+    "e3fa40fd3ae03628cfa0646b6b17d68a53b1b697548185f39064b22965de9459",
+    "dc85e1cda1ba2e040cfe4b98b08d9f726fa48d67b76de0b2ac1c80660e087e85",
+    "820d0f7f043fff28a16538b4f081ee420f9e8f23fe0f5d71bfa12768e85576f4",
+    "0e7a0272293146f5a5f2a5e6aa9a0759204680f625788bc7e5af345035e50203",
+    "77cb8f0435c668a09f1aabd3fd5d29d7886663b4ec51f544a802b52783920b6e",
+    "6ed82b7c7848d4845198e7c524be1afd71420a4a6da060bf79b8dfaca723272d",
+    "a4d8e7e1179ea01653201ed5fe606d0141844a6effe52c2f40d3b4f20f6c088b",
+    "8ea733c8c2930f7ab877543c544a830388b236def06c9defe13f034bc39f5581"
+  ],
+  "configuration": {
+    "replicas": 64,
+    "sweeps_per_replica": 12288,
+    "beads": 16,
+    "beta": 2.0,
+    "proposal_delta": 0.4,
+    "initializer": "independent uniform bead coordinates on [-0.5, 0.5)",
+    "proposal": "one bead per sweep in fixed order; delta*(2u-1), u~Python random.Random",
+    "acceptance": "Metropolis with an independent sequential uniform draw from the same replica stream",
+    "seed_rule": "first 128 bits of SHA256(f'{namespace}/{replica:03d}') fed to random.Random",
+    "seed_namespace": "rnglab-pimc-pilot-20261030-scalar-v1",
+    "windows": {
+      "short": {
+        "sweeps_1based": [
+          1025,
+          4096
+        ],
+        "retained": 3072
+      },
+      "long": {
+        "sweeps_1based": [
+          4097,
+          12288
+        ],
+        "retained": 8192
+      }
+    },
+    "estimators": {
+      "TD": "M/(2 beta) - M*sum((x[j+1]-x[j])^2)/(2 beta^2) + 0.5*mean(x^2)",
+      "CV": "1/(2 beta) + mean(x^2) - 0.5*mean(x)^2"
+    },
+    "interval": "non-overlapping batch means; Student-t critical value; batches consume the window prefix",
+    "batches": [
+      32,
+      128,
+      512
+    ],
+    "minimum_batches": 4,
+    "replica_coverage_interval": "Wilson 95% interval; descriptive variability, not a proof of coverage"
+  },
+  "gaussian_reference": {
+    "precision_eigenvalues": [
+      0.125,
+      1.3429274798194117,
+      4.81129150101524,
+      10.002065082158563,
+      16.124999999999996,
+      22.247934917841437,
+      27.43870849898476,
+      30.907072520180588,
+      32.125,
+      30.907072520180588,
+      27.43870849898476,
+      22.247934917841448,
+      16.125000000000004,
+      10.002065082158563,
+      4.811291501015242,
+      1.3429274798194162
+    ],
+    "expected_x2": 0.6554741522981732,
+    "expected_TD": 0.6554741522981731,
+    "expected_CV": 0.6554741522981732,
+    "pilot_reference_difference": -2.220446049250313e-16
+  },
+  "independent_student_t_quantile_differences": {
+    "5": 2.220446049250313e-14,
+    "15": 9.769962616701378e-15,
+    "23": 8.881784197001252e-16,
+    "63": 3.9968028886505635e-14,
+    "95": 3.2729374765949615e-13,
+    "255": -8.881784197001252e-16
+  },
+  "coverage": [
+    {
+      "window": "short",
+      "observable": "TD",
+      "batch_size": 32,
+      "covered": 42,
+      "replicas": 64,
+      "coverage": 0.65625,
+      "wilson_95": [
+        0.5340364020991819,
+        0.7607685792155665
+      ],
+      "mean_chain_estimate": 0.645733230203017,
+      "mean_bias": -0.009740922095156201,
+      "empirical_variance_chain_means": 0.03010901470860668,
+      "mean_estimated_variance": 0.005274707490051107,
+      "estimated_to_empirical_variance_ratio": 0.17518698439983588,
+      "median_mcse": 0.06801868307983072,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "short",
+      "observable": "TD",
+      "batch_size": 128,
+      "covered": 49,
+      "replicas": 64,
+      "coverage": 0.765625,
+      "wilson_95": [
+        0.6486674241743136,
+        0.8525010440607586
+      ],
+      "mean_chain_estimate": 0.645733230203017,
+      "mean_bias": -0.009740922095156201,
+      "empirical_variance_chain_means": 0.030109014708606684,
+      "mean_estimated_variance": 0.009933625615789797,
+      "estimated_to_empirical_variance_ratio": 0.32992197559192343,
+      "median_mcse": 0.09074382827889435,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "short",
+      "observable": "TD",
+      "batch_size": 512,
+      "covered": 58,
+      "replicas": 64,
+      "coverage": 0.90625,
+      "wilson_95": [
+        0.810171204003544,
+        0.9563217474148016
+      ],
+      "mean_chain_estimate": 0.645733230203017,
+      "mean_bias": -0.009740922095156201,
+      "empirical_variance_chain_means": 0.030109014708606684,
+      "mean_estimated_variance": 0.017709590529687718,
+      "estimated_to_empirical_variance_ratio": 0.5881823334665753,
+      "median_mcse": 0.10118906915920398,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "short",
+      "observable": "CV",
+      "batch_size": 32,
+      "covered": 24,
+      "replicas": 64,
+      "coverage": 0.375,
+      "wilson_95": [
+        0.26665980178824633,
+        0.49749621315995496
+      ],
+      "mean_chain_estimate": 0.6675679482847567,
+      "mean_bias": 0.012093795986583555,
+      "empirical_variance_chain_means": 0.019684278845205582,
+      "mean_estimated_variance": 0.001238752605754194,
+      "estimated_to_empirical_variance_ratio": 0.06293106369278607,
+      "median_mcse": 0.02690353747379172,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "short",
+      "observable": "CV",
+      "batch_size": 128,
+      "covered": 37,
+      "replicas": 64,
+      "coverage": 0.578125,
+      "wilson_95": [
+        0.456100315400829,
+        0.691302175256545
+      ],
+      "mean_chain_estimate": 0.6675679482847567,
+      "mean_bias": 0.012093795986583555,
+      "empirical_variance_chain_means": 0.019684278845205582,
+      "mean_estimated_variance": 0.004309586993659265,
+      "estimated_to_empirical_variance_ratio": 0.21893547777641512,
+      "median_mcse": 0.04689433691630944,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "short",
+      "observable": "CV",
+      "batch_size": 512,
+      "covered": 53,
+      "replicas": 64,
+      "coverage": 0.828125,
+      "wilson_95": [
+        0.717867883773418,
+        0.9012225769875535
+      ],
+      "mean_chain_estimate": 0.6675679482847567,
+      "mean_bias": 0.012093795986583555,
+      "empirical_variance_chain_means": 0.019684278845205582,
+      "mean_estimated_variance": 0.011261791641093075,
+      "estimated_to_empirical_variance_ratio": 0.5721211190744772,
+      "median_mcse": 0.06843397030232418,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "long",
+      "observable": "TD",
+      "batch_size": 32,
+      "covered": 40,
+      "replicas": 64,
+      "coverage": 0.625,
+      "wilson_95": [
+        0.502503786840045,
+        0.7333401982117536
+      ],
+      "mean_chain_estimate": 0.6566338812594458,
+      "mean_bias": 0.001159728961272588,
+      "empirical_variance_chain_means": 0.0099269021468124,
+      "mean_estimated_variance": 0.0019000239368167427,
+      "estimated_to_empirical_variance_ratio": 0.1914014975383689,
+      "median_mcse": 0.04258608671037749,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "long",
+      "observable": "TD",
+      "batch_size": 128,
+      "covered": 51,
+      "replicas": 64,
+      "coverage": 0.796875,
+      "wilson_95": [
+        0.6828636426898583,
+        0.8772658218081634
+      ],
+      "mean_chain_estimate": 0.6566338812594458,
+      "mean_bias": 0.001159728961272588,
+      "empirical_variance_chain_means": 0.009926902146812402,
+      "mean_estimated_variance": 0.003443401019939137,
+      "estimated_to_empirical_variance_ratio": 0.3468756888114221,
+      "median_mcse": 0.056191148403687774,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "long",
+      "observable": "TD",
+      "batch_size": 512,
+      "covered": 57,
+      "replicas": 64,
+      "coverage": 0.890625,
+      "wilson_95": [
+        0.7910135867310387,
+        0.945998866555832
+      ],
+      "mean_chain_estimate": 0.6566338812594458,
+      "mean_bias": 0.001159728961272588,
+      "empirical_variance_chain_means": 0.0099269021468124,
+      "mean_estimated_variance": 0.005956264036833506,
+      "estimated_to_empirical_variance_ratio": 0.6000123652620173,
+      "median_mcse": 0.0681556909065934,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "long",
+      "observable": "CV",
+      "batch_size": 32,
+      "covered": 20,
+      "replicas": 64,
+      "coverage": 0.3125,
+      "wilson_95": [
+        0.21231066539482046,
+        0.4339233570274814
+      ],
+      "mean_chain_estimate": 0.6528459757730106,
+      "mean_bias": -0.002628176525162562,
+      "empirical_variance_chain_means": 0.008754462270767555,
+      "mean_estimated_variance": 0.0004318403682816118,
+      "estimated_to_empirical_variance_ratio": 0.04932802894400387,
+      "median_mcse": 0.018570223822896886,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "long",
+      "observable": "CV",
+      "batch_size": 128,
+      "covered": 38,
+      "replicas": 64,
+      "coverage": 0.59375,
+      "wilson_95": [
+        0.4714520812860451,
+        0.7054309075028039
+      ],
+      "mean_chain_estimate": 0.6528459757730106,
+      "mean_bias": -0.002628176525162562,
+      "empirical_variance_chain_means": 0.008754462270767555,
+      "mean_estimated_variance": 0.0014829121207740477,
+      "estimated_to_empirical_variance_ratio": 0.16938928684697296,
+      "median_mcse": 0.03347418173341728,
+      "matches_saved_coverage": true
+    },
+    {
+      "window": "long",
+      "observable": "CV",
+      "batch_size": 512,
+      "covered": 48,
+      "replicas": 64,
+      "coverage": 0.75,
+      "wilson_95": [
+        0.631837235413303,
+        0.8398507346902941
+      ],
+      "mean_chain_estimate": 0.6528459757730106,
+      "mean_bias": -0.002628176525162562,
+      "empirical_variance_chain_means": 0.008754462270767555,
+      "mean_estimated_variance": 0.0037543372342120993,
+      "estimated_to_empirical_variance_ratio": 0.4288484110267271,
+      "median_mcse": 0.05051103312781881,
+      "matches_saved_coverage": true
+    }
+  ],
+  "long_window_acf": [
+    {
+      "observable": "TD",
+      "lag": 1,
+      "mean_acf": 0.7006859782843323,
+      "median_acf": 0.6995942766052617,
+      "min_acf": 0.6594022827055618,
+      "max_acf": 0.7483128710685356
+    },
+    {
+      "observable": "TD",
+      "lag": 8,
+      "mean_acf": 0.19906006822332278,
+      "median_acf": 0.1922439448155295,
+      "min_acf": 0.11020208580030566,
+      "max_acf": 0.34127919124620876
+    },
+    {
+      "observable": "TD",
+      "lag": 32,
+      "mean_acf": 0.07267186793266486,
+      "median_acf": 0.06612795906368973,
+      "min_acf": -0.009701073235590173,
+      "max_acf": 0.18858063050326745
+    },
+    {
+      "observable": "TD",
+      "lag": 128,
+      "mean_acf": 0.0297083830191336,
+      "median_acf": 0.020238816770911786,
+      "min_acf": -0.03642606754680347,
+      "max_acf": 0.15857447170919858
+    },
+    {
+      "observable": "TD",
+      "lag": 512,
+      "mean_acf": 0.004646318314261944,
+      "median_acf": 0.0005503072934670062,
+      "min_acf": -0.03483588335142407,
+      "max_acf": 0.06554254371639652
+    },
+    {
+      "observable": "TD",
+      "lag": 1024,
+      "mean_acf": -0.004256651283841716,
+      "median_acf": -0.0071749552229280495,
+      "min_acf": -0.05827092742032503,
+      "max_acf": 0.04999040654561069
+    },
+    {
+      "observable": "CV",
+      "lag": 1,
+      "mean_acf": 0.988405830363389,
+      "median_acf": 0.9883982487647102,
+      "min_acf": 0.9740120476584841,
+      "max_acf": 0.9955054585293177
+    },
+    {
+      "observable": "CV",
+      "lag": 8,
+      "mean_acf": 0.922068884540604,
+      "median_acf": 0.9229687910075244,
+      "min_acf": 0.8427402054124419,
+      "max_acf": 0.9696475745712784
+    },
+    {
+      "observable": "CV",
+      "lag": 32,
+      "mean_acf": 0.7645115600923833,
+      "median_acf": 0.7678156776704728,
+      "min_acf": 0.5649853363606047,
+      "max_acf": 0.8983387591144588
+    },
+    {
+      "observable": "CV",
+      "lag": 128,
+      "mean_acf": 0.42284107521913095,
+      "median_acf": 0.4389814219432837,
+      "min_acf": 0.14664156915594848,
+      "max_acf": 0.72644653646985
+    },
+    {
+      "observable": "CV",
+      "lag": 512,
+      "mean_acf": 0.03754697758155995,
+      "median_acf": 0.02881308882482554,
+      "min_acf": -0.2020683096075553,
+      "max_acf": 0.33131885171971853
+    },
+    {
+      "observable": "CV",
+      "lag": 1024,
+      "mean_acf": -0.03540359191693606,
+      "median_acf": -0.043745685021424355,
+      "min_acf": -0.2366920042575085,
+      "max_acf": 0.17251050043999203
+    }
+  ],
+  "cross_replica_cv_correlations": {
+    "pair_count": 2016,
+    "mean": 0.0020757098828620333,
+    "rms": 0.14188837081949326,
+    "min": -0.3264138290821875,
+    "max": 0.5969470713146965,
+    "median": -0.018040686545915438,
+    "percentile_025": -0.2207365825358761,
+    "percentile_975": 0.3445188549411409,
+    "interpretation": "Descriptive only; no calibrated independence test because each trace is strongly autocorrelated."
+  },
+  "acceptance": {
+    "mean": 0.6956209341684977,
+    "min": 0.6933797200520834,
+    "max": 0.6978047688802084
+  },
+  "detected_issues": [
+    "Saved JSON describes 'one bead per sweep'; code actually proposes every bead once per sweep in fixed order.",
+    "Short-window batch 512 uses only six batches; allowed by standalone four-batch threshold but below general RNGLab eight-batch minimum.",
+    "Short and long windows share trajectories and change both warmup and retained length; no independent replication or isolated length effect.",
+    "Distinct SHA-derived PRNG seeds and nonduplicate traces do not prove statistical independence."
+  ],
+  "elapsed_seconds": 10.995918218002771
+}

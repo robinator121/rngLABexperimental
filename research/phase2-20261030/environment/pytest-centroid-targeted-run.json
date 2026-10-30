@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "LOCAL_WORKSPACE/work/phase2-env/venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_pimc_centroid_heatbath.py",
+    "tests/test_recovery_physics.py",
+    "-v",
+    "--junitxml=LOCAL_WORKSPACE/outputs/phase2-20261030/environment/pytest-centroid-targeted.xml"
+  ],
+  "cwd": "LOCAL_WORKSPACE/work/phase2-env/repo",
+  "returncode": 0,
+  "wall_seconds": 4.9719420290057315
+}

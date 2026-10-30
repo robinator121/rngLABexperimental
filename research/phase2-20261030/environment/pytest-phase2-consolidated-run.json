@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "LOCAL_WORKSPACE/work/phase2-env/venv/bin/python",
+    "-m",
+    "pytest",
+    "experiment/test_study.py",
+    "experiment/test_fault_study.py",
+    "baseline/test_independent_checker.py",
+    "rus/test_counterexample.py",
+    "analytic-dependence/test_analytic_dependence.py",
+    "-v",
+    "--junitxml=LOCAL_WORKSPACE/outputs/phase2-20261030/environment/pytest-phase2-consolidated.xml"
+  ],
+  "cwd": "LOCAL_WORKSPACE/outputs/phase2-20261030",
+  "returncode": 0,
+  "wall_seconds": 8.68661139399046,
+  "expected_collected": 35,
+  "scope": "Phase II standalone, fault, baseline, RUS and analytic dependence checks; excludes upstream repository suite"
+}

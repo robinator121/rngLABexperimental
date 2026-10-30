@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import math
+import struct
 from typing import Optional, Union
 
 import numpy as np
@@ -55,6 +56,46 @@ def harmonic_energy_estimators(path: np.ndarray, beta: float) -> tuple[np.ndarra
     thermo = m/(2.0*beta) - m*springs/(2.0*beta**2) + 0.5*x2
     virial = 1.0/(2.0*beta) + x2 - 0.5*centroid**2
     return thermo, virial
+
+
+def harmonic_centroid_heatbath(path: np.ndarray, beta: float,
+                              source: RandomSource) -> np.ndarray:
+    """Return a path with a refreshed harmonic centroid; do not mutate input.
+
+    Writing x_j = c + y_j, sum(y_j)=0, the primitive harmonic action factors
+    as S(y) + beta*c**2/2. Thus c ~ Normal(0, 1/beta) is the exact conditional
+    law at every bead count. Internal coordinates and springs are preserved
+    up to floating-point rounding; no Metropolis acceptance draw is needed.
+
+    Consume exactly 16 bytes from the supplied source: two big-endian 64-bit
+    words map to 53-bit uniforms u,v in [0,1), then use the cosine Box-Muller
+    variate sqrt(-2*log1p(-u))*cos(2*pi*v)/sqrt(beta). The sine variate is
+    discarded. Correct conditional sampling assumes IID uniform source words
+    independent of the retained internal coordinates. This interface does not
+    verify those assumptions, certify entropy, or establish full-path mixing.
+    """
+    x = np.asarray(path, dtype=float)
+    if x.ndim != 1 or x.size < 1 or not np.isfinite(x).all():
+        raise ValueError("finite one-dimensional nonempty path required")
+    if not math.isfinite(beta) or beta <= 0:
+        raise ValueError("finite positive beta required")
+    if not isinstance(source, RandomSource):
+        raise TypeError("explicit RandomSource required")
+    # Scale before summing to avoid overflow in the mean of large finite paths.
+    centroid = math.fsum(float(value)/x.size for value in x)
+    with np.errstate(over="ignore", invalid="ignore"):
+        internal = x - centroid
+    if not np.isfinite(internal).all():
+        raise ValueError("centered path must remain finite")
+    a, b = struct.unpack(">QQ", source.read_bytes(16))
+    u, v = (a >> 11)*2.0**-53, (b >> 11)*2.0**-53
+    new_centroid = (math.sqrt(-2.0*math.log1p(-u))
+                    * math.cos(2.0*math.pi*v)/math.sqrt(beta))
+    with np.errstate(over="ignore", invalid="ignore"):
+        updated = internal + new_centroid
+    if not np.isfinite(updated).all():
+        raise ValueError("updated path must remain finite")
+    return updated
 
 
 def sample_exact_finite_bead_paths(source: RandomSource, beads: int, beta: float,
@@ -127,6 +168,8 @@ class PIMCResult:
     discretization_bias: float
     virial_uncertainty: dict
     thermodynamic_uncertainty: dict
+    sampler_protocol: str = "LOCAL_METROPOLIS_V1"
+    centroid_update: Optional[dict] = None
 
 
 class PathIntegralHarmonicOscillator:
@@ -174,10 +217,22 @@ class PathIntegralHarmonicOscillator:
         source_or_channels: Union[RandomSource, StochasticChannels],
         sweeps: int = 2000,
         burn_in: int = 500,
+        *,
+        centroid_source: Optional[RandomSource] = None,
     ) -> PIMCResult:
+        """Run local Metropolis, optionally followed by one centroid Gibbs update.
+
+        The default preserves the existing transition and source consumption.
+        A supplied centroid_source is used after each local sweep, including
+        burn-in. Its separate argument does not prove independent origin; it
+        may alias a local channel, and corrupted/dependent input can invalidate
+        the conditional Gaussian update. This option is harmonic-model specific.
+        """
         if (type(sweeps) is not int or type(burn_in) is not int or burn_in < 0
                 or sweeps - burn_in < 32):
             raise ValueError("integer sweeps/burn_in and at least 32 retained sweeps required")
+        if centroid_source is not None and not isinstance(centroid_source, RandomSource):
+            raise TypeError("centroid_source must be an explicit RandomSource or None")
         if isinstance(source_or_channels, StochasticChannels):
             prop_src = source_or_channels.proposal
             acc_src = source_or_channels.acceptance
@@ -187,6 +242,8 @@ class PathIntegralHarmonicOscillator:
             acc_src = source_or_channels
             init_src = source_or_channels
 
+        centroid_before = centroid_source.consumed_bytes if centroid_source is not None else None
+        centroid_digest_before = centroid_source.stream_digest if centroid_source is not None else None
         M = self.M
         dtau = self.dtau
         delta = self.delta
@@ -239,6 +296,9 @@ class PathIntegralHarmonicOscillator:
                         self.path[j] = x_new
                         accepted += 1
 
+            if centroid_source is not None:
+                self.path[:] = harmonic_centroid_heatbath(self.path, self.beta, centroid_source)
+
             if sweep >= burn_in:
                 e_thermo, e_virial = harmonic_energy_estimators(self.path, self.beta)
                 x_cm = float(np.mean(self.path))
@@ -274,4 +334,22 @@ class PathIntegralHarmonicOscillator:
             discretization_bias=self.finite_bead_energy - self.exact_energy,
             virial_uncertainty=summarize_series(v_arr, reference=self.finite_bead_energy),
             thermodynamic_uncertainty=summarize_series(t_arr, reference=self.finite_bead_energy),
+            sampler_protocol=("LOCAL_METROPOLIS_CENTROID_HEATBATH_V1"
+                              if centroid_source is not None else "LOCAL_METROPOLIS_V1"),
+            centroid_update=({
+                "enabled": True,
+                "schedule": "once after every local sweep, including burn-in",
+                "total_updates": sweeps,
+                "draw_bytes_per_update": 16,
+                "centroid_draw_bytes": 16*sweeps,
+                "source_manifest": centroid_source.manifest.to_dict(),
+                "source_digest_before": centroid_digest_before,
+                "source_digest_after": centroid_source.stream_digest,
+                "source_byte_counter_delta": centroid_source.consumed_bytes-centroid_before,
+                "source_shared_with_local_channels": any(
+                    centroid_source is s for s in (prop_src, acc_src, init_src)),
+                "independence_verified": False,
+                "assumptions": ("IID uniform source words independent of retained internal coordinates; "
+                                "no entropy or full-path mixing certification"),
+            } if centroid_source is not None else {"enabled": False}),
         )

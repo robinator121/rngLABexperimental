@@ -1,0 +1,74 @@
+[
+  {
+    "condition": "acceptance_bias",
+    "monitor": "source_marginal",
+    "paired_whole_run_alert_difference": 0.970703125,
+    "bootstrap_CI95": [
+      0.955078125,
+      0.984375
+    ],
+    "fault_only": 497,
+    "healthy_only": 0,
+    "scope": "secondary; actual healthy false alarm rates differ across monitors"
+  },
+  {
+    "condition": "acceptance_bias",
+    "monitor": "source_cross_channel",
+    "paired_whole_run_alert_difference": 0.015625,
+    "bootstrap_CI95": [
+      0.0,
+      0.03125
+    ],
+    "fault_only": 13,
+    "healthy_only": 5,
+    "scope": "secondary; actual healthy false alarm rates differ across monitors"
+  },
+  {
+    "condition": "acceptance_bias",
+    "monitor": "application_shape",
+    "paired_whole_run_alert_difference": -0.0390625,
+    "bootstrap_CI95": [
+      -0.056640625,
+      -0.0234375
+    ],
+    "fault_only": 0,
+    "healthy_only": 20,
+    "scope": "secondary; actual healthy false alarm rates differ across monitors"
+  },
+  {
+    "condition": "channel_coupling",
+    "monitor": "source_marginal",
+    "paired_whole_run_alert_difference": -0.015625,
+    "bootstrap_CI95": [
+      -0.02734375,
+      -0.005859375
+    ],
+    "fault_only": 0,
+    "healthy_only": 8,
+    "scope": "secondary; actual healthy false alarm rates differ across monitors"
+  },
+  {
+    "condition": "channel_coupling",
+    "monitor": "source_cross_channel",
+    "paired_whole_run_alert_difference": 0.9765625,
+    "bootstrap_CI95": [
+      0.962890625,
+      0.98828125
+    ],
+    "fault_only": 500,
+    "healthy_only": 0,
+    "scope": "secondary; actual healthy false alarm rates differ across monitors"
+  },
+  {
+    "condition": "channel_coupling",
+    "monitor": "application_shape",
+    "paired_whole_run_alert_difference": 0.826171875,
+    "bootstrap_CI95": [
+      0.79296875,
+      0.859375
+    ],
+    "fault_only": 424,
+    "healthy_only": 1,
+    "scope": "secondary; actual healthy false alarm rates differ across monitors"
+  }
+]

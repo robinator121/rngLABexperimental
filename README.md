@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/robinator121/rngLABexperimental/actions/workflows/ci.yml/badge.svg)](https://github.com/robinator121/rngLABexperimental/actions/workflows/ci.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
-[![Tests: 238 Passing](https://img.shields.io/badge/Tests-238%20Passing-brightgreen.svg)](tests/)
+[![Tests: 257 Passing](https://img.shields.io/badge/Tests-257%20Passing-brightgreen.svg)](tests/)
 
 **Author:** Hevele Imre Róbert ([@robinator121](https://github.com/robinator121))  
 **Contact:** [roberthevele@gmail.com](mailto:roberthevele@gmail.com)  
@@ -42,6 +42,12 @@ The project bridges three complementary domains:
 
 4. **Metropolis Acceptance Bias & Ising Ergodicity Breakdown:**
    In 2D Ising spin lattices, directional acceptance corruption $\delta \ge e^{-8/T}$ creates absorbing magnetized ground states, breaking ergodicity and causing perturbation approximations to fail near the critical temperature ($T_c \approx 2.269$) ([`docs/trident/REVIEW_TRIDENT_AUDIT.md`](docs/trident/REVIEW_TRIDENT_AUDIT.md), [`scripts/trident_report.py`](scripts/trident_report.py)).
+
+### Phase II: measured PIMC uncertainty and controlled input faults
+
+A standalone harmonic PIMC campaign at **M=16, β=2, 8,192 retained sweeps**, using nominal 95% CV energy intervals with **BM512**, found coverage of **811/1,024** for stationary local Metropolis, **964/1,024** with exact centroid refresh, and **969/1,024** for independent Gaussian paths. The stationary-start failure persists without initialization bias; refreshing the slow centroid restores uncertainty calibration within the frozen criteria for this specific workload. This is scoped validation of the standalone implementation.
+
+A separate, paired 512-replica study of the validated standalone centroid-refresh sampler covered the intended energy in **487/512 healthy runs**, **0/512 with an acceptance-uniform shift**, and **13/512 with proposal/acceptance channel coupling**. These are injected adapter faults. Source and application monitors have different blind spots; the results establish no general application-monitor advantage. Reports, protocols, reproduction instructions and **35 separate research regression checks** are in [`research/phase2-20261030/README.md`](research/phase2-20261030/README.md). The optional upstream centroid-refresh API has regression tests; an equivalent coverage campaign through that API remains proposed.
 
 ---
 
@@ -116,7 +122,9 @@ rngLABexperimental/
 │   ├── validation/        # Methodological reviews, critiques, and source comparisons
 │   └── REPRODUCIBILITY.md # Verification protocol and provenance manifest
 ├── scripts/               # Benchmark runners, audit verifiers, report generators
-├── tests/                 # 238 unit, mathematical, and regression tests (100% passing)
+├── research/
+│   └── phase2-20261030/    # Standalone Phase II study, reports, and 35 separate research checks
+├── tests/                 # 257 core unit, mathematical, and regression tests
 ├── pyproject.toml         # Package build configuration
 └── LICENSE                # GNU Affero General Public License v3 (AGPL-3.0)
 ```
@@ -144,12 +152,14 @@ pip install numpy scipy cryptography matplotlib pytest
 
 ### Running the Complete Test Suite
 
-Execute the full suite of **238 automated tests** (covering core statistical batteries, quantum/Ising models, physical acquisition, and financial risk engines):
+Execute the complete core suite of **257 automated tests** (covering core statistical batteries, quantum/Ising models, physical acquisition, financial risk engines, and the optional centroid-refresh API):
 
 ```bash
 PYTHONPATH=src pytest tests -q
 ```
-*Expected result: 238 passed in ~9 seconds.*
+*Expected result: 257 passed. Runtime depends on the environment.*
+
+The **35 Phase II research checks** are separate from this core count. Their environment and execution commands are documented in the [Phase II research package](research/phase2-20261030/README.md).
 
 ### Executing Benchmark Suites
 

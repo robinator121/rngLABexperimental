@@ -1,0 +1,31 @@
+{
+  "id": "rnglab-phase2-analytic-dependence-v1",
+  "classification": "prespecified analytically solvable synthetic dependence control",
+  "written_utc": "2026-10-30T14:21:20.492579+00:00",
+  "script_sha256": "4feb3c538fa756bb65055b0f8f5592ff54d5578928d11706a7ea8c4e5bdd75ac",
+  "replicas": 1024,
+  "retained": 8192,
+  "phis": [
+    0.0,
+    0.997,
+    0.999
+  ],
+  "batch_sizes": [
+    32,
+    128,
+    512
+  ],
+  "M": 16,
+  "beta": 2.0,
+  "hypothesis": "BM estimated MC variance follows its exact stationary finite-n expectation; exact variance normal intervals distinguish variance estimation error from remaining finite-run distributional effects",
+  "not_an_RNG_fault": "AR1 is an intentionally specified target-preserving transition; healthy PCG64 normal inputs",
+  "initialization": "c0~N(0,1/beta), independent internal harmonic modes redrawn at every recorded step",
+  "replicate_unit": "one complete independent trajectory; distinct namespaces across phi and replica",
+  "resource_limit": "single process, BLAS one thread; at most one R1024 by n8192 CV array retained in memory",
+  "primary_endpoints": [
+    "BM32/BM128/BM512 coverage",
+    "BM expected variance against analytic exact value",
+    "oracle known finite-n variance normal-interval coverage"
+  ],
+  "sample_scope": "1024 replicas estimates 95% coverage with roughly \u00b11.34 percentage point precision; no guarantee at exactly 95%"
+}

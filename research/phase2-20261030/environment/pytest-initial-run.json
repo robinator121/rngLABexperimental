@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "LOCAL_WORKSPACE/work/phase2-env/venv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-v",
+    "--durations=20",
+    "--junitxml=LOCAL_WORKSPACE/outputs/phase2-20261030/environment/pytest-initial.xml"
+  ],
+  "cwd": "LOCAL_WORKSPACE/work/phase2-env/repo",
+  "returncode": 0,
+  "wall_seconds": 10.477762205002364,
+  "environment_overrides": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MPLBACKEND": "Agg",
+    "PYTHONPATH": "LOCAL_WORKSPACE/work/phase2-env/repo/src"
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "recorded_date": "2026-10-30",
+  "scientific_data_generation": "single-process CPU NumPy/SciPy/Numba; no GPU kernel in study.py",
+  "timing_scope": "per-condition generation elapsed time from manifests, including compressed NPZ output; excludes subsequent analysis",
+  "peak_memory_measured": false,
+  "condition_resources": [
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "centroid_refresh",
+      "replicas": 128,
+      "steps": 8192,
+      "generation_elapsed_seconds": 1.8799486639909446,
+      "compressed_trace_bytes": 24159894
+    },
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "iid_gaussian",
+      "replicas": 128,
+      "steps": 8192,
+      "generation_elapsed_seconds": 1.4663464130135253,
+      "compressed_trace_bytes": 24155961
+    },
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "local_displaced_d04",
+      "replicas": 128,
+      "steps": 12288,
+      "generation_elapsed_seconds": 2.7941123979981057,
+      "compressed_trace_bytes": 36197617
+    },
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "local_stationary_d015",
+      "replicas": 128,
+      "steps": 8192,
+      "generation_elapsed_seconds": 1.7731629030022305,
+      "compressed_trace_bytes": 24094664
+    },
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "local_stationary_d04",
+      "replicas": 128,
+      "steps": 32768,
+      "generation_elapsed_seconds": 11.513514597012545,
+      "compressed_trace_bytes": 96523570
+    },
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "local_stationary_d10",
+      "replicas": 128,
+      "steps": 8192,
+      "generation_elapsed_seconds": 1.7220598009880632,
+      "compressed_trace_bytes": 24134986
+    },
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "local_uniform_d04",
+      "replicas": 128,
+      "steps": 12288,
+      "generation_elapsed_seconds": 2.7721036089933477,
+      "compressed_trace_bytes": 36200342
+    },
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "local_zero_d04",
+      "replicas": 128,
+      "steps": 12288,
+      "generation_elapsed_seconds": 2.8103169279929716,
+      "compressed_trace_bytes": 36200255
+    },
+    {
+      "folder": "exploratory-v1",
+      "stage": "exploratory-v1",
+      "condition": "reversible_scan",
+      "replicas": 128,
+      "steps": 8192,
+      "generation_elapsed_seconds": 1.9087876080011483,
+      "compressed_trace_bytes": 24129950
+    },
+    {
+      "folder": "confirmation-v1",
+      "stage": "confirmation-v1",
+      "condition": "centroid_refresh",
+      "replicas": 1024,
+      "steps": 8192,
+      "generation_elapsed_seconds": 15.898275004990865,
+      "compressed_trace_bytes": 193272007
+    },
+    {
+      "folder": "confirmation-v1",
+      "stage": "confirmation-v1",
+      "condition": "iid_gaussian",
+      "replicas": 1024,
+      "steps": 8192,
+      "generation_elapsed_seconds": 12.226549569008057,
+      "compressed_trace_bytes": 193244157
+    },
+    {
+      "folder": "confirmation-v1",
+      "stage": "confirmation-v1",
+      "condition": "local_stationary",
+      "replicas": 1024,
+      "steps": 8192,
+      "generation_elapsed_seconds": 19.415271491001477,
+      "compressed_trace_bytes": 193065221
+    },
+    {
+      "folder": "fault-study-v1",
+      "stage": "fault-test-v1",
+      "condition": "acceptance_bias",
+      "replicas": 512,
+      "steps": 10240,
+      "generation_elapsed_seconds": 14.658104424001067,
+      "compressed_trace_bytes": 240360455
+    },
+    {
+      "folder": "fault-study-v1",
+      "stage": "fault-test-v1",
+      "condition": "channel_coupling",
+      "replicas": 512,
+      "steps": 10240,
+      "generation_elapsed_seconds": 14.224893171995063,
+      "compressed_trace_bytes": 210474358
+    },
+    {
+      "folder": "fault-study-v1",
+      "stage": "fault-test-v1",
+      "condition": "healthy",
+      "replicas": 512,
+      "steps": 10240,
+      "generation_elapsed_seconds": 14.900674653006718,
+      "compressed_trace_bytes": 240282800
+    },
+    {
+      "folder": "fault-study-v1",
+      "stage": "fault-calibration-v1",
+      "condition": "healthy_calibration",
+      "replicas": 399,
+      "steps": 10240,
+      "generation_elapsed_seconds": 17.22217898600502,
+      "compressed_trace_bytes": 187252206
+    }
+  ],
+  "summed_generation_elapsed_seconds": 137.18630022100115,
+  "compressed_npz_bytes": 1783748443,
+  "current_experiment_tree_bytes": 1810545011,
+  "scientific_scripts_sha256": {
+    "study.py": "378ec5767b74dc9d4e83095c4b5685ff8f9d2dfcfa93d7a04abf0de272876b87",
+    "fault_study.py": "bdc648b60550e146d62ad63eb7fdb6def897687821ed404a4275a6055ce82008",
+    "test_study.py": "bcb710df07ab55ec947b07464e5f6b374e525a58cd9390c3a23e72a13a524f84",
+    "test_fault_study.py": "1ecd4ff05a4396ff6afac81bee956e868959100ec5097ffb6f15b1a2314daf84",
+    "validate_artifacts.py": "50fdfd5db2da4e2960de9b793b52f754b9e0f4747ec505765a1b1659775eff4b"
+  },
+  "fault_whole_run_elapsed_seconds": 102.37836490799964,
+  "independent_artifact_audit_seconds": 26.98149331699824
+}

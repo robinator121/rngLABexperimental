@@ -1,0 +1,8 @@
+# Preserve frozen source/protocol and recorded artifact bytes on every platform.
+* -text
+*.csv linguist-generated=true
+*.json linguist-generated=true
+*.svg linguist-generated=true
+*.log linguist-generated=true
+*.xml linguist-generated=true
+SHA256SUMS linguist-generated=true

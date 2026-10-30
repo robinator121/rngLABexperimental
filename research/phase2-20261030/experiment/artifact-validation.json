@@ -1,0 +1,902 @@
+{
+  "validator": "independent read-only Phase II artifact audit v1",
+  "timestamp_utc": "2026-10-30T14:31:18.586014+00:00",
+  "validator_sha256": "50fdfd5db2da4e2960de9b793b52f754b9e0f4747ec505765a1b1659775eff4b",
+  "imports_study_module": false,
+  "source_and_data_mutations": false,
+  "passed": true,
+  "checks": [
+    {
+      "check": "baseline audit JSON matches its manifest",
+      "passed": true
+    },
+    {
+      "check": "baseline lists exactly ten original Phase I artifacts",
+      "passed": true
+    },
+    {
+      "check": "original preserved: pimc_uncertainty_pilot.py",
+      "passed": true,
+      "expected_sha256": "5d9de44557e9721609e15b2570f2c0f4be9419d6c481429c628e1c9869de1880",
+      "actual_sha256": "5d9de44557e9721609e15b2570f2c0f4be9419d6c481429c628e1c9869de1880",
+      "bytes": 17045
+    },
+    {
+      "check": "original preserved: pimc-uncertainty-pilot-results.json",
+      "passed": true,
+      "expected_sha256": "8409b4f3a0407318ea5c2498d880bf3ee8039c17eee2793451743e4caa6b6926",
+      "actual_sha256": "8409b4f3a0407318ea5c2498d880bf3ee8039c17eee2793451743e4caa6b6926",
+      "bytes": 11483
+    },
+    {
+      "check": "original preserved: pimc-uncertainty-pilot-chain-summary.csv",
+      "passed": true,
+      "expected_sha256": "43b93950f1f3a48d4b694cf22b389df71c32809ce8c29ce34fea6d1d7f532e27",
+      "actual_sha256": "43b93950f1f3a48d4b694cf22b389df71c32809ce8c29ce34fea6d1d7f532e27",
+      "bytes": 8027
+    },
+    {
+      "check": "original preserved: pimc-uncertainty-pilot-traces.csv.gz",
+      "passed": true,
+      "expected_sha256": "d465471c7d97c39c6571e4f37c5e4474511864c63a736605b08544996205d005",
+      "actual_sha256": "d465471c7d97c39c6571e4f37c5e4474511864c63a736605b08544996205d005",
+      "bytes": 16326248
+    },
+    {
+      "check": "original preserved: pimc-uncertainty-pilot-coverage.svg",
+      "passed": true,
+      "expected_sha256": "48cd0de5e89c9093b9fd930121dc81dfad649ceb6881d0e209dafc0d22591151",
+      "actual_sha256": "48cd0de5e89c9093b9fd930121dc81dfad649ceb6881d0e209dafc0d22591151",
+      "bytes": 10574
+    },
+    {
+      "check": "original preserved: PIMC_uncertainty_pilot_methodology.md",
+      "passed": true,
+      "expected_sha256": "6f31a40ce6494cf023486a46801118b7606d25b7dcb51537fea0f940a6982d49",
+      "actual_sha256": "6f31a40ce6494cf023486a46801118b7606d25b7dcb51537fea0f940a6982d49",
+      "bytes": 8273
+    },
+    {
+      "check": "original preserved: RNGLab_research_status_2026-10-30.md",
+      "passed": true,
+      "expected_sha256": "a1f06e3547407ee31662585136a8249cec137a0f8e160590d886929f7243480d",
+      "actual_sha256": "a1f06e3547407ee31662585136a8249cec137a0f8e160590d886929f7243480d",
+      "bytes": 33219
+    },
+    {
+      "check": "original preserved: RNGLab_literature.bib",
+      "passed": true,
+      "expected_sha256": "a14bfb67ea8bbacd1b4ecbd829bf38cde1c82209e0b3b7f2adddcd3048ed95c4",
+      "actual_sha256": "a14bfb67ea8bbacd1b4ecbd829bf38cde1c82209e0b3b7f2adddcd3048ed95c4",
+      "bytes": 7059
+    },
+    {
+      "check": "original preserved: physical-inventory-20261019-140519.json",
+      "passed": true,
+      "expected_sha256": "6d45497ace48c6d91fd824e82f901b3e465505da971d2c8dc6502e2b8c374caa",
+      "actual_sha256": "6d45497ace48c6d91fd824e82f901b3e465505da971d2c8dc6502e2b8c374caa",
+      "bytes": 1106
+    },
+    {
+      "check": "original preserved: physical-inventory-20261019-143018.json",
+      "passed": true,
+      "expected_sha256": "dea4269dfd4cd9d4ad9b4caa230e3c79f51656dbf5e985dc54df9b6d37fd0467",
+      "actual_sha256": "dea4269dfd4cd9d4ad9b4caa230e3c79f51656dbf5e985dc54df9b6d37fd0467",
+      "bytes": 1092
+    },
+    {
+      "check": "frozen confirmation protocol hash",
+      "passed": true,
+      "actual_sha256": "468e816c1de68bb8975303b4f725cbffbc3ab34bc34ceef505ab84046025e984"
+    },
+    {
+      "check": "frozen fault protocol hash",
+      "passed": true,
+      "actual_sha256": "72ede91d8c4e82caa0454e4d50351272ee26a9e9b161bf4f694bc2c7f70614a1"
+    },
+    {
+      "check": "confirmation code hash",
+      "passed": true
+    },
+    {
+      "check": "fault main study code hash",
+      "passed": true
+    },
+    {
+      "check": "fault adapter code hash",
+      "passed": true
+    },
+    {
+      "check": "fault prerequisite healthy decision hash",
+      "passed": true
+    },
+    {
+      "check": "fault prerequisite healthy gate passed",
+      "passed": true
+    },
+    {
+      "check": "confirmation model and primary design",
+      "passed": true
+    },
+    {
+      "check": "fault model, counts and onset",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/centroid_refresh",
+      "passed": true,
+      "actual_sha256": "b9f79c0c37b495e4dc5cede9b9de81d32a5dd58ea9ae31ebbc1a082d76f7b6cc",
+      "bytes": 24159894
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/centroid_refresh",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/iid_gaussian",
+      "passed": true,
+      "actual_sha256": "e5f4df35c9f4bcc9b5f44be506167797e95d5a529271ebb8053cb56d5e5ebd53",
+      "bytes": 24155961
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/iid_gaussian",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/local_displaced_d04",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/local_displaced_d04",
+      "passed": true,
+      "actual_sha256": "0274916dcbb247c2238632d270c487f2b8ae7f2183ad25d798428f810b9a11ee",
+      "bytes": 36197617
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/local_displaced_d04",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/local_displaced_d04",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/local_displaced_d04",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/local_displaced_d04",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/local_stationary_d015",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/local_stationary_d015",
+      "passed": true,
+      "actual_sha256": "373644fd2f05c2ef71c5c4ba84bcac08aed252a6f73d223715972ecc7f4b21dd",
+      "bytes": 24094664
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/local_stationary_d015",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/local_stationary_d015",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/local_stationary_d015",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/local_stationary_d015",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/local_stationary_d04",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/local_stationary_d04",
+      "passed": true,
+      "actual_sha256": "b3c4e98f6c679846510d980d401542abd561003eb0306e67274f22d9d573e1d8",
+      "bytes": 96523570
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/local_stationary_d04",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/local_stationary_d04",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/local_stationary_d04",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/local_stationary_d04",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/local_stationary_d10",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/local_stationary_d10",
+      "passed": true,
+      "actual_sha256": "0097374563b3e7a09509a52ff9521b514962debd3dd1ce682ee81b245b1fed54",
+      "bytes": 24134986
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/local_stationary_d10",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/local_stationary_d10",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/local_stationary_d10",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/local_stationary_d10",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/local_uniform_d04",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/local_uniform_d04",
+      "passed": true,
+      "actual_sha256": "7a2bdd128794b89af6a9a71ed9230153b25debaf153f8146f9fd61b1d58f358e",
+      "bytes": 36200342
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/local_uniform_d04",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/local_uniform_d04",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/local_uniform_d04",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/local_uniform_d04",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/local_zero_d04",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/local_zero_d04",
+      "passed": true,
+      "actual_sha256": "35b506e0688b576df16a3f3133478a1b0e29bd2179fdfb7b74347e2b68e0b3a1",
+      "bytes": 36200255
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/local_zero_d04",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/local_zero_d04",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/local_zero_d04",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/local_zero_d04",
+      "passed": true
+    },
+    {
+      "check": "stage identity: exploratory-v1/reversible_scan",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: exploratory-v1/reversible_scan",
+      "passed": true,
+      "actual_sha256": "2c60732594809701f74070f18e01046a95aa56496533c78fdb0cc80d30e0cb16",
+      "bytes": 24129950
+    },
+    {
+      "check": "manifest code hash: exploratory-v1/reversible_scan",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: exploratory-v1/reversible_scan",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: exploratory-v1/reversible_scan",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: exploratory-v1/reversible_scan",
+      "passed": true
+    },
+    {
+      "check": "stage identity: confirmation-v1/local_stationary",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: confirmation-v1/local_stationary",
+      "passed": true,
+      "actual_sha256": "14c02adf798f6bff3d6525d52179d70a6c489dd9b2eb25d2b55ddbd07293042d",
+      "bytes": 193065221
+    },
+    {
+      "check": "manifest code hash: confirmation-v1/local_stationary",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: confirmation-v1/local_stationary",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: confirmation-v1/local_stationary",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: confirmation-v1/local_stationary",
+      "passed": true
+    },
+    {
+      "check": "stage identity: confirmation-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: confirmation-v1/centroid_refresh",
+      "passed": true,
+      "actual_sha256": "7897e6ee508cf82ded7318fdb88217d78f08b3e5c0921bd38860863f0c85b43b",
+      "bytes": 193272007
+    },
+    {
+      "check": "manifest code hash: confirmation-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: confirmation-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: confirmation-v1/centroid_refresh",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: confirmation-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "stage identity: confirmation-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: confirmation-v1/iid_gaussian",
+      "passed": true,
+      "actual_sha256": "0dd7b531bf95ddbcff2fecebc43c0e907f76b5eafccefa42eba15895a662b7cc",
+      "bytes": 193244157
+    },
+    {
+      "check": "manifest code hash: confirmation-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: confirmation-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: confirmation-v1/iid_gaussian",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: confirmation-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "stage identity: fault-study-v1/healthy_calibration",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: fault-study-v1/healthy_calibration",
+      "passed": true,
+      "actual_sha256": "b9e94b694801faf3a90f162fc8df760e21dcf310924d2e938e4889e8ddce70cb",
+      "bytes": 187252206
+    },
+    {
+      "check": "manifest code hash: fault-study-v1/healthy_calibration",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: fault-study-v1/healthy_calibration",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: fault-study-v1/healthy_calibration",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: fault-study-v1/healthy_calibration",
+      "passed": true
+    },
+    {
+      "check": "stage identity: fault-study-v1/healthy",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: fault-study-v1/healthy",
+      "passed": true,
+      "actual_sha256": "addda90b8765ce715d5771d78899e1587a987bdcae8a66c01913f2cc076bb1e5",
+      "bytes": 240282800
+    },
+    {
+      "check": "manifest code hash: fault-study-v1/healthy",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: fault-study-v1/healthy",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: fault-study-v1/healthy",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: fault-study-v1/healthy",
+      "passed": true
+    },
+    {
+      "check": "stage identity: fault-study-v1/acceptance_bias",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: fault-study-v1/acceptance_bias",
+      "passed": true,
+      "actual_sha256": "890b33504ccc891c970aa00de43b5041e0715973715eaeb82fd6ed6483ffa8b1",
+      "bytes": 240360455
+    },
+    {
+      "check": "manifest code hash: fault-study-v1/acceptance_bias",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: fault-study-v1/acceptance_bias",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: fault-study-v1/acceptance_bias",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: fault-study-v1/acceptance_bias",
+      "passed": true
+    },
+    {
+      "check": "stage identity: fault-study-v1/channel_coupling",
+      "passed": true
+    },
+    {
+      "check": "NPZ checksum: fault-study-v1/channel_coupling",
+      "passed": true,
+      "actual_sha256": "d3dd07ae1f936b8252dd8eba4a5c709dccc546eb3e25c07e5afda10f1da994f5",
+      "bytes": 210474358
+    },
+    {
+      "check": "manifest code hash: fault-study-v1/channel_coupling",
+      "passed": true
+    },
+    {
+      "check": "manifest condition identity: fault-study-v1/channel_coupling",
+      "passed": true
+    },
+    {
+      "check": "seed rule and indices: fault-study-v1/channel_coupling",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "check": "NPZ array domain: fault-study-v1/channel_coupling",
+      "passed": true
+    },
+    {
+      "check": "all seed domains collision free; intentional same-stage condition pairing allowed",
+      "passed": true,
+      "collisions": [],
+      "unique_seed_count": 10315,
+      "recorded_seed_count": 30795,
+      "unique_per_stage": {
+        "exploratory-v1": 640,
+        "confirmation-v1": 5120,
+        "fault-calibration-v1": 1995,
+        "fault-test-v1": 2560
+      },
+      "meaning": "Namespace separation and unique derived seeds; not proof of statistically independent entropy"
+    },
+    {
+      "check": "independent aggregate CV BM512: confirmation-v1/local_stationary",
+      "passed": true
+    },
+    {
+      "check": "independent per-replica CV BM512: confirmation-v1/local_stationary",
+      "passed": true,
+      "mismatched_replicas": []
+    },
+    {
+      "check": "independent aggregate CV BM512: confirmation-v1/centroid_refresh",
+      "passed": true
+    },
+    {
+      "check": "independent per-replica CV BM512: confirmation-v1/centroid_refresh",
+      "passed": true,
+      "mismatched_replicas": []
+    },
+    {
+      "check": "independent aggregate CV BM512: confirmation-v1/iid_gaussian",
+      "passed": true
+    },
+    {
+      "check": "independent per-replica CV BM512: confirmation-v1/iid_gaussian",
+      "passed": true,
+      "mismatched_replicas": []
+    },
+    {
+      "check": "independent aggregate CV BM512: fault-study-v1/healthy",
+      "passed": true
+    },
+    {
+      "check": "independent per-replica CV BM512: fault-study-v1/healthy",
+      "passed": true,
+      "mismatched_replicas": []
+    },
+    {
+      "check": "independent aggregate CV BM512: fault-study-v1/acceptance_bias",
+      "passed": true
+    },
+    {
+      "check": "independent per-replica CV BM512: fault-study-v1/acceptance_bias",
+      "passed": true,
+      "mismatched_replicas": []
+    },
+    {
+      "check": "independent aggregate CV BM512: fault-study-v1/channel_coupling",
+      "passed": true
+    },
+    {
+      "check": "independent per-replica CV BM512: fault-study-v1/channel_coupling",
+      "passed": true,
+      "mismatched_replicas": []
+    },
+    {
+      "check": "all-replica prefault raw/source bytes identical: acceptance_bias",
+      "passed": true,
+      "condition": "acceptance_bias",
+      "replicas": 512,
+      "prefix_sweeps": 2048,
+      "raw_byte_equal": true,
+      "source_byte_equal": true,
+      "raw_prefix_sha256": "dbe02ac8c9461284ff02cf6acc40a86a13b2ae92c17859f892d4ed8f0fb6cb1e",
+      "source_prefix_sha256": "7c7a0ec982791efbc2022c6f15474c0b5d1ea0e10daa4409718f5a6b3de59353"
+    },
+    {
+      "check": "all-replica prefault raw/source bytes identical: channel_coupling",
+      "passed": true,
+      "condition": "channel_coupling",
+      "replicas": 512,
+      "prefix_sweeps": 2048,
+      "raw_byte_equal": true,
+      "source_byte_equal": true,
+      "raw_prefix_sha256": "dbe02ac8c9461284ff02cf6acc40a86a13b2ae92c17859f892d4ed8f0fb6cb1e",
+      "source_prefix_sha256": "7c7a0ec982791efbc2022c6f15474c0b5d1ea0e10daa4409718f5a6b3de59353"
+    }
+  ],
+  "condition_manifests": [
+    {
+      "folder": "exploratory-v1",
+      "condition": "centroid_refresh",
+      "stage": "exploratory-v1",
+      "npz_sha256": "b9f79c0c37b495e4dc5cede9b9de81d32a5dd58ea9ae31ebbc1a082d76f7b6cc",
+      "manifest_sha256": "86f7abc42fb86bf9c20ac887e2237b523bd649059deb2ff4f3a11884adf5ddda",
+      "replicas": 128,
+      "steps": 8192
+    },
+    {
+      "folder": "exploratory-v1",
+      "condition": "iid_gaussian",
+      "stage": "exploratory-v1",
+      "npz_sha256": "e5f4df35c9f4bcc9b5f44be506167797e95d5a529271ebb8053cb56d5e5ebd53",
+      "manifest_sha256": "ecc4e87ba605cfb8d9ed218f73dabdf5580beddd00243de82e728b815213c534",
+      "replicas": 128,
+      "steps": 8192
+    },
+    {
+      "folder": "exploratory-v1",
+      "condition": "local_displaced_d04",
+      "stage": "exploratory-v1",
+      "npz_sha256": "0274916dcbb247c2238632d270c487f2b8ae7f2183ad25d798428f810b9a11ee",
+      "manifest_sha256": "722d76dc7d99f8c68991b692a6f99e5a2bd9770750eb725d2444510e986ecb95",
+      "replicas": 128,
+      "steps": 12288
+    },
+    {
+      "folder": "exploratory-v1",
+      "condition": "local_stationary_d015",
+      "stage": "exploratory-v1",
+      "npz_sha256": "373644fd2f05c2ef71c5c4ba84bcac08aed252a6f73d223715972ecc7f4b21dd",
+      "manifest_sha256": "fe17bf62ed6ebde49fc994f40b07ca060acbc59ffad604e669323c75e3a9aabc",
+      "replicas": 128,
+      "steps": 8192
+    },
+    {
+      "folder": "exploratory-v1",
+      "condition": "local_stationary_d04",
+      "stage": "exploratory-v1",
+      "npz_sha256": "b3c4e98f6c679846510d980d401542abd561003eb0306e67274f22d9d573e1d8",
+      "manifest_sha256": "5d6ad52ccd3882c1f1b8dd89a5fd56a3486aad2a0405d1ffbd0120166220d69e",
+      "replicas": 128,
+      "steps": 32768
+    },
+    {
+      "folder": "exploratory-v1",
+      "condition": "local_stationary_d10",
+      "stage": "exploratory-v1",
+      "npz_sha256": "0097374563b3e7a09509a52ff9521b514962debd3dd1ce682ee81b245b1fed54",
+      "manifest_sha256": "dfca41ddf40c2ec17cd15f181ea1c1e9aa606c5c43ee17ba7a96ed61777145f1",
+      "replicas": 128,
+      "steps": 8192
+    },
+    {
+      "folder": "exploratory-v1",
+      "condition": "local_uniform_d04",
+      "stage": "exploratory-v1",
+      "npz_sha256": "7a2bdd128794b89af6a9a71ed9230153b25debaf153f8146f9fd61b1d58f358e",
+      "manifest_sha256": "a1ee411b07be062a52c0dc10fe6c4b6f628a762168f620dc53e43db7f7f7ea49",
+      "replicas": 128,
+      "steps": 12288
+    },
+    {
+      "folder": "exploratory-v1",
+      "condition": "local_zero_d04",
+      "stage": "exploratory-v1",
+      "npz_sha256": "35b506e0688b576df16a3f3133478a1b0e29bd2179fdfb7b74347e2b68e0b3a1",
+      "manifest_sha256": "cbd6275dad35783a08fbfb634c24633ae0c734b3a41d12e9e12bf3664ab47737",
+      "replicas": 128,
+      "steps": 12288
+    },
+    {
+      "folder": "exploratory-v1",
+      "condition": "reversible_scan",
+      "stage": "exploratory-v1",
+      "npz_sha256": "2c60732594809701f74070f18e01046a95aa56496533c78fdb0cc80d30e0cb16",
+      "manifest_sha256": "fe17f4aebafdb5f9ca33d3e3fa6ac761d9cbeb6b6a9315f58c63ffa45f150d98",
+      "replicas": 128,
+      "steps": 8192
+    },
+    {
+      "folder": "confirmation-v1",
+      "condition": "local_stationary",
+      "stage": "confirmation-v1",
+      "npz_sha256": "14c02adf798f6bff3d6525d52179d70a6c489dd9b2eb25d2b55ddbd07293042d",
+      "manifest_sha256": "cf0a0f77a77177761340399700239e5e203a324b68bf826b57ab8591f02ac6e1",
+      "replicas": 1024,
+      "steps": 8192
+    },
+    {
+      "folder": "confirmation-v1",
+      "condition": "centroid_refresh",
+      "stage": "confirmation-v1",
+      "npz_sha256": "7897e6ee508cf82ded7318fdb88217d78f08b3e5c0921bd38860863f0c85b43b",
+      "manifest_sha256": "9b1ee02ef23faf0ec5fe699846cc05ce4e8c0395863e0193ba75b211934659b9",
+      "replicas": 1024,
+      "steps": 8192
+    },
+    {
+      "folder": "confirmation-v1",
+      "condition": "iid_gaussian",
+      "stage": "confirmation-v1",
+      "npz_sha256": "0dd7b531bf95ddbcff2fecebc43c0e907f76b5eafccefa42eba15895a662b7cc",
+      "manifest_sha256": "ed300380aaa076d3268490e1f264efcfce1aeabaa6836f9c368b0a4afc4deb15",
+      "replicas": 1024,
+      "steps": 8192
+    },
+    {
+      "folder": "fault-study-v1",
+      "condition": "healthy_calibration",
+      "stage": "fault-calibration-v1",
+      "npz_sha256": "b9e94b694801faf3a90f162fc8df760e21dcf310924d2e938e4889e8ddce70cb",
+      "manifest_sha256": "28160258dc37b3aa783a42c52653d1652157d48cea0d09f61fc0a9bcf52f6ec0",
+      "replicas": 399,
+      "steps": 10240
+    },
+    {
+      "folder": "fault-study-v1",
+      "condition": "healthy",
+      "stage": "fault-test-v1",
+      "npz_sha256": "addda90b8765ce715d5771d78899e1587a987bdcae8a66c01913f2cc076bb1e5",
+      "manifest_sha256": "540d23a2491669dfc315dc39c77228d27e2e8b13af28e0356d45c2a29fc21045",
+      "replicas": 512,
+      "steps": 10240
+    },
+    {
+      "folder": "fault-study-v1",
+      "condition": "acceptance_bias",
+      "stage": "fault-test-v1",
+      "npz_sha256": "890b33504ccc891c970aa00de43b5041e0715973715eaeb82fd6ed6483ffa8b1",
+      "manifest_sha256": "8af235fa71a42598c4997c98c67d886924c52bc5db47fe58a6bcd82052f27eb0",
+      "replicas": 512,
+      "steps": 10240
+    },
+    {
+      "folder": "fault-study-v1",
+      "condition": "channel_coupling",
+      "stage": "fault-test-v1",
+      "npz_sha256": "d3dd07ae1f936b8252dd8eba4a5c709dccc546eb3e25c07e5afda10f1da994f5",
+      "manifest_sha256": "81de036741e20dd34fc3ac0504f9498b08ed80b5ee7f1d172d66455f71bef799",
+      "replicas": 512,
+      "steps": 10240
+    }
+  ],
+  "independently_recomputed_primary_coverage": [
+    {
+      "folder": "confirmation-v1",
+      "condition": "local_stationary",
+      "replicas": 1024,
+      "covered": 811,
+      "coverage": 0.7919921875,
+      "coverage_CP95": [
+        0.7658212868541585,
+        0.8164723222183208
+      ],
+      "bias": -0.0008070797278966202,
+      "estimated_to_empirical_variance_ratio": 0.5308413013144757,
+      "critical_t15": 2.131449545559776
+    },
+    {
+      "folder": "confirmation-v1",
+      "condition": "centroid_refresh",
+      "replicas": 1024,
+      "covered": 964,
+      "coverage": 0.94140625,
+      "coverage_CP95": [
+        0.9252183906681828,
+        0.954992526079022
+      ],
+      "bias": 6.670467348102171e-05,
+      "estimated_to_empirical_variance_ratio": 0.9440812541526287,
+      "critical_t15": 2.131449545559776
+    },
+    {
+      "folder": "confirmation-v1",
+      "condition": "iid_gaussian",
+      "replicas": 1024,
+      "covered": 969,
+      "coverage": 0.9462890625,
+      "coverage_CP95": [
+        0.9306585400154328,
+        0.9592847053237007
+      ],
+      "bias": -1.554317138230399e-05,
+      "estimated_to_empirical_variance_ratio": 0.9409499071244419,
+      "critical_t15": 2.131449545559776
+    },
+    {
+      "folder": "fault-study-v1",
+      "condition": "healthy",
+      "replicas": 512,
+      "covered": 487,
+      "coverage": 0.951171875,
+      "coverage_CP95": [
+        0.928761344158637,
+        0.9681552478035633
+      ],
+      "bias": -2.3654764793379357e-05,
+      "estimated_to_empirical_variance_ratio": 1.023724182969613,
+      "critical_t15": 2.131449545559776
+    },
+    {
+      "folder": "fault-study-v1",
+      "condition": "acceptance_bias",
+      "replicas": 512,
+      "covered": 0,
+      "coverage": 0.0,
+      "coverage_CP95": [
+        0.0,
+        0.007178950026259453
+      ],
+      "bias": -0.039610068706882884,
+      "estimated_to_empirical_variance_ratio": 1.0473440573260089,
+      "critical_t15": 2.131449545559776
+    },
+    {
+      "folder": "fault-study-v1",
+      "condition": "channel_coupling",
+      "replicas": 512,
+      "covered": 13,
+      "coverage": 0.025390625,
+      "coverage_CP95": [
+        0.013587156828088611,
+        0.04302739655157609
+      ],
+      "bias": 0.04250191909482337,
+      "estimated_to_empirical_variance_ratio": 0.9317525744546824,
+      "critical_t15": 2.131449545559776
+    }
+  ],
+  "full_replica_prefault_prefix_checks": [
+    {
+      "condition": "acceptance_bias",
+      "replicas": 512,
+      "prefix_sweeps": 2048,
+      "raw_byte_equal": true,
+      "source_byte_equal": true,
+      "raw_prefix_sha256": "dbe02ac8c9461284ff02cf6acc40a86a13b2ae92c17859f892d4ed8f0fb6cb1e",
+      "source_prefix_sha256": "7c7a0ec982791efbc2022c6f15474c0b5d1ea0e10daa4409718f5a6b3de59353"
+    },
+    {
+      "condition": "channel_coupling",
+      "replicas": 512,
+      "prefix_sweeps": 2048,
+      "raw_byte_equal": true,
+      "source_byte_equal": true,
+      "raw_prefix_sha256": "dbe02ac8c9461284ff02cf6acc40a86a13b2ae92c17859f892d4ed8f0fb6cb1e",
+      "source_prefix_sha256": "7c7a0ec982791efbc2022c6f15474c0b5d1ea0e10daa4409718f5a6b3de59353"
+    }
+  ],
+  "elapsed_seconds": 26.98149331699824,
+  "scope": "Artifact integrity, saved-result arithmetic and namespace/prefix checks; not proof of RNG independence or universal statistical validity"
+}

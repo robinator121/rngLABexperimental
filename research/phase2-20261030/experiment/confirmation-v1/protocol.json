@@ -1,0 +1,65 @@
+{
+  "id": "confirmation-v1",
+  "timestamp_utc": "2026-10-30T14:19:06.910208+00:00",
+  "script_sha256": "378ec5767b74dc9d4e83095c4b5685ff8f9d2dfcfa93d7a04abf0de272876b87",
+  "classification": "locked healthy validation after exploration; no confirmation seeds generated yet",
+  "replicas": 1024,
+  "M": 16,
+  "beta": 2.0,
+  "delta": 0.4,
+  "retained": 8192,
+  "burn": 0,
+  "initial": "exact stationary finiteM Gaussian",
+  "primary_observable": "CV",
+  "primary_method": "BM512 (16 batch means; t15)",
+  "configs": [
+    {
+      "id": "local_stationary",
+      "initial": "stationary",
+      "steps": 8192,
+      "replicas": 1024,
+      "delta": 0.4
+    },
+    {
+      "id": "centroid_refresh",
+      "initial": "stationary",
+      "steps": 8192,
+      "replicas": 1024,
+      "delta": 0.4,
+      "refresh": true
+    },
+    {
+      "id": "iid_gaussian",
+      "initial": "stationary",
+      "steps": 8192,
+      "replicas": 1024,
+      "iid": true
+    }
+  ],
+  "healthy_gate": {
+    "coverage_CP95_inside": [
+      0.92,
+      0.98
+    ],
+    "variance_ratio_bootstrap_CI95_inside": [
+      0.75,
+      1.25
+    ],
+    "bias_CI95_inside": [
+      -0.01,
+      0.01
+    ],
+    "required_conditions": [
+      "centroid_refresh",
+      "iid_gaussian"
+    ]
+  },
+  "mechanism_comparison": {
+    "paired_coverage_improvement_lower95_exceeds": 0.1,
+    "stationary_initialization_excludes_transient_bias_as_necessary_cause": true
+  },
+  "multiplicity": "one primary CV interval method; other methods/TD secondary descriptive; gate is conjunction, no post-test retuning",
+  "fault_study_condition": "run only if both required healthy conditions pass frozen gate; fault cal/test use new namespaces",
+  "sample_precision": "1024 independent replicas; nominal95% binomial half-width about1.34 percentage points",
+  "not_a_general_guarantee": "finiteM harmonic workload, exact stationary initialization and fixed run length only"
+}

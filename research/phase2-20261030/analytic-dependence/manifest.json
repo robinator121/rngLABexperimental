@@ -1,0 +1,22 @@
+{
+  "protocol": "rnglab-phase2-analytic-dependence-v1",
+  "written_utc": "2026-10-30T14:21:37.942616+00:00",
+  "script_sha256": "4feb3c538fa756bb65055b0f8f5592ff54d5578928d11706a7ea8c4e5bdd75ac",
+  "total_elapsed_seconds": 17.450372895007604,
+  "files": {
+    "analytic-tests.xml": "62260a2c0b7b8a26bdae180c87c5da04d099e1f8ef1edf35873f9ddeb36933d2",
+    "analytic_dependence.py": "4feb3c538fa756bb65055b0f8f5592ff54d5578928d11706a7ea8c4e5bdd75ac",
+    "execution.log": "9164958d7a723a55e9d42b0b80b286e79b4f4417181a8b328f7b860d504f5930",
+    "phi0p0-CV-traces.npz": "70476526651a0e3dc023b6a24541e439db36aa924a47dbe6bd934d0582f042eb",
+    "phi0p0-manifest.json": "7ce687e43a09a5e56eb3ea820c5fecab9a2858990342a5ebe3f51af5059f3028",
+    "phi0p997-CV-traces.npz": "e72cc4caffa5f0fc39535a77d6684106c1c808b4f6e2db31f3b31269967df2dc",
+    "phi0p997-manifest.json": "69618fbd07b1107ffaad3f05f6a72b102e8225a24ac656e9e8834b9dbc4385cc",
+    "phi0p999-CV-traces.npz": "e2ea2ca0136e7a2f75c5cb9e92cc43dd1724c0cec3243d3780df97412abb577a",
+    "phi0p999-manifest.json": "9f8684bea3c4160ebc628e5823c6839be0fa21f01ea9d97ac15cc4d2e766b6bb",
+    "protocol.json": "874a46fe856ff4d79b6608983a93f930a4193f0eb508e41ec7e2eb0ecf95a3af",
+    "replica_endpoints.csv": "892a42d129250439cee031aea947ba32b00d794b42be51369560a3a807722c20",
+    "results.json": "6b720b4149238768fc298ab512e4b9cd472649f8046bbe5e2bbea6d2497d61f5",
+    "summary.csv": "fbbb3c283ffae2cbf3e80eaa754fb1df3a1ecd560fd37fb3e8f7565fbbc83ff7",
+    "test_analytic_dependence.py": "a9e258e80ead67463664845998c7bd32df1f14222053ce5fb187b3244e3f32b2"
+  }
+}

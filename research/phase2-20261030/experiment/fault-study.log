@@ -1,0 +1,238 @@
+generated fault-calibration-v1/healthy_calibration R=399 n=10240 in 17.22s
+generated fault-test-v1/healthy R=512 n=10240 in 14.90s
+generated fault-test-v1/acceptance_bias R=512 n=10240 in 14.66s
+generated fault-test-v1/channel_coupling R=512 n=10240 in 14.22s
+{
+  "decision": {
+    "healthy_monitor_gates_pass": true,
+    "elapsed_seconds": 102.37836490799964,
+    "thresholds_frozen_before_test": true,
+    "no_threshold_retuning": true,
+    "comparison_scope": "same nominal5% whole-run calibration; actual healthy test rates reported; no claim of all-source diagnostic superiority"
+  },
+  "effects": {
+    "healthy": {
+      "source_summary": {
+        "mean_proposal": 0.5000086485996215,
+        "mean_acceptance": 0.5000663444657144,
+        "mean_cross_product": 3.2681060004561326e-06
+      },
+      "failure_summary": {
+        "events": 121,
+        "total": 512,
+        "before_onset": 17,
+        "new_after_onset": 104,
+        "right_censored": 391,
+        "CI95": [
+          0.200165881410772,
+          0.2755660377241222
+        ],
+        "median_new_failure_sweep": 6528.0
+      }
+    },
+    "acceptance_bias": {
+      "paired_mean_energy_change": -0.03958641394208949,
+      "paired_mean_change_CI95": [
+        -0.03998645091614209,
+        -0.03918637696803689
+      ],
+      "paired_coverage_change": -0.951171875,
+      "paired_coverage_change_bootstrap_CI95": [
+        -0.96875,
+        -0.931640625
+      ],
+      "source_summary": {
+        "mean_proposal": 0.5000086485996215,
+        "mean_acceptance": 0.5768627320530499,
+        "mean_cross_product": 4.179190552246665e-06
+      },
+      "failure_summary": {
+        "events": 487,
+        "total": 512,
+        "before_onset": 17,
+        "new_after_onset": 470,
+        "right_censored": 25,
+        "CI95": [
+          0.928761344158637,
+          0.9681552478035633
+        ],
+        "median_new_failure_sweep": 4608.0
+      }
+    },
+    "channel_coupling": {
+      "paired_mean_energy_change": 0.04252557385961679,
+      "paired_mean_change_CI95": [
+        0.04166365984459823,
+        0.04338748787463535
+      ],
+      "paired_coverage_change": -0.92578125,
+      "paired_coverage_change_bootstrap_CI95": [
+        -0.94921875,
+        -0.900390625
+      ],
+      "source_summary": {
+        "mean_proposal": 0.5000086485996215,
+        "mean_acceptance": 0.5000086485996215,
+        "mean_cross_product": 0.08332893128587772
+      },
+      "failure_summary": {
+        "events": 501,
+        "total": 512,
+        "before_onset": 17,
+        "new_after_onset": 484,
+        "right_censored": 11,
+        "CI95": [
+          0.9618842283245161,
+          0.989227445913908
+        ],
+        "median_new_failure_sweep": 3840.0
+      }
+    }
+  },
+  "monitors": [
+    {
+      "condition": "healthy",
+      "monitor": "source_marginal",
+      "events": 15,
+      "replicas": 512,
+      "whole_run_rate": 0.029296875,
+      "whole_run_CI95": [
+        0.01648801460911842,
+        0.04786087313588523
+      ],
+      "preonset_alerts": 4,
+      "postonset_alerts": 11,
+      "threshold": 0.007715482418141351,
+      "median_postonset_delay": 7423.0,
+      "healthy_gate_pass": true
+    },
+    {
+      "condition": "healthy",
+      "monitor": "source_cross_channel",
+      "events": 12,
+      "replicas": 512,
+      "whole_run_rate": 0.0234375,
+      "whole_run_CI95": [
+        0.012167790534685311,
+        0.04058243914094818
+      ],
+      "preonset_alerts": 2,
+      "postonset_alerts": 10,
+      "threshold": 0.0020866507502909602,
+      "median_postonset_delay": 4351.0,
+      "healthy_gate_pass": true
+    },
+    {
+      "condition": "healthy",
+      "monitor": "application_shape",
+      "events": 24,
+      "replicas": 512,
+      "whole_run_rate": 0.046875,
+      "whole_run_CI95": [
+        0.030261206917453175,
+        0.06894584242162152
+      ],
+      "preonset_alerts": 4,
+      "postonset_alerts": 20,
+      "threshold": 0.07589437925454345,
+      "median_postonset_delay": 3071.0,
+      "healthy_gate_pass": true
+    },
+    {
+      "condition": "acceptance_bias",
+      "monitor": "source_marginal",
+      "events": 512,
+      "replicas": 512,
+      "whole_run_rate": 1.0,
+      "whole_run_CI95": [
+        0.9928210499737405,
+        1.0
+      ],
+      "preonset_alerts": 4,
+      "postonset_alerts": 512,
+      "threshold": 0.007715482418141351,
+      "median_postonset_delay": 255.0,
+      "healthy_gate_pass": null
+    },
+    {
+      "condition": "acceptance_bias",
+      "monitor": "source_cross_channel",
+      "events": 20,
+      "replicas": 512,
+      "whole_run_rate": 0.0390625,
+      "whole_run_CI95": [
+        0.02402080959350367,
+        0.05968598191731193
+      ],
+      "preonset_alerts": 2,
+      "postonset_alerts": 18,
+      "threshold": 0.0020866507502909602,
+      "median_postonset_delay": 3327.0,
+      "healthy_gate_pass": null
+    },
+    {
+      "condition": "acceptance_bias",
+      "monitor": "application_shape",
+      "events": 4,
+      "replicas": 512,
+      "whole_run_rate": 0.0078125,
+      "whole_run_CI95": [
+        0.002132626840593874,
+        0.019881459971452173
+      ],
+      "preonset_alerts": 4,
+      "postonset_alerts": 0,
+      "threshold": 0.07589437925454345,
+      "median_postonset_delay": null,
+      "healthy_gate_pass": null
+    },
+    {
+      "condition": "channel_coupling",
+      "monitor": "source_marginal",
+      "events": 7,
+      "replicas": 512,
+      "whole_run_rate": 0.013671875,
+      "whole_run_CI95": [
+        0.00551399998131654,
+        0.027965446339922782
+      ],
+      "preonset_alerts": 4,
+      "postonset_alerts": 3,
+      "threshold": 0.007715482418141351,
+      "median_postonset_delay": 7679.0,
+      "healthy_gate_pass": null
+    },
+    {
+      "condition": "channel_coupling",
+      "monitor": "source_cross_channel",
+      "events": 512,
+      "replicas": 512,
+      "whole_run_rate": 1.0,
+      "whole_run_CI95": [
+        0.9928210499737405,
+        1.0
+      ],
+      "preonset_alerts": 2,
+      "postonset_alerts": 512,
+      "threshold": 0.0020866507502909602,
+      "median_postonset_delay": 255.0,
+      "healthy_gate_pass": null
+    },
+    {
+      "condition": "channel_coupling",
+      "monitor": "application_shape",
+      "events": 447,
+      "replicas": 512,
+      "whole_run_rate": 0.873046875,
+      "whole_run_CI95": [
+        0.8410656531431291,
+        0.9006373558375166
+      ],
+      "preonset_alerts": 4,
+      "postonset_alerts": 446,
+      "threshold": 0.07589437925454345,
+      "median_postonset_delay": 2687.0,
+      "healthy_gate_pass": null
+    }
+  ]
+}

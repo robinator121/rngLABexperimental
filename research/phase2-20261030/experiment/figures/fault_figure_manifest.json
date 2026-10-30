@@ -1,0 +1,77 @@
+{
+  "plot_script_sha256": "618bfe96dde24edafcf1a64a1465ad877df5d75cafe89956d7dd0a01679016ee",
+  "matplotlib_version": "3.11.2",
+  "inputs_sha256": {
+    "analysis.json": "fd4fd17288759e97fd292798b1e62a14243d16da43966b1be7d6aa73858bc760",
+    "monitor_results.json": "8eb9307cc437bc22f3c2128c0733b9f39d68157dbbfd16d364d9aa7c0ca9637e",
+    "effects.json": "1270f65da52d97e0451fda6c104dc8bba6c50e8b23dfe32aa97352e33e57d6bb",
+    "alarm_failure_times.csv": "f78932eef8b21920b7ce3ad7db881ea9ab255f4d87163ffe9fca76a8ba75d619",
+    "protocol.json": "72ede91d8c4e82caa0454e4d50351272ee26a9e9b161bf4f694bc2c7f70614a1"
+  },
+  "files": {
+    "fault_application_failure_partition.pdf": {
+      "bytes": 20583,
+      "sha256": "02296cb4e8899a6162ee8564f16f166f1e8d30c1ff78cc9e1eeccb89294106c7"
+    },
+    "fault_application_failure_partition.png": {
+      "bytes": 85867,
+      "sha256": "7b13b207ffa29292abe6b768d5880f58e36095fbafb98ad61f4444659fb5e458"
+    },
+    "fault_application_failure_partition.svg": {
+      "bytes": 15613,
+      "sha256": "09a75c8f97874fd7c0f73bb50dbf9511e35e81310a91776280f2c7a85e83e051"
+    },
+    "fault_conditional_crossing_failure_delays.pdf": {
+      "bytes": 24132,
+      "sha256": "23acf7d7156a8dccab793ecd159521b40c6e00ae7b956e7be3d2d8d8ee867760"
+    },
+    "fault_conditional_crossing_failure_delays.png": {
+      "bytes": 240014,
+      "sha256": "89ca5327fa10b4b2b30a84695c301e35c5e30b419cad4ff3da8ade1345f7c850"
+    },
+    "fault_conditional_crossing_failure_delays.svg": {
+      "bytes": 65157,
+      "sha256": "42b6396fee7230a915982fa68aa6eb40a3eb779e18b3b135fe6cf793cc0fdcac"
+    },
+    "fault_first_alert_partition.pdf": {
+      "bytes": 15588,
+      "sha256": "b1d4cc66014753e6e328fa833beba1763f8949c0ec0801bc0eff1dd158c1d83e"
+    },
+    "fault_first_alert_partition.png": {
+      "bytes": 102335,
+      "sha256": "203f6d07f914a2c4e6b02b4e24c36f5aaee4b6201b6791b70f8272959c3e459b"
+    },
+    "fault_first_alert_partition.svg": {
+      "bytes": 25972,
+      "sha256": "e32f04f601065483575260d0b77d1bfc95d5480fb2b8986d5b307a61c1789755"
+    },
+    "fault_monitor_whole_run_rates.pdf": {
+      "bytes": 22869,
+      "sha256": "25b581979c9e592315299354290ac7070e2b5f0a5c0e55abaacba6029ff8cd71"
+    },
+    "fault_monitor_whole_run_rates.png": {
+      "bytes": 126455,
+      "sha256": "50c2df7349e15f18e277a881058191fee8274ac32238e04d427458e116482e5b"
+    },
+    "fault_monitor_whole_run_rates.svg": {
+      "bytes": 29965,
+      "sha256": "4d8f5c9b3a283ef07bc9cfb510ac7c6ea7f6224f06314fdf0c9725c3315591c3"
+    },
+    "fault_primary_endpoints.pdf": {
+      "bytes": 22431,
+      "sha256": "6b69fc45cb0707f0662c2bbe7a119491eaa04163e9dd1988f16d86a869eb5cf6"
+    },
+    "fault_primary_endpoints.png": {
+      "bytes": 181400,
+      "sha256": "630e8fd7778f621cb3cd6befa014dd4e2b0b3894c7e717f82e86b3ceded876d3"
+    },
+    "fault_primary_endpoints.svg": {
+      "bytes": 36722,
+      "sha256": "dd6ca1046eb7d9029f91ac81649742b04654102eb152be3f8b5c935996a45e01"
+    },
+    "fault_timing_summary.json": {
+      "bytes": 10492,
+      "sha256": "6609fa515321df01b05789631e73e1d02fafff374b956cd7722d475afa0fb112"
+    }
+  }
+}

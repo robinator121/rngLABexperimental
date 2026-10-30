@@ -1,0 +1,75 @@
+{
+  "experiment_id": "phase2-rus-identifiability-counterexample-v1",
+  "classification": "Synthetic constructed Bernoulli workload; not a PIMC result; not successful forecasting.",
+  "timestamp_utc": "2026-10-30T14:12:45.599045+00:00",
+  "software": {
+    "python": "3.14.7 (main, Aug 10 2026, 07:46:56) [GCC 16.1.1 20260728]",
+    "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+    "dependencies": "stdlib only"
+  },
+  "prefix": {
+    "degradation_onset_1based": 513,
+    "alarm_time_1based": 556,
+    "observed_samples": 556,
+    "observations_sha256": "180eb071ab060dc9a8ccf62310f2fea68d9da17855c1652479cde22a5a65836b",
+    "seed_sha256": "75978e930fbe7fd6bb461438ccd73b17f70f54a80204809f93781002b072951c",
+    "pre_onset_p": 0.5,
+    "onset_to_alarm_p": 0.9,
+    "alarm_rule": "First rolling 64-sample source count >= 48"
+  },
+  "target": {
+    "reference_mean": 0.5,
+    "application_observable": "Mean of next disjoint 64 Bernoulli samples",
+    "failure_rule": "First post-alarm 64-sample block with absolute mean error >= .25",
+    "failure_time": "T = t_a + 64 K, K first failing block",
+    "remaining_useful_samples": "R = max(0,T-t_a) in additional sampling steps; not ESS",
+    "forecast_issuance": "Once, at first alarm, using the complete identical observed prefix",
+    "horizon_steps": 2048,
+    "censoring": "Right censor at 2048 additional samples",
+    "abstention": "Required if a single informative forecast is requested without a post-alarm law or identified mixture probability"
+  },
+  "scenarios": [
+    {
+      "scenario": "restored",
+      "post_alarm_p": 0.5,
+      "replicas": 1024,
+      "events": 4,
+      "censored": 1020,
+      "empirical_failure_by_horizon": 0.00390625,
+      "wilson_95": [
+        0.0015200811655754912,
+        0.010000624405379549
+      ],
+      "exact_per_block_failure_probability": 7.733076881287027e-05,
+      "exact_failure_by_horizon": 0.002471620790726492,
+      "exact_mean_remaining_steps": 827613.6521398245,
+      "exact_median_remaining_steps": 573696,
+      "observed_event_remaining_steps_median": 992.0
+    },
+    {
+      "scenario": "persistent",
+      "post_alarm_p": 0.9,
+      "replicas": 1024,
+      "events": 1024,
+      "censored": 0,
+      "empirical_failure_by_horizon": 1.0,
+      "wilson_95": [
+        0.9962625959599825,
+        1.0
+      ],
+      "exact_per_block_failure_probability": 0.9998641149776544,
+      "exact_failure_by_horizon": 1.0,
+      "exact_mean_remaining_steps": 64.00869782333403,
+      "exact_median_remaining_steps": 64,
+      "observed_event_remaining_steps_median": 64.0
+    }
+  ],
+  "experimental_units": "1024 independently seeded future continuations conditional on one fixed observed prefix; two scenarios paired by uniforms; not 2048 independent prefixes",
+  "identifiability": "Both worlds assign identical laws to all observations through the alarm, but different conditional laws to R. Prefix-only observations do not identify which future law applies or a mixing weight between them.",
+  "outcome_files": [
+    "identical_observed_prefix.csv",
+    "conditional_future_outcomes.csv",
+    "future_seed_manifest.json",
+    "conditional_failure_cdf.svg"
+  ]
+}

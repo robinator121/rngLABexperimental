@@ -1,0 +1,138 @@
+generated confirmation-v1/local_stationary R=1024 n=8192 in 19.42s
+generated confirmation-v1/centroid_refresh R=1024 n=8192 in 15.90s
+generated confirmation-v1/iid_gaussian R=1024 n=8192 in 12.23s
+{
+  "gates": {
+    "local_stationary": {
+      "coverage": false,
+      "variance_ratio": false,
+      "bias": true,
+      "row": {
+        "condition": "local_stationary",
+        "window": "primary",
+        "burn": 0,
+        "retained": 8192,
+        "observable": "CV",
+        "method": "BM512",
+        "replicas": 1024,
+        "covered": 811,
+        "coverage": 0.7919921875,
+        "coverage_ci95": [
+          0.7658212868541585,
+          0.8164723222183208
+        ],
+        "abstentions": 0,
+        "mean": 0.6546670725702768,
+        "target": 0.6554741522981742,
+        "bias": -0.0008070797278973973,
+        "bias_ci95": [
+          -0.006224425153957024,
+          0.004610265698162229
+        ],
+        "empirical_variance_chain_means": 0.007804562646547896,
+        "mean_estimated_variance": 0.004142984191483834,
+        "estimated_to_empirical_variance_ratio": 0.5308413013144757,
+        "variance_ratio_bootstrap_ci95": [
+          0.48353258042915953,
+          0.5820335868934031
+        ],
+        "median_estimated_tau": 222.51523030617264,
+        "median_estimated_ESS": 36.81545749848308,
+        "batches": 16,
+        "batch": 512
+      },
+      "pass": false
+    },
+    "centroid_refresh": {
+      "coverage": true,
+      "variance_ratio": true,
+      "bias": true,
+      "row": {
+        "condition": "centroid_refresh",
+        "window": "primary",
+        "burn": 0,
+        "retained": 8192,
+        "observable": "CV",
+        "method": "BM512",
+        "replicas": 1024,
+        "covered": 964,
+        "coverage": 0.94140625,
+        "coverage_ci95": [
+          0.9252183906681828,
+          0.954992526079022
+        ],
+        "abstentions": 0,
+        "mean": 0.6555408569716544,
+        "target": 0.6554741522981742,
+        "bias": 6.670467348024456e-05,
+        "bias_ci95": [
+          -0.00043461627212150206,
+          0.0005680256190819912
+        ],
+        "empirical_variance_chain_means": 6.683550203433734e-05,
+        "mean_estimated_variance": 6.309814458249776e-05,
+        "estimated_to_empirical_variance_ratio": 0.9440812541526287,
+        "variance_ratio_bootstrap_ci95": [
+          0.865367741593758,
+          1.0358858076643502
+        ],
+        "median_estimated_tau": 3.588741504215128,
+        "median_estimated_ESS": 2282.6943644843,
+        "batches": 16,
+        "batch": 512
+      },
+      "pass": true
+    },
+    "iid_gaussian": {
+      "coverage": true,
+      "variance_ratio": true,
+      "bias": true,
+      "row": {
+        "condition": "iid_gaussian",
+        "window": "primary",
+        "burn": 0,
+        "retained": 8192,
+        "observable": "CV",
+        "method": "BM512",
+        "replicas": 1024,
+        "covered": 969,
+        "coverage": 0.9462890625,
+        "coverage_ci95": [
+          0.9306585400154328,
+          0.9592847053237007
+        ],
+        "abstentions": 0,
+        "mean": 0.6554586091267911,
+        "target": 0.6554741522981742,
+        "bias": -1.5543171383081145e-05,
+        "bias_ci95": [
+          -0.0002718870020175195,
+          0.00024080065925135722
+        ],
+        "empirical_variance_chain_means": 1.747516374869391e-05,
+        "mean_estimated_variance": 1.644325370631795e-05,
+        "estimated_to_empirical_variance_ratio": 0.9409499071244419,
+        "variance_ratio_bootstrap_ci95": [
+          0.8649018091147448,
+          1.0334232440081057
+        ],
+        "median_estimated_tau": 0.958806090399517,
+        "median_estimated_ESS": 8543.965019636882,
+        "batches": 16,
+        "batch": 512
+      },
+      "pass": true
+    }
+  },
+  "comparison": {
+    "paired_coverage_difference": 0.1494140625,
+    "bootstrap_ci95": [
+      0.12109375,
+      0.1787109375
+    ],
+    "improved_only": 202,
+    "local_only": 49,
+    "passes_margin": true
+  },
+  "fault_study_allowed": true
+}

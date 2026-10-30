@@ -1,0 +1,101 @@
+{
+  "plot_script_sha256": "b2df1bfd5d565fb3fdf91e854364189e7474c50c0366a75b9ca47491cd74cd28",
+  "matplotlib_version": "3.11.2",
+  "inputs_sha256": {
+    "exploratory-v1/acf.json": "02be89c47c61fce863a3d5c7fb11e45ef36ed9305e74a1aa27ec6e0e90bc5468",
+    "exploratory-v1/analysis.json": "2382032843322ab2084c5a317143272f5b6e4f532fc70089153bd2d5132b6a49",
+    "exploratory-v1/protocol.json": "f5c798d836a82b77ff8e54d79e465df0864ec06cb130b82f288ce47bc244be5f",
+    "exploratory-v1/variance_decomposition.json": "a09446349fbdedf822ac7aa6bc9c41bd6811c598329d0997eaf74b228d2a1b7a",
+    "confirmation-v1/acf.json": "96643fa55829678876d3c1fe783de92d22371560a3d2ac158f4054bc1ed78d5c",
+    "confirmation-v1/analysis.json": "0cb19bd774bcc2202c8967c51d46318e896db10752ed2de11f30c1ccb4ac3335",
+    "confirmation-v1/primary_decision.json": "0e7b562235751486336328e08eefdb3a4c010212b01d0c2c71861bcc505ddd21",
+    "confirmation-v1/protocol.json": "468e816c1de68bb8975303b4f725cbffbc3ab34bc34ceef505ab84046025e984",
+    "confirmation-v1/variance_decomposition.json": "e295cfea03da5a134a455d11740a857a2bc99ab8ec79393a6a93ec2745583ac0"
+  },
+  "files": {
+    "confirmation_primary_endpoints.pdf": {
+      "bytes": 20900,
+      "sha256": "ccb2c46696bc4163b4058e152cd94de814e751cd7f9e709e982aecdef76e23b6"
+    },
+    "confirmation_primary_endpoints.png": {
+      "bytes": 99455,
+      "sha256": "e18db43f7fd9ca3237f63a03481dc55ff6b3f0f22372bcf29ea485c7a9e41fcb"
+    },
+    "confirmation_primary_endpoints.svg": {
+      "bytes": 26949,
+      "sha256": "92748dbefebec27452c862a46c18405cb108c54948ae34fe1fcc8523558e020f"
+    },
+    "exploratory_coverage_batch.pdf": {
+      "bytes": 18769,
+      "sha256": "9f5ae988d1de7a1eaf4e7f7449393b503daa7a14b91755cf2fc93d0daee08723"
+    },
+    "exploratory_coverage_batch.png": {
+      "bytes": 113284,
+      "sha256": "7f74498b49a93f44ffece6354ae55be6c9ca9ec5b34f0090d25098541a6e1dd7"
+    },
+    "exploratory_coverage_batch.svg": {
+      "bytes": 28846,
+      "sha256": "55daf84a76d6bf301f9ad86d1c8a3361b96cc98e8adafc6f286579c22edc1183"
+    },
+    "exploratory_coverage_length.pdf": {
+      "bytes": 16770,
+      "sha256": "08af295449100c54e685d3f40fcdb59437361985cd8df513e6968696d202a542"
+    },
+    "exploratory_coverage_length.png": {
+      "bytes": 93312,
+      "sha256": "584c789c34dd8034eaccee9b97ba74657798dd08a265a68c12576920541f59d3"
+    },
+    "exploratory_coverage_length.svg": {
+      "bytes": 23613,
+      "sha256": "6b5a4de784817ad3fc734bfcfe8fcca89185ba556b3f03ddf333db1b0684b01b"
+    },
+    "exploratory_initialization_warmup.pdf": {
+      "bytes": 21815,
+      "sha256": "8d6052a2057de6b3a831d6dc2b9aea8d904391c39cd2a1be5e03ebd291e724e4"
+    },
+    "exploratory_initialization_warmup.png": {
+      "bytes": 145391,
+      "sha256": "6265c7b5c41c03710968c7f4b906f9533321fcdba964934105ec740df217b997"
+    },
+    "exploratory_initialization_warmup.svg": {
+      "bytes": 32751,
+      "sha256": "80bd8748cb6a41fe5217da5adaaf5bb5663425bd3a9d5211c87c19805e7003ae"
+    },
+    "exploratory_known_mean_acf.pdf": {
+      "bytes": 109560,
+      "sha256": "4d5c049c6b970365acce34fac2b770cb6b3ce9cabb2e0a1eead1f6a2e212eb7c"
+    },
+    "exploratory_known_mean_acf.png": {
+      "bytes": 231498,
+      "sha256": "480c22aff0dbab9c9bad81a0b8703fc3f1c7eafd6b3beff41306e7a187ffd4f7"
+    },
+    "exploratory_known_mean_acf.svg": {
+      "bytes": 273837,
+      "sha256": "fb864d56c3716d531ac843621cdaae11846251520e303750362a7825e4af1b2a"
+    },
+    "exploratory_variance_decomposition.pdf": {
+      "bytes": 16460,
+      "sha256": "cba319a215b6c53f6abf468996bc9ade265507b40f7f26f093ab91c8ac091b8c"
+    },
+    "exploratory_variance_decomposition.png": {
+      "bytes": 113762,
+      "sha256": "b7172074fc76f1c7e23feee05e6707bdc81f9889cdfba53b68780246adb0345b"
+    },
+    "exploratory_variance_decomposition.svg": {
+      "bytes": 29661,
+      "sha256": "d7d5146f1fa731f3cad6ea76724bab13bbe1646ed0f93cffc3cf8ee2e1a75233"
+    },
+    "exploratory_variance_ratios.pdf": {
+      "bytes": 24773,
+      "sha256": "8af39acc24f13702dfdddd86893db9c81729aa7f23db683bc59cff101adee3d8"
+    },
+    "exploratory_variance_ratios.png": {
+      "bytes": 96249,
+      "sha256": "33522c7c758f12839f792357dbe15295cde8399e5940a3ee15bbf03eb9775b2d"
+    },
+    "exploratory_variance_ratios.svg": {
+      "bytes": 38167,
+      "sha256": "c49ca89343e1fd9d4ccb6c5fe8bd324a7ec5a2f9758ccd3bcf41bdc003035fff"
+    }
+  }
+}

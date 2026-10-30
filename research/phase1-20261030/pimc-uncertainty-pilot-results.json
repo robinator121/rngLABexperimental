@@ -1,0 +1,372 @@
+{
+  "study": "Exploratory independent scalar replay of RNGLab harmonic PIMC uncertainty control",
+  "generated_utc_date": "2026-10-30",
+  "classification": "exploratory pilot; not confirmatory; not an exact replay of NumPy implementation",
+  "source_revision_reference": "rnglabexperimental main dd96adba23b8100aba9147d71fffc63932fc6b0d",
+  "environment": {
+    "python": "3.14.7 (main, Aug 10 2026, 07:46:56) [GCC 16.1.1 20260728]",
+    "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+    "dependencies": "Python standard library only"
+  },
+  "configuration": {
+    "replicas": 64,
+    "sweeps_per_replica": 12288,
+    "beads": 16,
+    "beta": 2.0,
+    "proposal_delta": 0.4,
+    "initializer": "independent uniform bead coordinates on [-0.5, 0.5)",
+    "proposal": "one bead per sweep in fixed order; delta*(2u-1), u~Python random.Random",
+    "acceptance": "Metropolis with an independent sequential uniform draw from the same replica stream",
+    "seed_rule": "first 128 bits of SHA256(f'{namespace}/{replica:03d}') fed to random.Random",
+    "seed_namespace": "rnglab-pimc-pilot-20261030-scalar-v1",
+    "windows": {
+      "short": {
+        "sweeps_1based": [
+          1025,
+          4096
+        ],
+        "retained": 3072
+      },
+      "long": {
+        "sweeps_1based": [
+          4097,
+          12288
+        ],
+        "retained": 8192
+      }
+    },
+    "estimators": {
+      "TD": "M/(2 beta) - M*sum((x[j+1]-x[j])^2)/(2 beta^2) + 0.5*mean(x^2)",
+      "CV": "1/(2 beta) + mean(x^2) - 0.5*mean(x)^2"
+    },
+    "interval": "non-overlapping batch means; Student-t critical value; batches consume the window prefix",
+    "batches": [
+      32,
+      128,
+      512
+    ],
+    "minimum_batches": 4,
+    "replica_coverage_interval": "Wilson 95% interval; descriptive variability, not a proof of coverage"
+  },
+  "reference": {
+    "finite_bead_energy": 0.6554741522981734,
+    "continuum_energy": 0.6565176427496657,
+    "partition_function_derivative_check": 0.655474152316815,
+    "absolute_difference": 1.864164378417854e-11
+  },
+  "student_t_quantile_checks": {
+    "5": {
+      "quantile": 2.570581835636312,
+      "cdf_error": 0.0
+    },
+    "15": {
+      "quantile": 2.1314495455597706,
+      "cdf_error": 1.1102230246251565e-16
+    },
+    "23": {
+      "quantile": 2.068657610419046,
+      "cdf_error": 0.0
+    },
+    "63": {
+      "quantile": 1.9983405425207268,
+      "cdf_error": 2.220446049250313e-16
+    },
+    "95": {
+      "quantile": 1.9852510035054762,
+      "cdf_error": 1.1102230246251565e-16
+    },
+    "255": {
+      "quantile": 1.969310569849859,
+      "cdf_error": 3.3306690738754696e-16
+    }
+  },
+  "coverage": [
+    {
+      "window": "short",
+      "sweeps_1based": [
+        1025,
+        4096
+      ],
+      "retained_sweeps_per_chain": 3072,
+      "observable": "TD",
+      "batch_size": 32,
+      "batch_count": 96,
+      "degrees_of_freedom": 95,
+      "covered": 42,
+      "replicas": 64,
+      "coverage": 0.65625,
+      "wilson_95": [
+        0.5340364020991819,
+        0.7607685792155665
+      ],
+      "mean_chain_estimate": 0.645733230203017,
+      "median_chain_mcse": 0.06801868307983072,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "short",
+      "sweeps_1based": [
+        1025,
+        4096
+      ],
+      "retained_sweeps_per_chain": 3072,
+      "observable": "TD",
+      "batch_size": 128,
+      "batch_count": 24,
+      "degrees_of_freedom": 23,
+      "covered": 49,
+      "replicas": 64,
+      "coverage": 0.765625,
+      "wilson_95": [
+        0.6486674241743136,
+        0.8525010440607586
+      ],
+      "mean_chain_estimate": 0.645733230203017,
+      "median_chain_mcse": 0.09074382827889436,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "short",
+      "sweeps_1based": [
+        1025,
+        4096
+      ],
+      "retained_sweeps_per_chain": 3072,
+      "observable": "TD",
+      "batch_size": 512,
+      "batch_count": 6,
+      "degrees_of_freedom": 5,
+      "covered": 58,
+      "replicas": 64,
+      "coverage": 0.90625,
+      "wilson_95": [
+        0.810171204003544,
+        0.9563217474148016
+      ],
+      "mean_chain_estimate": 0.645733230203017,
+      "median_chain_mcse": 0.10118906915920398,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "short",
+      "sweeps_1based": [
+        1025,
+        4096
+      ],
+      "retained_sweeps_per_chain": 3072,
+      "observable": "CV",
+      "batch_size": 32,
+      "batch_count": 96,
+      "degrees_of_freedom": 95,
+      "covered": 24,
+      "replicas": 64,
+      "coverage": 0.375,
+      "wilson_95": [
+        0.2666598017882464,
+        0.497496213159955
+      ],
+      "mean_chain_estimate": 0.6675679482847567,
+      "median_chain_mcse": 0.026903537473791726,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "short",
+      "sweeps_1based": [
+        1025,
+        4096
+      ],
+      "retained_sweeps_per_chain": 3072,
+      "observable": "CV",
+      "batch_size": 128,
+      "batch_count": 24,
+      "degrees_of_freedom": 23,
+      "covered": 37,
+      "replicas": 64,
+      "coverage": 0.578125,
+      "wilson_95": [
+        0.456100315400829,
+        0.6913021752565451
+      ],
+      "mean_chain_estimate": 0.6675679482847567,
+      "median_chain_mcse": 0.04689433691630944,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "short",
+      "sweeps_1based": [
+        1025,
+        4096
+      ],
+      "retained_sweeps_per_chain": 3072,
+      "observable": "CV",
+      "batch_size": 512,
+      "batch_count": 6,
+      "degrees_of_freedom": 5,
+      "covered": 53,
+      "replicas": 64,
+      "coverage": 0.828125,
+      "wilson_95": [
+        0.7178678837734179,
+        0.9012225769875536
+      ],
+      "mean_chain_estimate": 0.6675679482847567,
+      "median_chain_mcse": 0.06843397030232418,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "long",
+      "sweeps_1based": [
+        4097,
+        12288
+      ],
+      "retained_sweeps_per_chain": 8192,
+      "observable": "TD",
+      "batch_size": 32,
+      "batch_count": 256,
+      "degrees_of_freedom": 255,
+      "covered": 40,
+      "replicas": 64,
+      "coverage": 0.625,
+      "wilson_95": [
+        0.502503786840045,
+        0.7333401982117536
+      ],
+      "mean_chain_estimate": 0.6566338812594458,
+      "median_chain_mcse": 0.04258608671037749,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "long",
+      "sweeps_1based": [
+        4097,
+        12288
+      ],
+      "retained_sweeps_per_chain": 8192,
+      "observable": "TD",
+      "batch_size": 128,
+      "batch_count": 64,
+      "degrees_of_freedom": 63,
+      "covered": 51,
+      "replicas": 64,
+      "coverage": 0.796875,
+      "wilson_95": [
+        0.6828636426898583,
+        0.8772658218081634
+      ],
+      "mean_chain_estimate": 0.6566338812594458,
+      "median_chain_mcse": 0.056191148403687774,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "long",
+      "sweeps_1based": [
+        4097,
+        12288
+      ],
+      "retained_sweeps_per_chain": 8192,
+      "observable": "TD",
+      "batch_size": 512,
+      "batch_count": 16,
+      "degrees_of_freedom": 15,
+      "covered": 57,
+      "replicas": 64,
+      "coverage": 0.890625,
+      "wilson_95": [
+        0.7910135867310387,
+        0.945998866555832
+      ],
+      "mean_chain_estimate": 0.6566338812594458,
+      "median_chain_mcse": 0.0681556909065934,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "long",
+      "sweeps_1based": [
+        4097,
+        12288
+      ],
+      "retained_sweeps_per_chain": 8192,
+      "observable": "CV",
+      "batch_size": 32,
+      "batch_count": 256,
+      "degrees_of_freedom": 255,
+      "covered": 20,
+      "replicas": 64,
+      "coverage": 0.3125,
+      "wilson_95": [
+        0.2123106653948205,
+        0.4339233570274815
+      ],
+      "mean_chain_estimate": 0.6528459757730106,
+      "median_chain_mcse": 0.018570223822896886,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "long",
+      "sweeps_1based": [
+        4097,
+        12288
+      ],
+      "retained_sweeps_per_chain": 8192,
+      "observable": "CV",
+      "batch_size": 128,
+      "batch_count": 64,
+      "degrees_of_freedom": 63,
+      "covered": 38,
+      "replicas": 64,
+      "coverage": 0.59375,
+      "wilson_95": [
+        0.4714520812860451,
+        0.7054309075028039
+      ],
+      "mean_chain_estimate": 0.6528459757730106,
+      "median_chain_mcse": 0.03347418173341728,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    },
+    {
+      "window": "long",
+      "sweeps_1based": [
+        4097,
+        12288
+      ],
+      "retained_sweeps_per_chain": 8192,
+      "observable": "CV",
+      "batch_size": 512,
+      "batch_count": 16,
+      "degrees_of_freedom": 15,
+      "covered": 48,
+      "replicas": 64,
+      "coverage": 0.75,
+      "wilson_95": [
+        0.631837235413303,
+        0.8398507346902941
+      ],
+      "mean_chain_estimate": 0.6528459757730106,
+      "median_chain_mcse": 0.05051103312781881,
+      "reference": 0.6554741522981734,
+      "scope": "same 64 trajectories across all windows/methods; Wilson interval describes replica coverage variability only"
+    }
+  ],
+  "trace_file": "pimc-uncertainty-pilot-traces.csv.gz",
+  "elapsed_seconds": 26.597390655995696,
+  "limitations": [
+    "Scalar Python implementation is an independent reimplementation, not an execution of RNGLab's NumPy/SciPy code.",
+    "Python random.Random streams are deterministic PRNG streams, not physical entropy and not certified independent in a mathematical sense.",
+    "Only 64 replicas; coverage estimates have wide intervals.",
+    "All methods and windows reuse the same 64 trajectories; comparisons are correlated.",
+    "Burn-in and retained length differ between the short and long windows, so their effects are confounded.",
+    "No stationarity or mixing proof; pilot cannot establish which interval procedure is valid asymptotically.",
+    "No held-out confirmatory cohort or preregistered acceptance threshold was used."
+  ]
+}
