@@ -13,8 +13,12 @@ requires-python = ">=3.11"
 dependencies = ["numpy>=2,<3", "scipy>=1.13,<2", "cryptography>=43,<51"]
 
 [project.scripts]
+rnglab-crypto = "rnglab_crypto.__main__:main"
 rnglab14-api = "rnglab14.api:main"
 rnglab12 = "rnglab12.cli:main"
+
+[project.optional-dependencies]
+crypto = ["matplotlib>=3.8,<4", "pytest>=8,<10"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

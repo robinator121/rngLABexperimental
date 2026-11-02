@@ -1,0 +1,11 @@
+{
+  "namespace": "blue-sensitivity-v1",
+  "repetitions": 64,
+  "calibration_repetitions": 199,
+  "operations": 512,
+  "fault_onset": 128,
+  "diagnostic_bytes": 4096,
+  "weak_seed_bits": [8, 12],
+  "nonce_bits": [8, 12, 16],
+  "synthetic_only": true
+}

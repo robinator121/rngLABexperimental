@@ -1,0 +1,34 @@
+# Standards and implementation traceability
+
+Primary references were checked on 2026-11-02. This is a research mapping, not a conformity statement.
+
+| Reference | Relevant requirement/concept | Implementation / verification |
+|---|---|---|
+| [NIST SP800-90A Rev.1](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final), §10.1.2 | HMAC-DRBG instantiate/update/generate/reseed; entropy and nonce are inputs, not inferred from output | Reuse `rnglab11.drbg.HMACDRBG`; two SHA256 CAVP examples in `tests/crypto_vectors/`, including reseed. Not a validated module |
+| [NIST DRBG CAVP vectors](https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/drbg/drbgtestvectors.zip) | Independent known-answer outputs | Archive SHA256 and exact members/group/count embedded in the two vector JSON files; second Generate output checked |
+| [NIST SP800-90B](https://csrc.nist.gov/pubs/sp/800/90/b/final), especially §§3–4 | Noise-source definition, raw data, dependence, restart testing and health tests | `rnglab15` ingestion/Health reused; physical audit remains descriptive with zero validated entropy credit. Current NIST page notes potential errata |
+| [NIST SP800-90C](https://csrc.nist.gov/pubs/sp/800/90/c/final) | Compose assessed sources with deterministic generation and lifecycle controls | Final September 2025 edition is referenced. BLUE models the composition but implements no certified 90C construction |
+| [NIST SP800-22 Rev.1a](https://csrc.nist.gov/pubs/sp/800/22/r1/upd1/final), §§2.1–2.3 | Frequency, block frequency and runs are statistical diagnostics | Three-test subset with full-precision p-values and Holm within stream; no full STS/certification claim |
+| [NIST SP800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final), §§6–8, App.B | GCM authentication, unique IVs per key, invocation constraints | `cryptography.AESGCM`, 96-bit nonce, full 128-bit tag. One-block GHASH difference algebra only for contained misuse |
+| [GCM authors' submitted test vectors as maintained by BoringSSL](https://boringssl.googlesource.com/boringssl/+/e8c862cf1421/crypto/cipher/test/aes_256_gcm_tests.txt) | Published AES-GCM known-answer examples | Zero-key/zero-IV 16-byte-plaintext AES128/256 tests; these are GCM submission examples, not invented values or 38D appendix test vectors |
+| [RFC8439](https://www.rfc-editor.org/rfc/rfc8439), §§2.8, 2.8.2, 4 | ChaCha20-Poly1305 256-bit key, 96-bit nonce, nonce uniqueness; published AEAD example | Library AEAD and exact §2.8.2 ciphertext/tag vector; measured reuse confidentiality loss; integrity reuse consequence not experimentally expanded here |
+| [RFC6979](https://www.rfc-editor.org/rfc/rfc6979), §3.2 and App.A.2.5 | Deterministic ECDSA signing nonce; key-generation randomness remains required | Library `deterministic_signing=True`; P-256/SHA256 `sample` vector, exact r/s |
+| [RFC8032](https://www.rfc-editor.org/rfc/rfc8032), §§5.1, 7.1 | Ed25519 key/seed and deterministic signing | Library sign/verify; empty-message TEST 1 vector. No ECDSA nonce-reuse claim transferred to Ed25519 |
+| [RFC5869](https://www.rfc-editor.org/rfc/rfc5869), §§2–3, App.A.1 | HKDF extract/expand assumptions; public salt and context separation | Library HKDF plus TEST CASE 1; public fixed salt in experiments does not create unknown entropy |
+| [pyca AEAD documentation](https://cryptography.io/en/stable/hazmat/primitives/aead/) and [EC documentation](https://cryptography.io/en/stable/hazmat/primitives/asymmetric/ec/) | Key/nonce sizes, InvalidTag behavior, deterministic ECDSA support | Installed `cryptography`/OpenSSL versions recorded. Unsupported deterministic signing must fail visibly, not fall back silently |
+
+Algorithm and nonce requirements
+
+- AES-128-GCM uses a 16-byte secret key; AES-256-GCM uses 32 bytes. BLUE fixes 12-byte IVs and 16-byte tags, with no tag truncation. The key must have adequate attacker-conditional uncertainty. Under a fixed key, nonce reuse is forbidden even when plaintext changes only slightly. Identical nonce values under genuinely different independent keys are not the same event.
+- For GCM random IV construction, SP800-38D §8.3 imposes a total 2^32 invocation limit across instances under the key in the covered constructions (including RBG-based construction). For uniform independent 96-bit draws the birthday approximation at 2^32 draws is about 2^-33, not zero. The special deterministic 96-bit construction has distinct allocation constraints; do not apply a random-IV birthday argument to an injective counter.
+- A shared, nonwrapping deterministic counter can satisfy nonce uniqueness; unpredictability is not required for these AEAD nonces. The fixed field, if used to partition devices, must be unique under a key, and the invocation field must not repeat. The BLUE centralized ledger uses the full 96-bit encoding of a bounded integer, one shared namespace per key. Its 2^63-1 storage cap is **not a recommended cryptographic key lifetime**; message/verification limits and protocol requirements still apply.
+- ChaCha20-Poly1305 uses a 32-byte secret key and 12-byte nonce; nonce uniqueness is required per key. A deterministic allocator avoids probabilistic nonce collisions. RFC8439's 32-bit block counter leaves at most (2^32-1) 64-byte data blocks per message after the one-time MAC key block; GCM's plaintext limit is 2^39-256 bits. The installed high-level library may impose tighter limits; this campaign encrypts only tiny messages.
+- ECDSA P-256 private scalar lies in [1,q-1]. For randomized signing, each k must have the required distribution and secrecy. BLUE intentionally violates nonce reuse, then compares with RFC6979. Ed25519 signing is deterministic from its secret seed/message; it still requires a suitably unpredictable seed at key creation. Repeated signatures on the **same message** are expected for both deterministic constructions.
+
+Contained derivations
+
+For equal-length one-block GCM ciphertexts with the same key/nonce and empty AAD, T1 XOR T2 = (C1 XOR C2)·H² in the GCM field. A nonzero ciphertext difference permits division; a chosen same-length changed ciphertext receives T'=T1 XOR (C' XOR C1)·H². The demonstration never computes AES itself or needs the secret key for this algebra; the library is used as the independent authentication verifier. Fresh-nonce records have different masks and fail this constructed forgery.
+
+For ECDSA signatures s_i=k^-1(z_i+r·d) mod q with the same k and differing z/s, k=(z1-z2)/(s1-s2) mod q and d=(s1·k-z1)/r mod q. The harness checks equality with the synthetic private scalar and verifies a new signature. This derivation neither applies to equal-message deterministic signatures nor transfers to Ed25519.
+
+Both are mathematical consequences of violated preconditions, corroborated by local experiments. They are not new breaks of the underlying primitives.

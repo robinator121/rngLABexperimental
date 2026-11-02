@@ -1,0 +1,490 @@
+{
+  "docs/crypto/ARCHITECTURE_AUDIT.md": {
+    "sha256": "73478a08d3a70bd6c38c5cebee065e212bda713e4c536e9bef6d6594e4fa063f",
+    "bytes": 5651
+  },
+  "docs/crypto/EXPERIMENT_PROTOCOL.md": {
+    "sha256": "f404a3afa823299b91e3f57f0e99cea662ea11a265a32189aafdf0c61bb799eb",
+    "bytes": 9658
+  },
+  "docs/crypto/FAULT_INTERFACE.md": {
+    "sha256": "282269cccf5ee02dfca3dd270f0abe00e217cefa7e3a7fdffd6cf974c48eaa18",
+    "bytes": 3267
+  },
+  "docs/crypto/PAPER_OUTLINE.md": {
+    "sha256": "e918a609459be7ca650cf154f7b471efad7e4d7ba48482ef244167368760c905",
+    "bytes": 1977
+  },
+  "docs/crypto/PHYSICAL_INTEGRATION.md": {
+    "sha256": "01168afee92298baf5f301cb19ff08d5332a3d54adcda1a130f470f2562c2dd5",
+    "bytes": 4038
+  },
+  "docs/crypto/REPRODUCE.md": {
+    "sha256": "672cf7176491d76a992cd91a05bd62c6c62cb5f945c918cb6ffc8aee0872c1b9",
+    "bytes": 4637
+  },
+  "docs/crypto/RESULTS.md": {
+    "sha256": "8110a496780c7af27ea35c55ae14c102dc474982d08ae4ce79df51aeab4f8b33",
+    "bytes": 11367
+  },
+  "docs/crypto/SCIENTIFIC_REVIEW.md": {
+    "sha256": "b093ab0e3c0b9c7c55ac6878c2a358372ad5f5c77c41c77f2a550b4aef0506f9",
+    "bytes": 5205
+  },
+  "docs/crypto/SECURITY_LIMITATIONS.md": {
+    "sha256": "0db6ee6e18b5a261ef39b42d95849e5d12d6e02bcf889b6284628eaade4b6a22",
+    "bytes": 4836
+  },
+  "docs/crypto/STANDARDS_TRACEABILITY.md": {
+    "sha256": "1b39d485c1712cd53c83d941eb0cda4e6a2f8f12578ff1482af6018f1cf780c7",
+    "bytes": 6895
+  },
+  "docs/crypto/THREAT_MODEL.md": {
+    "sha256": "54e6b7a4285e50d1a1c4be405b7bb9f3cd47e4c8096377d863c039e8c966b908",
+    "bytes": 4935
+  },
+  "research/crypto-blue/README.md": {
+    "sha256": "42e766a46b05cb86965d4132624bdafa252caccd6ab268880039ae39ae4e013f",
+    "bytes": 1328
+  },
+  "research/crypto-blue/configs/confirmation.json": {
+    "sha256": "ae8b06c7261f0a16804a989cbde731b7e4aa2044f1774da7e719efd8e84d1ba1",
+    "bytes": 247
+  },
+  "research/crypto-blue/configs/sensitivity.json": {
+    "sha256": "d0711eb895c9722a81a186b1c29c979738da7b1a4e076f08c92125ff5ea7148d",
+    "bytes": 251
+  },
+  "research/crypto-blue/confirmation-reviewed/RESULTS.md": {
+    "sha256": "d2f4973e1b5267a90b642ded6ecd9cc94263add6111fd574874ca85eeb2264a7",
+    "bytes": 8891
+  },
+  "research/crypto-blue/confirmation-reviewed/environment.json": {
+    "sha256": "52f3be1ab503029520d1dde7c7e8af3f77190293ab97f2e350339b1a7272fd46",
+    "bytes": 253
+  },
+  "research/crypto-blue/confirmation-reviewed/manifest.json": {
+    "sha256": "5728cc44df614354b640ca6b8e9f52dab94df84bd00615ed96720662532d4d56",
+    "bytes": 826
+  },
+  "research/crypto-blue/confirmation-reviewed/nonce_detection.png": {
+    "sha256": "9fd3fcf3e1e77c6126a3774e52f1c8acdd9d6c4128a529830ab2983d86fe4d11",
+    "bytes": 105474
+  },
+  "research/crypto-blue/confirmation-reviewed/nonce_detection.svg": {
+    "sha256": "8898f46bd9f1c56ccfd61810495168553ae24bd8b88c4d00e41d6b76fc6ddbb8",
+    "bytes": 75602
+  },
+  "research/crypto-blue/confirmation-reviewed/performance.json": {
+    "sha256": "1c6ed04d91b62d028d68a00e266f3028a8845b27ecd8d95b2a86f2d2de87afed",
+    "bytes": 132
+  },
+  "research/crypto-blue/confirmation-reviewed/protocol.json": {
+    "sha256": "ea53660ffb0ae3a9490571a326cb494abe739e9f537a034fafae6ea1090b46c5",
+    "bytes": 8373
+  },
+  "research/crypto-blue/confirmation-reviewed/results.json": {
+    "sha256": "898f92db249eca38c3faf1585a3b38980b332bbed619780fa2d7ca7d28d07df3",
+    "bytes": 14835137
+  },
+  "research/crypto-blue/confirmation-reviewed/timelines_conditioning.png": {
+    "sha256": "67356c2c3b033fa1ffd148e2b704b7964e169a2c8a9652d4f2f086b2fef13a2d",
+    "bytes": 104470
+  },
+  "research/crypto-blue/confirmation-reviewed/timelines_conditioning.svg": {
+    "sha256": "f6eba1859ca29486c46fcb137c2725cff11b00cf6c876f371848353603dbdc43",
+    "bytes": 69409
+  },
+  "research/crypto-blue/confirmation-v1/RESULTS.md": {
+    "sha256": "5eb793f2b88a8a807126d8107bc2d784d5f591964a90bf01afee25b8284471cf",
+    "bytes": 8641
+  },
+  "research/crypto-blue/confirmation-v1/environment.json": {
+    "sha256": "52f3be1ab503029520d1dde7c7e8af3f77190293ab97f2e350339b1a7272fd46",
+    "bytes": 253
+  },
+  "research/crypto-blue/confirmation-v1/manifest.json": {
+    "sha256": "50a468851be6576717102e5a6e9a884d0b123fe3bf0481e1f4c47b9b14ae6500",
+    "bytes": 826
+  },
+  "research/crypto-blue/confirmation-v1/nonce_detection.png": {
+    "sha256": "9fd3fcf3e1e77c6126a3774e52f1c8acdd9d6c4128a529830ab2983d86fe4d11",
+    "bytes": 105474
+  },
+  "research/crypto-blue/confirmation-v1/nonce_detection.svg": {
+    "sha256": "8898f46bd9f1c56ccfd61810495168553ae24bd8b88c4d00e41d6b76fc6ddbb8",
+    "bytes": 75602
+  },
+  "research/crypto-blue/confirmation-v1/performance.json": {
+    "sha256": "a3847b042d822ee20667a3788392238476eebea02b7053b1d48f441b43cbb12e",
+    "bytes": 133
+  },
+  "research/crypto-blue/confirmation-v1/protocol.json": {
+    "sha256": "8b0d7641b7fb02ce383e0912490d447ae01ef8aa1a702b3bb4d71467aa969fb1",
+    "bytes": 8373
+  },
+  "research/crypto-blue/confirmation-v1/results.json": {
+    "sha256": "e08c3ee07ae299a33b5de80fdce41d8f658b2c7bc6782370d70941cdc973a3e1",
+    "bytes": 14256711
+  },
+  "research/crypto-blue/confirmation-v1/timelines_conditioning.png": {
+    "sha256": "67356c2c3b033fa1ffd148e2b704b7964e169a2c8a9652d4f2f086b2fef13a2d",
+    "bytes": 104470
+  },
+  "research/crypto-blue/confirmation-v1/timelines_conditioning.svg": {
+    "sha256": "f6eba1859ca29486c46fcb137c2725cff11b00cf6c876f371848353603dbdc43",
+    "bytes": 69409
+  },
+  "research/crypto-blue/evidence/base-commit.txt": {
+    "sha256": "823bc1c5def7e85437c6ed355c5c32417f0afb3b2179d54bbdf1edc06f8853d7",
+    "bytes": 41
+  },
+  "research/crypto-blue/evidence/baseline.log": {
+    "sha256": "ae872851bb4cad732ba4cee362a9c6b18862b6e527e888ecbcaf194b85187a74",
+    "bytes": 340
+  },
+  "research/crypto-blue/evidence/baseline.xml": {
+    "sha256": "71707c75a909dd6fd6d7acd6bfabf0dd25465ee49cac3209af2ef236b0e1db8d",
+    "bytes": 32853
+  },
+  "research/crypto-blue/evidence/confirmation-replay.log": {
+    "sha256": "fb96ac18c5e75e9bbdd79499c32a55d4dd50b3b6997ff970918c565448dc8ca7",
+    "bytes": 622
+  },
+  "research/crypto-blue/evidence/confirmation-reviewed.log": {
+    "sha256": "d25739607a412f88be2ee37b71a1fd423fd3f6b0b73afc174a57d33c285c4044",
+    "bytes": 622
+  },
+  "research/crypto-blue/evidence/confirmation.log": {
+    "sha256": "5a1b88055821270150dd565888dc7b8216677a0f81bcdb2a15ef4c1a300a38a9",
+    "bytes": 622
+  },
+  "research/crypto-blue/evidence/crypto-initial.log": {
+    "sha256": "5026ddcdbcca5577aec383a2f10c5292484005508497de4b0510b61f3e6f6e08",
+    "bytes": 99
+  },
+  "research/crypto-blue/evidence/crypto-initial.xml": {
+    "sha256": "857495e9cefd062f9a31a94cb9d9943fa15cf6acef508a762d55c574495f0f8c",
+    "bytes": 7834
+  },
+  "research/crypto-blue/evidence/crypto-reviewed.log": {
+    "sha256": "db11520a9a8f3dce6dfb3f9e13eed4a64bd9b4940c8295c0f7e9ce083e30b05a",
+    "bytes": 99
+  },
+  "research/crypto-blue/evidence/crypto-reviewed.xml": {
+    "sha256": "02fc4e7066401a4d72854b3528cc634a63f2df3c18cdbfe9b646b7375568319e",
+    "bytes": 7834
+  },
+  "research/crypto-blue/evidence/final-tests.log": {
+    "sha256": "98acef4092e5f5ae320f72ab6667029c4d34f3f9e053df2f239c4a687b0ca8fc",
+    "bytes": 420
+  },
+  "research/crypto-blue/evidence/final-tests.xml": {
+    "sha256": "97fdcd523d2edb0f2f3340b0ecd2d900ca2cc2a43b9d7ee00b9537d1b5fb5fef",
+    "bytes": 40442
+  },
+  "research/crypto-blue/evidence/full-checkpoint.log": {
+    "sha256": "45b1491f6a8e7995e1828b61e2a82a9a0d3dff050ce31797fa2d03e2af3207ff",
+    "bytes": 420
+  },
+  "research/crypto-blue/evidence/full-checkpoint.xml": {
+    "sha256": "ca630a777ba9329658119309438d6dbf864b226fd10c2c5fe48623e2a0241949",
+    "bytes": 40442
+  },
+  "research/crypto-blue/evidence/independent-review.json": {
+    "sha256": "cfc7c67f8d801c763c19528d44dd440ac691893888105621851eba4d534e6985",
+    "bytes": 2274
+  },
+  "research/crypto-blue/evidence/install.log": {
+    "sha256": "cefadc6331f9ddf82dee17663212625a77ff804323d0c556355041cab897c2c5",
+    "bytes": 5909
+  },
+  "research/crypto-blue/evidence/installed-wheel-check.log": {
+    "sha256": "42a2ad9ce2adb1c83482df4d0c5884b26f093bbd1ccdd4211280a279146d4cbb",
+    "bytes": 304
+  },
+  "research/crypto-blue/evidence/legacy-research.log": {
+    "sha256": "b1e29c0031e20ce1f4966711a821fea97439a0b33d70d0d06d0eda4679fd2d86",
+    "bytes": 3214
+  },
+  "research/crypto-blue/evidence/legacy-research.xml": {
+    "sha256": "1e0945a59af895996509d61430bbcbe41d7544a5c29efd954f5ad059143d18c9",
+    "bytes": 3246
+  },
+  "research/crypto-blue/evidence/overhead.json": {
+    "sha256": "8d04fe21fa7a53f43a1c70cfcbac423efba3c26955f0c17ee6bae7f932e523bc",
+    "bytes": 6709
+  },
+  "research/crypto-blue/evidence/phase2-install.log": {
+    "sha256": "fbd51b0379d4cf7531f5bb3873d01cf89ffc9d54c9281042a77ff6e9b170406f",
+    "bytes": 6808
+  },
+  "research/crypto-blue/evidence/phase2-preparation.log": {
+    "sha256": "3a4801268eddf27e9db71bbfe0a6403a8e8383d54641514a0b21cccaf0a0ba3a",
+    "bytes": 360
+  },
+  "research/crypto-blue/evidence/phase2-tests.log": {
+    "sha256": "8ab7b1d04b8ddc3a5f257d69fc97b0363923236e7c8080cca0dd3d01f682976f",
+    "bytes": 99
+  },
+  "research/crypto-blue/evidence/phase2-tests.xml": {
+    "sha256": "603558e4fa7a9eae95e58a3218270d7edd10ddeb97be2f1c2d9da07a6fadb21c",
+    "bytes": 6144
+  },
+  "research/crypto-blue/evidence/replay-validation.json": {
+    "sha256": "af32bb8c8309477118ac2d548c6b98203fd454418b55e817fbf76eab89829ea9",
+    "bytes": 524
+  },
+  "research/crypto-blue/evidence/requirements-lock.txt": {
+    "sha256": "ceaeae24d612df30a8c79a130d1b1af091f407f551bd247945810e5bd8e8cc64",
+    "bytes": 434
+  },
+  "research/crypto-blue/evidence/sensitivity-replay.log": {
+    "sha256": "c8a7db646b076db1638f0efda79ba90ace3f16fcb3b277ddffdc7879c75e767f",
+    "bytes": 437
+  },
+  "research/crypto-blue/evidence/sensitivity-reviewed.log": {
+    "sha256": "062755a96cb2d7fcbd8fb0bbdc064005f32944eb56fa7cafab2ce3ff80929c73",
+    "bytes": 437
+  },
+  "research/crypto-blue/evidence/sensitivity.log": {
+    "sha256": "a1482c845947c4d28bf16530abd674a9284236cdec3d45d9bb46bba2a0d2ce28",
+    "bytes": 437
+  },
+  "research/crypto-blue/evidence/smoke.log": {
+    "sha256": "0aacdd4a1eb6817ebc82df6f139dc842b2ee8c443f3197f733cc17a549ac0790",
+    "bytes": 304
+  },
+  "research/crypto-blue/evidence/wheel-build.log": {
+    "sha256": "ddb9299c854d73042c9e4dcafe42fdf3039d53e8379dc704de44b78950df87a6",
+    "bytes": 1115
+  },
+  "research/crypto-blue/evidence/wheel-install.log": {
+    "sha256": "9a8e583a4c3464b6945b4246fcf670c33d6260f00faec661ac2f29d96a3eae2a",
+    "bytes": 5900
+  },
+  "research/crypto-blue/os-reference/public-sample.bin": {
+    "sha256": "29fb9327e9d3630bdad55400918f2145389bf7ebaa325f7208aba7b23a83cc94",
+    "bytes": 4096
+  },
+  "research/crypto-blue/os-reference/reference.json": {
+    "sha256": "4ba5ec59cc6cdb09e29cd5d4580c5cb6a6794a80aad98b1fe473b91c55473a5b",
+    "bytes": 1128
+  },
+  "research/crypto-blue/sensitivity-reviewed/RESULTS.md": {
+    "sha256": "d21113f460328147f42a67adf58669aefbe715519147c89aec26a8969bababfa",
+    "bytes": 8780
+  },
+  "research/crypto-blue/sensitivity-reviewed/environment.json": {
+    "sha256": "52f3be1ab503029520d1dde7c7e8af3f77190293ab97f2e350339b1a7272fd46",
+    "bytes": 253
+  },
+  "research/crypto-blue/sensitivity-reviewed/manifest.json": {
+    "sha256": "67ca159302eb0778754cfdf2698b3201d2492130d138b56c6620877981209f8c",
+    "bytes": 826
+  },
+  "research/crypto-blue/sensitivity-reviewed/nonce_detection.png": {
+    "sha256": "35071575cc0288d73e0ec9a5ebe7f0341b7e8b3530a9b725601c312578494cec",
+    "bytes": 104628
+  },
+  "research/crypto-blue/sensitivity-reviewed/nonce_detection.svg": {
+    "sha256": "b0f99f705a344856508b89504c660983918de5f18c69addf82b92d6bd8c2caae",
+    "bytes": 74699
+  },
+  "research/crypto-blue/sensitivity-reviewed/performance.json": {
+    "sha256": "13230b1307b8f7b35175d861e6c333b106d4e46ecbc5987ff47dd799ffe75b3c",
+    "bytes": 132
+  },
+  "research/crypto-blue/sensitivity-reviewed/protocol.json": {
+    "sha256": "b9da41529d92b4d13e0352b97fa7a56b3e16a3242619bc2bf2c56bca81283435",
+    "bytes": 8377
+  },
+  "research/crypto-blue/sensitivity-reviewed/results.json": {
+    "sha256": "1a90e4705f6ff43151e20351f8a0dc5c16f6cc789891797ac9eb7e87af71214d",
+    "bytes": 11194034
+  },
+  "research/crypto-blue/sensitivity-reviewed/timelines_conditioning.png": {
+    "sha256": "9d92a3cfcf7605024889e99f00a3d106aa7295ceba9f52d09f737c4ad361d7e8",
+    "bytes": 104763
+  },
+  "research/crypto-blue/sensitivity-reviewed/timelines_conditioning.svg": {
+    "sha256": "e3298b08bda301ec3926189d3402a86c16fd6865ba07454f9a328a2b6a8140ce",
+    "bytes": 69995
+  },
+  "research/crypto-blue/sensitivity-v1/RESULTS.md": {
+    "sha256": "bf912923bf4b325ee066d833aa67ca5619f357aa271984720558da33e1d06b1f",
+    "bytes": 8530
+  },
+  "research/crypto-blue/sensitivity-v1/environment.json": {
+    "sha256": "52f3be1ab503029520d1dde7c7e8af3f77190293ab97f2e350339b1a7272fd46",
+    "bytes": 253
+  },
+  "research/crypto-blue/sensitivity-v1/manifest.json": {
+    "sha256": "136f0ba7bc69fe15b94976bbcf211cf53d4ea4e9430485e5d57103d2f45049c1",
+    "bytes": 826
+  },
+  "research/crypto-blue/sensitivity-v1/nonce_detection.png": {
+    "sha256": "35071575cc0288d73e0ec9a5ebe7f0341b7e8b3530a9b725601c312578494cec",
+    "bytes": 104628
+  },
+  "research/crypto-blue/sensitivity-v1/nonce_detection.svg": {
+    "sha256": "b0f99f705a344856508b89504c660983918de5f18c69addf82b92d6bd8c2caae",
+    "bytes": 74699
+  },
+  "research/crypto-blue/sensitivity-v1/performance.json": {
+    "sha256": "de00bdaba81770d71b87ca6f40116edb77cc0b8b2b6eb48b4af48d779f6067a9",
+    "bytes": 133
+  },
+  "research/crypto-blue/sensitivity-v1/protocol.json": {
+    "sha256": "ef53f7db46271affdda49b6a1177a6e738c41172cd10fb6241a71552ab742f75",
+    "bytes": 8377
+  },
+  "research/crypto-blue/sensitivity-v1/results.json": {
+    "sha256": "86120c368e55717104711187dd6c0ad53f3f03d83b9b406d468aa7831d065771",
+    "bytes": 10903501
+  },
+  "research/crypto-blue/sensitivity-v1/timelines_conditioning.png": {
+    "sha256": "9d92a3cfcf7605024889e99f00a3d106aa7295ceba9f52d09f737c4ad361d7e8",
+    "bytes": 104763
+  },
+  "research/crypto-blue/sensitivity-v1/timelines_conditioning.svg": {
+    "sha256": "e3298b08bda301ec3926189d3402a86c16fd6865ba07454f9a328a2b6a8140ce",
+    "bytes": 69995
+  },
+  "research/crypto-blue/smoke/RESULTS.md": {
+    "sha256": "cc79f7c758730986fb152fdc926b674386a04fe0be745c07ba8a814371ccc33d",
+    "bytes": 8331
+  },
+  "research/crypto-blue/smoke/environment.json": {
+    "sha256": "52f3be1ab503029520d1dde7c7e8af3f77190293ab97f2e350339b1a7272fd46",
+    "bytes": 253
+  },
+  "research/crypto-blue/smoke/manifest.json": {
+    "sha256": "d729c52e1904d7480e539be88f1148d327dc92ab57831cdaea0bddc86bcda83c",
+    "bytes": 826
+  },
+  "research/crypto-blue/smoke/nonce_detection.png": {
+    "sha256": "8a63eaddede452c31173d4f490a32ea40927e28d60bb4f0fd01da52b6ab2ca78",
+    "bytes": 91566
+  },
+  "research/crypto-blue/smoke/nonce_detection.svg": {
+    "sha256": "6ac221f68ce3bb4151dd7a013f98a4de8a1d60cfe9352348b7d500b2bbac3475",
+    "bytes": 66519
+  },
+  "research/crypto-blue/smoke/performance.json": {
+    "sha256": "8c85cb04cb6376b57c5f25ed413010c1699c848d30d4779d5767bc82783f1ba7",
+    "bytes": 133
+  },
+  "research/crypto-blue/smoke/protocol.json": {
+    "sha256": "156f77e4df7cb65772691bd4d8e7d8952b54e4b83c2a33b1036851ea290a32ae",
+    "bytes": 8253
+  },
+  "research/crypto-blue/smoke/results.json": {
+    "sha256": "87d8dc2d5b6795e1c1264e02451f506a4b9b9e3ae20d295538eeaa235c6ea130",
+    "bytes": 266244
+  },
+  "research/crypto-blue/smoke/timelines_conditioning.png": {
+    "sha256": "32015500e21cd1a997bc0c60d7076443ff95340c3ef28de52d5361fc43a50218",
+    "bytes": 101379
+  },
+  "research/crypto-blue/smoke/timelines_conditioning.svg": {
+    "sha256": "635eac508e4079ad615de9913035927c268e55f4859fddd503ba7228f243fac1",
+    "bytes": 68719
+  },
+  "scripts/crypto_overhead.py": {
+    "sha256": "c21db7834491872c913dec38c8ef1ce4584806348f24f2ab540cd963640ab41e",
+    "bytes": 2710
+  },
+  "scripts/crypto_review.py": {
+    "sha256": "d3ff399fcd0599bf04c68ab4201dd73ec352cbb9b1543b844d3a496295b7cca7",
+    "bytes": 5548
+  },
+  "src/rnglab_crypto/__init__.py": {
+    "sha256": "88a8a04b01ac408ef2e5c19a1f8a79d6ae64c943e0210a720dacad4db86f7b30",
+    "bytes": 187
+  },
+  "src/rnglab_crypto/__main__.py": {
+    "sha256": "34327c8791d770984ab5a901b4fda4002145bc0c423c174b412c33d217471f0a",
+    "bytes": 2889
+  },
+  "src/rnglab_crypto/experiments/__init__.py": {
+    "sha256": "c8458079d9ff6396a1600ab14904d7def4d02482dba2649733066da5eb9b398f",
+    "bytes": 76
+  },
+  "src/rnglab_crypto/experiments/campaign.py": {
+    "sha256": "85c0a4b1c2b1ad6e1df58dbee9a04d56b6f85c4fcc65ff3d568888bac7bf44a6",
+    "bytes": 23685
+  },
+  "src/rnglab_crypto/experiments/config.py": {
+    "sha256": "e68161876237983fbec7ea437918b6a255a7ddd3f69440e97ccb5838b2874d46",
+    "bytes": 2159
+  },
+  "src/rnglab_crypto/faults/__init__.py": {
+    "sha256": "44e5710e3af63cb10e6ebde8a13930027d2027245f2cd1291e2b789d0e4a41d4",
+    "bytes": 5982
+  },
+  "src/rnglab_crypto/monitoring/__init__.py": {
+    "sha256": "2ae43b6cfce3a59796af420c47507e8b99a91e6ce7f169de7c8e8cfbec76f6b5",
+    "bytes": 4718
+  },
+  "src/rnglab_crypto/primitives/__init__.py": {
+    "sha256": "07e1d1ac09f36c3ad19df6ebb5369b198b6f351b2ee28795b19ade5b7dec7245",
+    "bytes": 75
+  },
+  "src/rnglab_crypto/primitives/aead.py": {
+    "sha256": "ffe24729902809bea0307c4fc4fca5550f9fec4b8d61d4d26c73abadb1a1b466",
+    "bytes": 5951
+  },
+  "src/rnglab_crypto/primitives/conditioning.py": {
+    "sha256": "e93386fa05de64e1d2ebb619529c0cf953d3447edff97a1250b29f970af1a52a",
+    "bytes": 1369
+  },
+  "src/rnglab_crypto/primitives/signatures.py": {
+    "sha256": "1d73dbac1586506384e85e614a7b0a5b9ad338a5012ba9c0e63724e2074b7ae2",
+    "bytes": 2792
+  },
+  "src/rnglab_crypto/reporting/__init__.py": {
+    "sha256": "eac6d4f84063603ed6d8bf5a7b8cd0f50c3080f2eb57fb9130f8d5591780d90d",
+    "bytes": 16304
+  },
+  "src/rnglab_crypto/risk/__init__.py": {
+    "sha256": "128ff241c53c00d41ea9b6c1616b345ce473ade6655ebb6658a0eb2217b20b96",
+    "bytes": 2894
+  },
+  "src/rnglab_crypto/sources/__init__.py": {
+    "sha256": "d98e3ababeff6ff5ea4878c5336b2b4832344aa2a6430ca9b198d2d947ab28c6",
+    "bytes": 3155
+  },
+  "src/rnglab_crypto/sources/physical.py": {
+    "sha256": "ae4392154af91568a5937a1c3dd6a401135dfd87466f97d53ad670988192ddb5",
+    "bytes": 3018
+  },
+  "tests/crypto_vectors/hmac_drbg.json": {
+    "sha256": "435981d6361598922ea73eea2a3689afaba7ef78f00c4961024043c8c176fe5c",
+    "bytes": 862
+  },
+  "tests/crypto_vectors/hmac_drbg_reseed.json": {
+    "sha256": "347ddcaecbba83c650f3a863a14a471977ce892899bbad26478a3e6d4bfc8a4f",
+    "bytes": 1004
+  },
+  "tests/test_crypto_experiments.py": {
+    "sha256": "235363b490b6eb485d3b5272e9716d03838f8af1d5083c0d75f3fe499365c20d",
+    "bytes": 2898
+  },
+  "tests/test_crypto_faults.py": {
+    "sha256": "699c091344356a368f0be4a8a9ff358a35ec0b938e591a4190bcec3b96dc511e",
+    "bytes": 2624
+  },
+  "tests/test_crypto_monitoring.py": {
+    "sha256": "d8ef06ee527f6569e01427573e5a841d5ee4ef79444171d954eaf9f9c258d5d6",
+    "bytes": 1834
+  },
+  "tests/test_crypto_primitives.py": {
+    "sha256": "d770fedca8dc75942856e2bb11166cbcb65587b1962cfb49f2919836f6ac3cf0",
+    "bytes": 6082
+  },
+  "tests/test_crypto_sources.py": {
+    "sha256": "79e67aace303fa644186c28de0ba6efb72cf3bcbab785772079cf20537363741",
+    "bytes": 2130
+  }
+}

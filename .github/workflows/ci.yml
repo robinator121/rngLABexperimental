@@ -31,3 +31,11 @@ jobs:
     - name: Run automated test suite
       run: |
         PYTHONPATH=src pytest tests -v
+
+    - name: Install package and run isolated crypto smoke campaign
+      run: |
+        pip install '.[crypto]'
+        python -m rnglab_crypto run --smoke --output /tmp/blue-smoke
+        python -m rnglab_crypto verify /tmp/blue-smoke
+        python -m rnglab_crypto run --smoke --no-plots --output /tmp/blue-replay
+        cmp /tmp/blue-smoke/results.json /tmp/blue-replay/results.json

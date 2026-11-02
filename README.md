@@ -2,13 +2,24 @@
 
 [![CI](https://github.com/robinator121/rngLABexperimental/actions/workflows/ci.yml/badge.svg)](https://github.com/robinator121/rngLABexperimental/actions/workflows/ci.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
-[![Tests: 257 Passing](https://img.shields.io/badge/Tests-257%20Passing-brightgreen.svg)](tests/)
+[![Tests: 322 Passing](https://img.shields.io/badge/Tests-322%20Passing-brightgreen.svg)](tests/)
 
 **Author:** Hevele Imre Róbert ([@robinator121](https://github.com/robinator121))  
 **Contact:** [roberthevele@gmail.com](mailto:roberthevele@gmail.com)  
 **Affiliation:** Faculty of Informatics, University of Debrecen  
 **Project Nature:** Academic Research Prototype & BSc Thesis Codebase  
 **Status:** Experimental Research Platform (v0.17 CALIBRATE)
+
+### RNGLab BLUE: isolated cryptographic infrastructure research
+
+`rnglab_crypto` adds synthetic RNG fault injection, bounded weak-seed recovery,
+AES-GCM and ChaCha20-Poly1305 nonce-misuse experiments, ECDSA/RFC6979/Ed25519
+controls, DRBG recovery, source monitoring and persistent nonce allocation.
+The initial campaigns include 128 confirmation and 64 sensitivity replicas,
+reproducible results, uncertainty intervals and explicit failed criteria.
+See the [findings](docs/crypto/RESULTS.md), [audit](docs/crypto/ARCHITECTURE_AUDIT.md)
+and [reproduction guide](docs/crypto/REPRODUCE.md). The suite has 257 legacy tests
+plus 65 crypto tests; no production keys or external systems are targeted.
 
 ---
 
@@ -124,7 +135,7 @@ rngLABexperimental/
 ├── scripts/               # Benchmark runners, audit verifiers, report generators
 ├── research/
 │   └── phase2-20261030/    # Standalone Phase II study, reports, and 35 separate research checks
-├── tests/                 # 257 core unit, mathematical, and regression tests
+├── tests/                 # 257 legacy plus 65 crypto regression tests
 ├── pyproject.toml         # Package build configuration
 └── LICENSE                # GNU Affero General Public License v3 (AGPL-3.0)
 ```
@@ -152,12 +163,12 @@ pip install numpy scipy cryptography matplotlib pytest
 
 ### Running the Complete Test Suite
 
-Execute the complete core suite of **257 automated tests** (covering core statistical batteries, quantum/Ising models, physical acquisition, financial risk engines, and the optional centroid-refresh API):
+Execute the complete core suite of **322 automated tests** (257 legacy checks plus 65 isolated crypto checks):
 
 ```bash
 PYTHONPATH=src pytest tests -q
 ```
-*Expected result: 257 passed. Runtime depends on the environment.*
+*Expected result: 322 passed. Runtime depends on the environment.*
 
 The **35 Phase II research checks** are separate from this core count. Their environment and execution commands are documented in the [Phase II research package](research/phase2-20261030/README.md).
 

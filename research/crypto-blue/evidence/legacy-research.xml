@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="5" failures="0" skipped="0" tests="5" time="0.667" timestamp="2026-11-02T03:36:52.177190+01:00" hostname="robiarch"><testcase classname="" name="research.phase2-20261030.analytic-dependence.test_analytic_dependence" time="0.000"><error message="collection failure">ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/analytic-dependence/test_analytic_dependence.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/analytic-dependence/test_analytic_dependence.py:4: in &lt;module&gt;
+    import analytic_dependence as a
+E   ModuleNotFoundError: No module named 'analytic_dependence'</error></testcase><testcase classname="" name="research.phase2-20261030.rus.test_counterexample" time="0.000"><error message="collection failure">ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/rus/test_counterexample.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/rus/test_counterexample.py:4: in &lt;module&gt;
+    import rus_identifiability as model
+E   ModuleNotFoundError: No module named 'rus_identifiability'</error></testcase><testcase classname="" name="research.phase2-20261030.experiment.test_study" time="0.000"><error message="collection failure">ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/experiment/test_study.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/experiment/test_study.py:8: in &lt;module&gt;
+    import study
+E   ModuleNotFoundError: No module named 'study'</error></testcase><testcase classname="" name="research.phase2-20261030.experiment.test_fault_study" time="0.000"><error message="collection failure">ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/experiment/test_fault_study.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/experiment/test_fault_study.py:7: in &lt;module&gt;
+    import fault_study
+E   ModuleNotFoundError: No module named 'fault_study'</error></testcase><testcase classname="" name="research.phase2-20261030.baseline.test_independent_checker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/baseline/test_independent_checker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/baseline/test_independent_checker.py:4: in &lt;module&gt;
+    import verify_baseline as checker
+E   ModuleNotFoundError: No module named 'verify_baseline'</error></testcase></testsuite></testsuites>

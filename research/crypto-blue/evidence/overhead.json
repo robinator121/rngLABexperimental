@@ -1,0 +1,286 @@
+{
+  "environment": {
+    "python": "3.14.7",
+    "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+    "openssl": "OpenSSL 4.0.3 29 Sep 2026",
+    "dependencies": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "cryptography": "50.0.2",
+      "matplotlib": "3.11.2"
+    }
+  },
+  "rows": [
+    {
+      "replicate": 0,
+      "operation": "aead",
+      "nanoseconds_per_operation": 635.99609375
+    },
+    {
+      "replicate": 0,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 849.25
+    },
+    {
+      "replicate": 0,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 1266.828125
+    },
+    {
+      "replicate": 0,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 50584.4296875
+    },
+    {
+      "replicate": 1,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 50550.49609375
+    },
+    {
+      "replicate": 1,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 665.15625
+    },
+    {
+      "replicate": 1,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 1550.5234375
+    },
+    {
+      "replicate": 1,
+      "operation": "aead",
+      "nanoseconds_per_operation": 608.484375
+    },
+    {
+      "replicate": 2,
+      "operation": "aead",
+      "nanoseconds_per_operation": 600.9296875
+    },
+    {
+      "replicate": 2,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 788.1171875
+    },
+    {
+      "replicate": 2,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 622.22265625
+    },
+    {
+      "replicate": 2,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 50870.43359375
+    },
+    {
+      "replicate": 3,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 50952.1484375
+    },
+    {
+      "replicate": 3,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 604.921875
+    },
+    {
+      "replicate": 3,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 797.31640625
+    },
+    {
+      "replicate": 3,
+      "operation": "aead",
+      "nanoseconds_per_operation": 599.8359375
+    },
+    {
+      "replicate": 4,
+      "operation": "aead",
+      "nanoseconds_per_operation": 600.11328125
+    },
+    {
+      "replicate": 4,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 789.68359375
+    },
+    {
+      "replicate": 4,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 555.84765625
+    },
+    {
+      "replicate": 4,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 50956.296875
+    },
+    {
+      "replicate": 5,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 51754.04296875
+    },
+    {
+      "replicate": 5,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 582.8125
+    },
+    {
+      "replicate": 5,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 795.31640625
+    },
+    {
+      "replicate": 5,
+      "operation": "aead",
+      "nanoseconds_per_operation": 598.46875
+    },
+    {
+      "replicate": 6,
+      "operation": "aead",
+      "nanoseconds_per_operation": 604.4140625
+    },
+    {
+      "replicate": 6,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 812.37890625
+    },
+    {
+      "replicate": 6,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 529.9375
+    },
+    {
+      "replicate": 6,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 51342.609375
+    },
+    {
+      "replicate": 7,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 50930.625
+    },
+    {
+      "replicate": 7,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 559.7578125
+    },
+    {
+      "replicate": 7,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 791.4453125
+    },
+    {
+      "replicate": 7,
+      "operation": "aead",
+      "nanoseconds_per_operation": 616.3515625
+    },
+    {
+      "replicate": 8,
+      "operation": "aead",
+      "nanoseconds_per_operation": 600.89453125
+    },
+    {
+      "replicate": 8,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 780.484375
+    },
+    {
+      "replicate": 8,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 539.44921875
+    },
+    {
+      "replicate": 8,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 50713.37890625
+    },
+    {
+      "replicate": 9,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 51336.1484375
+    },
+    {
+      "replicate": 9,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 571.96875
+    },
+    {
+      "replicate": 9,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 1056.23828125
+    },
+    {
+      "replicate": 9,
+      "operation": "aead",
+      "nanoseconds_per_operation": 598.81640625
+    },
+    {
+      "replicate": 10,
+      "operation": "aead",
+      "nanoseconds_per_operation": 621.1640625
+    },
+    {
+      "replicate": 10,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 785.8125
+    },
+    {
+      "replicate": 10,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 550.25
+    },
+    {
+      "replicate": 10,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 51015.43359375
+    },
+    {
+      "replicate": 11,
+      "operation": "sqlite_counter",
+      "nanoseconds_per_operation": 52458.68359375
+    },
+    {
+      "replicate": 11,
+      "operation": "source_monitor",
+      "nanoseconds_per_operation": 631.65234375
+    },
+    {
+      "replicate": 11,
+      "operation": "guarded_aead",
+      "nanoseconds_per_operation": 824.6328125
+    },
+    {
+      "replicate": 11,
+      "operation": "aead",
+      "nanoseconds_per_operation": 596.55078125
+    }
+  ],
+  "summary": {
+    "sqlite_counter": {
+      "median_ns_per_operation": 50954.22265625,
+      "range_ns_per_operation": [
+        50550.49609375,
+        52458.68359375
+      ]
+    },
+    "source_monitor": {
+      "median_ns_per_operation": 577.390625,
+      "range_ns_per_operation": [
+        529.9375,
+        1266.828125
+      ]
+    },
+    "guarded_aead": {
+      "median_ns_per_operation": 796.31640625,
+      "range_ns_per_operation": [
+        780.484375,
+        1550.5234375
+      ]
+    },
+    "aead": {
+      "median_ns_per_operation": 600.912109375,
+      "range_ns_per_operation": [
+        596.55078125,
+        635.99609375
+      ]
+    }
+  },
+  "qualification": "12 repeated timings on one host, 256 operations each; startup excluded, no independent-machine CI; monitor uses batch vectorization"
+}

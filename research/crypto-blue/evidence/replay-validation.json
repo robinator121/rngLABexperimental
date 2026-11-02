@@ -1,0 +1,9 @@
+{
+  "wheel_smoke_matches_checkout": true,
+  "installed_location": "/tmp/rnglab-blue-wheel-env/lib/python3.14/site-packages/rnglab_crypto/__init__.py",
+  "smoke_results_sha256": "8a900762fcf9cd88d7168806abdd3793b4b27c7dc37c0bb38f7197f77f75ab99",
+  "confirmation_replay_matches": true,
+  "confirmation_results_sha256": "898f92db249eca38c3faf1585a3b38980b332bbed619780fa2d7ca7d28d07df3",
+  "sensitivity_replay_matches": true,
+  "sensitivity_results_sha256": "1a90e4705f6ff43151e20351f8a0dc5c16f6cc789891797ac9eb7e87af71214d"
+}
