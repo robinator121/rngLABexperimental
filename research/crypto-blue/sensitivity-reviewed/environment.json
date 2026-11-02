@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "cryptography": "50.0.2",
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "openssl": "OpenSSL 4.0.3 29 Sep 2026",
+  "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+  "python": "3.14.7"
+}

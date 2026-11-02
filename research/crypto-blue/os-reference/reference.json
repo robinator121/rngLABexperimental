@@ -1,0 +1,44 @@
+{
+  "diagnostics": {
+    "alpha_per_stream": 0.01,
+    "bits": 32768,
+    "holm_adjusted": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "p_values": {
+      "block_frequency": 0.6031864998782996,
+      "monobit": 0.8683708904438426,
+      "runs": 0.44594159572185554
+    },
+    "rejected": false,
+    "security_entropy_credit_bits": 0
+  },
+  "environment": {
+    "dependencies": {
+      "cryptography": "50.0.2",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1"
+    },
+    "openssl": "OpenSSL 4.0.3 29 Sep 2026",
+    "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+    "python": "3.14.7"
+  },
+  "key_generation": false,
+  "provenance": {
+    "created_at": "2026-11-02T02:31:27.258476+00:00",
+    "family": "os_csprng",
+    "is_deterministic": false,
+    "is_physical": false,
+    "metadata": {
+      "physical_source_validated": false,
+      "replayable": false
+    },
+    "seed": null,
+    "source_id": "host-os"
+  },
+  "qualification": "one observational OS sample; public after capture; not certification",
+  "sha256": "29fb9327e9d3630bdad55400918f2145389bf7ebaa325f7208aba7b23a83cc94"
+}

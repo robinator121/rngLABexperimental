@@ -1,0 +1,9 @@
+{
+  "scratch_root": "/tmp/rnglab-blue-phase2-replay",
+  "phase2_root": "/tmp/rnglab-blue-phase2-replay/outputs/phase2-20261030",
+  "pinned_upstream_commit": "dd96adba23b8100aba9147d71fffc63932fc6b0d",
+  "copied_files": 17,
+  "simulations_executed": false,
+  "test_cwd": "/tmp/rnglab-blue-phase2-replay",
+  "test_command": "python -m pytest -c pytest.ini -v"
+}

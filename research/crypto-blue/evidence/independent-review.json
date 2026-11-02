@@ -1,0 +1,78 @@
+{
+  "runs": {
+    "confirmation-reviewed": {
+      "checks_passed": 28764,
+      "results_sha256": "898f92db249eca38c3faf1585a3b38980b332bbed619780fa2d7ca7d28d07df3",
+      "scope": "independent accounting and censoring recomputation, not independent cryptographic implementation"
+    },
+    "sensitivity-reviewed": {
+      "checks_passed": 14463,
+      "results_sha256": "1a90e4705f6ff43151e20351f8a0dc5c16f6cc789891797ac9eb7e87af71214d",
+      "scope": "independent accounting and censoring recomputation, not independent cryptographic implementation"
+    }
+  },
+  "finite_support": {
+    "classification": "post-hoc exhaustive finite-domain diagnostic/mapping audit; not preregistered hypothesis evidence",
+    "conditioning": {
+      "sha256/hmac": {
+        "nonrejected_seeds": 252,
+        "seed_support": 256,
+        "exact_nonrejection_fraction_for_this_finite_mapping": 0.984375,
+        "rejected_public_seed_identifiers": [
+          27,
+          89,
+          147,
+          195
+        ]
+      },
+      "sha256/chacha20": {
+        "nonrejected_seeds": 250,
+        "seed_support": 256,
+        "exact_nonrejection_fraction_for_this_finite_mapping": 0.9765625,
+        "rejected_public_seed_identifiers": [
+          9,
+          84,
+          90,
+          123,
+          243,
+          255
+        ]
+      },
+      "hkdf/hmac": {
+        "nonrejected_seeds": 255,
+        "seed_support": 256,
+        "exact_nonrejection_fraction_for_this_finite_mapping": 0.99609375,
+        "rejected_public_seed_identifiers": [
+          48
+        ]
+      },
+      "hkdf/chacha20": {
+        "nonrejected_seeds": 253,
+        "seed_support": 256,
+        "exact_nonrejection_fraction_for_this_finite_mapping": 0.98828125,
+        "rejected_public_seed_identifiers": [
+          73,
+          84,
+          253
+        ]
+      }
+    },
+    "nonce_seed_mapping": {
+      "8": {
+        "input_count": 256,
+        "unique_outputs": 256,
+        "injective_on_enumerated_support": true
+      },
+      "12": {
+        "input_count": 4096,
+        "unique_outputs": 4096,
+        "injective_on_enumerated_support": true
+      },
+      "16": {
+        "input_count": 65536,
+        "unique_outputs": 65536,
+        "injective_on_enumerated_support": true
+      }
+    }
+  }
+}

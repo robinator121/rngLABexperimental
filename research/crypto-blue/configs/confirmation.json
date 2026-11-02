@@ -1,0 +1,11 @@
+{
+  "namespace": "blue-confirm-v1",
+  "repetitions": 128,
+  "calibration_repetitions": 199,
+  "operations": 256,
+  "fault_onset": 64,
+  "diagnostic_bytes": 4096,
+  "weak_seed_bits": [8, 12],
+  "nonce_bits": [8, 12, 16],
+  "synthetic_only": true
+}

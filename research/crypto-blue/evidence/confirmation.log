@@ -1,0 +1,13 @@
+bounded weak-key experiments
+conditioning and known-seed prediction
+nonce and defensive-control trajectories
+nonce trajectories: 1/128 paired replicates
+nonce trajectories: 17/128 paired replicates
+nonce trajectories: 33/128 paired replicates
+nonce trajectories: 49/128 paired replicates
+nonce trajectories: 65/128 paired replicates
+nonce trajectories: 81/128 paired replicates
+nonce trajectories: 97/128 paired replicates
+nonce trajectories: 113/128 paired replicates
+state exposure, recovery, and signatures
+{"results_sha256": "e08c3ee07ae299a33b5de80fdce41d8f658b2c7bc6782370d70941cdc973a3e1", "verified_artifacts": 9}

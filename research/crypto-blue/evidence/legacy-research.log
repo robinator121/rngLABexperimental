@@ -1,0 +1,45 @@
+
+==================================== ERRORS ====================================
+_ ERROR collecting research/phase2-20261030/analytic-dependence/test_analytic_dependence.py _
+ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/analytic-dependence/test_analytic_dependence.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/analytic-dependence/test_analytic_dependence.py:4: in <module>
+    import analytic_dependence as a
+E   ModuleNotFoundError: No module named 'analytic_dependence'
+_____ ERROR collecting research/phase2-20261030/rus/test_counterexample.py _____
+ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/rus/test_counterexample.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/rus/test_counterexample.py:4: in <module>
+    import rus_identifiability as model
+E   ModuleNotFoundError: No module named 'rus_identifiability'
+______ ERROR collecting research/phase2-20261030/experiment/test_study.py ______
+ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/experiment/test_study.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/experiment/test_study.py:8: in <module>
+    import study
+E   ModuleNotFoundError: No module named 'study'
+___ ERROR collecting research/phase2-20261030/experiment/test_fault_study.py ___
+ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/experiment/test_fault_study.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/experiment/test_fault_study.py:7: in <module>
+    import fault_study
+E   ModuleNotFoundError: No module named 'fault_study'
+_ ERROR collecting research/phase2-20261030/baseline/test_independent_checker.py _
+ImportError while importing test module '/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-crypto-blue/research/phase2-20261030/baseline/test_independent_checker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+research/phase2-20261030/baseline/test_independent_checker.py:4: in <module>
+    import verify_baseline as checker
+E   ModuleNotFoundError: No module named 'verify_baseline'
+=========================== short test summary info ============================
+ERROR research/phase2-20261030/analytic-dependence/test_analytic_dependence.py
+ERROR research/phase2-20261030/rus/test_counterexample.py
+ERROR research/phase2-20261030/experiment/test_study.py
+ERROR research/phase2-20261030/experiment/test_fault_study.py
+ERROR research/phase2-20261030/baseline/test_independent_checker.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!
+5 errors in 0.66s
