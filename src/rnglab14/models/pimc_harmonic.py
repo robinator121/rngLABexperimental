@@ -14,9 +14,11 @@ Calculates:
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
+import json
 import math
 import struct
-from typing import Optional, Union
+from typing import Any, Mapping, Optional, Union
 
 import numpy as np
 from scipy.stats import t as student_t
@@ -224,6 +226,7 @@ class PathIntegralHarmonicOscillator:
         centroid_source: Optional[RandomSource] = None,
         initialization: str = "uniform",
         initial_path: Optional[np.ndarray] = None,
+        initial_path_provenance: Optional[Mapping[str, Any]] = None,
         uncertainty_batch_sizes: tuple[int, ...] = (32, 128),
         record_trace: bool = False,
     ) -> PIMCResult:
@@ -241,6 +244,11 @@ class PathIntegralHarmonicOscillator:
         discards its second path. All optional arguments are validated before
         source consumption. Retained full paths/observables are stored only when
         record_trace=True; legacy scalar result fields retain their rounding.
+
+        Every mode records the SHA-256 of the starting path (little-endian
+        float64 bytes, bead order). initial_path_provenance, allowed only with
+        initial_path, is a JSON-serialisable mapping stored as its JSON round
+        trip; it is recorded as given, not verified.
         """
         if (type(sweeps) is not int or type(burn_in) is not int or burn_in < 0
                 or sweeps - burn_in < 32):
@@ -263,6 +271,17 @@ class PathIntegralHarmonicOscillator:
             supplied_path = np.array(initial_path, dtype=float, copy=True)
             if supplied_path.shape != (self.M,) or not np.isfinite(supplied_path).all():
                 raise ValueError("initial_path must be a finite one-dimensional path with M beads")
+        path_provenance = None
+        if initial_path_provenance is not None:
+            if supplied_path is None:
+                raise ValueError("initial_path_provenance requires initial_path")
+            if not isinstance(initial_path_provenance, Mapping) or not all(
+                    isinstance(key, str) for key in initial_path_provenance):
+                raise ValueError("initial_path_provenance must be a mapping with string keys")
+            try:
+                path_provenance = json.loads(json.dumps(dict(initial_path_provenance), allow_nan=False))
+            except (TypeError, ValueError) as error:
+                raise ValueError("initial_path_provenance must be JSON-serialisable without NaN or infinity") from error
         if isinstance(source_or_channels, StochasticChannels):
             prop_src = source_or_channels.proposal
             acc_src = source_or_channels.acceptance
@@ -311,9 +330,13 @@ class PathIntegralHarmonicOscillator:
             "source_bytes_consumed": init_src.consumed_bytes-init_before,
             "reference_paths_drawn": 2 if initialization_mode == "exact_gaussian" else 0,
             "reference_paths_discarded": 1 if initialization_mode == "exact_gaussian" else 0,
+            "initial_path_sha256": hashlib.sha256(self.path.astype("<f8").tobytes()).hexdigest(),
+            "initial_path_digest_scheme": "SHA-256 of little-endian float64 bytes in bead order",
+            "initial_path_provenance": path_provenance,
             "independence_verified": False,
             "assumptions": ("Exact Gaussian initialization assumes IID uniform source words; "
-                            "explicit paths carry no stationarity claim")}
+                            "explicit paths carry no stationarity claim; "
+                            "supplied provenance is recorded as given, not verified")}
         retained = sweeps-burn_in
         trace_initial = self.path.copy() if record_trace else None
         trace_paths = np.empty((retained, M)) if record_trace else None
