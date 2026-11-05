@@ -75,9 +75,9 @@ def ar1_variance_ratio(table):
         order = np.argsort(x)
         ax.plot(x[order], y[order], linestyle="none", color=COLOR[method], marker=MARKER[method],
                 markersize=6, label=method)
-    grid = np.logspace(-2, 3.5, 200)
-    ax.plot(grid, np.clip(1 - 1 / (2 * grid), 0, None), color=MUTED, linewidth=1.2, linestyle="--",
-            label="BM first-order AR(1): 1 − τ/(2b)")
+    grid = np.logspace(0.3, 3.5, 200)
+    ax.plot(grid, 1 - 1 / (2 * grid), color=MUTED, linewidth=1.2, linestyle="--",
+            label="BM first-order AR(1), large τ: 1 − τ/(2b) (shown for b/τ ≥ 2)")
     ax.set_xscale("log")
     ax.set_ylim(-0.05, 1.4)
     ax.set_xlabel("batch or truncation length / τ")
@@ -99,9 +99,10 @@ def diagnostic(gates):
         labels.append(f"φ={phi}\nn={n}")
         abstain.append(1 - g["non_abstaining"] / total)
         c = g["coverage"]
-        cov.append(c["coverage"] if c["coverage"] is not None else np.nan)
-        lo.append(c["cp95"][0] if c["cp95"] else np.nan)
-        hi.append(c["cp95"][1] if c["cp95"] else np.nan)
+        evaluable = g["result"] != "NOT_EVALUABLE"
+        cov.append(c["coverage"] if evaluable else np.nan)
+        lo.append(c["cp95"][0] if evaluable else np.nan)
+        hi.append(c["cp95"][1] if evaluable else np.nan)
     x = np.arange(len(labels))
     fig, axes = plt.subplots(2, 1, figsize=(9, 5.5), sharex=True)
     axes[0].bar(x, abstain, color=MUTED, width=0.6)
@@ -111,6 +112,9 @@ def diagnostic(gates):
     cov, lo, hi = map(np.array, (cov, lo, hi))
     axes[1].errorbar(x, cov, yerr=[cov - lo, hi - cov], color=COLOR["BM"], marker="o", linestyle="none", capsize=3,
                      label="adaptive BM, non-abstaining replicas")
+    for xi, value in zip(x, cov):
+        if np.isnan(value):
+            axes[1].text(xi, 0.93, "not\nevaluable\n(<200)", ha="center", va="center", fontsize=8, color=MUTED)
     axes[1].set_ylabel("coverage")
     axes[1].set_ylim(0.85, 1.0)
     axes[1].set_xticks(x, labels)
@@ -125,14 +129,15 @@ def susceptibility(table, gates):
     cells = sorted(table, key=lambda r: (int(r["L"]), float(r["T"])))
     labels = [f"L{r['L']} T{float(r['T']):.2f}" for r in cells]
     x = np.arange(len(cells))
-    fig, axes = plt.subplots(2, 1, figsize=(9.5, 6), sharex=True)
+    fig, axes = plt.subplots(2, 1, figsize=(11, 6), sharex=True)
     for offset, (name, key) in zip((-0.2, 0.0, 0.2), (("P", "P_bias"), ("S", "S_bias"), ("G", "G_bias"))):
         axes[0].plot(x + offset, [num(r, key) for r in cells], linestyle="none", marker=MARKER[name],
                      color=COLOR[name], markersize=7, label={"P": "P plug-in", "S": "S symmetry-aware", "G": "G 16-chain jackknife"}[name])
     axes[0].axhline(0, color=MUTED, linewidth=1)
     axes[0].set_yscale("symlog", linthresh=0.01)
+    axes[0].set_ylim(-1.5, 0.05)
     axes[0].set_ylabel("mean relative bias")
-    axes[0].legend(loc="lower left")
+    axes[0].legend(loc="upper left", bbox_to_anchor=(1.0, 1.0))
     band(axes[1], 0.92, 0.98, "gate band")
     for offset, name in ((-0.1, "S"), (0.1, "G")):
         cov = []
@@ -144,7 +149,7 @@ def susceptibility(table, gates):
                          color=COLOR[name], capsize=3, markersize=6, label=name)
     axes[1].set_ylabel("coverage of nominal 95%")
     axes[1].set_xticks(x, labels, rotation=30)
-    axes[1].legend(loc="lower left")
+    axes[1].legend(loc="upper left", bbox_to_anchor=(1.0, 1.0))
     fig.suptitle("Ising susceptibility: bias (top, symlog) and interval coverage (bottom)", color=INK)
     fig.tight_layout()
     fig.savefig(FIG / "susceptibility.png")
