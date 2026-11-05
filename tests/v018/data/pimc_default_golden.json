@@ -1,0 +1,1079 @@
+{
+ "captured_by": "PYTHONPATH=src python tests/v018/test_pimc_default_golden.py --capture",
+ "cases": {
+  "aliased_centroid": {
+   "final_path": [
+    1.8115720666240152,
+    2.2380801530717407,
+    2.108297160571043,
+    1.657512836724521,
+    1.6122534594802351,
+    1.6117822094069385,
+    1.3864597778967105,
+    1.4606427095126246
+   ],
+   "result": {
+    "acceptance_rate": 0.6159,
+    "beads_M": 8,
+    "beta": 1.0,
+    "burn_in": 32,
+    "centroid_update": {
+     "assumptions": "IID uniform source words independent of retained internal coordinates; no entropy or full-path mixing certification",
+     "centroid_draw_bytes": 1536,
+     "draw_bytes_per_update": 16,
+     "enabled": true,
+     "independence_verified": false,
+     "schedule": "once after every local sweep, including burn-in",
+     "source_byte_counter_delta": 12000,
+     "source_digest_after": "21997c96df117797a27656d73379d9703ef76b364751ddf45f776bdb6fa588d6",
+     "source_digest_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+     "source_manifest": {
+      "family": "reference_prng",
+      "is_deterministic": true,
+      "is_physical": false,
+      "metadata": {
+       "generator": "PCG64",
+       "stream_id": 1
+      },
+      "seed": 46870184044216335294266130621956683254,
+      "source_id": "pcg64_s46870184044216335294266130621956683254_str1"
+     },
+     "source_shared_with_local_channels": true,
+     "total_updates": 96
+    },
+    "discretization_bias": -0.0015094640662327574,
+    "energy_bias": -0.127188,
+    "exact_finite_bead_energy": 1.0804672428030937,
+    "exact_quantum_energy": 1.081977,
+    "provenance_hash": "21997c96df117797a27656d73379d9703ef76b364751ddf45f776bdb6fa588d6",
+    "radius_of_gyration": 0.268442,
+    "sampler_protocol": "LOCAL_METROPOLIS_CENTROID_HEATBATH_V1",
+    "temperature_T": 1.0,
+    "thermodynamic_energy_mean": 1.44448,
+    "thermodynamic_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 0,
+       "covered": null,
+       "discarded_tail": 64,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 0,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 2,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 64,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": true,
+      "ess": 27.067588934817103,
+      "interval_95": [
+       0.8014943836701982,
+       2.087465088866896
+      ],
+      "long_run_variance": 6.887886011284748,
+      "mcse": 0.3280597795011211,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 64,
+      "positive_pairs": 2,
+      "status": "ESTIMATED",
+      "tau": 2.3644514535122356
+     },
+     "mean": 1.444479736268547,
+     "n": 64,
+     "naive_mcse": 0.21503418147405173,
+     "reference": 1.0804672428030937,
+     "reference_status": "KNOWN",
+     "sample_variance": 2.9593407489417864,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    },
+    "total_sweeps": 96,
+    "virial_energy_mean": 0.954789,
+    "virial_energy_std": 0.483276,
+    "virial_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 0,
+       "covered": null,
+       "discarded_tail": 64,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 0,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 2,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 64,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": true,
+      "ess": 50.55603326075543,
+      "interval_95": [
+       0.8226177116351017,
+       1.0869600113132212
+      ],
+      "long_run_variance": 0.29104297991247197,
+      "mcse": 0.06743549926509312,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 64,
+      "positive_pairs": 1,
+      "status": "ESTIMATED",
+      "tau": 1.2659221040919872
+     },
+     "mean": 0.9547888614741614,
+     "n": 64,
+     "naive_mcse": 0.06040943834584947,
+     "reference": 1.0804672428030937,
+     "reference_status": "KNOWN",
+     "sample_variance": 0.23355521544070323,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    }
+   },
+   "sources_after": {
+    "acceptance": {
+     "consumed_bytes": 12000,
+     "stream_digest": "21997c96df117797a27656d73379d9703ef76b364751ddf45f776bdb6fa588d6"
+    },
+    "centroid": {
+     "consumed_bytes": 12000,
+     "stream_digest": "21997c96df117797a27656d73379d9703ef76b364751ddf45f776bdb6fa588d6"
+    },
+    "initialization": {
+     "consumed_bytes": 12000,
+     "stream_digest": "21997c96df117797a27656d73379d9703ef76b364751ddf45f776bdb6fa588d6"
+    },
+    "proposal": {
+     "consumed_bytes": 12000,
+     "stream_digest": "21997c96df117797a27656d73379d9703ef76b364751ddf45f776bdb6fa588d6"
+    },
+    "resampling": null
+   }
+  },
+  "applications_M4": {
+   "final_path": [
+    0.0697884451412274,
+    -0.3059501742684527,
+    -0.629242137942704,
+    0.11218086445939424
+   ],
+   "result": {
+    "acceptance_rate": 0.8438,
+    "beads_M": 4,
+    "beta": 2.0,
+    "burn_in": 0,
+    "centroid_update": {
+     "enabled": false
+    },
+    "discretization_bias": -0.015994766932672322,
+    "energy_bias": -0.197431,
+    "exact_finite_bead_energy": 0.6405228758169934,
+    "exact_quantum_energy": 0.656518,
+    "provenance_hash": "a5ccdb494eaab5f1774bd80937bfe977e04039ea5e630a4a13a91f593c55eb99",
+    "radius_of_gyration": 0.386206,
+    "sampler_protocol": "LOCAL_METROPOLIS_V1",
+    "temperature_T": 0.5,
+    "thermodynamic_energy_mean": 0.366202,
+    "thermodynamic_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 0,
+       "covered": null,
+       "discarded_tail": 32,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 0,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 1,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 32,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": false,
+      "ess": 11.14138388868497,
+      "interval_95": [
+       0.12176679476507687,
+       0.6106378869380616
+      ],
+      "long_run_variance": 0.49771705160535296,
+      "mcse": 0.12471430496405486,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 32,
+      "positive_pairs": 2,
+      "status": "ESTIMATED",
+      "tau": 2.87217461670078
+     },
+     "mean": 0.3662023408515693,
+     "n": 32,
+     "naive_mcse": 0.07476614576329349,
+     "reference": 0.6405228758169934,
+     "reference_status": "KNOWN",
+     "sample_variance": 0.17887924967353758,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    },
+    "total_sweeps": 32,
+    "virial_energy_mean": 0.459087,
+    "virial_energy_std": 0.106825,
+    "virial_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 0,
+       "covered": null,
+       "discarded_tail": 32,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 0,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 1,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 32,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": false,
+      "ess": 9.859012027218276,
+      "interval_95": [
+       0.39345561704819276,
+       0.5247175881002665
+      ],
+      "long_run_variance": 0.035881587383747374,
+      "mcse": 0.03348581200661118,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 32,
+      "positive_pairs": 4,
+      "status": "ESTIMATED",
+      "tau": 3.245761331019373
+     },
+     "mean": 0.4590866025742296,
+     "n": 32,
+     "naive_mcse": 0.018884117152172742,
+     "reference": 0.6405228758169934,
+     "reference_status": "KNOWN",
+     "sample_variance": 0.011411516179743513,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    }
+   },
+   "sources_after": {
+    "acceptance": {
+     "consumed_bytes": 552,
+     "stream_digest": "492d1654c9605b07dad35faeec0d282b2ffd7faf34a519eb6aad1d616b31bacf"
+    },
+    "centroid": null,
+    "initialization": {
+     "consumed_bytes": 32,
+     "stream_digest": "9bf870e0d84bde295f3392ea8125645f57c89c8fabebef8b44a79ec2d1c0c71d"
+    },
+    "proposal": {
+     "consumed_bytes": 1024,
+     "stream_digest": "a5ccdb494eaab5f1774bd80937bfe977e04039ea5e630a4a13a91f593c55eb99"
+    },
+    "resampling": {
+     "consumed_bytes": 0,
+     "stream_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   }
+  },
+  "faulted_mixed_sources": {
+   "final_path": [
+    0.6833764345650821,
+    -0.062134329484671125,
+    0.5819266155262771,
+    0.3962155801699701,
+    0.22165687133586198,
+    0.14711301589441472,
+    0.2685228708154336,
+    0.015635697780464808,
+    0.09006231413792465,
+    0.6118237086611078,
+    0.8072532654203618,
+    0.7591395734349273,
+    0.6986679182345594,
+    1.1493061761971275,
+    1.2876630679271133,
+    0.8381922227954697
+   ],
+   "result": {
+    "acceptance_rate": 0.6802,
+    "beads_M": 16,
+    "beta": 2.0,
+    "burn_in": 32,
+    "centroid_update": {
+     "assumptions": "IID uniform source words independent of retained internal coordinates; no entropy or full-path mixing certification",
+     "centroid_draw_bytes": 2048,
+     "draw_bytes_per_update": 16,
+     "enabled": true,
+     "independence_verified": false,
+     "schedule": "once after every local sweep, including burn-in",
+     "source_byte_counter_delta": 2048,
+     "source_digest_after": "dd2b07b76515657bdceb5559b06bac51d2a1345af0ac0dfedb7300f4fea4c63e",
+     "source_digest_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+     "source_manifest": {
+      "family": "reference_prng",
+      "is_deterministic": true,
+      "is_physical": false,
+      "metadata": {
+       "generator": "PCG64",
+       "stream_id": 1
+      },
+      "seed": 102086146830591001377591572875145242488,
+      "source_id": "pcg64_s102086146830591001377591572875145242488_str1"
+     },
+     "source_shared_with_local_channels": false,
+     "total_updates": 128
+    },
+    "discretization_bias": -0.0010434904514923238,
+    "energy_bias": 0.097994,
+    "exact_finite_bead_energy": 0.6554741522981734,
+    "exact_quantum_energy": 0.656518,
+    "provenance_hash": "7f98267ee257472be9dd66a66947df50617a2e719d44d81b702353ff948b03ad",
+    "radius_of_gyration": 0.502219,
+    "sampler_protocol": "LOCAL_METROPOLIS_CENTROID_HEATBATH_V1",
+    "temperature_T": 0.5,
+    "thermodynamic_energy_mean": 0.074289,
+    "thermodynamic_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 0,
+       "covered": null,
+       "discarded_tail": 96,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 0,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 3,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 96,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": true,
+      "ess": 17.397968559736704,
+      "interval_95": [
+       -0.5324452495271896,
+       0.6810229437130895
+      ],
+      "long_run_variance": 9.199661637334469,
+      "mcse": 0.3095639008706184,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 96,
+      "positive_pairs": 5,
+      "status": "ESTIMATED",
+      "tau": 5.517885589365201
+     },
+     "mean": 0.07428884709294988,
+     "n": 96,
+     "naive_mcse": 0.13247617459019842,
+     "reference": 0.6554741522981734,
+     "reference_status": "KNOWN",
+     "sample_variance": 1.6847939360690625,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    },
+    "total_sweeps": 128,
+    "virial_energy_mean": 0.754512,
+    "virial_energy_std": 0.338897,
+    "virial_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 0,
+       "covered": null,
+       "discarded_tail": 96,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 0,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 3,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 96,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": false,
+      "ess": 73.80302459847891,
+      "interval_95": [
+       0.6775981341766635,
+       0.8314261025387863
+      ],
+      "long_run_variance": 0.14783786028127205,
+      "mcse": 0.03924254975486749,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 96,
+      "positive_pairs": 3,
+      "status": "ESTIMATED",
+      "tau": 1.3007596981598308
+     },
+     "mean": 0.7545121183577249,
+     "n": 96,
+     "naive_mcse": 0.03458856107009504,
+     "reference": 0.6554741522981734,
+     "reference_status": "KNOWN",
+     "sample_variance": 0.11485138146237063,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    }
+   },
+   "sources_after": {
+    "acceptance": {
+     "consumed_bytes": 10664,
+     "stream_digest": "432dc8e153d2136e0f80af30e250f01cb9bf19d01d8be7ccbbc0f45b39242745"
+    },
+    "centroid": {
+     "consumed_bytes": 2048,
+     "stream_digest": "dd2b07b76515657bdceb5559b06bac51d2a1345af0ac0dfedb7300f4fea4c63e"
+    },
+    "initialization": {
+     "consumed_bytes": 128,
+     "stream_digest": "afb87e430782035cec45a84c8a4bb88eb8f1bae12a1260ce211df9b741fbbba0"
+    },
+    "proposal": {
+     "consumed_bytes": 16384,
+     "stream_digest": "7f98267ee257472be9dd66a66947df50617a2e719d44d81b702353ff948b03ad"
+    },
+    "resampling": {
+     "consumed_bytes": 0,
+     "stream_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   }
+  },
+  "phase2_channels": {
+   "final_path": [
+    1.124830090400662,
+    1.0067089309708321,
+    1.328981834789378,
+    0.9436220984453962,
+    0.7442855785948147,
+    0.5954988313385046,
+    0.7142946262321337,
+    0.33147062552819667,
+    -0.040821390477413955,
+    0.2509774319855178,
+    0.4918934712335566,
+    0.35406681979503896,
+    0.7453057270494161,
+    0.6099409637433624,
+    0.6410903384832642,
+    0.6081987944293619
+   ],
+   "result": {
+    "acceptance_rate": 0.6873,
+    "beads_M": 16,
+    "beta": 2.0,
+    "burn_in": 64,
+    "centroid_update": {
+     "enabled": false
+    },
+    "discretization_bias": -0.0010434904514923238,
+    "energy_bias": 0.094138,
+    "exact_finite_bead_energy": 0.6554741522981734,
+    "exact_quantum_energy": 0.656518,
+    "provenance_hash": "6ffa29e207cb3416c136a9fc0111b1b7199a6c03bccdb3059e93730ab528e0a9",
+    "radius_of_gyration": 0.420993,
+    "sampler_protocol": "LOCAL_METROPOLIS_V1",
+    "temperature_T": 0.5,
+    "thermodynamic_energy_mean": 0.24978,
+    "thermodynamic_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 1,
+       "covered": null,
+       "discarded_tail": 64,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 128,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 6,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 192,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": true,
+      "ess": 26.78565143986862,
+      "interval_95": [
+       -0.23747179446642702,
+       0.7370317169859979
+      ],
+      "long_run_variance": 11.866205686867803,
+      "mcse": 0.2486024026816779,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 192,
+      "positive_pairs": 5,
+      "status": "ESTIMATED",
+      "tau": 7.168016817922937
+     },
+     "mean": 0.2497799612597854,
+     "n": 192,
+     "naive_mcse": 0.0930978699547584,
+     "reference": 0.6554741522981734,
+     "reference_status": "KNOWN",
+     "sample_variance": 1.6641049709017162,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    },
+    "total_sweeps": 256,
+    "virial_energy_mean": 0.750656,
+    "virial_energy_std": 0.10787,
+    "virial_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 1,
+       "covered": null,
+       "discarded_tail": 64,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 128,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 6,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 192,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": false,
+      "ess": 15.701164719399218,
+      "interval_95": [
+       0.6974391902613026,
+       0.8038727048993737
+      ],
+      "long_run_variance": 0.14154738895156155,
+      "mcse": 0.02715190571806547,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 192,
+      "positive_pairs": 8,
+      "status": "ESTIMATED",
+      "tau": 12.228392188178164
+     },
+     "mean": 0.7506559475803382,
+     "n": 192,
+     "naive_mcse": 0.007784837797922184,
+     "reference": 0.6554741522981734,
+     "reference_status": "KNOWN",
+     "sample_variance": 0.011635910311671922,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    }
+   },
+   "sources_after": {
+    "acceptance": {
+     "consumed_bytes": 21424,
+     "stream_digest": "c0d55826b80d4d391c9f38be2845205819cf4aeea5ee7dd68127c4c5fb04ea5f"
+    },
+    "centroid": null,
+    "initialization": {
+     "consumed_bytes": 128,
+     "stream_digest": "df2ea6cb92c1034aafd7740b4b136a6bef53648ac63393f1895636a7ed39fe40"
+    },
+    "proposal": {
+     "consumed_bytes": 32768,
+     "stream_digest": "6ffa29e207cb3416c136a9fc0111b1b7199a6c03bccdb3059e93730ab528e0a9"
+    },
+    "resampling": {
+     "consumed_bytes": 0,
+     "stream_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   }
+  },
+  "phase2_channels_centroid": {
+   "final_path": [
+    -1.1903485330911792,
+    -0.9401651134339335,
+    -0.913061721396045,
+    -1.067978877729416,
+    -0.51333425513879,
+    -0.5365102551360779,
+    -1.1978255834544174,
+    -1.5433131054003855,
+    -1.2363437732499218,
+    -1.5235859221700914,
+    -1.5815762502921225,
+    -1.2639608971257665,
+    -0.9792138365928138,
+    -1.1555271735073882,
+    -0.7735256818898704,
+    -0.9993380381414727
+   ],
+   "result": {
+    "acceptance_rate": 0.6885,
+    "beads_M": 16,
+    "beta": 2.0,
+    "burn_in": 0,
+    "centroid_update": {
+     "assumptions": "IID uniform source words independent of retained internal coordinates; no entropy or full-path mixing certification",
+     "centroid_draw_bytes": 4096,
+     "draw_bytes_per_update": 16,
+     "enabled": true,
+     "independence_verified": false,
+     "schedule": "once after every local sweep, including burn-in",
+     "source_byte_counter_delta": 4096,
+     "source_digest_after": "ecf44ceb5da7672aac7e9655ea348c629be492d0004d024f143777d9d266b9b7",
+     "source_digest_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+     "source_manifest": {
+      "family": "reference_prng",
+      "is_deterministic": true,
+      "is_physical": false,
+      "metadata": {
+       "generator": "PCG64",
+       "stream_id": 1
+      },
+      "seed": 88992095222847002091106430359599539735,
+      "source_id": "pcg64_s88992095222847002091106430359599539735_str1"
+     },
+     "source_shared_with_local_channels": false,
+     "total_updates": 256
+    },
+    "discretization_bias": -0.0010434904514923238,
+    "energy_bias": 0.00951,
+    "exact_finite_bead_energy": 0.6554741522981734,
+    "exact_quantum_energy": 0.656518,
+    "provenance_hash": "69c3bb10f027d12076415ca9ae8406fd50ad5c0f2f4cadf62bd25c0e4ba1a734",
+    "radius_of_gyration": 0.422258,
+    "sampler_protocol": "LOCAL_METROPOLIS_CENTROID_HEATBATH_V1",
+    "temperature_T": 0.5,
+    "thermodynamic_energy_mean": 0.452093,
+    "thermodynamic_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 2,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 256,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 8,
+       "covered": true,
+       "discarded_tail": 0,
+       "ess": 48.14023510148667,
+       "interval_95": [
+        -0.05627533633899556,
+        0.9604622375631202
+       ],
+       "mcse": 0.2149892468575616,
+       "method": "nonoverlapping batch means",
+       "prefix_mean": 0.45209345061206235,
+       "prefix_n": 256,
+       "status": "ESTIMATED"
+      }
+     },
+     "geyer": {
+      "covered": true,
+      "ess": 44.857852336097686,
+      "interval_95": [
+       0.016431329259220806,
+       0.8877555719649037
+      ],
+      "long_run_variance": 12.64862703657063,
+      "mcse": 0.22228067698656134,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 256,
+      "positive_pairs": 4,
+      "status": "ESTIMATED",
+      "tau": 5.706916106502797
+     },
+     "mean": 0.4520934506120623,
+     "n": 256,
+     "naive_mcse": 0.09322896419581952,
+     "reference": 0.6554741522981734,
+     "reference_status": "KNOWN",
+     "sample_variance": 2.2250597798465024,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    },
+    "total_sweeps": 256,
+    "virial_energy_mean": 0.666028,
+    "virial_energy_std": 0.305223,
+    "virial_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 2,
+       "covered": null,
+       "discarded_tail": 0,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 256,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 8,
+       "covered": true,
+       "discarded_tail": 0,
+       "ess": 70.2274866639724,
+       "interval_95": [
+        0.5799032012538253,
+        0.7521520893298598
+       ],
+       "mcse": 0.03642204209823392,
+       "method": "nonoverlapping batch means",
+       "prefix_mean": 0.6660276452918426,
+       "prefix_n": 256,
+       "status": "ESTIMATED"
+      }
+     },
+     "geyer": {
+      "covered": true,
+      "ess": 148.31176035614385,
+      "interval_95": [
+       0.6170014423401897,
+       0.7150538482434954
+      ],
+      "long_run_variance": 0.16017705359864332,
+      "mcse": 0.025013828487852482,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 256,
+      "positive_pairs": 5,
+      "status": "ESTIMATED",
+      "tau": 1.7260937324542729
+     },
+     "mean": 0.6660276452918426,
+     "n": 256,
+     "naive_mcse": 0.019076463781385163,
+     "reference": 0.6554741522981734,
+     "reference_status": "KNOWN",
+     "sample_variance": 0.09316133642303999,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    }
+   },
+   "sources_after": {
+    "acceptance": {
+     "consumed_bytes": 21264,
+     "stream_digest": "7f18eb46db9f5b422edbfa360c66f2ce0e9f60fb4c4e9622026144b5de7302e6"
+    },
+    "centroid": {
+     "consumed_bytes": 4096,
+     "stream_digest": "ecf44ceb5da7672aac7e9655ea348c629be492d0004d024f143777d9d266b9b7"
+    },
+    "initialization": {
+     "consumed_bytes": 128,
+     "stream_digest": "b1591ab4d97194a9c87ae33e5f480dc1ca277d271515eb47aaf25f8995fa782d"
+    },
+    "proposal": {
+     "consumed_bytes": 32768,
+     "stream_digest": "69c3bb10f027d12076415ca9ae8406fd50ad5c0f2f4cadf62bd25c0e4ba1a734"
+    },
+    "resampling": {
+     "consumed_bytes": 0,
+     "stream_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   }
+  },
+  "single_source_M4": {
+   "final_path": [
+    0.5313582591442573,
+    0.1708900133601966,
+    -0.43077167443239406,
+    0.23047525880213138
+   ],
+   "result": {
+    "acceptance_rate": 0.75,
+    "beads_M": 4,
+    "beta": 2.0,
+    "burn_in": 16,
+    "centroid_update": {
+     "enabled": false
+    },
+    "discretization_bias": -0.015994766932672322,
+    "energy_bias": -0.152709,
+    "exact_finite_bead_energy": 0.6405228758169934,
+    "exact_quantum_energy": 0.656518,
+    "provenance_hash": "ba650bc21c8f73933b7a98fb10c917c656342bcb5cfe4e85d093b6b24d4d7172",
+    "radius_of_gyration": 0.421553,
+    "sampler_protocol": "LOCAL_METROPOLIS_V1",
+    "temperature_T": 0.5,
+    "thermodynamic_energy_mean": 0.214036,
+    "thermodynamic_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 0,
+       "covered": null,
+       "discarded_tail": 48,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 0,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 1,
+       "covered": null,
+       "discarded_tail": 16,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 32,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": true,
+      "ess": 5.8085756975152965,
+      "interval_95": [
+       -0.23189354585896707,
+       0.6599645975103338
+      ],
+      "long_run_variance": 2.4847152658023113,
+      "mcse": 0.22751901320742732,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 48,
+      "positive_pairs": 6,
+      "status": "ESTIMATED",
+      "tau": 8.26364370538077
+     },
+     "mean": 0.21403552582568333,
+     "n": 48,
+     "naive_mcse": 0.07998408725878428,
+     "reference": 0.6405228758169934,
+     "reference_status": "KNOWN",
+     "sample_variance": 0.3070778023017993,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    },
+    "total_sweeps": 64,
+    "virial_energy_mean": 0.503808,
+    "virial_energy_std": 0.121702,
+    "virial_uncertainty": {
+     "batch_means": {
+      "128": {
+       "batch_size": 128,
+       "batches": 0,
+       "covered": null,
+       "discarded_tail": 48,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 0,
+       "status": "INSUFFICIENT_BATCHES"
+      },
+      "32": {
+       "batch_size": 32,
+       "batches": 1,
+       "covered": null,
+       "discarded_tail": 16,
+       "ess": null,
+       "interval_95": null,
+       "mcse": null,
+       "minimum_batches": 8,
+       "prefix_mean": null,
+       "prefix_n": 32,
+       "status": "INSUFFICIENT_BATCHES"
+      }
+     },
+     "geyer": {
+      "covered": false,
+      "ess": 5.6041515141885645,
+      "interval_95": [
+       0.4041026547366083,
+       0.6035139710995254
+      ],
+      "long_run_variance": 0.1242180378330527,
+      "mcse": 0.050871168535709874,
+      "method": "FFT Geyer initial-positive then initial-monotone pairs",
+      "n": 48,
+      "positive_pairs": 6,
+      "status": "ESTIMATED",
+      "tau": 8.565078920238653
+     },
+     "mean": 0.5038083129180668,
+     "n": 48,
+     "naive_mcse": 0.01756619578629136,
+     "reference": 0.6405228758169934,
+     "reference_status": "KNOWN",
+     "sample_variance": 0.014811419251311377,
+     "scope": "Approximate uncertainty only. Stationarity, mixing, reversibility for the Geyer sequence estimator, and batch-size adequacy are not established by these summaries; no uncertainty method repairs target bias.",
+     "stationarity_verified": false,
+     "status": "ESTIMATED"
+    }
+   },
+   "sources_after": {
+    "acceptance": {
+     "consumed_bytes": 3416,
+     "stream_digest": "ba650bc21c8f73933b7a98fb10c917c656342bcb5cfe4e85d093b6b24d4d7172"
+    },
+    "centroid": null,
+    "initialization": {
+     "consumed_bytes": 3416,
+     "stream_digest": "ba650bc21c8f73933b7a98fb10c917c656342bcb5cfe4e85d093b6b24d4d7172"
+    },
+    "proposal": {
+     "consumed_bytes": 3416,
+     "stream_digest": "ba650bc21c8f73933b7a98fb10c917c656342bcb5cfe4e85d093b6b24d4d7172"
+    },
+    "resampling": null
+   }
+  }
+ },
+ "legacy_fields": [
+  "beads_M",
+  "temperature_T",
+  "beta",
+  "total_sweeps",
+  "burn_in",
+  "acceptance_rate",
+  "virial_energy_mean",
+  "virial_energy_std",
+  "thermodynamic_energy_mean",
+  "exact_quantum_energy",
+  "energy_bias",
+  "radius_of_gyration",
+  "provenance_hash",
+  "exact_finite_bead_energy",
+  "discretization_bias",
+  "virial_uncertainty",
+  "thermodynamic_uncertainty",
+  "sampler_protocol",
+  "centroid_update"
+ ],
+ "module": "src/rnglab14/models/pimc_harmonic.py",
+ "module_sha256": "deb47e86e6e2ad4522ba0e3885e73314e10a427b3574825197804b577c53e901",
+ "numpy": "2.5.3",
+ "python": "3.14.9",
+ "source_commit": "59a448c70710166b1e3af82c4c9da527b0f0d4fe"
+}
