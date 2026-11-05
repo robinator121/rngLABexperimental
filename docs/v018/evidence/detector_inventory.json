@@ -1,0 +1,41 @@
+{
+  "path": "/home/robi/rnglab-data/meas_data_2026-10-19 14.05.19.txt",
+  "bytes_stat": 606632259,
+  "bytes_read": 606632259,
+  "decimal_MB": 606.632259,
+  "binary_MiB": 578.5296049118042,
+  "sha256": "feba450d95b074d3b0fff50df8357a682e90ea62614a5948e3e4e106149b4e10",
+  "valid_numeric_records": 117962,
+  "fields_per_line": {
+    "1025": 117962
+  },
+  "assumed_waveform_lengths": {
+    "1023": 117962
+  },
+  "blank_lines": 0,
+  "noninteger_lines": 0,
+  "too_short_lines": 0,
+  "first_20_errors": [],
+  "line_endings": {
+    "CRLF": 117962
+  },
+  "field0_counts": {
+    "0": 117962
+  },
+  "first_field1": 6708800,
+  "last_field1": 1323954661040,
+  "field1_span": 1323947952240,
+  "field1_gcd": 80,
+  "gap_gcd": 80,
+  "gap_min": 1674720,
+  "gap_max": 79862880,
+  "gap_mean": 11223607.397699239,
+  "nonincreasing_steps": 0,
+  "waveform_values": 120675126,
+  "waveform_min": 0,
+  "waveform_max": 65535,
+  "values_equal_65535": 627833,
+  "values_equal_0": 3490,
+  "source_unchanged_during_read": true,
+  "interpretation": "Assumes two leading fields. No unit inference, entropy estimate or TRNG validation."
+}

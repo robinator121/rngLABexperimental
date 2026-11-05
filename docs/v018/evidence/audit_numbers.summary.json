@@ -1,0 +1,654 @@
+{
+  "script": "scripts/v018/audit_numbers.py",
+  "decoy_factor": 1.0371,
+  "repo_evidence_files": {
+    "v014": 2,
+    "v016": 0,
+    "v017": 3,
+    "phase2": 97,
+    "crypto": 61,
+    "detector": 2,
+    "benchmarks": 0,
+    "tests": 1
+  },
+  "external_evidence_files": {
+    "v016": {
+      "/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-v016-trident-20261022": 287
+    },
+    "v017": {
+      "/home/robi/.codex/.chatgpt-projects/g-p-6ac60405d13c819197865c58f0a52c71/output/rnglab-v017-calibrate-20261022": 147
+    },
+    "phase2": {
+      "/home/robi/Documents/Codex/2026-10-30/do-x20/outputs/phase2-20261030": 106
+    }
+  },
+  "definition": "discriminating = whole number >=100 and not a multiple of 100, or a value with >=3 significant digits, or any percentage. repo / external_only / unmatched partition the discriminating tokens. decoy counts discriminating tokens whose value*decoy_factor also matches the same evidence groups.",
+  "documents": {
+    "README.md": {
+      "evidence_groups": [
+        "v014",
+        "v016",
+        "v017",
+        "phase2",
+        "crypto",
+        "detector",
+        "benchmarks",
+        "tests"
+      ],
+      "tokens": 102,
+      "discriminating": 36,
+      "repo": 34,
+      "external_only": 2,
+      "unmatched": 0,
+      "decoy_repo_or_external": 31
+    },
+    "docs/REPRODUCIBILITY.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 23,
+      "discriminating": 6,
+      "repo": 3,
+      "external_only": 0,
+      "unmatched": 3,
+      "decoy_repo_or_external": 1
+    },
+    "docs/architecture/STANDARDS_TRACEABILITY.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 144,
+      "discriminating": 13,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 13,
+      "decoy_repo_or_external": 0
+    },
+    "docs/archive/RESEARCH_EVOLUTION_LOG.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 86,
+      "discriminating": 9,
+      "repo": 4,
+      "external_only": 0,
+      "unmatched": 5,
+      "decoy_repo_or_external": 2
+    },
+    "docs/archive/SCIENTIFIC_CAPABILITY_INVENTORY.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 65,
+      "discriminating": 6,
+      "repo": 1,
+      "external_only": 0,
+      "unmatched": 5,
+      "decoy_repo_or_external": 1
+    },
+    "docs/archive/V0141_CORRECTIONS.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 6,
+      "discriminating": 0,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/benchmarks/GPU_L4_AUDIT_SUMMARY.md": {
+      "evidence_groups": [
+        "benchmarks"
+      ],
+      "tokens": 40,
+      "discriminating": 28,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 28,
+      "decoy_repo_or_external": 0
+    },
+    "docs/benchmarks/RNGLAB_CPU_GPU_COMPARISON.md": {
+      "evidence_groups": [
+        "benchmarks"
+      ],
+      "tokens": 55,
+      "discriminating": 39,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 39,
+      "decoy_repo_or_external": 0
+    },
+    "docs/calibrate/ACADEMIC_SUMMARY.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 24,
+      "discriminating": 17,
+      "repo": 6,
+      "external_only": 11,
+      "unmatched": 0,
+      "decoy_repo_or_external": 14
+    },
+    "docs/calibrate/REVIEW_CALIBRATE_AUDIT.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 12,
+      "discriminating": 10,
+      "repo": 1,
+      "external_only": 9,
+      "unmatched": 0,
+      "decoy_repo_or_external": 4
+    },
+    "docs/calibrate/V017_FAILURE_DEFINITIONS.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 20,
+      "discriminating": 1,
+      "repo": 0,
+      "external_only": 1,
+      "unmatched": 0,
+      "decoy_repo_or_external": 1
+    },
+    "docs/calibrate/V017_FORENSIC_BASELINE.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 9,
+      "discriminating": 2,
+      "repo": 2,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 2
+    },
+    "docs/calibrate/V017_HEALTHY_CALIBRATION.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 47,
+      "discriminating": 23,
+      "repo": 3,
+      "external_only": 20,
+      "unmatched": 0,
+      "decoy_repo_or_external": 19
+    },
+    "docs/calibrate/V017_ISING_VALIDATION.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 63,
+      "discriminating": 49,
+      "repo": 3,
+      "external_only": 46,
+      "unmatched": 0,
+      "decoy_repo_or_external": 7
+    },
+    "docs/calibrate/V017_MECHANISM_ATTRIBUTION.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 0,
+      "discriminating": 0,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/calibrate/V017_NEGATIVE_FINDINGS.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 21,
+      "discriminating": 9,
+      "repo": 1,
+      "external_only": 8,
+      "unmatched": 0,
+      "decoy_repo_or_external": 3
+    },
+    "docs/calibrate/V017_PREDICTIVE_RELIABILITY.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 166,
+      "discriminating": 99,
+      "repo": 13,
+      "external_only": 86,
+      "unmatched": 0,
+      "decoy_repo_or_external": 75
+    },
+    "docs/calibrate/V017_REPRODUCIBILITY.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 11,
+      "discriminating": 1,
+      "repo": 1,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 1
+    },
+    "docs/calibrate/V017_SCIENTIFIC_PROTOCOL.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 70,
+      "discriminating": 23,
+      "repo": 23,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 19
+    },
+    "docs/calibrate/V017_SCIENTIFIC_REPORT.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 20,
+      "discriminating": 11,
+      "repo": 2,
+      "external_only": 9,
+      "unmatched": 0,
+      "decoy_repo_or_external": 5
+    },
+    "docs/calibrate/V017_VMC_PIMC_VALIDATION.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 34,
+      "discriminating": 17,
+      "repo": 10,
+      "external_only": 6,
+      "unmatched": 1,
+      "decoy_repo_or_external": 13
+    },
+    "docs/calibrate/V018_PRIORITIES.md": {
+      "evidence_groups": [
+        "v017",
+        "v016"
+      ],
+      "tokens": 17,
+      "discriminating": 0,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/crypto/ARCHITECTURE_AUDIT.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 10,
+      "discriminating": 8,
+      "repo": 8,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 2
+    },
+    "docs/crypto/EXPERIMENT_PROTOCOL.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 55,
+      "discriminating": 17,
+      "repo": 17,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 16
+    },
+    "docs/crypto/FAULT_INTERFACE.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 12,
+      "discriminating": 1,
+      "repo": 1,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 1
+    },
+    "docs/crypto/PAPER_OUTLINE.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 10,
+      "discriminating": 0,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/crypto/PHYSICAL_INTEGRATION.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 14,
+      "discriminating": 3,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 3,
+      "decoy_repo_or_external": 0
+    },
+    "docs/crypto/REPRODUCE.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 5,
+      "discriminating": 4,
+      "repo": 4,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/crypto/RESULTS.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 142,
+      "discriminating": 75,
+      "repo": 71,
+      "external_only": 0,
+      "unmatched": 4,
+      "decoy_repo_or_external": 61
+    },
+    "docs/crypto/SCIENTIFIC_REVIEW.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 19,
+      "discriminating": 10,
+      "repo": 10,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 4
+    },
+    "docs/crypto/SECURITY_LIMITATIONS.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 5,
+      "discriminating": 0,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/crypto/STANDARDS_TRACEABILITY.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 66,
+      "discriminating": 9,
+      "repo": 9,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 9
+    },
+    "docs/crypto/THREAT_MODEL.md": {
+      "evidence_groups": [
+        "crypto",
+        "tests"
+      ],
+      "tokens": 12,
+      "discriminating": 2,
+      "repo": 2,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 2
+    },
+    "docs/finance/FINANCIAL_MODELS.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 82,
+      "discriminating": 7,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 7,
+      "decoy_repo_or_external": 0
+    },
+    "docs/physical/GM_NEXT_WEEK.md": {
+      "evidence_groups": [
+        "detector"
+      ],
+      "tokens": 16,
+      "discriminating": 1,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 1,
+      "decoy_repo_or_external": 0
+    },
+    "docs/physical/MUON_DETECTOR_ASSESSMENT.md": {
+      "evidence_groups": [
+        "detector"
+      ],
+      "tokens": 206,
+      "discriminating": 121,
+      "repo": 31,
+      "external_only": 0,
+      "unmatched": 90,
+      "decoy_repo_or_external": 0
+    },
+    "docs/physical/PIPELINE.md": {
+      "evidence_groups": [
+        "detector"
+      ],
+      "tokens": 38,
+      "discriminating": 7,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 7,
+      "decoy_repo_or_external": 0
+    },
+    "docs/physical/REPRODUCE.md": {
+      "evidence_groups": [
+        "detector"
+      ],
+      "tokens": 9,
+      "discriminating": 5,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 5,
+      "decoy_repo_or_external": 1
+    },
+    "docs/trident/EXECUTIVE_SUMMARY.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 23,
+      "discriminating": 12,
+      "repo": 0,
+      "external_only": 12,
+      "unmatched": 0,
+      "decoy_repo_or_external": 1
+    },
+    "docs/trident/REVIEW_TRIDENT_AUDIT.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 5,
+      "discriminating": 0,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/trident/V016_CROSS_MODEL_ANALYSIS.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 8,
+      "discriminating": 0,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/trident/V016_ISING_STUDY.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 222,
+      "discriminating": 113,
+      "repo": 0,
+      "external_only": 112,
+      "unmatched": 1,
+      "decoy_repo_or_external": 3
+    },
+    "docs/trident/V016_MATHEMATICAL_THEORY.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 43,
+      "discriminating": 2,
+      "repo": 0,
+      "external_only": 2,
+      "unmatched": 0,
+      "decoy_repo_or_external": 2
+    },
+    "docs/trident/V016_NEGATIVE_FINDINGS.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 32,
+      "discriminating": 12,
+      "repo": 0,
+      "external_only": 12,
+      "unmatched": 0,
+      "decoy_repo_or_external": 1
+    },
+    "docs/trident/V016_PREDICTIVE_RELIABILITY.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 60,
+      "discriminating": 18,
+      "repo": 0,
+      "external_only": 18,
+      "unmatched": 0,
+      "decoy_repo_or_external": 7
+    },
+    "docs/trident/V016_REPRODUCIBILITY.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 13,
+      "discriminating": 2,
+      "repo": 0,
+      "external_only": 2,
+      "unmatched": 0,
+      "decoy_repo_or_external": 1
+    },
+    "docs/trident/V016_RESEARCH_EVOLUTION.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 0,
+      "discriminating": 0,
+      "repo": 0,
+      "external_only": 0,
+      "unmatched": 0,
+      "decoy_repo_or_external": 0
+    },
+    "docs/trident/V016_SCIENTIFIC_PROTOCOL.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 60,
+      "discriminating": 4,
+      "repo": 0,
+      "external_only": 4,
+      "unmatched": 0,
+      "decoy_repo_or_external": 3
+    },
+    "docs/trident/V016_SCIENTIFIC_REPORT.md": {
+      "evidence_groups": [
+        "v016"
+      ],
+      "tokens": 59,
+      "discriminating": 18,
+      "repo": 0,
+      "external_only": 18,
+      "unmatched": 0,
+      "decoy_repo_or_external": 7
+    },
+    "docs/validation/APPLICATION_RELIABILITY.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 148,
+      "discriminating": 22,
+      "repo": 19,
+      "external_only": 0,
+      "unmatched": 3,
+      "decoy_repo_or_external": 2
+    },
+    "docs/validation/EXPERIMENT_REGISTRY.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 176,
+      "discriminating": 46,
+      "repo": 31,
+      "external_only": 0,
+      "unmatched": 15,
+      "decoy_repo_or_external": 3
+    },
+    "docs/validation/REVIEW_METHODOLOGY_CRITIQUE.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 93,
+      "discriminating": 14,
+      "repo": 4,
+      "external_only": 0,
+      "unmatched": 10,
+      "decoy_repo_or_external": 1
+    },
+    "docs/validation/REVIEW_STATISTICAL_CORE.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 126,
+      "discriminating": 11,
+      "repo": 1,
+      "external_only": 0,
+      "unmatched": 10,
+      "decoy_repo_or_external": 0
+    },
+    "docs/validation/SOURCE_COMPARISON.md": {
+      "evidence_groups": [
+        "v014"
+      ],
+      "tokens": 204,
+      "discriminating": 38,
+      "repo": 10,
+      "external_only": 0,
+      "unmatched": 28,
+      "decoy_repo_or_external": 3
+    }
+  }
+}
