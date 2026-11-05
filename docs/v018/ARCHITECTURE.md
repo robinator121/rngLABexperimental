@@ -13,7 +13,11 @@ src/
 │   ├── models.py           # v0.18: PIMC, VMC, Ising, decision support   (re-export; Phase 2 extends PIMC)
 │   ├── references.py       # v0.18: exact references                     (re-export)
 │   ├── monitors.py         # v0.18: monitor calibration, health tests    (re-export; Phase 3 adds)
-│   ├── stats.py            # v0.18: uncertainty and multiplicity         (re-export; Phase 1 adds)
+│   ├── stats.py            # v0.18: uncertainty and multiplicity         (re-export)
+│   ├── longrun.py          # v0.18 Phase 1 (new): BM, OBM, SV, Geyer wrapper, batch-length diagnostic
+│   ├── convergence.py      # v0.18 Phase 1 (new): rank-normalized split-R-hat
+│   ├── susceptibility.py   # v0.18 Phase 1 (new): plug-in P, symmetry-aware S, ensemble jackknife G
+│   ├── seeds.py            # v0.18 Phase 1 (new): namespace-derived seeds
 │   └── v02/ … v08/, cli.py, degradation/, diagnostics/, experiments/, providers/, simulations/   # legacy, unchanged
 ├── rnglab10/ … rnglab17/   # historical snapshots, unchanged
 ├── rnglab_crypto/          # BLUE, unchanged
@@ -71,7 +75,7 @@ Every v0.18 name is the original object (`tests/v018/test_v018_namespace.py` che
 
 | Phase | Code | Tests | Research package |
 |---|---|---|---|
-| 1 estimator repair | `rnglab/stats.py` (OBM, spectral, Geyer, ESS, batch diagnostic), `rnglab/references.py` or a new `rnglab/observables.py` (susceptibility estimators) | `tests/v018/` | `research/v018-estimators/` |
+| 1 estimator repair | new modules `rnglab/longrun.py`, `rnglab/convergence.py`, `rnglab/susceptibility.py`, `rnglab/seeds.py` | `tests/v018/test_longrun.py`, `test_convergence_susceptibility.py`, `test_v017_susceptibility_replay.py` | `research/v018-estimators/` |
 | 2 API validation | optional arguments on `rnglab14.models.pimc_harmonic.PathIntegralHarmonicOscillator.run_simulation`, defaults unchanged | `tests/v018/` (defaults, options, counters, digests) | `research/v018-api-validation/` |
 | 3 severity and monitors | `rnglab/faults.py`, `rnglab/monitors.py` | `tests/v018/` | `research/v018-severity/` |
 | 4 decision pilot (exploratory) | script only | — | `research/v018-decision-pilot/` |

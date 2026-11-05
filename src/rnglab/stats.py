@@ -11,8 +11,11 @@ Re-exports, unchanged:
   interval for independently sampled estimators.
 - Bonferroni, Holm and Benjamini-Hochberg (rnglab14.statistics.multitest).
 
-The v0.18 Phase 1 estimators (overlapping batch means, spectral variance,
-Geyer, ESS and the batch-length diagnostic) will be added to this module.
+The v0.18 Phase 1 estimators are new code in their own modules:
+rnglab.longrun (BM, OBM, spectral variance, Geyer wrapper, batch-length
+diagnostic, exact AR(1) variance), rnglab.convergence (split-R-hat) and
+rnglab.susceptibility (plug-in, symmetry-aware and ensemble-jackknife
+susceptibility).
 """
 from rnglab12.uncertainty import summarize_series
 from rnglab14.models.pimc_harmonic import summarize_independent_reference
