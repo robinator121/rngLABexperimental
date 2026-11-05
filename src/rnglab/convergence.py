@@ -3,10 +3,16 @@
 Rank-normalized split-R-hat (Vehtari, Gelman, Simpson, Carpenter & Buerkner,
 Bayesian Analysis 16, 667-718, 2021), the "bulk" version without the folded
 variant. Each chain is split into halves; all draws of one ensemble are ranked
-together (average ranks for ties), mapped to normal scores
-Phi^-1((r - 3/8)/(S - 1/4)), and the classic potential scale reduction is
+together (average ranks for ties), mapped to Blom normal scores
+Phi^-1((r - 3/8)/(S + 1/4)), and the classic potential scale reduction is
 computed on the scores. A large value says the chains disagree; a value near 1
 does not prove convergence.
+
+Amendment 01 (2026-11-05, before any Phase 1 analysis): the denominator was
+S - 1/4, which made complementary ranks asymmetric so R-hat(x) != R-hat(-x);
+and zero within-chain variance returned NaN even when the chains sat at
+different values. Separated constant chains now return +inf (no mixing at
+all); NaN is reserved for an ensemble whose draws are all tied.
 """
 from __future__ import annotations
 
@@ -19,8 +25,9 @@ NOT_CONVERGED_THRESHOLD = 1.01
 def split_rhat(chains) -> np.ndarray:
     """chains: (n_chains, n_draws) or (ensembles, n_chains, n_draws). Returns one R-hat per ensemble.
 
-    An odd number of draws drops the middle draw of each chain. NaN means the
-    within-chain variance of the scores is zero (all draws tied).
+    An odd number of draws drops the middle draw of each chain. +inf means
+    every half-chain is constant but the half-chains differ; NaN means all
+    draws of the ensemble are tied.
     """
     a = np.asarray(chains, dtype=float)
     if a.ndim == 2:
@@ -32,10 +39,11 @@ def split_rhat(chains) -> np.ndarray:
     halves = np.concatenate([a[:, :, :half], a[:, :, n_draws - half:]], axis=1)
     flat = halves.reshape(ensembles, -1)
     total = flat.shape[1]
-    scores = norm.ppf((rankdata(flat, method="average", axis=1) - 0.375) / (total - 0.25))
+    scores = norm.ppf((rankdata(flat, method="average", axis=1) - 0.375) / (total + 0.25))
     scores = scores.reshape(ensembles, 2 * n_chains, half)
     within = scores.var(axis=2, ddof=1).mean(axis=1)
     between = half * scores.mean(axis=2).var(axis=1, ddof=1)
     with np.errstate(invalid="ignore", divide="ignore"):
         pooled = (half - 1) / half * within + between / half
-        return np.where(within > 0, np.sqrt(pooled / within), np.nan)
+        rhat = np.sqrt(pooled / within)
+    return np.where(within > 0, rhat, np.where(between > 0, np.inf, np.nan))

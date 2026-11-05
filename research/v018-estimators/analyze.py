@@ -9,6 +9,13 @@ manifest_pregeneration.json before any campaign draw).
 Reads results/ar1/*.npz and results/ising/*.npz; writes results/gates.json,
 results/ar1_table.csv and results/ising_table.csv. Deterministic: bootstrap
 seeds come from the protocol namespace.
+
+Amendment 01 (AMENDMENT_01.md, before any campaign output was analyzed):
+verdicts require every registered cell, setting, unit count and gate ID;
+R-hat comes from results/amend01 (recomputed from traces), with the original
+values reported beside it; the control gates get a secondary
+multiplicity-adjusted view and the Ising cells a split-half burn-in
+diagnostic. No frozen gate definition or criterion changes.
 """
 from __future__ import annotations
 
@@ -18,7 +25,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from scipy.stats import beta, t as student_t
+from scipy.stats import beta, chi2, t as student_t
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
@@ -34,6 +41,49 @@ BIAS_BOUNDS = tuple(GATES["S-S"]["relative_bias_ci_within"])
 RATIO_BOUNDS = tuple(GATES["S-S"]["variance_ratio_ci_within"])
 BOOTSTRAP = 2000
 RHAT_THRESHOLD = 1.01
+ISING = PROTOCOL["data"]["ising"]
+AR1 = PROTOCOL["data"]["ar1"]
+ISING_CELLS = [f"ising_L{L}_{label}" for L in ISING["L"] for label in ISING["T"]]
+AR1_SETTINGS = [f"ar1_phi{float(phi)!r}_n{n}" for phi in AR1["phi"] for n in AR1["n"]]
+
+
+AMENDMENT: dict = {"L-C_adjusted": {}, "rhat_original_vs_amended": {}, "split_half_burn_in": {}}
+
+
+def expected_gate_ids() -> dict:
+    """Every gate ID the frozen protocol registers, grouped by verdict prefix (Amendment 01)."""
+    return {
+        "L-C[": [f"L-C[{s}]" for s in AR1_SETTINGS],
+        "S-C[": [f"S-C[{c}]" for c in ISING_CELLS],
+        "S-S[": [f"S-S[{c}]" for c in ISING_CELLS],
+        "S-G[": [f"S-G[{c}]" for c in ISING_CELLS],
+        "L-A[": [f"L-A[{float(p)},{m}]" for p in GATES["L-A"]["phi"] for m in GATES["L-A"]["methods"]],
+        "L-G[": [f"L-G[{float(p)}]" for p in GATES["L-G"]["phi"]],
+        "L-D[": [f"L-D[{float(p)},{n},{f}]" for p in AR1["phi"] for n in AR1["n"] for f in GATES["L-D"]["families"]],
+        "single": ["S-F1", "D-F1", "L-F1", "L-F2"],
+    }
+
+
+def completeness() -> dict:
+    """Check that every registered input exists with its registered unit count (Amendment 01)."""
+    problems = []
+    chains = ISING["chains_per_cell"]
+    for cell in ISING_CELLS:
+        for folder, checks in (("ising", {"S": chains, "G": chains // 16}), ("amend01", {"rhat_m": chains // 16})):
+            path = HERE / "results" / folder / f"{cell}.npz"
+            if not path.exists():
+                problems.append(f"missing results/{folder}/{cell}.npz")
+                continue
+            z = np.load(path)
+            problems += [f"{folder}/{cell}: {key} has {len(z[key])} units, expected {count}"
+                         for key, count in checks.items() if len(z[key]) != count]
+    for setting in AR1_SETTINGS:
+        path = HERE / "results" / "ar1" / f"{setting}.npz"
+        if not path.exists():
+            problems.append(f"missing results/ar1/{setting}.npz")
+        elif len(np.load(path)["xbar"]) != AR1["replicas"]:
+            problems.append(f"ar1/{setting}: wrong replica count")
+    return {"complete": not problems, "problems": problems}
 
 
 def cp(k: int, n: int) -> list[float]:
@@ -106,6 +156,18 @@ def analyze_ar1(gates: dict, table: list) -> None:
         mean = t_interval(z["xbar"])
         gates[f"L-C[{name}]"] = {"empirical_over_exact_var": var_ratio, "ci95": var_ci, "mean_xbar": mean,
                                  "result": "PASS" if var_ci[0] <= 1 <= var_ci[1] and mean["ci95"][0] <= 0 <= mean["ci95"][1] else "FAIL"}
+        # Amendment 01 secondary view: the frozen L-C gate is 20 separate 95% intervals, so a perfect
+        # generator misses at least one with probability about 1 - 0.95**20. Bonferroni over those 20,
+        # using exact chi-square and t intervals (the AR(1) replica mean is exactly Gaussian).
+        level = 0.05 / (2 * len(AR1_SETTINGS))
+        r = len(z["xbar"])
+        s2 = float(np.var(z["xbar"], ddof=1))
+        adj_var = [(r - 1) * s2 / chi2.ppf(1 - level / 2, r - 1) / exact, (r - 1) * s2 / chi2.ppf(level / 2, r - 1) / exact]
+        half = float(student_t.ppf(1 - level / 2, r - 1) * np.sqrt(s2 / r))
+        adj_mean = [float(z["xbar"].mean()) - half, float(z["xbar"].mean()) + half]
+        AMENDMENT["L-C_adjusted"][name] = {"familywise_level": 0.05, "per_interval_level": level,
+                                           "var_ratio_interval": adj_var, "mean_interval": adj_mean,
+                                           "flagged": not (adj_var[0] <= 1 <= adj_var[1] and adj_mean[0] <= 0 <= adj_mean[1])}
         for method in ("BM", "OBM", "SV-B", "SV-TH"):
             for b in PROTOCOL["definitions"]["batch_sizes"]:
                 sigma2, df = z[f"sigma2_{method}_b{b}"], z[f"df_{method}_b{b}"]
@@ -193,7 +255,27 @@ def analyze_ising(gates: dict, table: list) -> None:
         gates[f"S-C[{cell}]"] = {"relative_bias_energy": energy,
                                  "result": "PASS" if inside(energy["ci95"], BIAS_BOUNDS) else "FAIL"}
         bias_p = t_interval(z["P"] / chi - 1)
-        flagged = {k: coverage(np.nan_to_num(z[f"rhat_{k}"], nan=0.0) > RHAT_THRESHOLD) for k in ("m", "m2", "e")}
+        # Amendment 01: R-hat from results/amend01 (corrected Blom scores; +inf for separated constant
+        # chains, counted as flagged; NaN only when all draws are tied, counted as not flagged).
+        a = np.load(HERE / "results" / "amend01" / f"{cell}.npz")
+        flagged = {k: coverage(np.nan_to_num(a[f"rhat_{k}"], nan=0.0, posinf=np.inf) > RHAT_THRESHOLD)
+                   for k in ("m", "m2", "e")}
+        comparison = {}
+        for k in ("m", "m2", "e"):
+            old, new = z[f"rhat_{k}"], a[f"rhat_{k}"]
+            both = np.isfinite(old) & np.isfinite(new)
+            comparison[k] = {
+                "max_abs_difference_finite": float(np.max(np.abs(old[both] - new[both]))) if both.any() else None,
+                "original_flagged": int(np.sum(np.nan_to_num(old, nan=0.0) > RHAT_THRESHOLD)),
+                "amended_flagged": flagged[k]["covered"],
+                "original_nan": int(np.isnan(old).sum()), "amended_nan": int(np.isnan(new).sum()),
+                "amended_inf": int(np.isposinf(new).sum())}
+        AMENDMENT["rhat_original_vs_amended"][cell] = comparison
+        N, T = int(z["N"]), float(z["T"])
+        AMENDMENT["split_half_burn_in"][cell] = {
+            "second_minus_first_m2_relative_to_chi": t_interval(N / T * (a["m2_second"] - a["m2_first"]) / chi),
+            "second_minus_first_energy_relative": t_interval((a["e_second"] - a["e_first"]) / abs(float(z["energy_exact"]))),
+            "reading": "descriptive; an interval excluding 0 indicates drift within the retained window (burn-in or slow mixing)"}
         if cell == "ising_L4_T1.5":
             gates["S-F1"] = {"relative_bias_P": bias_p, "criterion": "CI upper < -0.5",
                              "result": "REPRODUCED" if bias_p["ci95"][1] < -0.5 else "NOT_REPRODUCED"}
@@ -220,12 +302,17 @@ def analyze_ising(gates: dict, table: list) -> None:
         table.append(row)
 
 
-def verdicts(gates: dict) -> dict:
-    def all_pass(prefix):
-        hits = [g["result"] for k, g in gates.items() if k.startswith(prefix)]
-        return bool(hits) and all(r == "PASS" for r in hits)
+def verdicts(gates: dict, complete: dict) -> dict:
+    expected = expected_gate_ids()
+    missing = [g for ids in expected.values() for g in ids if g not in gates]
+    if not complete["complete"] or missing:
+        reason = {"problems": complete["problems"], "missing_gates": missing}
+        return {h: "NOT_EVALUABLE_INCOMPLETE" for h in ("controls_valid", "H-S", "H-L", "H-D")} | {"incomplete": reason}
 
-    l_d = {k: g for k, g in gates.items() if k.startswith("L-D[")}
+    def all_pass(prefix):
+        return all(gates[g]["result"] == "PASS" for g in expected[prefix])
+
+    l_d = {g: gates[g] for g in expected["L-D["]}
     families_ok = all(any(g["result"] == "PASS" for k, g in l_d.items() if k.endswith(f",{f}]"))
                       for f in GATES["L-D"]["families"])
     return {
@@ -247,13 +334,18 @@ def write_csv(path: Path, rows: list) -> None:
 
 
 def main() -> None:
+    complete = completeness()
+    if not complete["complete"]:
+        print(json.dumps({"complete": False, "problems": complete["problems"]}, indent=1))
+        raise SystemExit("campaign outputs incomplete; no gates evaluated (Amendment 01)")
     gates: dict = {}
     ar1_table: list = []
     ising_table: list = []
     analyze_ar1(gates, ar1_table)
     analyze_ising(gates, ising_table)
     out = {"protocol_id": PROTOCOL["id"], "script": "research/v018-estimators/analyze.py",
-           "verdicts": verdicts(gates), "gates": gates}
+           "amendment": "AMENDMENT_01.md", "completeness": complete,
+           "verdicts": verdicts(gates, complete), "gates": gates, "amendment_01_secondary": AMENDMENT}
     (HERE / "results" / "gates.json").write_text(json.dumps(out, indent=1) + "\n")
     write_csv(HERE / "results" / "ar1_table.csv", ar1_table)
     write_csv(HERE / "results" / "ising_table.csv", ising_table)
