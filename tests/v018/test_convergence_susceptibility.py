@@ -10,11 +10,11 @@ from rnglab16.core import enumeration
 
 
 def _rhat_reference(chains):
-    """Plain loop transcription of rank-normalized split-R-hat for one ensemble."""
+    """Plain loop transcription of rank-normalized split-R-hat (Blom scores) for one ensemble."""
     n = chains.shape[1] // 2
     halves = [c[:n] for c in chains] + [c[-n:] for c in chains]
     flat = np.concatenate(halves)
-    z = norm.ppf((rankdata(flat) - 0.375) / (len(flat) - 0.25)).reshape(len(halves), n)
+    z = norm.ppf((rankdata(flat) - 0.375) / (len(flat) + 0.25)).reshape(len(halves), n)
     w = np.mean([np.var(h, ddof=1) for h in z])
     b = n * np.var([h.mean() for h in z], ddof=1)
     return math.sqrt(((n - 1) / n * w + b / n) / w)
@@ -32,6 +32,20 @@ def test_split_rhat_matches_reference_and_separates_cases():
 
 def test_split_rhat_all_tied_is_nan():
     assert np.isnan(convergence.split_rhat(np.ones((4, 16)))[0])
+
+
+def test_split_rhat_separated_constant_chains_is_infinite():
+    # Codex review on PR #2: zero within-chain variance with distinct chain values is total non-mixing.
+    assert np.isposinf(convergence.split_rhat(np.array([[-1.0] * 4, [1.0] * 4]))[0])
+
+
+def test_split_rhat_is_invariant_to_sign_reversal():
+    # Codex review on PR #2: Blom scores are antisymmetric in rank, so R-hat(x) == R-hat(-x).
+    rng = np.random.default_rng(1)
+    x = rng.standard_normal((4, 20)) + np.array([0, 0.3, 0.6, 0.9])[:, None]
+    assert math.isclose(convergence.split_rhat(x)[0], convergence.split_rhat(-x)[0], rel_tol=1e-12)
+    scores = norm.ppf((np.arange(1, 9) - 0.375) / (8 + 0.25))
+    assert np.allclose(scores, -scores[::-1])
 
 
 def test_split_rhat_odd_length_drops_middle():

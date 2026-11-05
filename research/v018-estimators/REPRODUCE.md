@@ -24,8 +24,11 @@ cd research/v018-estimators && sha256sum -c protocol.sha256 && cd ../..
 
 The runner never overwrites existing outputs. To replay without touching the published results, clone the repository at the commit that added `results/`, delete `research/v018-estimators/results/ar1`, `results/ising` and `traces/` in that clone, then:
 
+Generation must run at commit `f3be97a`: the runner checks the pre-generation hashes, and Amendment 01 later changed `analyze.py` and `src/rnglab/convergence.py` (see `AMENDMENT_01.md`). Run the remaining steps at the amendment commit or later.
+
 ```bash
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=src .venv/bin/python research/v018-estimators/run_campaign.py run --workers 3
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=src .venv/bin/python research/v018-estimators/run_campaign.py run --workers 3   # at f3be97a
+PYTHONPATH=src .venv/bin/python research/v018-estimators/amend01_from_traces.py
 PYTHONPATH=src .venv/bin/python research/v018-estimators/analyze.py
 PYTHONPATH=src .venv/bin/python research/v018-estimators/recount.py
 MPLBACKEND=Agg PYTHONPATH=src .venv/bin/python research/v018-estimators/plot.py
@@ -49,7 +52,9 @@ The smoke uses the separate namespace `rnglab-v018-estimators-smoke`; timings va
 | `PROTOCOL.md`, `protocol.json`, `protocol.sha256` | frozen design |
 | `manifest_pregeneration.json` | code hashes and seeds, committed before the first draw |
 | `run_campaign.py` | generation and per-unit estimators |
-| `analyze.py` | frozen gate evaluation → `results/gates.json`, `results/*_table.csv` |
+| `AMENDMENT_01.md`, `amendment_01.json` | pre-analysis corrections (R̂ implementation, completeness, control-gate reading, burn-in diagnostic) |
+| `amend01_from_traces.py` | R̂ recomputed from traces and split-half diagnostic → `results/amend01/*.npz` |
+| `analyze.py` | frozen gate evaluation (Amendment 01) → `results/gates.json`, `results/*_table.csv` |
 | `recount.py` | independent recount → `results/recount.json` |
 | `plot.py` | figures → `figures/*.png` |
 | `results/ar1/*.npz`, `results/ising/*.npz` | per-replica, per-chain and per-ensemble endpoints |
