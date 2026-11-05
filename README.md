@@ -99,7 +99,7 @@ python3 -m venv .venv
 PYTHONPATH=src .venv/bin/pytest tests -q
 ```
 
-Expected: **331 passed**, which is the 322 tests on `main` (257 core and 65 crypto BLUE) plus 9 v0.18 namespace tests ([`docs/v018/evidence/pytest_phase0.txt`](docs/v018/evidence/pytest_phase0.txt), Python 3.14.9). CI runs Python 3.11 and 3.12. The 35 Phase II research checks run separately ([`research/phase2-20261030/REPRODUCE.md`](research/phase2-20261030/REPRODUCE.md)).
+Expected: **331 passed**, which is the 322 tests on `main` (257 core and 65 crypto BLUE) plus 9 v0.18 namespace tests ([`docs/v018/evidence/pytest_phase0.txt`](docs/v018/evidence/pytest_phase0.txt), Python 3.14.9). CI is configured for Python 3.11 and 3.12 but has never executed: GitHub has refused to start every job since the workflow was added on 29 October 2026 because of an account billing lock, so the CI badge shows failure without any test having run. The workflow's steps pass when run locally with its unpinned dependencies on Python 3.14.9 ([`docs/v018/evidence/ci_steps_local.txt`](docs/v018/evidence/ci_steps_local.txt)); Python 3.11 and 3.12 are untested. The 35 Phase II research checks run separately ([`research/phase2-20261030/REPRODUCE.md`](research/phase2-20261030/REPRODUCE.md)).
 
 ## How this work was produced (AI disclosure)
 
