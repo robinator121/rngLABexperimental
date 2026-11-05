@@ -54,13 +54,13 @@ def test_digest_distinguishes_one_ulp():
 
 
 def test_provenance_is_recorded_and_isolated_from_later_caller_mutation():
-    provenance = {"namespace": "rnglab-v018-api-validation/local/init/0", "draw": {"paths": 2, "kept": 0}}
+    provenance = {"namespace": "rnglab-v018-tests/example/start/0", "draw": {"paths": 2, "kept": 0}}
     result = run(initial_path=PATH, initial_path_provenance=provenance)
     recorded = result.initialization_protocol["initial_path_provenance"]
     assert recorded == provenance and recorded is not provenance
     provenance["namespace"] = "changed"
     provenance["draw"]["kept"] = 1
-    assert recorded == {"namespace": "rnglab-v018-api-validation/local/init/0", "draw": {"paths": 2, "kept": 0}}
+    assert recorded == {"namespace": "rnglab-v018-tests/example/start/0", "draw": {"paths": 2, "kept": 0}}
     assert result.initialization_protocol["mode"] == "explicit_path"
 
 
