@@ -1,6 +1,6 @@
 # RNGLab central hypothesis: how v0.18 supports it, what is missing, staged roadmap
 
-Status: **adopted by the author, 2026-11-05.** Adopted: the staged roadmap (Section 6), the Phase 3 redesign as the H1 campaign (decision 1), and the widened Phase 3.5 review (decision 2). Still open: decisions 3–5 (external test battery, README hypothesis table, v0.19/v0.20 versioning). Drafted by Claude Code (Opus 5.5) from the author's specification of the central hypothesis. It changes no frozen protocol: the Phase 1 campaign (`research/v018-estimators/`) was running when this was written and is unaffected.
+Status: **adopted by the author, 2026-11-05.** Adopted: the staged roadmap (Section 6), the Phase 3 redesign as the H1 campaign (decision 1), and the widened Phase 3.5 review (decision 2). Still open: decisions 3–5 (external test battery, README hypothesis table, v0.19/v0.20 versioning). Stage A complete (Phases 1 and 2, 2026-11-06). Stage B complete: `RELATED_WORK.md`, adopted 2026-11-06 as GO for Stage C with the H1 claim narrowed to a calibrated, matched-false-alarm latency comparison; D and E conditional. Drafted by Claude Code (Opus 5.5) from the author's specification of the central hypothesis. It changes no frozen protocol: the Phase 1 campaign (`research/v018-estimators/`) was running when this was written and is unaffected.
 
 ## 1. The central hypothesis (author's specification)
 
