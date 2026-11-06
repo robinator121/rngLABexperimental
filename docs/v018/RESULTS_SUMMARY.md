@@ -1,6 +1,6 @@
 # v0.18 results summary: positive and negative findings side by side
 
-Running summary, updated after each phase. Every entry names its source. Produced by Claude Code (Opus 5.5); the decisions are the author's. Last update: Phase 1, 2026-11-05.
+Running summary, updated after each phase. Every entry names its source. Produced by Claude Code (Opus 5.5); the decisions are the author's. Last update: Phase 2, 2026-11-06.
 
 ## Phase 0: audit and consolidation
 
@@ -19,6 +19,15 @@ Running summary, updated after each phase. Every entry names its source. Produce
 | BM, OBM, SV-B, SV-TH and Geyer are calibrated for τ ≤ 19 (15 of 15 gates); **H-L supported** | Spectral estimators run 6–8% low at b/n = 1/16; at long τ only Geyer stays near nominal, in an AR(1) setting that favours it |
 | The batch-length diagnostic never accepts a run and then mis-covers (21 of 21 evaluable gates); split-R̂ flags the Ising sign non-mixing; **H-D supported** | The diagnostic is conservative: it abstains at τ ≈ 199, n = 8192, where BM(512) would cover 0.926 |
 | The independent recount agrees on 28 of 28 counts; Amendment 01 changed R̂ by at most 4.9 × 10⁻⁵ | The frozen control verdict is FALSE (1 of 20 intervals missed), exposing a protocol-design flaw that Amendment 01 documents |
+
+## Phase 2: the Phase II core result through the package API (`research/v018-api-validation/REPORT.md`)
+
+| Positive | Negative or limiting |
+|---|---|
+| Through the package API, the refreshed sampler (3846/4096, 0.9390) and the IID control (3884/4096, 0.9482) pass the Phase II healthy gates; **H-API supported** | The batch-length diagnostic accepts every refreshed run but its intervals cover only 0.8828: the AR(1)-derived 10·τ̂ rule misses the slow shape mode |
+| Local Metropolis under-covers (3323/4096, 0.8113) and the refresh improves paired coverage by 0.1277 [0.1138, 0.1414]; **H-REP supported**; all three conditions agree with Phase II | The package's default batch sizes under-cover even with the refresh (0.8611 at b = 32, 0.9260 at b = 128) |
+| Byte ledger, start pairing, trace consistency and replay are exact (I-1 to I-4); the independent recount agrees 21/21 | Refresh-condition bias intervals exclude zero (CV −0.000321, TD +0.001713), far inside the gate; unexplained (post-hoc check in `posthoc_bias_check.json`) |
+| The PIMC run options were ported from Codex unchanged; a golden test captured before the port shows the defaults are bit-identical | A healthy baseline at one parameter point only; tests none of H1–H3 |
 
 ## Central hypothesis (H1–H3, `ROADMAP.md`)
 
