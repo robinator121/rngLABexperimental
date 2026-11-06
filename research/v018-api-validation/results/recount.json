@@ -1,0 +1,192 @@
+{
+ "reference_E_M": 0.6554741522981734,
+ "comparisons": [
+  {
+   "quantity": "local: covered count",
+   "recount": 3323,
+   "analysis": 3323,
+   "agree": true
+  },
+  {
+   "quantity": "local: per-replica flags equal to API flags",
+   "recount": 4096,
+   "analysis": 4096,
+   "agree": true
+  },
+  {
+   "quantity": "local: CP95",
+   "recount": [
+    0.7989538863080078,
+    0.8231590392044887
+   ],
+   "analysis": [
+    0.7989538863080078,
+    0.8231590392044887
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "local: variance ratio",
+   "recount": 0.573643916423297,
+   "analysis": 0.5736439164232969,
+   "agree": true
+  },
+  {
+   "quantity": "local: variance-ratio bootstrap CI95",
+   "recount": [
+    0.5457336498708512,
+    0.6030462816196552
+   ],
+   "analysis": [
+    0.545733649870851,
+    0.6030462816196552
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "local: bias CI95",
+   "recount": [
+    -0.0032103192071958947,
+    0.0020465832925459235
+   ],
+   "analysis": [
+    -0.003210319207195894,
+    0.0020465832925459244
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "refresh: covered count",
+   "recount": 3846,
+   "analysis": 3846,
+   "agree": true
+  },
+  {
+   "quantity": "refresh: per-replica flags equal to API flags",
+   "recount": 4096,
+   "analysis": 4096,
+   "agree": true
+  },
+  {
+   "quantity": "refresh: CP95",
+   "recount": [
+    0.9311929359807004,
+    0.946103037525189
+   ],
+   "analysis": [
+    0.9311929359807004,
+    0.946103037525189
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "refresh: variance ratio",
+   "recount": 0.9709854312293821,
+   "analysis": 0.9709854312293823,
+   "agree": true
+  },
+  {
+   "quantity": "refresh: variance-ratio bootstrap CI95",
+   "recount": [
+    0.9287664794032346,
+    1.0153864122016658
+   ],
+   "analysis": [
+    0.9287664794032344,
+    1.0153864122016658
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "refresh: bias CI95",
+   "recount": [
+    -0.0005665780385630923,
+    -7.487630815055247e-05
+   ],
+   "analysis": [
+    -0.0005665780385630913,
+    -7.48763081505516e-05
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "iid: covered count",
+   "recount": 3884,
+   "analysis": 3884,
+   "agree": true
+  },
+  {
+   "quantity": "iid: per-replica flags equal to API flags",
+   "recount": 4096,
+   "analysis": 4096,
+   "agree": true
+  },
+  {
+   "quantity": "iid: CP95",
+   "recount": [
+    0.9410092393855728,
+    0.954826924226039
+   ],
+   "analysis": [
+    0.9410092393855728,
+    0.954826924226039
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "iid: variance ratio",
+   "recount": 0.9926124175165413,
+   "analysis": 0.9926124175165411,
+   "agree": true
+  },
+  {
+   "quantity": "iid: variance-ratio bootstrap CI95",
+   "recount": [
+    0.9504529558166983,
+    1.0391811483270699
+   ],
+   "analysis": [
+    0.9504529558166979,
+    1.0391811483270694
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "iid: bias CI95",
+   "recount": [
+    -0.0001303613209297802,
+    0.00011765835118527658
+   ],
+   "analysis": [
+    -0.00013036132092977923,
+    0.00011765835118527756
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "paired: improved_only",
+   "recount": 713,
+   "analysis": 713,
+   "agree": true
+  },
+  {
+   "quantity": "paired: local_only",
+   "recount": 190,
+   "analysis": 190,
+   "agree": true
+  },
+  {
+   "quantity": "paired: bootstrap CI95",
+   "recount": [
+    0.11376953125,
+    0.1413635253906249
+   ],
+   "analysis": [
+    0.11376953125,
+    0.1413635253906249
+   ],
+   "agree": true
+  }
+ ],
+ "all_agree": true
+}

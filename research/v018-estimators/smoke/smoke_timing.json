@@ -1,0 +1,71 @@
+{
+  "script": "research/v018-estimators/smoke/smoke_timing.py",
+  "namespace": "rnglab-v018-estimators-smoke",
+  "python": "3.14.9",
+  "numpy": "2.5.3",
+  "classification": "smoke only; excluded from every campaign endpoint",
+  "ising": [
+    {
+      "L": 4,
+      "T": 1.5,
+      "reps": 256,
+      "steps": 2048,
+      "seconds": 3.249876609999774,
+      "seconds_per_chain": 0.012694830507811616,
+      "peak_rss_MiB_after": 486.4765625,
+      "trace_shape": [
+        256,
+        2048,
+        5
+      ]
+    },
+    {
+      "L": 4,
+      "T": 2.269185314213022,
+      "reps": 256,
+      "steps": 2048,
+      "seconds": 3.2807647069998893,
+      "seconds_per_chain": 0.012815487136718318,
+      "peak_rss_MiB_after": 486.4765625,
+      "trace_shape": [
+        256,
+        2048,
+        5
+      ]
+    },
+    {
+      "L": 2,
+      "T": 1.5,
+      "reps": 256,
+      "steps": 2048,
+      "seconds": 0.8109159410000757,
+      "seconds_per_chain": 0.0031676403945315457,
+      "peak_rss_MiB_after": 486.4765625,
+      "trace_shape": [
+        256,
+        2048,
+        5
+      ]
+    }
+  ],
+  "ar1": [
+    {
+      "reps": 512,
+      "n": 8192,
+      "phi": 0.99,
+      "generate_seconds": 0.05344463299979907,
+      "estimator_work_seconds": 0.2702216490001774,
+      "acov_lag1_mean": 0.9895507093268587,
+      "peak_rss_MiB_after": 486.4765625
+    },
+    {
+      "reps": 64,
+      "n": 65536,
+      "phi": 0.997,
+      "generate_seconds": 0.05363421099991683,
+      "estimator_work_seconds": 0.3175411739998708,
+      "acov_lag1_mean": 0.9969465200378708,
+      "peak_rss_MiB_after": 486.4765625
+    }
+  ]
+}

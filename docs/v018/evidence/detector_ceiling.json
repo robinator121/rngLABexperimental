@@ -1,0 +1,14 @@
+{
+  "script": "scripts/v018/detector_ceiling_check.py",
+  "sha256": "feba450d95b074d3b0fff50df8357a682e90ea62614a5948e3e4e106149b4e10",
+  "records": 117962,
+  "records_reaching_ceiling_anywhere": 108473,
+  "fraction_reaching_ceiling_anywhere": 0.9195588409826894,
+  "records_reaching_ceiling_in_samples_110_159": 108393,
+  "fraction_reaching_ceiling_in_samples_110_159": 0.9188806564825961,
+  "median_ceiling_samples_per_record": 6,
+  "first_index_above_10000_in_samples_100_159": {
+    "123": 498,
+    "124": 117464
+  }
+}

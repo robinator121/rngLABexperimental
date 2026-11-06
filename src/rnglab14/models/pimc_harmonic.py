@@ -14,9 +14,11 @@ Calculates:
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
+import json
 import math
 import struct
-from typing import Optional, Union
+from typing import Any, Mapping, Optional, Union
 
 import numpy as np
 from scipy.stats import t as student_t
@@ -170,6 +172,9 @@ class PIMCResult:
     thermodynamic_uncertainty: dict
     sampler_protocol: str = "LOCAL_METROPOLIS_V1"
     centroid_update: Optional[dict] = None
+    initialization_protocol: Optional[dict] = None
+    source_provenance: Optional[dict] = None
+    trace: Optional[dict] = None
 
 
 class PathIntegralHarmonicOscillator:
@@ -219,6 +224,11 @@ class PathIntegralHarmonicOscillator:
         burn_in: int = 500,
         *,
         centroid_source: Optional[RandomSource] = None,
+        initialization: str = "uniform",
+        initial_path: Optional[np.ndarray] = None,
+        initial_path_provenance: Optional[Mapping[str, Any]] = None,
+        uncertainty_batch_sizes: tuple[int, ...] = (32, 128),
+        record_trace: bool = False,
     ) -> PIMCResult:
         """Run local Metropolis, optionally followed by one centroid Gibbs update.
 
@@ -227,12 +237,51 @@ class PathIntegralHarmonicOscillator:
         burn-in. Its separate argument does not prove independent origin; it
         may alias a local channel, and corrupted/dependent input can invalidate
         the conditional Gaussian update. This option is harmonic-model specific.
+
+        An explicit initial_path is copied and takes precedence over the selected
+        initialization mode, without consuming initialization-source bytes. Exact
+        Gaussian initialization uses the existing two-path reference sampler and
+        discards its second path. All optional arguments are validated before
+        source consumption. Retained full paths/observables are stored only when
+        record_trace=True; legacy scalar result fields retain their rounding.
+
+        Every mode records the SHA-256 of the starting path (little-endian
+        float64 bytes, bead order). initial_path_provenance, allowed only with
+        initial_path, is a JSON-serialisable mapping stored as its JSON round
+        trip; it is recorded as given, not verified.
         """
         if (type(sweeps) is not int or type(burn_in) is not int or burn_in < 0
                 or sweeps - burn_in < 32):
             raise ValueError("integer sweeps/burn_in and at least 32 retained sweeps required")
         if centroid_source is not None and not isinstance(centroid_source, RandomSource):
             raise TypeError("centroid_source must be an explicit RandomSource or None")
+        if not isinstance(initialization, str) or initialization not in ("uniform", "exact_gaussian"):
+            raise ValueError("initialization must be 'uniform' or 'exact_gaussian'")
+        if type(record_trace) is not bool:
+            raise ValueError("record_trace must be a bool")
+        try:
+            batch_sizes = tuple(uncertainty_batch_sizes)
+        except TypeError as error:
+            raise ValueError("unique integer uncertainty batch sizes >= 2 required") from error
+        if (not batch_sizes or any(type(size) is not int or size < 2 for size in batch_sizes)
+                or len(set(batch_sizes)) != len(batch_sizes)):
+            raise ValueError("unique integer uncertainty batch sizes >= 2 required")
+        supplied_path = None
+        if initial_path is not None:
+            supplied_path = np.array(initial_path, dtype=float, copy=True)
+            if supplied_path.shape != (self.M,) or not np.isfinite(supplied_path).all():
+                raise ValueError("initial_path must be a finite one-dimensional path with M beads")
+        path_provenance = None
+        if initial_path_provenance is not None:
+            if supplied_path is None:
+                raise ValueError("initial_path_provenance requires initial_path")
+            if not isinstance(initial_path_provenance, Mapping) or not all(
+                    isinstance(key, str) for key in initial_path_provenance):
+                raise ValueError("initial_path_provenance must be a mapping with string keys")
+            try:
+                path_provenance = json.loads(json.dumps(dict(initial_path_provenance), allow_nan=False))
+            except (TypeError, ValueError) as error:
+                raise ValueError("initial_path_provenance must be JSON-serialisable without NaN or infinity") from error
         if isinstance(source_or_channels, StochasticChannels):
             prop_src = source_or_channels.proposal
             acc_src = source_or_channels.acceptance
@@ -242,6 +291,20 @@ class PathIntegralHarmonicOscillator:
             acc_src = source_or_channels
             init_src = source_or_channels
 
+        role_sources = {"proposal": prop_src, "acceptance": acc_src,
+                        "initialization": init_src,
+                        "resampling": (source_or_channels.resampling
+                                       if isinstance(source_or_channels, StochasticChannels) else None),
+                        "centroid": centroid_source}
+        if any(source is not None and not isinstance(source, RandomSource)
+               for source in role_sources.values()) or any(
+                   role_sources[role] is None for role in ("proposal", "acceptance", "initialization")):
+            raise TypeError("local channels and optional role sources must be RandomSource instances")
+        provenance_before = {role: {"consumed_bytes_before": source.consumed_bytes,
+            "stream_digest_before": source.stream_digest,
+            "manifest": {key: value for key, value in source.manifest.to_dict().items()
+                         if key != "created_at"}}
+            for role, source in role_sources.items() if source is not None}
         centroid_before = centroid_source.consumed_bytes if centroid_source is not None else None
         centroid_digest_before = centroid_source.stream_digest if centroid_source is not None else None
         M = self.M
@@ -251,9 +314,34 @@ class PathIntegralHarmonicOscillator:
         # Spring constant between adjacent beads: k_spring = M / (beta * hbar^2) = 1 / dtau
         k_spring = 1.0 / dtau
 
-        # Initialize beads with Gaussian noise
-        for j in range(M):
-            self.path[j] = init_src.read_uniform(-0.5, 0.5)
+        init_before = init_src.consumed_bytes
+        if supplied_path is not None:
+            self.path[:] = supplied_path
+            initialization_mode = "explicit_path"
+        elif initialization == "exact_gaussian":
+            self.path[:] = sample_exact_finite_bead_paths(init_src, M, self.beta, 2)[0]
+            initialization_mode = "exact_gaussian"
+        else:
+            for j in range(M):
+                self.path[j] = init_src.read_uniform(-0.5, 0.5)
+            initialization_mode = "uniform"
+        initialization_protocol = {"mode": initialization_mode,
+            "requested_initialization": initialization,
+            "source_bytes_consumed": init_src.consumed_bytes-init_before,
+            "reference_paths_drawn": 2 if initialization_mode == "exact_gaussian" else 0,
+            "reference_paths_discarded": 1 if initialization_mode == "exact_gaussian" else 0,
+            "initial_path_sha256": hashlib.sha256(self.path.astype("<f8").tobytes()).hexdigest(),
+            "initial_path_digest_scheme": "SHA-256 of little-endian float64 bytes in bead order",
+            "initial_path_provenance": path_provenance,
+            "independence_verified": False,
+            "assumptions": ("Exact Gaussian initialization assumes IID uniform source words; "
+                            "explicit paths carry no stationarity claim; "
+                            "supplied provenance is recorded as given, not verified")}
+        retained = sweeps-burn_in
+        trace_initial = self.path.copy() if record_trace else None
+        trace_paths = np.empty((retained, M)) if record_trace else None
+        trace_centroid = np.empty(retained) if record_trace else None
+        trace_rg2 = np.empty(retained) if record_trace else None
 
         virial_energies = []
         thermo_energies = []
@@ -307,6 +395,11 @@ class PathIntegralHarmonicOscillator:
                 virial_energies.append(e_virial)
                 thermo_energies.append(e_thermo)
                 rg_vals.append(math.sqrt(max(0.0, rg2)))
+                if record_trace:
+                    index = sweep-burn_in
+                    trace_paths[index] = self.path
+                    trace_centroid[index] = x_cm
+                    trace_rg2[index] = rg2
 
         v_arr = np.array(virial_energies)
         t_arr = np.array(thermo_energies)
@@ -332,8 +425,8 @@ class PathIntegralHarmonicOscillator:
             provenance_hash=prop_src.stream_digest,
             exact_finite_bead_energy=self.finite_bead_energy,
             discretization_bias=self.finite_bead_energy - self.exact_energy,
-            virial_uncertainty=summarize_series(v_arr, reference=self.finite_bead_energy),
-            thermodynamic_uncertainty=summarize_series(t_arr, reference=self.finite_bead_energy),
+            virial_uncertainty=summarize_series(v_arr, reference=self.finite_bead_energy, batch_sizes=batch_sizes),
+            thermodynamic_uncertainty=summarize_series(t_arr, reference=self.finite_bead_energy, batch_sizes=batch_sizes),
             sampler_protocol=("LOCAL_METROPOLIS_CENTROID_HEATBATH_V1"
                               if centroid_source is not None else "LOCAL_METROPOLIS_V1"),
             centroid_update=({
@@ -352,4 +445,19 @@ class PathIntegralHarmonicOscillator:
                 "assumptions": ("IID uniform source words independent of retained internal coordinates; "
                                 "no entropy or full-path mixing certification"),
             } if centroid_source is not None else {"enabled": False}),
+            initialization_protocol=initialization_protocol,
+            source_provenance={"roles": {role: ({**provenance_before[role],
+                "consumed_bytes_after": source.consumed_bytes,
+                "consumed_bytes_delta": source.consumed_bytes-provenance_before[role]["consumed_bytes_before"],
+                "stream_digest_after": source.stream_digest,
+                "aliases": [other for other, candidate in role_sources.items()
+                            if candidate is source and other != role]}
+                if source is not None else None) for role, source in role_sources.items()},
+                "independence_verified": False,
+                "manifest_scope": "Source identity fields; construction-time created_at omitted for deterministic replay",
+                "accounting": ("Counters and digests identify consumed output, not entropy. "
+                               "Aliased roles repeat the same whole-source delta; do not sum their deltas.")},
+            trace=({"initial_path": trace_initial, "paths": trace_paths,
+                    "TD": t_arr.copy(), "CV": v_arr.copy(),
+                    "centroid": trace_centroid, "rg2": trace_rg2} if record_trace else None),
         )

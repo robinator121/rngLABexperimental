@@ -1,0 +1,272 @@
+{
+ "id": "rnglab-v018-api-validation-v1",
+ "status": "FROZEN_DESIGN",
+ "status_note": "Frozen 2026-11-05 after author approval in chat (\"Freeze as drafted\"). Definitions, gates, sample sizes and namespaces are fixed. SHA-256 of this file is in protocol.sha256. No campaign data generated at freeze.",
+ "drafted": "2026-11-05",
+ "drafted_by": "Claude Code (Opus 5.5); the author decides the design",
+ "human_readable": "research/v018-api-validation/PROTOCOL.md",
+ "design_numbers": "research/v018-api-validation/design.json (from design_calculations.py)",
+ "phase2_reference": "research/phase2-20261030/experiment/confirmation-v1/primary_decision.json",
+ "milestone": "research/phase2-20261030/reports/Research_advancement_and_next_milestone.md, section 'Proposed next milestone'",
+ "smoke": {
+  "namespace": "rnglab-v018-api-validation-smoke",
+  "output": "research/v018-api-validation/smoke/smoke_timing.json",
+  "excluded_from_all_endpoints": true
+ },
+ "code_under_test": {
+  "minimum_commit": "4cf55a8",
+  "modules": [
+   "src/rnglab14/models/pimc_harmonic.py",
+   "src/rnglab14/sources/",
+   "src/rnglab12/uncertainty.py",
+   "src/rnglab/longrun.py"
+  ],
+  "hashes": "recorded in manifest_pregeneration.json before the first campaign draw"
+ },
+ "hypotheses": {
+  "H-API": "Through the package API, the refreshed sampler and the IID control both pass the Phase II healthy gates (G-R and G-I).",
+  "H-REP": "Additionally, local Metropolis under-covers (F-L) and the refresh improves paired coverage by more than 0.10 (P-RL)."
+ },
+ "model": {
+  "class": "rnglab14.models.pimc_harmonic.PathIntegralHarmonicOscillator",
+  "beads": 16,
+  "temperature": 0.5,
+  "beta": 2.0,
+  "displacement_delta": 0.4,
+  "sweeps": 8192,
+  "burn_in": 0,
+  "scan": "sequential, beads 0..15 per sweep",
+  "acceptance_words": "read only for uphill moves (dS > 0)",
+  "refresh": "harmonic_centroid_heatbath once after every sweep, 16 bytes per draw"
+ },
+ "definitions": {
+  "observable": "CV = 1/(2 beta) + mean(x^2) - mean(x)^2/2, after every sweep including sweep 0",
+  "reference": "exact_finite_bead_energy(16, 2.0)",
+  "reference_value": 0.6554741522981734,
+  "primary_interval": "summarize_series(cv, reference=E_M, batch_sizes=(512,))['batch_means']['512']: 16 batches of 512, MCSE = sd(batch means)/4, mean +/- t(15, 0.975) MCSE, closed interval",
+  "iid_control": "sample_exact_finite_bead_paths(source, 16, 2.0, 8192); harmonic_energy_estimators; same BM512 interval",
+  "unit": "one whole-trajectory replica"
+ },
+ "data": {
+  "namespace": "rnglab-v018-api-validation",
+  "namespace_search": "unused in the repository and local Codex output folders, searched 2026-11-05",
+  "seed_rule": "namespace_seed('rnglab-v018-api-validation', condition, role, f'{i:05d}') -> PCG64Source(seed); one source object per role",
+  "roles": {
+   "metropolis/start": {
+    "used_by": [
+     "local",
+     "refresh"
+    ],
+    "bytes": 256,
+    "note": "drawn before the run; passed as initial_path and as the initialization channel (reads 0 bytes in the run)"
+   },
+   "metropolis/proposal": {
+    "used_by": [
+     "local",
+     "refresh"
+    ],
+    "bytes": 1048576
+   },
+   "metropolis/acceptance": {
+    "used_by": [
+     "local",
+     "refresh"
+    ],
+    "bytes": "varies"
+   },
+   "refresh/centroid": {
+    "used_by": [
+     "refresh"
+    ],
+    "bytes": 131072
+   },
+   "iid/paths": {
+    "used_by": [
+     "iid"
+    ],
+    "bytes": 1048576
+   }
+  },
+  "start": "sample_exact_finite_bead_paths(start_source, 16, 2.0, 2)[0]; initial_path_provenance = {namespace, condition, role, replica, seed, sampler}",
+  "pairing": "local and refresh share start, proposal and acceptance seeds per replica (as Phase II); replicas independent across i",
+  "conditions": [
+   "local",
+   "refresh",
+   "iid"
+  ],
+  "replicas_per_condition": 4096,
+  "saved": {
+   "traces": "traces/<condition>/block-XXXX.npz outside Git: CV, TD, centroid, rg2 (float64, 8192 each) and start path per replica; SHA-256 in committed manifests",
+   "paths": "not saved; per-replica SHA-256 recorded; regenerable by deterministic replay",
+   "committed": "results/<condition>_replicas.csv: seeds, start SHA-256, acceptance rate, CV and TD mean, BM512 MCSE, interval, covered, bytes and final digest per role"
+  }
+ },
+ "analysis": {
+  "coverage": "covered count / R with Clopper-Pearson 95% interval",
+  "variance_ratio": "mean over replicas of MCSE^2 / var(CV means, ddof=1); percentile bootstrap over replicas, 10000 resamples, seed namespace_seed(ns, 'analysis', 'bootstrap', endpoint)",
+  "bias": "mean over replicas of (CV mean - E_M), t(R-1) 95% interval",
+  "paired_difference": "d_i = covered_refresh_i - covered_local_i; mean with percentile bootstrap, 10000 resamples, seed namespace_seed(ns, 'analysis', 'bootstrap', 'paired')",
+  "exclusions": "none; BM512 status other than ESTIMATED counts as not covered and is reported",
+  "pass_rule": "conjunction of listed criteria; no multiplicity adjustment; chance-failure probabilities in design.json"
+ },
+ "gates": {
+  "implementation": {
+   "I-1": "per replica: proposal 1048576 bytes; initialization 0; centroid 131072 (refresh) or absent (local); iid paths 1048576; resampling absent; no aliases",
+   "I-2": "per replica: local and refresh start SHA-256 equal, and equal to the regenerated start's digest",
+   "I-3": "per replica: CV recomputed from recorded paths matches CV trace within 1e-12 absolute",
+   "I-4": "replica 0 of each condition regenerated after the campaign gives an identical CV-trace SHA-256",
+   "on_failure": "implementation defect: stop, investigate, report"
+  },
+  "required": {
+   "G-R": {
+    "condition": "refresh",
+    "coverage_cp95_inside": [
+     0.92,
+     0.98
+    ],
+    "variance_ratio_ci95_inside": [
+     0.75,
+     1.25
+    ],
+    "bias_ci95_inside": [
+     -0.01,
+     0.01
+    ]
+   },
+   "G-I": {
+    "condition": "iid",
+    "coverage_cp95_inside": [
+     0.92,
+     0.98
+    ],
+    "variance_ratio_ci95_inside": [
+     0.75,
+     1.25
+    ],
+    "bias_ci95_inside": [
+     -0.01,
+     0.01
+    ]
+   }
+  },
+  "replication": {
+   "F-L": {
+    "condition": "local",
+    "coverage_cp95_upper_below": 0.92
+   },
+   "P-RL": {
+    "paired_difference_bootstrap_lower95_above": 0.1
+   }
+  },
+  "recount": "separate script recomputes all 3 x R coverage events and gate statistics from saved CV traces with its own NumPy/SciPy code; all counts must agree",
+  "verdicts": {
+   "H-API": "supported iff G-R and G-I pass; otherwise failed (a finding; milestone complete once the discrepancy is localised with a minimal reproducer)",
+   "H-REP": "supported iff F-L and P-RL pass",
+   "core_result_reproduced": "H-API and H-REP both supported"
+  }
+ },
+ "secondary": [
+  "TD BM512: coverage, variance ratio, bias, all conditions",
+  "CV with rnglab.longrun: BM(32), BM(128), OBM(512), SV-B(512), SV-TH(512), Geyer (sensitivity only: systematic scan is not reversible)",
+  "batch-length diagnostic on CV: status counts and adaptive-interval coverage; expectation recorded: local mostly RUN_TOO_SHORT, refresh and IID mostly adequate",
+  "between-replica variance of CV means split into centroid (mean(x)^2/2) and shape (rg2) parts plus twice their covariance",
+  "acceptance rate, Geyer tau-hat and ESS distributions",
+  "coverage difference API minus Phase II per condition with Wald 95% interval (descriptive)"
+ ],
+ "resources": {
+  "runtime": "about 8600 single-core seconds at R=4096; about 36 min with 4 workers, one BLAS thread each (design.json runtime_projection)",
+  "peak_memory_per_worker_MiB": 107,
+  "trace_storage_GiB": 3.0,
+  "cpu_only": true
+ },
+ "excluded": [
+  "faulted sources (Phase 3)",
+  "other M, beta, delta, burn-in rules or non-stationary starts",
+  "re-analysis of Phase II traces",
+  "the API's exact_gaussian mode as a separate condition"
+ ],
+ "author_choices": [
+  {
+   "id": 1,
+   "topic": "replicas per condition",
+   "options": [
+    4096,
+    2048,
+    1024
+   ],
+   "draft": 4096
+  },
+  {
+   "id": 2,
+   "topic": "H-REP gates",
+   "options": [
+    "gated",
+    "descriptive only"
+   ],
+   "draft": "gated"
+  },
+  {
+   "id": 3,
+   "topic": "start",
+   "options": [
+    "explicit initial_path from a start role",
+    "initialization='exact_gaussian'"
+   ],
+   "draft": "explicit initial_path from a start role"
+  },
+  {
+   "id": 4,
+   "topic": "pairing",
+   "options": [
+    "shared start/proposal/acceptance seeds",
+    "independent seeds"
+   ],
+   "draft": "shared start/proposal/acceptance seeds"
+  },
+  {
+   "id": 5,
+   "topic": "bootstrap resamples",
+   "options": [
+    10000,
+    "1500 for variance ratio as Phase II"
+   ],
+   "draft": 10000
+  },
+  {
+   "id": 6,
+   "topic": "saved traces",
+   "options": [
+    "CV, TD, centroid, rg2 and starts",
+    "CV only"
+   ],
+   "draft": "CV, TD, centroid, rg2 and starts"
+  }
+ ],
+ "references": [
+  "Flegal & Jones (2010) Ann. Statist. 38(2) 1034-1070, doi:10.1214/09-AOS735",
+  "Geyer (1992) Statist. Sci. 7(4) 473-483, doi:10.1214/ss/1177011137",
+  "Meketon & Schmeiser (1984) Proc. 1984 Winter Simulation Conference 227-230",
+  "Yamamoto (2005) J. Chem. Phys. 123, 104101, doi:10.1063/1.2013257"
+ ],
+ "approval": {
+  "date": "2026-11-05",
+  "by": "author (Hevele Imre Robert), in the Claude Code session",
+  "choices": {
+   "1_replicas_per_condition": 4096,
+   "2_H-REP": "gated",
+   "3_start": "explicit initial_path from the metropolis/start role",
+   "4_pairing": "local and refresh share start, proposal and acceptance seeds",
+   "5_bootstrap_resamples": 10000,
+   "6_saved_traces": "CV, TD, centroid, rg2 and starts"
+  }
+ },
+ "implementation_notes_added_at_freeze": {
+  "note": "Operational details not specified in the draft; fixed here before any campaign draw; no gate or endpoint changes.",
+  "storage": "one compressed NPZ per (condition, block of 256 replicas) under research/v018-api-validation/traces/ (gitignored), SHA-256 in the run manifest; block b holds replicas 256b..256b+255",
+  "paths_sha256": "SHA-256 of trace['paths'] as little-endian float64 bytes in C order (sweep-major)",
+  "I-3": "evaluated in the worker before the paths are discarded; the per-replica maximum absolute difference is recorded",
+  "iid_secondary_traces": "IID centroid and rg2 per path computed from the paths (bead mean; mean squared deviation from it) for the mechanism secondary",
+  "geyer_undefined": "if GEYER returns INVALID_LONG_RUN_VARIANCE, the GEYER secondary interval counts as non-coverage and the diagnostic abstains with TAU_UNDEFINED, reported separately (as Phase 1)",
+  "parallelism": "4 worker processes (fork context), one task per (condition, block), OPENBLAS_NUM_THREADS=OMP_NUM_THREADS=1; results do not depend on scheduling"
+ }
+}

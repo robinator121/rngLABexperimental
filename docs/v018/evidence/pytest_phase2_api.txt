@@ -1,0 +1,2 @@
+# PYTHONPATH=src pytest tests -q on feature/v018 after the Phase 2 API extension (59a448c + uncommitted port), 2026-11-05T15:59Z, Python 3.14.9, Phase II lock
+391 passed in 14.50s

@@ -1,200 +1,119 @@
-# RNGLab: Computational Randomness, Physical Entropy Acquisition & Stochastic Simulation Integrity
+# RNGLab: random-input faults and uncertainty failure in Monte Carlo simulation
 
 [![CI](https://github.com/robinator121/rngLABexperimental/actions/workflows/ci.yml/badge.svg)](https://github.com/robinator121/rngLABexperimental/actions/workflows/ci.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
-[![Tests: 322 Passing](https://img.shields.io/badge/Tests-322%20Passing-brightgreen.svg)](tests/)
 
-**Author:** Hevele Imre Róbert ([@robinator121](https://github.com/robinator121))  
-**Contact:** [roberthevele@gmail.com](mailto:roberthevele@gmail.com)  
-**Affiliation:** Faculty of Informatics, University of Debrecen  
-**Project Nature:** Academic Research Prototype & BSc Thesis Codebase  
-**Status:** Experimental Research Platform (v0.17 CALIBRATE)
+**Author:** Hevele Imre Róbert ([@robinator121](https://github.com/robinator121)), Faculty of Informatics, University of Debrecen
+**Supervisor:** Dr. Herendi Tamás
+**Status:** research prototype, v0.18 in progress on branch `feature/v018`. Not certified or validated for any production, cryptographic or regulatory use.
 
-### RNGLab BLUE: isolated cryptographic infrastructure research
+## Research question
 
-`rnglab_crypto` adds synthetic RNG fault injection, bounded weak-seed recovery,
-AES-GCM and ChaCha20-Poly1305 nonce-misuse experiments, ECDSA/RFC6979/Ed25519
-controls, DRBG recovery, source monitoring and persistent nonce allocation.
-The initial campaigns include 128 confirmation and 64 sensitivity replicas,
-reproducible results, uncertainty intervals and explicit failed criteria.
-See the [findings](docs/crypto/RESULTS.md), [audit](docs/crypto/ARCHITECTURE_AUDIT.md)
-and [reproduction guide](docs/crypto/REPRODUCE.md). The suite has 257 legacy tests
-plus 65 crypto tests; no production keys or external systems are targeted.
+How do defects in random inputs propagate through Monte Carlo simulations, and how can a sampler's own uncertainty failure be told apart from a fault in the random source?
 
----
+The strongest evidence so far comes from one exact-reference workload: harmonic path-integral Monte Carlo (PIMC) with injected random-channel faults. Every number below names the file it comes from. [`docs/v018/AUDIT.md`](docs/v018/AUDIT.md) lists every quantitative claim in this repository as backed, partially backed or unbacked.
 
-## 1. Executive Summary
+## Main result: Phase II, harmonic PIMC (October 2026)
 
-**RNGLab** is an experimental scientific research platform developed at the University of Debrecen to investigate how subtle, non-catastrophic degradations in pseudorandom and physical entropy streams propagate through stochastic simulations, and how such defects can be detected before corrupting physical or financial observables.
+Standalone harmonic PIMC at M = 16 beads, β = 2, proposal half-width δ = 0.4, exact finite-M Gaussian starts, no burn-in and 8,192 retained sweeps; nominal 95% interval on the centroid-virial (CV) energy from batch means with 16 batches of 512 (BM512) and a Student-t₁₅ critical value; 1,024 independent replicas per condition.
 
-The project bridges three complementary domains:
-1. **Physical Entropy Acquisition & Waveform Auditing:** Real-time hardware noise harvesting (avalanche breakdown in reverse-biased PN junctions, Geiger-Müller radiation pulse intervals, and cosmic ray / muon detector digitized waveforms) coupled with NIST SP 800-90B min-entropy evaluation.
-2. **Computational Physics & Stochastic Modeling:** Markov Chain Monte Carlo (2D Ising Metropolis and Wolff cluster), Path Integral Monte Carlo (PIMC virial estimators), and Variational Monte Carlo (VMC harmonic oscillator) simulations evaluating observable masking and spectral gap collapse.
-3. **Financial Risk & Model Risk Stress-Testing:** Quantitative financial engines (European options, Portfolio Value at Risk, and Expected Shortfall) designed to stress-test stochastic simulation stability under quantitative model validation principles (inspired by Federal Reserve SR 11-7, ECB TRIM, and Basel III guidelines).
+| Sampler (healthy random input) | Intervals covering the exact finite-M energy | Exact binomial 95% interval |
+|---|---:|---:|
+| Local Metropolis | 811 / 1,024 | 76.6–81.6% |
+| Local Metropolis + exact centroid refresh | 964 / 1,024 | 92.5–95.5% |
+| Independent Gaussian paths (control) | 969 / 1,024 | 93.1–95.9% |
 
-> [!IMPORTANT]
-> **Academic & Experimental Scope:** RNGLab is an exploratory academic prototype, not a commercial turnkey product. It implements methodological frameworks inspired by regulatory model risk guidance, but is **not officially certified by NIST, the Federal Reserve, the ECB, or other regulatory authorities**.
+Source: `research/phase2-20261030/experiment/confirmation-v1/summary.csv` (rows `CV,BM512`) and `primary_decision.json`.
 
-> [!WARNING]
-> **Production Cryptography Disclaimer:** The conditioning routines implemented in this repository (von Neumann extraction, SHA-256 block hashing, ChaCha20 expansion) are research treatments designed for stochastic simulation benchmarking. They are **not certified or audited for production cryptographic systems or cryptographic key generation**. Passing statistical batteries (such as NIST SP 800-22) after cryptographic hashing demonstrates only the PRF diffusion of the hash function; true source unpredictability must be assessed directly on raw, unconditioned noise via NIST SP 800-90B min-entropy estimation.
+- **Healthy sampler failure.** With healthy random numbers, local Metropolis under-covers. The failure persists from exact stationary starts, so it is not initialization bias. The slow centroid mode dominates the variance of the energy average and short batches miss it (estimated/empirical variance ratio 0.53 for local Metropolis, `primary_decision.json`). Refreshing the centroid from its exact conditional law restores coverage within the frozen gates for this workload.
+- **Injected channel faults.** On the validated refreshed sampler, a paired 512-replica study covered the exact energy in 487 / 512 healthy runs, 0 / 512 under an acceptance-uniform shift and 13 / 512 under proposal/acceptance coupling (`research/phase2-20261030/experiment/fault-study-v1/summary.csv`, post-onset window). A marginal source-mean monitor missed the coupling, a joint-channel monitor detected it, and the application-shape monitor missed the acceptance shift.
+- **Scope.** One harmonic workload, one interval method, two strong synthetic adapter faults. These are injected faults, not defects found in PCG64. No general monitor ranking follows. The coverage campaign used the standalone implementation preserved in `research/phase2-20261030`; validation through the package API is v0.18 Phase 2.
+- **Known versus new.** That short batch means underestimate long-run variance is established (Flegal & Jones, [Ann. Statist. 38, 1034 (2010)](https://doi.org/10.1214/09-AOS735); Geyer, [Statist. Sci. 7, 473 (1992)](https://doi.org/10.1214/ss/1177011137)). Virial energy estimators for PIMC are established (Yamamoto, [J. Chem. Phys. 123, 104101 (2005)](https://arxiv.org/abs/physics/0505109)), and the centroid refresh samples the known exact conditional Gaussian law of the harmonic centroid; neither is new here. That generators can pass statistical tests yet bias an application is established (Ferrenberg, Landau & Wong, [Phys. Rev. Lett. 69, 3382 (1992)](https://doi.org/10.1103/PhysRevLett.69.3382); Coddington, [Int. J. Mod. Phys. C 7, 295 (1996)](https://doi.org/10.1142/S0129183196000235)). The Phase II contribution is a controlled separation, in one workload, of a healthy-sampler uncertainty failure from two random-channel contract violations, with paired effects and separately calibrated monitors.
 
----
+Full reports, protocols and reproduction: [`research/phase2-20261030/README.md`](research/phase2-20261030/README.md).
 
-## 2. Key Headline Findings & Experimental Results
+## Negative and limited results
 
-1. **Hardware Digitizer Saturation & Clock Lattice Artifacts:**
-   In the author's physical cosmic ray detector dataset (117,962 events, 120.7M samples), **91.96% of captured pulse peaks saturate the 16-bit digitizer ceiling** (code 65,535), and recorded timestamps lie on a discrete **80-unit clock lattice** ($\text{GCD} = 80$). Extracting raw timestamp LSBs yields identically zero bits, demonstrating why raw hardware inspection is mandatory before claiming Poisson entropy ([`docs/physical/MUON_DETECTOR_ASSESSMENT.md`](docs/physical/MUON_DETECTOR_ASSESSMENT.md), [`scripts/inspect_detector_export.py`](scripts/inspect_detector_export.py)).
+These carry the same weight as the positive results above.
 
-2. **VMC Zero-Variance Blind Spot vs. Imperfect Wavefunctions:**
-   Illustrates the zero-variance property and its blind spot: at the exact harmonic oscillator ground state ($\alpha = 0.5$), the local energy is constant ($E_L(x) \equiv 0.5$) with mathematically zero variance ($\sigma^2_{E} \equiv 0$). This completely masks severe proposal collapse ($\Delta \langle x^2 \rangle = 1.75$) behind a deceptively pristine energy bias $\Delta \langle E \rangle = 0.000000$. Contrasted against an imperfect trial wavefunction ($\alpha = 0.6$), local energy does depend on sampling position, immediately exposing the proposal corruption with an energy error $\Delta \langle E \rangle = -0.26$ and standard deviation $\sigma_E = 0.31$ ([`src/rnglab14/models/vmc_harmonic.py`](src/rnglab14/models/vmc_harmonic.py), [`tests/test_models14.py`](tests/test_models14.py)).
+- **Healthy PIMC undercoverage** (above): 811 / 1,024 for local Metropolis. Earlier short-block analyses were worse: 172 / 512 (BM32) and 311 / 512 (BM128) in v0.17 ([`docs/calibrate/V017_VMC_PIMC_VALIDATION.md`](docs/calibrate/V017_VMC_PIMC_VALIDATION.md); output off-repo, see the audit).
+- **v0.17 CALIBRATE hypotheses:** H1 (healthy whole-path false-alarm ceiling) failed jointly, with 10 / 12 cells passing; the full H4 usefulness criterion and H5 (unseen-fault generalization) are unsupported ([`docs/calibrate/V017_NEGATIVE_FINDINGS.md`](docs/calibrate/V017_NEGATIVE_FINDINGS.md); outputs off-repo).
+- **v0.16 TRIDENT forecasting:** theory features gave no Brier improvement; the forecasting endpoint confounded thermal fluctuation with reliability loss ([`docs/trident/V016_NEGATIVE_FINDINGS.md`](docs/trident/V016_NEGATIVE_FINDINGS.md)).
+- **Crypto BLUE:** the frozen ≤ 10% healthy-alarm bound failed (8 / 128 healthy alarms, exact 95% interval 2.7–11.9%), and SHA256/ChaCha20 missed the preregistered 90% non-rejection criterion ([`research/crypto-blue/confirmation-reviewed/RESULTS.md`](research/crypto-blue/confirmation-reviewed/RESULTS.md)).
+- **RUS forecasting:** a constructive counterexample shows two degradation processes with identical observed history and different futures. Unrestricted remaining-useful-sample forecasting is therefore not identifiable, and no successful general forecaster is claimed ([`research/phase2-20261030/rus/`](research/phase2-20261030/rus/), [`src/rnglab13/math/impossibility.py`](src/rnglab13/math/impossibility.py)).
 
-3. **Parallel Seed Collisions & False Confidence in Financial Risk:**
-   When parallel Monte Carlo workers accidentally reuse seed states (parallel seed collision fault), multi-asset portfolio Value at Risk (95% VaR) standard error collapses artificially by a factor of up to $\sqrt{K}$ ($K$ parallel workers). This generates false statistical confidence intervals while masking severe risk underestimation under stress scenarios ([`src/rnglab_finance/faults/injection.py`](src/rnglab_finance/faults/injection.py), [`src/rnglab_finance/models/portfolio_var.py`](src/rnglab_finance/models/portfolio_var.py), [`tests/test_finance_faults.py`](tests/test_finance_faults.py)).
+## Supporting findings
 
-4. **Metropolis Acceptance Bias & Ising Ergodicity Breakdown:**
-   In 2D Ising spin lattices, directional acceptance corruption $\delta \ge e^{-8/T}$ creates absorbing magnetized ground states, breaking ergodicity and causing perturbation approximations to fail near the critical temperature ($T_c \approx 2.269$) ([`docs/trident/REVIEW_TRIDENT_AUDIT.md`](docs/trident/REVIEW_TRIDENT_AUDIT.md), [`scripts/trident_report.py`](scripts/trident_report.py)).
+**1. Acceptance-shift faults make the Ising chain absorbing (analytic).** In 2D Ising Metropolis with a clipped acceptance-uniform shift δ, an uphill move with energy cost ΔE is accepted with probability max(e^(−ΔE/T) − δ, 0). From a fully aligned state every single flip costs ΔE = 8, so for δ ≥ e^(−8/T) both magnetized states become absorbing and the chain loses ergodicity. This is structural damage, not a small stationary perturbation, and no stationary-response formula applies there. The v0.16 numerical illustration is in [`docs/trident/V016_ISING_STUDY.md`](docs/trident/V016_ISING_STUDY.md); its outputs are not in Git.
 
-### Phase II: measured PIMC uncertainty and controlled input faults
+**2. A healthy chain gives a badly wrong susceptibility while its energy is right.** At L = 4, T = 1.5 the exact zero-field susceptibility is 10.403227. Across 512 healthy chains the within-chain plug-in estimate (variance of the signed magnetization) averaged 0.745828, because finite chains rarely visit both magnetized phases. A symmetry-aware estimator, N·mean(m²)/T, which uses E[m] = 0, averaged 10.403680 ([`docs/calibrate/V017_NEGATIVE_FINDINGS.md`](docs/calibrate/V017_NEGATIVE_FINDINGS.md)). This is an estimator and mixing failure with healthy random numbers, not an RNG defect. *Partially backed:* the script is `scripts/calibrate_susceptibility_probe.py`, and the numbers equal its output `SUSCEPTIBILITY_PROBE.json`, which is not yet in Git. v0.18 Phase 1 reproduces it as a regression test and validates both estimators on held-out data.
 
-A standalone harmonic PIMC campaign at **M=16, β=2, 8,192 retained sweeps**, using nominal 95% CV energy intervals with **BM512**, found coverage of **811/1,024** for stationary local Metropolis, **964/1,024** with exact centroid refresh, and **969/1,024** for independent Gaussian paths. The stationary-start failure persists without initialization bias; refreshing the slow centroid restores uncertainty calibration within the frozen criteria for this specific workload. This is scoped validation of the standalone implementation.
+**3. Detector data must be inspected before any entropy claim.** The author's 606,632,259-byte detector export (University of Debrecen, 19 October 2026) contains 117,962 records of 1,023 waveform codes each. 108,473 records (91.96%) reach the 16-bit ceiling 65,535, and every timestamp is a multiple of 80, so its 4 lowest bits are always zero. Re-derived from the raw file: [`docs/v018/evidence/detector_inventory.json`](docs/v018/evidence/detector_inventory.json) (`scripts/inspect_detector_export.py`) and [`detector_ceiling.json`](docs/v018/evidence/detector_ceiling.json) (`scripts/v018/detector_ceiling_check.py`). Particle identity and entropy per sample are not established ([`docs/physical/MUON_DETECTOR_ASSESSMENT.md`](docs/physical/MUON_DETECTOR_ASSESSMENT.md)). The raw export is not in Git.
 
-A separate, paired 512-replica study of the validated standalone centroid-refresh sampler covered the intended energy in **487/512 healthy runs**, **0/512 with an acceptance-uniform shift**, and **13/512 with proposal/acceptance channel coupling**. These are injected adapter faults. Source and application monitors have different blind spots; the results establish no general application-monitor advantage. Reports, protocols, reproduction instructions and **35 separate research regression checks** are in [`research/phase2-20261030/README.md`](research/phase2-20261030/README.md). The optional upstream centroid-refresh API has regression tests; an equivalent coverage campaign through that API remains proposed.
+**4. Statistically plausible output can be fully predictable (crypto BLUE).** With a known 8-bit seed passed through a conditioner and an expander, the outputs usually pass three statistical diagnostics, and an attacker who knows the seed predicts all of them exactly ([`research/crypto-blue/confirmation-reviewed/RESULTS.md`](research/crypto-blue/confirmation-reviewed/RESULTS.md); 128 replicas, 256 operations each):
 
----
+| Seed → conditioner → expander | Not rejected by monobit, block-frequency, runs (Holm, 1%) | Exactly predicted |
+|---|---:|---:|
+| SHA256 → HMAC-DRBG | 128 / 128 | 128 / 128 |
+| SHA256 → ChaCha20 | 121 / 128 | 128 / 128 |
+| HKDF → HMAC-DRBG | 128 / 128 | 128 / 128 |
+| HKDF → ChaCha20 | 127 / 128 | 128 / 128 |
 
-## 3. Core Scientific Capabilities
+These are three diagnostics, not the full SP 800-22 battery, on synthetic data only. More results: [`docs/crypto/RESULTS.md`](docs/crypto/RESULTS.md).
 
-### 3.1 Physical Entropy Harvesting & Cosmic Ray Acquisition (`rnglab15`, `hardware/`, `docs/physical/`)
-- **Author's Physical Acquisition Dataset:** Continuous live acquisition conducted by Hevele Imre Róbert at the University of Debrecen (October 19, 2026, 14:05:19–14:27:23 CEST). Utilizes a particle detector bench with fast scintillation front-end, high-voltage bias, and a 16-bit digitizer exporting 1,023-sample waveforms over USB/serial. The 606.6 MB export contains 117,962 records and 120.7M waveform codes ([`docs/physical/MUON_DETECTOR_ASSESSMENT.md`](docs/physical/MUON_DETECTOR_ASSESSMENT.md)).
-- **Microcontroller Hardware Interface:** Custom Arduino C++ firmware ([`hardware/arduino/RNGLabSensors.ino`](hardware/arduino/RNGLabSensors.ino)) interfacing with hardware noise diodes, optical PN junctions, and pulse-counting sensors via high-speed serial streaming.
-- **NIST SP 800-90B Entropy & Health Testing:**
-  - Online continuous health monitoring: **Repetition Count Test (RCT)** and **Adaptive Proportion Test (APT)** with exact binomial tail cutoffs.
-  - Raw unconditioned min-entropy ($H_\infty$) estimation, collision tests, and Markov dependency bounds (`src/rnglab13/standards/entropy_90b.py`, `src/rnglab15/assessment.py`).
+## Demonstrations (known results, reproduced)
 
-### 3.2 Computational Physics & Markov Chain Dynamics (`rnglab14`, `rnglab16` TRIDENT)
-- **2D Ising Model:** Metropolis-Hastings local spin-flip dynamics alongside Wolff single-cluster algorithms on periodic $L \times L$ lattices ($L \in \{2, 3, 4, 8\}$). Validated against exact finite-size analytical enumeration states.
-- **Variational Monte Carlo (VMC):** Quantum harmonic oscillator ground state simulation illustrating the zero-variance property blind spot and dual-level monitoring.
-- **Path Integral Monte Carlo (PIMC):** Finite-temperature continuous-space quantum virial path integral simulations ($M$ time beads), evaluating observable masking and interval undercoverage.
-- **Augmented Markov Chain Sensitivity Theory:** Analytical two-state and augmented-state transition kernels evaluating spectral gap degradation under directional acceptance bias.
+- **VMC zero-variance property.** At the exact harmonic trial function (α = 0.5) the local energy is constant, so a proposal-biased chain still reports energy 0.5 with zero variance while ⟨x²⟩ is wrong by 1.656. At α = 0.6 the same fault moves the energy by −0.248 (σ = 0.296). One deterministic run of the configuration in `tests/test_models14.py`, recorded by `scripts/v018/vmc_masking_values.py` in [`docs/v018/evidence/vmc_masking_values.json`](docs/v018/evidence/vmc_masking_values.json). This is the standard zero-variance property of variational Monte Carlo (Foulkes et al., [Rev. Mod. Phys. 73, 33 (2001)](https://doi.org/10.1103/RevModPhys.73.33); Assaraf & Caffarel, [Phys. Rev. Lett. 83, 4682 (1999)](https://doi.org/10.1103/PhysRevLett.83.4682)), shown here as a monitoring pitfall, not as a new hypothesis.
+- **Reused seeds in parallel workers.** `rnglab_finance.faults.injection.ReusedSeedProvider` makes K workers produce identical paths (`tests/test_finance_faults.py`). The reported standard error is then too small by about √K, because only n/K paths are distinct. That magnitude is an analytic consequence and has not been measured in a saved experiment.
 
-### 3.3 Financial Risk & Model Risk Stress-Testing (`src/rnglab_finance/`, `docs/finance/`)
-- **European Option Pricing:** Risk-neutral geometric Brownian motion simulation anchored against exact closed-form Black-Scholes analytical solutions. Enforces the risk-neutral martingale invariant ($\mathbb{E}^{\mathbb{Q}}[e^{-rT}S_T] = S_0$) and Put-Call Parity.
-- **Portfolio Value at Risk (VaR) & Expected Shortfall (ES):** Multi-asset correlated portfolio risk engines computing parametric vs. Monte Carlo quantiles and coherent tail expectations.
-- **Fault Injection & Model Risk Stress-Testing:** Controlled injection of non-catastrophic PRNG faults (parallel seed collisions, mean shift, bit truncation, Markovian autocorrelation, and periodic leakage) to evaluate risk capital bias under Fed SR 11-7 and ECB TRIM stress-testing principles.
+## Superseded, unbacked or not reproducible from this repository
 
-### 3.4 Reliability Calibration & Statistical Identifiability Limits (`rnglab13`, `rnglab17` CALIBRATE)
-- **Statistical Identifiability Limits:** Formal mathematical proof and counterexample showing the impossibility of causal distribution-free remaining-useful-sample (RUS) forecasting without structural drift constraints (e.g. Lipschitz bounds), implemented in [`src/rnglab13/math/impossibility.py`](src/rnglab13/math/impossibility.py).
-- **Calibrated Operational Gating:** Holm-Bonferroni step-down and Benjamini-Hochberg FDR multi-testing controls over statistical alarm families.
-- **Hardware & Precision Audits:** Detailed execution and precision benchmarks comparing multi-core CPU workers against NVIDIA L4 GPU acceleration across FP32, FP64, and BF16 execution modes ([`docs/benchmarks/RNGLAB_CPU_GPU_COMPARISON.md`](docs/benchmarks/RNGLAB_CPU_GPU_COMPARISON.md)).
+Retained for traceability; do not cite. Details and evidence in [`docs/v018/AUDIT.md`](docs/v018/AUDIT.md).
 
----
+- [`docs/validation/SOURCE_COMPARISON.md`](docs/validation/SOURCE_COMPARISON.md): the benchmark matrix has no producing script. Its throughput figures are 29–156 times what the repository code achieves for four of five sources (measured in [`docs/v018/evidence/source_throughput.json`](docs/v018/evidence/source_throughput.json)), and it reports "all 15" SP 800-22 tests although the code implements three.
+- v0.14 "0.0% hazardous gap" and the other v0.14 registry results ([`docs/validation/EXPERIMENT_REGISTRY.md`](docs/validation/EXPERIMENT_REGISTRY.md)): one uncalibrated run, superseded by v0.14.1 and contradicted by Phase II's monitor blind spots. `APPLICATION_RELIABILITY.md`, `REVIEW_METHODOLOGY_CRITIQUE.md` and `docs/REPRODUCIBILITY.md` (stale file hashes) are also superseded although they carry no banner.
+- CPU/GPU benchmarks ([`docs/benchmarks/`](docs/benchmarks/)): the author's measurements, but no benchmark script or raw timing is in Git.
+- Earlier README statements that are withdrawn: regulatory framing (SR 11-7, ECB TRIM, Basel III), which no analysis used; "formal mathematical proof" for the RUS result, which is a constructive counterexample; physical SP 800-90B entropy evaluation, never run on a physical stream; exact-enumeration validation for L = 8, which exists only for L ≤ 4; and the previous VMC numbers, which do not reproduce.
 
-## 4. Development Methodology & AI Assistance Disclosure
-
-In accordance with modern academic research standards:
-
-- **Author's Original Contributions:**
-  - Formulated the research hypotheses: the zero-variance blind spot in VMC, PRNG parallel seed collisions in financial tail risk, and digitizer saturation artifacts in physical detectors.
-  - Assembled and performed physical hardware measurements (detector bench acquisition, Arduino C++ firmware, and circuit wiring).
-  - Derived the mathematical formulations, closed-form references, and verified all 238 automated unit, mathematical, and regression tests by hand.
-- **AI Tooling Assistance:**
-  - Large Language Model (LLM) coding assistants were used for boilerplate generation, test scaffolding, numerical verification script templates, and initial documentation drafting.
-  - Review documents in `docs/validation/` and audit logs were co-drafted using LLM review prompts and subsequently checked, corrected, and verified against actual simulation and test suite outputs by the author.
-
----
-
-## 5. Repository Architecture
+## Repository layout
 
 ```text
-rngLABexperimental/
-├── .github/
-│   └── workflows/ci.yml   # GitHub Actions continuous integration workflow
-├── src/
-│   ├── rnglab11/          # Core statistical evaluation, DRBG pipelines, and CLI
-│   ├── rnglab12/          # Experimental review and uncertainty estimation
-│   ├── rnglab13/          # Identifiability bounds and multi-stream coordinator
-│   ├── rnglab14/          # Abstract source hierarchy, VMC/PIMC models, RUS predictors
-│   ├── rnglab15/          # Physical acquisition, conditioning, NIST tests, and pipeline
-│   ├── rnglab16/          # TRIDENT: Vectorized MC engines, exact Ising, perturbation theory
-│   ├── rnglab17/          # CALIBRATE: Out-of-distribution gates, reliability audit suites
-│   └── rnglab_finance/    # Financial risk models (Black-Scholes, VaR, Expected Shortfall)
-├── hardware/
-│   ├── arduino/           # Microcontroller firmware (RNGLabSensors.ino)
-│   ├── scripts/           # Real-time hardware serial acquisition daemons
-│   └── docs/              # Circuit schematics and sensor inventory
-├── docs/
-│   ├── architecture/      # Standards traceability and regulatory mappings
-│   ├── archive/           # Historical kickoff logs, capability inventories, corrections
-│   ├── benchmarks/        # CPU vs. NVIDIA L4 GPU performance and precision audits
-│   ├── calibrate/         # V017 calibration protocols and review documentation
-│   ├── finance/           # Quantitative financial model specifications
-│   ├── physical/          # Sensor guides, pipeline design, and muon detector assessment
-│   ├── trident/           # V016 Ising studies, cross-model analyses, mathematical theory
-│   ├── validation/        # Methodological reviews, critiques, and source comparisons
-│   └── REPRODUCIBILITY.md # Verification protocol and provenance manifest
-├── scripts/               # Benchmark runners, audit verifiers, report generators
-├── research/
-│   └── phase2-20261030/    # Standalone Phase II study, reports, and 35 separate research checks
-├── tests/                 # 257 legacy plus 65 crypto regression tests
-├── pyproject.toml         # Package build configuration
-└── LICENSE                # GNU Affero General Public License v3 (AGPL-3.0)
+src/rnglab/            v0.18 namespace (sources, faults, models, references, monitors, stats)
+                       beside the legacy v0.1–v0.8 subpackages; see docs/v018/ARCHITECTURE.md
+src/rnglab10 … 17/     historical snapshots, unchanged
+src/rnglab_crypto/     crypto BLUE
+src/rnglab_finance/    finance proof of concept
+research/              phase1-20261030, phase2-20261030, crypto-blue (frozen study packages)
+docs/v018/             v0.18 audit, architecture, evidence
+docs/                  earlier version documentation (see the audit for status)
+scripts/, scripts/v018/  campaign and audit scripts
+hardware/              Arduino firmware and acquisition helpers
+tests/                 automated test suite
 ```
 
----
-
-## 6. Getting Started & Verification
-
-### Prerequisites
-- Linux x86_64 (recommended), macOS, or Windows WSL2.
-- Python 3.11+ (tested on Python 3.11, 3.12, 3.14).
-
-### Environment Setup
+## Running the tests
 
 ```bash
-git clone https://github.com/robinator121/rngLABexperimental.git
-cd rngLABexperimental
-
 python3 -m venv .venv
-source .venv/bin/activate
-pip install numpy scipy cryptography matplotlib pytest
+.venv/bin/pip install -r research/phase2-20261030/environment/requirements-lock.txt
+PYTHONPATH=src .venv/bin/pytest tests -q
 ```
 
-*(Optional dependencies for physical hardware capture: `pip install -r requirements-physical.lock`.)*
+Expected: **331 passed**, which is the 322 tests on `main` (257 core and 65 crypto BLUE) plus 9 v0.18 namespace tests ([`docs/v018/evidence/pytest_phase0.txt`](docs/v018/evidence/pytest_phase0.txt), Python 3.14.9). CI is configured for Python 3.11 and 3.12 but has never executed: GitHub has refused to start every job since the workflow was added on 29 October 2026 because of an account billing lock, so the CI badge shows failure without any test having run. The workflow's steps pass when run locally with its unpinned dependencies on Python 3.14.9 ([`docs/v018/evidence/ci_steps_local.txt`](docs/v018/evidence/ci_steps_local.txt)); Python 3.11 and 3.12 are untested. The 35 Phase II research checks run separately ([`research/phase2-20261030/REPRODUCE.md`](research/phase2-20261030/REPRODUCE.md)).
 
-### Running the Complete Test Suite
+## How this work was produced (AI disclosure)
 
-Execute the complete core suite of **322 automated tests** (257 legacy checks plus 65 isolated crypto checks):
+- **Author:** research question, design decisions and their approval, and the physical detector acquisition and Arduino firmware. *[Author to complete: which analyses, derivations and reviews you did yourself.]*
+- **Codex (OpenAI):** Phase II computations, code, checks and report drafting (stated in [`research/phase2-20261030/README.md`](research/phase2-20261030/README.md)). The v0.16 TRIDENT, v0.17 CALIBRATE and crypto BLUE delivery folders on the author's machine are Codex project outputs. *[Author to confirm the extent, and which tools produced v0.10–v0.15.]* Review documents marked "drafted with AI-assisted code analysis tools" were AI-drafted.
+- **Claude Code (Anthropic):** the v0.18 work on `feature/v018`, including the audit (`docs/v018/AUDIT.md`), the `src/rnglab` namespace modules, `scripts/v018/`, `docs/v018/` and this README.
+- The test suite was not verified by hand. It is executed automatically, and its counts are recorded in the evidence files above. Independent review by a supervisor or another researcher is still required before thesis, TDK or publication use.
 
-```bash
-PYTHONPATH=src pytest tests -q
-```
-*Expected result: 322 passed. Runtime depends on the environment.*
-
-The **35 Phase II research checks** are separate from this core count. Their environment and execution commands are documented in the [Phase II research package](research/phase2-20261030/README.md).
-
-### Executing Benchmark Suites
-
-```bash
-# Run TRIDENT cross-model and Ising simulation campaign
-PYTHONPATH=src python -m rnglab16.campaign runs/trident_run/
-
-# Run CALIBRATE forensic audit and failure predictors
-PYTHONPATH=src python scripts/calibrate_audit.py runs/trident_run/
-
-# Inspect digitized muon detector waveform export
-python3 scripts/inspect_detector_export.py /path/to/meas_data.txt
-```
-
----
-
-## 7. Citation & Academic Contact
-
-If you use this platform or its findings in academic research, please cite:
+## Citation
 
 ```bibtex
 @misc{hevele2026rnglab,
   author       = {Hevele, Imre R{\'o}bert},
-  title        = {{RNGLab: Computational Randomness, Physical Entropy Acquisition, and Stochastic Simulation Integrity}},
+  title        = {{RNGLab: random-input faults and uncertainty failure in Monte Carlo simulation}},
   year         = {2026},
   publisher    = {GitHub},
   howpublished = {\url{https://github.com/robinator121/rngLABexperimental}}

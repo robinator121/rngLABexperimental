@@ -1,0 +1,24 @@
+{
+ "amendment": "01",
+ "protocol_id": "rnglab-v018-estimators-v1",
+ "protocol_sha256_unchanged": "ab2f16a657c1118298af1745d0d70f66f872c723aa14d243790e60207870ec66",
+ "generation_commit": "f3be97a",
+ "status": "approved by the author 2026-11-05; committed before analyze.py ran on campaign outputs",
+ "file_sha256": {
+  "src/rnglab/convergence.py": "054447da5658c004c2f99f4240b393085a900960275fef52c56c2a59aa06efa1",
+  "research/v018-estimators/analyze.py": "44f6f2e21d326ce2038c055758aae76e28279c7ea45e1a3d896be7dbb1307b66",
+  "research/v018-estimators/amend01_from_traces.py": "7dd187393630738a71440653a611024a20fb0891cdf2c59d1a616e6366e49125",
+  "tests/v018/test_convergence_susceptibility.py": "987d069f6707847ee068198b6e3763d0bee02323a37bda79ceaf67ce5b3f0950",
+  "research/v018-estimators/AMENDMENT_01.md": "e916c8c70374fa2c8d773635ebf74919259aba602b1d46ee516995212fa7a182"
+ },
+ "pre_generation_sha256_of_amended_files": {
+  "src/rnglab/convergence.py": "a8728082e4e7fc07449d1dba22cbf08695e51244d965c7623bb4e616977cd271",
+  "research/v018-estimators/analyze.py": "10bb510afe16bd26eb2414498fe53741f2a292f0bf0ff4532f8570588c119bc6"
+ },
+ "reviews": [
+  "https://github.com/robinator121/rngLABexperimental/pull/2#discussion_r4479272297",
+  "https://github.com/robinator121/rngLABexperimental/pull/2#discussion_r4479272316",
+  "https://github.com/robinator121/rngLABexperimental/pull/2#discussion_r4479272327",
+  "https://github.com/robinator121/rngLABexperimental/pull/2#issuecomment-6655699153"
+ ]
+}

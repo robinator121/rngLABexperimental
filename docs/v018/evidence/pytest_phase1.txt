@@ -1,0 +1,2 @@
+# PYTHONPATH=src pytest tests -q on feature/v018 after Phase 1, 2026-11-05T11:25Z, Python 3.14.9, Phase II lock
+352 passed in 9.90s

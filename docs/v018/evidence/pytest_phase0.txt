@@ -1,0 +1,6 @@
+# PYTHONPATH=src pytest tests -q on feature/v018 after Phase 0 namespace, 2026-11-05, Python 3.14.9, Phase II lock
+........................................................................ [ 87%]
+...........................................                              [100%]
+331 passed in 6.44s
+
+[exited with code 0]
