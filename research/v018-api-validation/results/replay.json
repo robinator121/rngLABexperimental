@@ -1,0 +1,17 @@
+{
+ "local": {
+  "stored_cv_sha256": "ec2d9a647e0b2ae0fc618f981c8cdb6736a15f94d66daf8c0cd0b2af9d11bbc8",
+  "replayed_cv_sha256": "ec2d9a647e0b2ae0fc618f981c8cdb6736a15f94d66daf8c0cd0b2af9d11bbc8",
+  "identical": true
+ },
+ "refresh": {
+  "stored_cv_sha256": "034be915c48544a7d4169060387fa8e0292539805cf3a758c34e9aa9538f395a",
+  "replayed_cv_sha256": "034be915c48544a7d4169060387fa8e0292539805cf3a758c34e9aa9538f395a",
+  "identical": true
+ },
+ "iid": {
+  "stored_cv_sha256": "8d8ed3e8ea3487f109c1b9c8f8dbf481334cd3f28467bb5441c278d303e2dfdb",
+  "replayed_cv_sha256": "8d8ed3e8ea3487f109c1b9c8f8dbf481334cd3f28467bb5441c278d303e2dfdb",
+  "identical": true
+ }
+}

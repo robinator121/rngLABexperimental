@@ -1,0 +1,2 @@
+# PYTHONPATH=src pytest tests -q on feature/v018 after Phase 2 (ff948e2 + results and report, uncommitted), 2026-11-06T10:02Z, Python 3.14.9, Phase II lock
+400 passed in 27.12s

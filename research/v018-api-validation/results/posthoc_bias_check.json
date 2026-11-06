@@ -1,0 +1,41 @@
+{
+ "status": "post hoc, not pre-registered; descriptive only",
+ "reference_E_M": 0.6554741522981734,
+ "conditions": {
+  "local": {
+   "cv_bias": {
+    "mean": -0.0005818679573249845,
+    "t": -0.43401125267178303
+   },
+   "td_bias": {
+    "mean": 0.00016627938319951755,
+    "t": 0.11026137541926521
+   },
+   "corr_cv_td_means": 0.8424551417587838
+  },
+  "refresh": {
+   "cv_bias": {
+    "mean": -0.00032072717335682145,
+    "t": -2.5576463288721123
+   },
+   "td_bias": {
+    "mean": 0.001712611306574428,
+    "t": 2.384145579167077
+   },
+   "corr_cv_td_means": -0.6256075811761582
+  },
+  "iid": {
+   "cv_bias": {
+    "mean": -6.351484872250837e-06,
+    "t": -0.10041431016155591
+   },
+   "td_bias": {
+    "mean": -0.00028534259762247533,
+    "t": -1.2183394734650386
+   },
+   "corr_cv_td_means": 0.08864600463458405
+  }
+ },
+ "bias_intervals_reported": 6,
+ "bias_intervals_excluding_zero": 2
+}
