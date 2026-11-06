@@ -1,0 +1,302 @@
+{
+ "id": "rnglab-v018-h1-detection-v1",
+ "status": "FROZEN_DESIGN",
+ "status_note": "Frozen 2026-11-06 after author approval in chat (\"Freeze as drafted\"). Definitions, monitors, tests, gates, sample sizes, namespaces and the pilot-to-grid rule are fixed; grid values come from the pilot via make_grid.py. SHA-256 of this file is in protocol.sha256. No pilot or campaign data generated at freeze.",
+ "drafted": "2026-11-06",
+ "drafted_by": "Claude Code (Opus 5.5); the author decides the design",
+ "human_readable": "research/v018-h1-detection/PROTOCOL.md",
+ "design_numbers": "research/v018-h1-detection/design.json (from design_calculations.py)",
+ "scope_sources": [
+  "docs/v018/RELATED_WORK.md section 1",
+  "docs/v018/ROADMAP.md stage C"
+ ],
+ "smoke": {
+  "namespace": "rnglab-v018-h1-detection-smoke",
+  "output": "research/v018-h1-detection/smoke/smoke_timing.json",
+  "excluded_from_all_endpoints": true
+ },
+ "freeze_steps": [
+  "freeze protocol (definitions, monitors, tests, gates, sizes, namespaces, pilot-to-grid rule)",
+  "implement and unit-test",
+  "pilot in its own namespace; make_grid.py writes grid.json",
+  "pre-generation manifest with grid.json hash, committed and pushed",
+  "campaign"
+ ],
+ "hypothesis": {
+  "H1-C": "Per fault family: at matched whole-run false-alarm rate 0.05 for both arms, some severity makes the application's reported interval wrong in most runs while a conventional battery on the same consumed stream stays quiet and reference-free application monitors alarm more often (paired)."
+ },
+ "application": {
+  "sampler": "PathIntegralHarmonicOscillator(beads=16, temperature=0.5, displacement_delta=0.4) with harmonic centroid refresh",
+  "start": "explicit exact initial_path",
+  "sweeps": 10240,
+  "burn_in": 0,
+  "local_source": "one source for proposal and acceptance (initialization channel reads 0 bytes)",
+  "centroid_source": "separate healthy source, wrapped as the sweep clock",
+  "sweep_clock": "the centroid source is read once per sweep after the local updates; its wrapper records the local consumed bytes at each sweep boundary"
+ },
+ "faults": {
+  "onset_byte": 524288,
+  "word": "8-byte big-endian; u = (w >> 11) / 2^53",
+  "families": {
+   "SHIFT": "u' = min(u + s, 1 - 2^-53); low 11 bits kept",
+   "LAG1": "z_first = Phi^-1(u); z_t = rho z_{t-1} + sqrt(1 - rho^2) Phi^-1(u_t + 2^-54); u' = min(Phi(z_t), 1 - 2^-53)",
+   "DUP": "with probability c the word is replaced by the previously emitted word; decisions from the 'fault' generator",
+   "GFSR": "from onset x_n = x_{n-p} XOR x_{n-q} on 32-bit words, two outputs per 64-bit word, state filled from the 'gfsr' seed; lag pairs (31,13), (89,38), (127,63), (250,103), (521,168), (1279,418), each verified irreducible by script before use",
+   "healthy": "identity, bytes recorded"
+  }
+ },
+ "harm": {
+  "window_sweeps": [
+   2560,
+   10239
+  ],
+  "interval": "summarize_series(cv[2560:10240], reference=E_M, batch_sizes=(480,)): 16 batches of 480, t15",
+  "wrong": "interval excludes E_M = exact_finite_bead_energy(16, 2.0); status other than ESTIMATED counts as wrong and is reported",
+  "onset_rule": "onset sweep must be <= 2560; violating runs are flagged and their harm endpoint excluded"
+ },
+ "conventional_arm": {
+  "window_sweeps": 512,
+  "stride_sweeps": 256,
+  "checkpoints": 39,
+  "tests": [
+   "SP 800-22 frequency",
+   "SP 800-22 block frequency",
+   "SP 800-22 runs",
+   "SP 800-22 serial (m=8)",
+   "SP 800-22 approximate entropy (m=8)",
+   "SP 800-22 cumulative sums (forward)",
+   "SP 800-22 longest run of ones in a block",
+   "lag-1 serial correlation of 53-bit uniforms (sqrt(n) r ~ N(0,1))",
+   "adjacent identical 64-bit words (Poisson((n-1) 2^-64))"
+  ],
+  "statistic": "S_C = -log10(min p over the 9 tests) per checkpoint; whole-run max",
+  "threshold": "950th order statistic of 999 healthy calibration whole-run maxima",
+  "health_tests_descriptive": "SP 800-90B RCT and APT on bytes, asserted min-entropy recorded, alpha 2^-20; not calibrated, not part of arm C"
+ },
+ "application_arm": {
+  "window_sweeps": 1024,
+  "stride_sweeps": 256,
+  "checkpoints": 37,
+  "A1": "window mean of D = TD - CV (E[D] = 0 under the exact target); z1 = |mean D| / sigma_D",
+  "A2": "window uphill-proposal fraction (bytes in sweep - 128) / 128; z2 = |f - mu_f| / sigma_f",
+  "standardization": "sigma_D, mu_f, sigma_f from the calibration runs",
+  "statistic": "S_A = max(z1, z2) per checkpoint; whole-run max",
+  "threshold": "950th order statistic of 999 healthy calibration whole-run maxima"
+ },
+ "detection": {
+  "detects": "some checkpoint whose window ends after the onset sweep exceeds the arm threshold",
+  "latency": "at the first such checkpoint: bytes = window-end local offset - onset byte; sweeps = window-end sweep - onset sweep"
+ },
+ "data": {
+  "namespace": "rnglab-v018-h1-detection",
+  "namespace_search": "unused in the repository and local Codex output folders, searched 2026-11-06",
+  "pilot_namespace": "rnglab-v018-h1-detection-pilot",
+  "seed_rule": "namespace_seed(ns, condition, role, f'{i:05d}'); PCG64Source for local, centroid, start; numpy default_rng for fault and gfsr",
+  "calibration": {
+   "condition": "calibration",
+   "replicas": 999,
+   "faults": "none"
+  },
+  "test": {
+   "condition": "test",
+   "healthy_replicas": 4096,
+   "fault_cell_replicas": 256,
+   "pairing": "replica i uses the same local, centroid, start, fault and gfsr seeds in every test cell; pre-onset prefixes are byte-identical"
+  },
+  "cells": {
+   "SHIFT": 6,
+   "LAG1": 6,
+   "DUP": 6,
+   "GFSR": "the verified lag pairs (at most 6)"
+  },
+  "pilot": {
+   "healthy_replicas": 199,
+   "threshold_order_statistic": 190,
+   "replicas_per_severity": 32,
+   "severities": {
+    "SHIFT": "10 log-spaced in [1e-4, 0.1]",
+    "LAG1": "10 log-spaced in [0.003, 0.5]",
+    "DUP": "10 log-spaced in [0.001, 0.5]",
+    "GFSR": "all lag pairs"
+   },
+   "grid_rule": "s_lo = smallest pilot severity with wrong-rate >= 0.10; s_hi = smallest with >= 0.90 (else the largest); grid = 6 log-spaced from s_lo/2 to s_hi; if none reaches 0.10, 6 log-spaced from s_max/32 to s_max and the family is labelled 'no harm observed in the pilot range'",
+   "reporting": "descriptive only; excluded from endpoints"
+  },
+  "saved": {
+   "outside_git": "per run CV, TD and rg2 traces and sweep byte marks",
+   "committed": "per run seeds, local-stream SHA-256, pre-onset-prefix SHA-256, onset sweep, harm endpoint, per-checkpoint arm statistics and per-test p-values, alarm flags and latencies",
+   "raw_bytes": "not saved; regenerable by deterministic replay"
+  }
+ },
+ "analysis": {
+  "unit": "one run",
+  "rates": "Clopper-Pearson; 95% descriptive; Bonferroni level 1 - 0.05/24 for H1 cell criteria",
+  "paired": "application-minus-conventional alarm per run; percentile bootstrap, 10000 resamples, seed namespace_seed(ns, 'analysis', 'bootstrap', endpoint), same levels",
+  "latency": "median paired difference (A - C) in bytes and sweeps among runs where both detect, bootstrap 95%; counts for one-arm and no-arm runs",
+  "exclusions": "none beyond the onset rule"
+ },
+ "gates": {
+  "implementation": {
+   "I-1": "sweep clock: 10240 marks, monotone, each sweep consumes 128 + 8k bytes",
+   "I-2": "every fault run's pre-onset prefix SHA-256 equals the paired healthy test run's",
+   "I-3": "replica 0 of every cell: faulty words regenerate exactly from healthy words and fault seed",
+   "I-4": "replica 0 of every cell replays to identical trace and stream hashes",
+   "on_failure": "stop, investigate, report"
+  },
+  "validity": {
+   "V1": "healthy test (4096) post-onset-window coverage CP95 inside [0.92, 0.98]",
+   "V2": "healthy-test whole-run alarm rate of arm C and of arm A each CP95 upper <= 0.10; paired difference reported",
+   "on_failure": "H1 verdicts reported as not interpretable"
+  },
+  "cell_classes": {
+   "H1": "wrong lower > 0.5 and C-alarm upper < 0.2 and paired (A - C) lower > 0",
+   "undetected_harm": "wrong lower > 0.5 and C-alarm upper < 0.2 and A-alarm upper < 0.2",
+   "conventional_first": "C-alarm lower > 0.5 and wrong upper < 0.2",
+   "both_detect_harmed": "wrong lower > 0.5 and both alarm lowers > 0.5",
+   "harmless_quiet": "wrong upper < 0.2 and both alarm uppers < 0.2",
+   "indeterminate": "otherwise",
+   "level": "Bonferroni 1 - 0.05/24 for every bound"
+  },
+  "verdict": "H1-C SUPPORTED for a family iff at least one of its cells is an H1 cell; no general H1 verdict across families",
+  "recount": "separate script recomputes wrong flags from CV traces, alarm flags from saved checkpoint statistics and thresholds, cell rates and classes; all counts must agree"
+ },
+ "secondary": [
+  "latency distributions in bytes and sweeps",
+  "first-firing conventional test",
+  "A1 and A2 separately",
+  "Phase II reference-based shape monitor",
+  "CUSUM of standardized D with healthy-calibrated threshold",
+  "SP 800-90B health-test alarms",
+  "mean CV bias and TD harm per cell",
+  "pilot outcomes"
+ ],
+ "resources": {
+  "campaign_runs": 11239,
+  "single_core_hours": 8.2,
+  "wall_minutes_8_workers": 83,
+  "pilot_runs": 1351,
+  "pilot_wall_minutes": 10,
+  "peak_memory_per_worker_MiB": 128,
+  "trace_storage_GiB": 2.6,
+  "cpu_only": true
+ },
+ "excluded": [
+  "Phase II channel-specific faults (cross-channel coupling is invisible to single-stream batteries by construction)",
+  "TestU01 and PractRand (deferred; choice 2)",
+  "physical sources",
+  "other models",
+  "time-varying severity profiles (Stage D)",
+  "interventions (Stage E)"
+ ],
+ "author_choices": [
+  {
+   "id": 1,
+   "topic": "fault families",
+   "options": [
+    "SHIFT, LAG1, DUP + GFSR lag family",
+    "Phase II channel-specific faults",
+    "RANDU instead of or besides GFSR"
+   ],
+   "draft": "SHIFT, LAG1, DUP + GFSR lag family"
+  },
+  {
+   "id": 2,
+   "topic": "conventional arm",
+   "options": [
+    "9-test in-Python battery; TestU01 deferred to Stage F",
+    "add TestU01 now (download and build)",
+    "in-repo 3 tests only"
+   ],
+   "draft": "9-test in-Python battery; TestU01 deferred to Stage F"
+  },
+  {
+   "id": 3,
+   "topic": "application arm",
+   "options": [
+    "A1 + A2",
+    "A1 only",
+    "add Phase II shape monitor (not reference-free)"
+   ],
+   "draft": "A1 + A2"
+  },
+  {
+   "id": 4,
+   "topic": "harm",
+   "options": [
+    "post-onset BM interval excludes E_M",
+    "Phase II rolling-window tolerance"
+   ],
+   "draft": "post-onset BM interval excludes E_M"
+  },
+  {
+   "id": 5,
+   "topic": "sizes",
+   "options": [
+    "999 / 4096 / 256 x 24 cells",
+    "512 per fault cell"
+   ],
+   "draft": "999 / 4096 / 256 x 24 cells"
+  },
+  {
+   "id": 6,
+   "topic": "grids",
+   "options": [
+    "frozen pilot rule",
+    "fixed grids now"
+   ],
+   "draft": "frozen pilot rule"
+  },
+  {
+   "id": 7,
+   "topic": "H1 cell thresholds",
+   "options": [
+    "0.5 / 0.2 at Bonferroni over 24 cells",
+    "95% per cell, multiplicity stated"
+   ],
+   "draft": "0.5 / 0.2 at Bonferroni over 24 cells"
+  },
+  {
+   "id": 8,
+   "topic": "version label",
+   "options": [
+    "v0.18 Stage C",
+    "v0.19"
+   ],
+   "draft": "v0.18 Stage C"
+  }
+ ],
+ "references": [
+  "Ferrenberg, Landau & Wong (1992) PRL 69 3382, doi:10.1103/PhysRevLett.69.3382",
+  "Page (1954) Biometrika 41 100-115, doi:10.1093/biomet/41.1-2.100",
+  "Bassham et al. NIST SP 800-22 Rev 1a (April 2010)",
+  "Turan et al. NIST SP 800-90B (2018), doi:10.6028/NIST.SP.800-90B",
+  "L'Ecuyer & Simard (2007) ACM TOMS 33(4) Art. 22, doi:10.1145/1268776.1268777"
+ ],
+ "approval": {
+  "date": "2026-11-06",
+  "by": "author (Hevele Imre Robert), in the Claude Code session",
+  "choices": {
+   "fault families": "SHIFT, LAG1, DUP + GFSR lag family",
+   "conventional arm": "9-test in-Python battery; TestU01 deferred to Stage F",
+   "application arm": "A1 + A2",
+   "harm": "post-onset BM interval excludes E_M",
+   "sizes": "999 / 4096 / 256 x 24 cells",
+   "grids": "frozen pilot rule",
+   "H1 cell thresholds": "0.5 / 0.2 at Bonferroni over 24 cells",
+   "version label": "v0.18 Stage C"
+  }
+ },
+ "implementation_notes_added_at_freeze": {
+  "note": "Operational details not specified in the draft; fixed here before any pilot or campaign draw; no gate or endpoint changes.",
+  "byte_marks": "B(k) = local bytes consumed through sweep k's local updates (k = 0..10239), B(-1) = 0; sweeps [a, b) use bytes [B(a-1), B(b-1)); bytes of sweep k = B(k) - B(k-1)",
+  "onset_sweep": "smallest k with B(k) > 524288 (the sweep that consumes the first transformed word)",
+  "lag1_first_word": "the first transformed word uses z = Phi^-1(u + 2^-54) and u' = min(Phi(z), 1 - 2^-53); Phi and Phi^-1 from Python statistics.NormalDist",
+  "dup_decisions": "one uniform from the 'fault' generator per post-onset word, drawn whether or not it duplicates",
+  "gfsr_state": "p 32-bit words from numpy default_rng(gfsr seed).integers(0, 2**32, size=p); the first 10*p outputs are discarded; each 64-bit word is (x_n << 32) | x_{n+1}",
+  "gfsr_irreducibility": "checked by a GF(2) polynomial irreducibility test in research code; a failing pair is dropped and reported",
+  "sp800_22_parameters": "block frequency M = max(128, floor(n/99) + 1) bits; serial and approximate entropy m = 8; longest run block M = 10000 (n >= 750000) else 128; cumulative sums forward mode",
+  "health_tests": "SP 800-90B RCT/APT on bytes (alphabet 256) with asserted min-entropy 7 bits per byte, alpha 2^-20, APT window 512",
+  "storage": "per (condition, cell) blocks of 64 runs in compressed NPZ under research/v018-h1-detection/traces/ (gitignored), SHA-256 in the run manifest",
+  "parallelism": "8 worker processes (fork context), OPENBLAS_NUM_THREADS=OMP_NUM_THREADS=1; results do not depend on scheduling"
+ }
+}
