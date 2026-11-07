@@ -353,7 +353,7 @@ def window_bytes(marks: np.ndarray, start: int, end: int) -> tuple[int, int]:
 
 
 def run_one(ns: str, condition: str, family: str, severity, i: int, sweeps: int = SWEEPS,
-            onset_bytes: int = ONSET_BYTES) -> tuple[dict, dict]:
+            onset_bytes: int = ONSET_BYTES, return_stream: bool = False) -> tuple[dict, dict]:
     seeds = seeds_for(ns, condition, i)
     local = FaultyWords(PCG64Source(seeds["local"]), family, severity, seeds["fault"], seeds["gfsr"], onset_bytes)
     clock = SweepClock(PCG64Source(seeds["centroid"]), local)
@@ -402,6 +402,8 @@ def run_one(ns: str, condition: str, family: str, severity, i: int, sweeps: int 
                                         and np.all((per_sweep_bytes - PROPOSAL_BYTES_PER_SWEEP) % 8 == 0)
                                         and len(marks) == sweeps and np.all(np.diff(marks) > 0))
     arrays = {"CV": trace["CV"], "TD": trace["TD"], "rg2": trace["rg2"], "marks": marks}
+    if return_stream:
+        arrays["stream"] = stream
     return record, arrays
 
 
