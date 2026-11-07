@@ -1,0 +1,316 @@
+{
+ "protocol_id": "rnglab-v018-h1-detection-v1",
+ "protocol_sha256": "852fb0576bfa8b00a46d1023bfffd301036daa8a81f96d5c53c2328830c96742",
+ "grid_sha256": "938babfd906e7739e75afb361e4bbefb0ac73d9964910e1b915d7e8aed746215",
+ "grid": {
+  "SHIFT": {
+   "severities": [
+    0.005,
+    0.007807452250284345,
+    0.01219126212809401,
+    0.019036539387158782,
+    0.02972537445517987,
+    0.046415888336127774
+   ],
+   "label": "harm transition from the pilot",
+   "s_lo": 0.01,
+   "s_hi": 0.046415888336127774,
+   "s_hi_from": "first severity with wrong-rate >= 0.90"
+  },
+  "LAG1": {
+   "severities": [
+    0.25,
+    0.2871745887492587,
+    0.32987697769322355,
+    0.37892914162759955,
+    0.43527528164806206,
+    0.5
+   ],
+   "label": "harm transition from the pilot",
+   "s_lo": 0.5,
+   "s_hi": 0.5,
+   "s_hi_from": "largest pilot severity"
+  },
+  "DUP": {
+   "severities": [
+    0.003968502629920496,
+    0.010439875963388183,
+    0.02746401358265292,
+    0.07224913827648115,
+    0.1900646446297695,
+    0.5
+   ],
+   "label": "harm transition from the pilot",
+   "s_lo": 0.007937005259840991,
+   "s_hi": 0.5,
+   "s_hi_from": "first severity with wrong-rate >= 0.90"
+  },
+  "GFSR": {
+   "severities": [
+    [
+     31,
+     13
+    ],
+    [
+     89,
+     38
+    ],
+    [
+     127,
+     63
+    ],
+    [
+     250,
+     103
+    ],
+    [
+     521,
+     168
+    ],
+    [
+     1279,
+     418
+    ]
+   ],
+   "label": "all irreducible lag pairs",
+   "dropped": []
+  }
+ },
+ "cells": [
+  {
+   "cell": "calibration",
+   "condition": "calibration",
+   "family": "healthy",
+   "severity": 0,
+   "replicas": 999
+  },
+  {
+   "cell": "healthy",
+   "condition": "test",
+   "family": "healthy",
+   "severity": 0,
+   "replicas": 4096
+  },
+  {
+   "cell": "SHIFT-0",
+   "condition": "test",
+   "family": "SHIFT",
+   "severity": 0.005,
+   "replicas": 256
+  },
+  {
+   "cell": "SHIFT-1",
+   "condition": "test",
+   "family": "SHIFT",
+   "severity": 0.007807452250284345,
+   "replicas": 256
+  },
+  {
+   "cell": "SHIFT-2",
+   "condition": "test",
+   "family": "SHIFT",
+   "severity": 0.01219126212809401,
+   "replicas": 256
+  },
+  {
+   "cell": "SHIFT-3",
+   "condition": "test",
+   "family": "SHIFT",
+   "severity": 0.019036539387158782,
+   "replicas": 256
+  },
+  {
+   "cell": "SHIFT-4",
+   "condition": "test",
+   "family": "SHIFT",
+   "severity": 0.02972537445517987,
+   "replicas": 256
+  },
+  {
+   "cell": "SHIFT-5",
+   "condition": "test",
+   "family": "SHIFT",
+   "severity": 0.046415888336127774,
+   "replicas": 256
+  },
+  {
+   "cell": "LAG1-0",
+   "condition": "test",
+   "family": "LAG1",
+   "severity": 0.25,
+   "replicas": 256
+  },
+  {
+   "cell": "LAG1-1",
+   "condition": "test",
+   "family": "LAG1",
+   "severity": 0.2871745887492587,
+   "replicas": 256
+  },
+  {
+   "cell": "LAG1-2",
+   "condition": "test",
+   "family": "LAG1",
+   "severity": 0.32987697769322355,
+   "replicas": 256
+  },
+  {
+   "cell": "LAG1-3",
+   "condition": "test",
+   "family": "LAG1",
+   "severity": 0.37892914162759955,
+   "replicas": 256
+  },
+  {
+   "cell": "LAG1-4",
+   "condition": "test",
+   "family": "LAG1",
+   "severity": 0.43527528164806206,
+   "replicas": 256
+  },
+  {
+   "cell": "LAG1-5",
+   "condition": "test",
+   "family": "LAG1",
+   "severity": 0.5,
+   "replicas": 256
+  },
+  {
+   "cell": "DUP-0",
+   "condition": "test",
+   "family": "DUP",
+   "severity": 0.003968502629920496,
+   "replicas": 256
+  },
+  {
+   "cell": "DUP-1",
+   "condition": "test",
+   "family": "DUP",
+   "severity": 0.010439875963388183,
+   "replicas": 256
+  },
+  {
+   "cell": "DUP-2",
+   "condition": "test",
+   "family": "DUP",
+   "severity": 0.02746401358265292,
+   "replicas": 256
+  },
+  {
+   "cell": "DUP-3",
+   "condition": "test",
+   "family": "DUP",
+   "severity": 0.07224913827648115,
+   "replicas": 256
+  },
+  {
+   "cell": "DUP-4",
+   "condition": "test",
+   "family": "DUP",
+   "severity": 0.1900646446297695,
+   "replicas": 256
+  },
+  {
+   "cell": "DUP-5",
+   "condition": "test",
+   "family": "DUP",
+   "severity": 0.5,
+   "replicas": 256
+  },
+  {
+   "cell": "GFSR-0",
+   "condition": "test",
+   "family": "GFSR",
+   "severity": [
+    31,
+    13
+   ],
+   "replicas": 256
+  },
+  {
+   "cell": "GFSR-1",
+   "condition": "test",
+   "family": "GFSR",
+   "severity": [
+    89,
+    38
+   ],
+   "replicas": 256
+  },
+  {
+   "cell": "GFSR-2",
+   "condition": "test",
+   "family": "GFSR",
+   "severity": [
+    127,
+    63
+   ],
+   "replicas": 256
+  },
+  {
+   "cell": "GFSR-3",
+   "condition": "test",
+   "family": "GFSR",
+   "severity": [
+    250,
+    103
+   ],
+   "replicas": 256
+  },
+  {
+   "cell": "GFSR-4",
+   "condition": "test",
+   "family": "GFSR",
+   "severity": [
+    521,
+    168
+   ],
+   "replicas": 256
+  },
+  {
+   "cell": "GFSR-5",
+   "condition": "test",
+   "family": "GFSR",
+   "severity": [
+    1279,
+    418
+   ],
+   "replicas": 256
+  }
+ ],
+ "total_runs": 11239,
+ "written_utc": "2026-11-07T22:30:50Z",
+ "git_head_before_commit": "95f5f1e655cdf40eed3441e62afcd672715ae31b",
+ "python": "3.14.9",
+ "numpy": "2.5.3",
+ "scipy": "1.18.1",
+ "platform": "Linux-7.2.14-arch1-1-x86_64-with-glibc2.44",
+ "file_sha256": {
+  "research/v018-h1-detection/protocol.json": "852fb0576bfa8b00a46d1023bfffd301036daa8a81f96d5c53c2328830c96742",
+  "research/v018-h1-detection/grid.json": "938babfd906e7739e75afb361e4bbefb0ac73d9964910e1b915d7e8aed746215",
+  "research/v018-h1-detection/h1lib.py": "cf03ee8848716fa59ba9fce12cf0bd0d01061d9201fa92dfaefa48945e406c38",
+  "research/v018-h1-detection/run_campaign.py": "75d54387da88734f394350559dd7e874c52e1fe1aef73abcc6672605c76e0053",
+  "research/v018-h1-detection/analyze.py": "d172f14659f3c61bbf51f98c0159d5e77b36e681d41a3b4e9117f065e3af5e42",
+  "research/v018-h1-detection/recount.py": "fd44ed3ad8473ab9781f1bb7ad105acf01d6d7c7c67cfc2949b72c3a6803f1e0",
+  "src/rnglab14/models/pimc_harmonic.py": "5aae9bcd425295e47871b2bfe5758f6b8f3c38fe7bf51f03f37908645eb74a98",
+  "src/rnglab14/sources/__init__.py": "34f232a6f37442bc4bdbd22909847974f717a382b75dadf1ce30a2367a3b5df3",
+  "src/rnglab14/sources/base.py": "1d01e7d28219eeccbcffa329b1dba25ac8e8c85e4ed98354f9994e0093d39e87",
+  "src/rnglab14/sources/reference.py": "8dcf57cd45c05935222aa53b76d0f6a4e9c0e132704f30fc61d5f71241bac875",
+  "src/rnglab11/statistics.py": "2102477b43e674a1a5ecb7f9a4970768808255c956417ed26da6201c3a05cfab",
+  "src/rnglab12/uncertainty.py": "aac6e9c80f2bc1398b4a3265e522cbdff9e8d1ff6e3eb94fe7a0394802e4932c",
+  "src/rnglab/seeds.py": "ec167cf4b5e5b5a44136ca3f5e1b6b2fed6f5e8916cbf2fbaac194df22593d31",
+  "research/phase2-20261030/environment/requirements-lock.txt": "2daa617ad078690e8e204da503bdb137381f534f8f33d000192d6f7df4c9f6c2"
+ },
+ "seed_units": 25475,
+ "seed_collisions": 0,
+ "seed_table_note": "fault cells reuse the 'test' seeds of the same replica index (pairing); calibration seeds are disjoint",
+ "seed_table_sha256": "fa747613f9794493af8ab38308da2a8a0ce488fb8b8f3abe5789ea90c6892836",
+ "seed_table_first_rows": [
+  "rnglab-v018-h1-detection/calibration/local/00000\t6786980765310050318",
+  "rnglab-v018-h1-detection/calibration/centroid/00000\t10202703815957393475",
+  "rnglab-v018-h1-detection/calibration/start/00000\t12105196412531603192",
+  "rnglab-v018-h1-detection/calibration/fault/00000\t7193446193270625111",
+  "rnglab-v018-h1-detection/calibration/gfsr/00000\t18153201443098670781"
+ ],
+ "statement": "Written before any campaign draw; run_campaign.py run verifies these hashes."
+}
