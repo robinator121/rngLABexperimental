@@ -1,0 +1,2214 @@
+{
+ "reference_E_M": 0.6554741522981734,
+ "comparisons": [
+  {
+   "quantity": "threshold C",
+   "recount": 3.8177723774232715,
+   "analysis": 3.8177723774232715,
+   "agree": true
+  },
+  {
+   "quantity": "threshold A",
+   "recount": 3.495268855552578,
+   "analysis": 3.495268855552578,
+   "agree": true
+  },
+  {
+   "quantity": "healthy: wrong flags equal stored",
+   "recount": 4096,
+   "analysis": 4096,
+   "agree": true
+  },
+  {
+   "quantity": "V1 covered",
+   "recount": 3867,
+   "analysis": 3867,
+   "agree": true
+  },
+  {
+   "quantity": "V1 CP95",
+   "recount": [
+    0.9366110953196926,
+    0.9509308125864511
+   ],
+   "analysis": [
+    0.9366110953196926,
+    0.9509308125864511
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "V2 whole-run alarms C",
+   "recount": 199,
+   "analysis": 199,
+   "agree": true
+  },
+  {
+   "quantity": "V2 whole-run alarms A",
+   "recount": 174,
+   "analysis": 174,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: wrong",
+   "recount": 14,
+   "analysis": 14,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: A alarms",
+   "recount": 7,
+   "analysis": 7,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: wrong rate",
+   "recount": 0.0546875,
+   "analysis": 0.0546875,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: A alarm rate",
+   "recount": 0.02734375,
+   "analysis": 0.02734375,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: A-C interval",
+   "recount": [
+    -0.99609375,
+    -0.9375
+   ],
+   "analysis": [
+    -0.99609375,
+    -0.9375
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: A-C interval 95",
+   "recount": [
+    -0.9921875,
+    -0.953125
+   ],
+   "analysis": [
+    -0.9921875,
+    -0.953125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-0: class",
+   "recount": "conventional_first",
+   "analysis": "conventional_first",
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: wrong",
+   "recount": 13,
+   "analysis": 13,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: A alarms",
+   "recount": 12,
+   "analysis": 12,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: wrong rate",
+   "recount": 0.05078125,
+   "analysis": 0.05078125,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: A alarm rate",
+   "recount": 0.046875,
+   "analysis": 0.046875,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: A-C interval",
+   "recount": [
+    -0.98828125,
+    -0.90625
+   ],
+   "analysis": [
+    -0.98828125,
+    -0.90625
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: A-C interval 95",
+   "recount": [
+    -0.9765625,
+    -0.92578125
+   ],
+   "analysis": [
+    -0.9765625,
+    -0.92578125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-1: class",
+   "recount": "conventional_first",
+   "analysis": "conventional_first",
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: wrong",
+   "recount": 7,
+   "analysis": 7,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: A alarms",
+   "recount": 16,
+   "analysis": 16,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: wrong rate",
+   "recount": 0.02734375,
+   "analysis": 0.02734375,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: A alarm rate",
+   "recount": 0.0625,
+   "analysis": 0.0625,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: A-C interval",
+   "recount": [
+    -0.9765625,
+    -0.88671875
+   ],
+   "analysis": [
+    -0.9765625,
+    -0.88671875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: A-C interval 95",
+   "recount": [
+    -0.96484375,
+    -0.90625
+   ],
+   "analysis": [
+    -0.96484375,
+    -0.90625
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-2: class",
+   "recount": "conventional_first",
+   "analysis": "conventional_first",
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: wrong",
+   "recount": 17,
+   "analysis": 17,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: A alarms",
+   "recount": 57,
+   "analysis": 57,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: wrong rate",
+   "recount": 0.06640625,
+   "analysis": 0.06640625,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: A alarm rate",
+   "recount": 0.22265625,
+   "analysis": 0.22265625,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: A-C interval",
+   "recount": [
+    -0.85546875,
+    -0.6953125
+   ],
+   "analysis": [
+    -0.85546875,
+    -0.6953125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: A-C interval 95",
+   "recount": [
+    -0.828125,
+    -0.7265625
+   ],
+   "analysis": [
+    -0.828125,
+    -0.7265625
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-3: class",
+   "recount": "conventional_first",
+   "analysis": "conventional_first",
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: wrong",
+   "recount": 75,
+   "analysis": 75,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: A alarms",
+   "recount": 228,
+   "analysis": 228,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: wrong rate",
+   "recount": 0.29296875,
+   "analysis": 0.29296875,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: A alarm rate",
+   "recount": 0.890625,
+   "analysis": 0.890625,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: A-C interval",
+   "recount": [
+    -0.171875,
+    -0.0546875
+   ],
+   "analysis": [
+    -0.171875,
+    -0.0546875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: A-C interval 95",
+   "recount": [
+    -0.1484375,
+    -0.07421875
+   ],
+   "analysis": [
+    -0.1484375,
+    -0.07421875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-4: class",
+   "recount": "indeterminate",
+   "analysis": "indeterminate",
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: wrong",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: A alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: wrong rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: A alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: A-C interval",
+   "recount": [
+    0.0,
+    0.0
+   ],
+   "analysis": [
+    0.0,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: A-C interval 95",
+   "recount": [
+    0.0,
+    0.0
+   ],
+   "analysis": [
+    0.0,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "DUP-5: class",
+   "recount": "both_detect_harmed",
+   "analysis": "both_detect_harmed",
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: wrong",
+   "recount": 12,
+   "analysis": 12,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: C alarms",
+   "recount": 15,
+   "analysis": 15,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: A alarms",
+   "recount": 9,
+   "analysis": 9,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: pass but broken",
+   "recount": 11,
+   "analysis": 11,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: wrong rate",
+   "recount": 0.046875,
+   "analysis": 0.046875,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: C alarm rate",
+   "recount": 0.05859375,
+   "analysis": 0.05859375,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: A alarm rate",
+   "recount": 0.03515625,
+   "analysis": 0.03515625,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: A-C interval",
+   "recount": [
+    -0.078125,
+    0.02734375
+   ],
+   "analysis": [
+    -0.078125,
+    0.02734375
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: A-C interval 95",
+   "recount": [
+    -0.05859375,
+    0.01171875
+   ],
+   "analysis": [
+    -0.05859375,
+    0.01171875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-0: class",
+   "recount": "harmless_quiet",
+   "analysis": "harmless_quiet",
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: wrong",
+   "recount": 15,
+   "analysis": 15,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: C alarms",
+   "recount": 11,
+   "analysis": 11,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: A alarms",
+   "recount": 9,
+   "analysis": 9,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: pass but broken",
+   "recount": 15,
+   "analysis": 15,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: wrong rate",
+   "recount": 0.05859375,
+   "analysis": 0.05859375,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: C alarm rate",
+   "recount": 0.04296875,
+   "analysis": 0.04296875,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: A alarm rate",
+   "recount": 0.03515625,
+   "analysis": 0.03515625,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: A-C interval",
+   "recount": [
+    -0.0625,
+    0.04525146484375142
+   ],
+   "analysis": [
+    -0.0625,
+    0.04525146484375142
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: A-C interval 95",
+   "recount": [
+    -0.04296875,
+    0.02734375
+   ],
+   "analysis": [
+    -0.04296875,
+    0.02734375
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-1: class",
+   "recount": "harmless_quiet",
+   "analysis": "harmless_quiet",
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: wrong",
+   "recount": 7,
+   "analysis": 7,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: C alarms",
+   "recount": 12,
+   "analysis": 12,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: A alarms",
+   "recount": 7,
+   "analysis": 7,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: pass but broken",
+   "recount": 6,
+   "analysis": 6,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: wrong rate",
+   "recount": 0.02734375,
+   "analysis": 0.02734375,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: C alarm rate",
+   "recount": 0.046875,
+   "analysis": 0.046875,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: A alarm rate",
+   "recount": 0.02734375,
+   "analysis": 0.02734375,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: A-C interval",
+   "recount": [
+    -0.06640625,
+    0.02734375
+   ],
+   "analysis": [
+    -0.06640625,
+    0.02734375
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: A-C interval 95",
+   "recount": [
+    -0.05078125,
+    0.0078125
+   ],
+   "analysis": [
+    -0.05078125,
+    0.0078125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-2: class",
+   "recount": "harmless_quiet",
+   "analysis": "harmless_quiet",
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: wrong",
+   "recount": 13,
+   "analysis": 13,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: C alarms",
+   "recount": 13,
+   "analysis": 13,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: A alarms",
+   "recount": 16,
+   "analysis": 16,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: pass but broken",
+   "recount": 12,
+   "analysis": 12,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: wrong rate",
+   "recount": 0.05078125,
+   "analysis": 0.05078125,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: C alarm rate",
+   "recount": 0.05078125,
+   "analysis": 0.05078125,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: A alarm rate",
+   "recount": 0.0625,
+   "analysis": 0.0625,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: A-C interval",
+   "recount": [
+    -0.05078125,
+    0.078125
+   ],
+   "analysis": [
+    -0.05078125,
+    0.078125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: A-C interval 95",
+   "recount": [
+    -0.02734375,
+    0.0546875
+   ],
+   "analysis": [
+    -0.02734375,
+    0.0546875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-3: class",
+   "recount": "harmless_quiet",
+   "analysis": "harmless_quiet",
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: wrong",
+   "recount": 11,
+   "analysis": 11,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: C alarms",
+   "recount": 9,
+   "analysis": 9,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: A alarms",
+   "recount": 7,
+   "analysis": 7,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: pass but broken",
+   "recount": 11,
+   "analysis": 11,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: wrong rate",
+   "recount": 0.04296875,
+   "analysis": 0.04296875,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: C alarm rate",
+   "recount": 0.03515625,
+   "analysis": 0.03515625,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: A alarm rate",
+   "recount": 0.02734375,
+   "analysis": 0.02734375,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: A-C interval",
+   "recount": [
+    -0.05859375,
+    0.04296875
+   ],
+   "analysis": [
+    -0.05859375,
+    0.04296875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: A-C interval 95",
+   "recount": [
+    -0.0390625,
+    0.0234375
+   ],
+   "analysis": [
+    -0.0390625,
+    0.0234375
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-4: class",
+   "recount": "harmless_quiet",
+   "analysis": "harmless_quiet",
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: wrong",
+   "recount": 17,
+   "analysis": 17,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: C alarms",
+   "recount": 10,
+   "analysis": 10,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: A alarms",
+   "recount": 9,
+   "analysis": 9,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: pass but broken",
+   "recount": 16,
+   "analysis": 16,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: wrong rate",
+   "recount": 0.06640625,
+   "analysis": 0.06640625,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: C alarm rate",
+   "recount": 0.0390625,
+   "analysis": 0.0390625,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: A alarm rate",
+   "recount": 0.03515625,
+   "analysis": 0.03515625,
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: A-C interval",
+   "recount": [
+    -0.0546875,
+    0.05078125
+   ],
+   "analysis": [
+    -0.0546875,
+    0.05078125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: A-C interval 95",
+   "recount": [
+    -0.0390625,
+    0.03125
+   ],
+   "analysis": [
+    -0.0390625,
+    0.03125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "GFSR-5: class",
+   "recount": "harmless_quiet",
+   "analysis": "harmless_quiet",
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: wrong",
+   "recount": 26,
+   "analysis": 26,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: A alarms",
+   "recount": 40,
+   "analysis": 40,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: wrong rate",
+   "recount": 0.1015625,
+   "analysis": 0.1015625,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: A alarm rate",
+   "recount": 0.15625,
+   "analysis": 0.15625,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: A-C interval",
+   "recount": [
+    -0.91015625,
+    -0.76953125
+   ],
+   "analysis": [
+    -0.91015625,
+    -0.76953125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: A-C interval 95",
+   "recount": [
+    -0.88671875,
+    -0.796875
+   ],
+   "analysis": [
+    -0.88671875,
+    -0.796875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-0: class",
+   "recount": "conventional_first",
+   "analysis": "conventional_first",
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: wrong",
+   "recount": 35,
+   "analysis": 35,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: A alarms",
+   "recount": 69,
+   "analysis": 69,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: wrong rate",
+   "recount": 0.13671875,
+   "analysis": 0.13671875,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: A alarm rate",
+   "recount": 0.26953125,
+   "analysis": 0.26953125,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: A-C interval",
+   "recount": [
+    -0.8125,
+    -0.64453125
+   ],
+   "analysis": [
+    -0.8125,
+    -0.64453125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: A-C interval 95",
+   "recount": [
+    -0.78125,
+    -0.67578125
+   ],
+   "analysis": [
+    -0.78125,
+    -0.67578125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-1: class",
+   "recount": "indeterminate",
+   "analysis": "indeterminate",
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: wrong",
+   "recount": 53,
+   "analysis": 53,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: A alarms",
+   "recount": 148,
+   "analysis": 148,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: wrong rate",
+   "recount": 0.20703125,
+   "analysis": 0.20703125,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: A alarm rate",
+   "recount": 0.578125,
+   "analysis": 0.578125,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: A-C interval",
+   "recount": [
+    -0.5140014648437501,
+    -0.328125
+   ],
+   "analysis": [
+    -0.5140014648437501,
+    -0.328125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: A-C interval 95",
+   "recount": [
+    -0.484375,
+    -0.36328125
+   ],
+   "analysis": [
+    -0.484375,
+    -0.36328125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-2: class",
+   "recount": "indeterminate",
+   "analysis": "indeterminate",
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: wrong",
+   "recount": 98,
+   "analysis": 98,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: A alarms",
+   "recount": 236,
+   "analysis": 236,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: wrong rate",
+   "recount": 0.3828125,
+   "analysis": 0.3828125,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: A alarm rate",
+   "recount": 0.921875,
+   "analysis": 0.921875,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: A-C interval",
+   "recount": [
+    -0.13118896484375014,
+    -0.03125
+   ],
+   "analysis": [
+    -0.13118896484375014,
+    -0.03125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: A-C interval 95",
+   "recount": [
+    -0.11328125,
+    -0.046875
+   ],
+   "analysis": [
+    -0.11328125,
+    -0.046875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-3: class",
+   "recount": "indeterminate",
+   "analysis": "indeterminate",
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: wrong",
+   "recount": 152,
+   "analysis": 152,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: A alarms",
+   "recount": 255,
+   "analysis": 255,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: wrong rate",
+   "recount": 0.59375,
+   "analysis": 0.59375,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: A alarm rate",
+   "recount": 0.99609375,
+   "analysis": 0.99609375,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: A-C interval",
+   "recount": [
+    -0.01953125,
+    0.0
+   ],
+   "analysis": [
+    -0.01953125,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: A-C interval 95",
+   "recount": [
+    -0.01171875,
+    0.0
+   ],
+   "analysis": [
+    -0.01171875,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-4: class",
+   "recount": "indeterminate",
+   "analysis": "indeterminate",
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: wrong",
+   "recount": 224,
+   "analysis": 224,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: A alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: wrong rate",
+   "recount": 0.875,
+   "analysis": 0.875,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: A alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: A-C interval",
+   "recount": [
+    0.0,
+    0.0
+   ],
+   "analysis": [
+    0.0,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: A-C interval 95",
+   "recount": [
+    0.0,
+    0.0
+   ],
+   "analysis": [
+    0.0,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "LAG1-5: class",
+   "recount": "both_detect_harmed",
+   "analysis": "both_detect_harmed",
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: wrong",
+   "recount": 29,
+   "analysis": 29,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: A alarms",
+   "recount": 9,
+   "analysis": 9,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: wrong rate",
+   "recount": 0.11328125,
+   "analysis": 0.11328125,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: A alarm rate",
+   "recount": 0.03515625,
+   "analysis": 0.03515625,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: A-C interval",
+   "recount": [
+    -0.99609375,
+    -0.92578125
+   ],
+   "analysis": [
+    -0.99609375,
+    -0.92578125
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: A-C interval 95",
+   "recount": [
+    -0.984375,
+    -0.94140625
+   ],
+   "analysis": [
+    -0.984375,
+    -0.94140625
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-0: class",
+   "recount": "conventional_first",
+   "analysis": "conventional_first",
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: wrong",
+   "recount": 27,
+   "analysis": 27,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: A alarms",
+   "recount": 16,
+   "analysis": 16,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: wrong rate",
+   "recount": 0.10546875,
+   "analysis": 0.10546875,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: A alarm rate",
+   "recount": 0.0625,
+   "analysis": 0.0625,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: A-C interval",
+   "recount": [
+    -0.98046875,
+    -0.88671875
+   ],
+   "analysis": [
+    -0.98046875,
+    -0.88671875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: A-C interval 95",
+   "recount": [
+    -0.96484375,
+    -0.90625
+   ],
+   "analysis": [
+    -0.96484375,
+    -0.90625
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-1: class",
+   "recount": "conventional_first",
+   "analysis": "conventional_first",
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: wrong",
+   "recount": 53,
+   "analysis": 53,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: A alarms",
+   "recount": 59,
+   "analysis": 59,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: wrong rate",
+   "recount": 0.20703125,
+   "analysis": 0.20703125,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: A alarm rate",
+   "recount": 0.23046875,
+   "analysis": 0.23046875,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: A-C interval",
+   "recount": [
+    -0.84765625,
+    -0.68359375
+   ],
+   "analysis": [
+    -0.84765625,
+    -0.68359375
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: A-C interval 95",
+   "recount": [
+    -0.8203125,
+    -0.71484375
+   ],
+   "analysis": [
+    -0.8203125,
+    -0.71484375
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-2: class",
+   "recount": "indeterminate",
+   "analysis": "indeterminate",
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: wrong",
+   "recount": 75,
+   "analysis": 75,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: A alarms",
+   "recount": 166,
+   "analysis": 166,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: wrong rate",
+   "recount": 0.29296875,
+   "analysis": 0.29296875,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: A alarm rate",
+   "recount": 0.6484375,
+   "analysis": 0.6484375,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: A-C interval",
+   "recount": [
+    -0.43978271484375014,
+    -0.26171875
+   ],
+   "analysis": [
+    -0.43978271484375014,
+    -0.26171875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: A-C interval 95",
+   "recount": [
+    -0.41015625,
+    -0.29296875
+   ],
+   "analysis": [
+    -0.41015625,
+    -0.29296875
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-3: class",
+   "recount": "indeterminate",
+   "analysis": "indeterminate",
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: wrong",
+   "recount": 156,
+   "analysis": 156,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: A alarms",
+   "recount": 255,
+   "analysis": 255,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: wrong rate",
+   "recount": 0.609375,
+   "analysis": 0.609375,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: A alarm rate",
+   "recount": 0.99609375,
+   "analysis": 0.99609375,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: A-C interval",
+   "recount": [
+    -0.01953125,
+    0.0
+   ],
+   "analysis": [
+    -0.01953125,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: A-C interval 95",
+   "recount": [
+    -0.01171875,
+    0.0
+   ],
+   "analysis": [
+    -0.01171875,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-4: class",
+   "recount": "both_detect_harmed",
+   "analysis": "both_detect_harmed",
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: wrong flags equal stored",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: wrong",
+   "recount": 245,
+   "analysis": 245,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: C alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: A alarms",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: pass but broken",
+   "recount": 0,
+   "analysis": 0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: wrong n",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: runs",
+   "recount": 256,
+   "analysis": 256,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: wrong rate",
+   "recount": 0.95703125,
+   "analysis": 0.95703125,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: C alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: A alarm rate",
+   "recount": 1.0,
+   "analysis": 1.0,
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: A-C interval",
+   "recount": [
+    0.0,
+    0.0
+   ],
+   "analysis": [
+    0.0,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: A-C interval 95",
+   "recount": [
+    0.0,
+    0.0
+   ],
+   "analysis": [
+    0.0,
+    0.0
+   ],
+   "agree": true
+  },
+  {
+   "quantity": "SHIFT-5: class",
+   "recount": "both_detect_harmed",
+   "analysis": "both_detect_harmed",
+   "agree": true
+  }
+ ],
+ "all_agree": true
+}
