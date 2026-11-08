@@ -1,0 +1,96 @@
+{
+ "script": "research/v018-h1-detection/design_calculations.py",
+ "inputs": {
+  "smoke": "research/v018-h1-detection/smoke/smoke_timing.json"
+ },
+ "calibration": {
+  "N_cal": 999,
+  "whole_run_alpha": 0.05,
+  "threshold_order_statistic": 950,
+  "marginal_false_alarm_rate": 0.05,
+  "conditional_rate_quantiles": {
+   "q025": 0.03737299919946922,
+   "q50": 0.04970018616951782,
+   "q975": 0.06432986442771636
+  }
+ },
+ "precision": {
+  "256": {
+   "p0.05": [
+    0.02731252500538601,
+    0.08527212595645979
+   ],
+   "p0.1": [
+    0.06742315434307915,
+    0.14526539633915808
+   ],
+   "p0.5": [
+    0.4371086489403645,
+    0.5628913510596355
+   ]
+  },
+  "4096": {
+   "p0.05": [
+    0.04357224857454891,
+    0.05717632814078934
+   ],
+   "p0.1": [
+    0.09107190688881149,
+    0.10969824594768546
+   ],
+   "p0.5": [
+    0.484570321171604,
+    0.5154296788283961
+   ]
+  }
+ },
+ "h1_rule": {
+  "existence_intervals": 24,
+  "bonferroni_level": 0.9979166666666667,
+  "replicas": 256,
+  "criteria": "wrong-rate lower bound > 0.5; conventional-alarm upper bound < 0.2; paired app-minus-conv alarm lower bound > 0",
+  "probabilities": {
+   "wrong0.7_conv0.05_gap0.3": {
+    "P_wrong_lower_above_0.5": 0.9996881602588014,
+    "P_conv_upper_below_0.2": 0.9999978611251469,
+    "P_gap_lower_above_0_normal_approx": 0.999996779613506
+   },
+   "wrong0.7_conv0.1_gap0.2": {
+    "P_wrong_lower_above_0.5": 0.9996881602588014,
+    "P_conv_upper_below_0.2": 0.8883058706576509,
+    "P_gap_lower_above_0_normal_approx": 0.9762355323373344
+   },
+   "wrong0.6_conv0.1_gap0.3": {
+    "P_wrong_lower_above_0.5": 0.5067868882525117,
+    "P_conv_upper_below_0.2": 0.8883058706576509,
+    "P_gap_lower_above_0_normal_approx": 0.9998964264511679
+   },
+   "wrong0.8_conv0.15_gap0.4": {
+    "P_wrong_lower_above_0.5": 0.9999999999998974,
+    "P_conv_upper_below_0.2": 0.11147438061773532,
+    "P_gap_lower_above_0_normal_approx": 0.9999975773288605
+   }
+  }
+ },
+ "healthy_gate": {
+  "R_healthy": 4096,
+  "pass_probability_at_true_coverage": {
+   "0.930": 0.6636498675054903,
+   "0.940": 0.998901340494038,
+   "0.950": 0.9999999990062389
+  }
+ },
+ "runtime": {
+  "smoke_seconds_per_run": 2.624708026999932,
+  "total_runs": 11239,
+  "single_core_hours": 8.194192643181177,
+  "wall_minutes_8_workers_with_slowdown_1.35": 82.96620051220943,
+  "pilot_runs": 1351,
+  "pilot_wall_minutes": 9.973070281341306
+ },
+ "storage": {
+  "per_run_MiB": 0.23438262939453125,
+  "total_GiB": 2.5724866911768913,
+  "note": "CV and TD float64 plus sweep byte marks; raw bytes regenerable by replay"
+ }
+}

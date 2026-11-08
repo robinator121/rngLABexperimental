@@ -1,0 +1,49 @@
+{
+ "validity": {
+  "V1": "PASS",
+  "V2": "PASS"
+ },
+ "implementation": {
+  "I-1": "PASS",
+  "I-2": "PASS",
+  "I-3": "PASS",
+  "I-4": "PASS"
+ },
+ "classes": {
+  "DUP-0": "conventional_first",
+  "DUP-1": "conventional_first",
+  "DUP-2": "conventional_first",
+  "DUP-3": "conventional_first",
+  "DUP-4": "indeterminate",
+  "DUP-5": "both_detect_harmed",
+  "GFSR-0": "harmless_quiet",
+  "GFSR-1": "harmless_quiet",
+  "GFSR-2": "harmless_quiet",
+  "GFSR-3": "harmless_quiet",
+  "GFSR-4": "harmless_quiet",
+  "GFSR-5": "harmless_quiet",
+  "LAG1-0": "conventional_first",
+  "LAG1-1": "indeterminate",
+  "LAG1-2": "indeterminate",
+  "LAG1-3": "indeterminate",
+  "LAG1-4": "indeterminate",
+  "LAG1-5": "both_detect_harmed",
+  "SHIFT-0": "conventional_first",
+  "SHIFT-1": "conventional_first",
+  "SHIFT-2": "indeterminate",
+  "SHIFT-3": "indeterminate",
+  "SHIFT-4": "both_detect_harmed",
+  "SHIFT-5": "both_detect_harmed"
+ },
+ "verdicts": {
+  "H1-C": {
+   "DUP": "NOT SUPPORTED",
+   "GFSR": "NOT SUPPORTED",
+   "LAG1": "NOT SUPPORTED",
+   "SHIFT": "NOT SUPPORTED"
+  },
+  "interpretable": true,
+  "implementation_checks_pass": true
+ }
+}
+.venv/bin/python $H/analyze.py  27.82s user 1.10s system 94% cpu 30.535 total

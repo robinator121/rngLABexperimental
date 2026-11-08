@@ -1,0 +1,78 @@
+{
+ "rule": "PROTOCOL.md section 3.4",
+ "pilot_summary_sha256": "40268d19bed295524f18b71a9638e6a6f0a9f3a33c5c15c02930b3bee49f1c54",
+ "families": {
+  "SHIFT": {
+   "severities": [
+    0.005,
+    0.007807452250284345,
+    0.01219126212809401,
+    0.019036539387158782,
+    0.02972537445517987,
+    0.046415888336127774
+   ],
+   "label": "harm transition from the pilot",
+   "s_lo": 0.01,
+   "s_hi": 0.046415888336127774,
+   "s_hi_from": "first severity with wrong-rate >= 0.90"
+  },
+  "LAG1": {
+   "severities": [
+    0.25,
+    0.2871745887492587,
+    0.32987697769322355,
+    0.37892914162759955,
+    0.43527528164806206,
+    0.5
+   ],
+   "label": "harm transition from the pilot",
+   "s_lo": 0.5,
+   "s_hi": 0.5,
+   "s_hi_from": "largest pilot severity"
+  },
+  "DUP": {
+   "severities": [
+    0.003968502629920496,
+    0.010439875963388183,
+    0.02746401358265292,
+    0.07224913827648115,
+    0.1900646446297695,
+    0.5
+   ],
+   "label": "harm transition from the pilot",
+   "s_lo": 0.007937005259840991,
+   "s_hi": 0.5,
+   "s_hi_from": "first severity with wrong-rate >= 0.90"
+  },
+  "GFSR": {
+   "severities": [
+    [
+     31,
+     13
+    ],
+    [
+     89,
+     38
+    ],
+    [
+     127,
+     63
+    ],
+    [
+     250,
+     103
+    ],
+    [
+     521,
+     168
+    ],
+    [
+     1279,
+     418
+    ]
+   ],
+   "label": "all irreducible lag pairs",
+   "dropped": []
+  }
+ }
+}

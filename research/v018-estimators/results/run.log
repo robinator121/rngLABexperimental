@@ -1,0 +1,21 @@
+start 2026-11-05T10:11:32Z workers=3
+11:20:34 ising_L4_Tc.npz 541.2s
+11:20:35 ising_L4_T1.5.npz 542.2s
+11:20:48 ising_L4_T3.5.npz 555.4s
+11:23:51 ising_L3_T1.5.npz 197.1s
+11:24:06 ising_L3_Tc.npz 211.3s
+11:24:22 ising_L3_T3.5.npz 214.0s
+11:26:32 ising_L2_T1.5.npz 161.1s
+11:26:57 ising_L2_Tc.npz 171.1s
+11:27:00 ar1_phi0.0_n8192.npz 28.5s
+11:27:33 ar1_phi0.5_n8192.npz 32.3s
+11:27:33 ising_L2_T3.5.npz 190.9s
+11:28:12 ar1_phi0.9_n8192.npz 39.6s
+11:34:08 ar1_phi0.0_n65536.npz 430.4s
+11:34:42 ar1_phi0.5_n65536.npz 429.0s
+11:34:44 ar1_phi0.99_n8192.npz 36.8s
+11:35:15 ar1_phi0.997_n8192.npz 30.6s
+11:35:32 ar1_phi0.9_n65536.npz 439.5s
+11:39:13 ar1_phi0.997_n65536.npz 237.9s
+11:39:14 ar1_phi0.99_n65536.npz 271.9s
+end 2026-11-05T10:39:14Z

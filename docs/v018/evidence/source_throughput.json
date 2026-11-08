@@ -1,0 +1,32 @@
+{
+  "script": "scripts/v018/source_throughput.py",
+  "python": "3.14.9",
+  "machine": "x86_64",
+  "processor": "",
+  "repeats": 3,
+  "per_call_words": 20000,
+  "bulk_words": 200000,
+  "unit": "million uint64 words per second (median of repeats)",
+  "sources": {
+    "PCG64Source": {
+      "per_call_8_byte_reads": 0.6198324760158984,
+      "single_bulk_read": 1.646213086399443
+    },
+    "Xoshiro256PlusPlusSource": {
+      "per_call_8_byte_reads": 0.7406012334143727,
+      "single_bulk_read": 1.247313528324831
+    },
+    "MersenneTwisterSource": {
+      "per_call_8_byte_reads": 2.7244868156803297,
+      "single_bulk_read": 42.8086131783344
+    },
+    "ChaCha20Source(rounds=20)": {
+      "per_call_8_byte_reads": 0.09467753928391034,
+      "single_bulk_read": 0.0992131148419752
+    },
+    "ChaCha20Source(rounds=8)": {
+      "per_call_8_byte_reads": 0.21570594689242167,
+      "single_bulk_read": 0.23967225097699768
+    }
+  }
+}

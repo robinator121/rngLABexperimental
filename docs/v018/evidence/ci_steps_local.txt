@@ -1,0 +1,11 @@
+# .github/workflows/ci.yml steps run locally on cd6eb79, 2026-11-05T10:26Z
+# GitHub Actions has not started any job in this repository since the workflow was added (billing lock).
+# python 3.14.9 numpy 2.5.4 scipy 1.18.1 matplotlib 3.11.2 cryptography 50.0.2 pytest 9.2.0 (unpinned latest, as in CI)
+$ PYTHONPATH=src pytest tests -q
+350 passed in 17.70s
+$ python -m rnglab_crypto run --smoke --output blue-smoke
+exit 0
+$ python -m rnglab_crypto verify blue-smoke
+{"results_sha256": "8a900762fcf9cd88d7168806abdd3793b4b27c7dc37c0bb38f7197f77f75ab99", "verified_artifacts": 9}
+$ python -m rnglab_crypto run --smoke --no-plots --output blue-replay && cmp results.json
+results.json identical

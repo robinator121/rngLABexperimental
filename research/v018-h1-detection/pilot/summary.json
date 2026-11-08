@@ -1,0 +1,724 @@
+{
+ "status": "pilot; descriptive only; excluded from all endpoints",
+ "thresholds": {
+  "C": 3.773784047734391,
+  "A": 3.572662115160875
+ },
+ "application_constants": {
+  "sigma_D": 0.14784762900517953,
+  "mu_f": 0.6521631893897274,
+  "sigma_f": 0.0028523061814407663
+ },
+ "calibration": {
+  "runs": 199,
+  "wrong": 9,
+  "wrong_cp95": [
+   0.020885893857190682,
+   0.084114637001735
+  ]
+ },
+ "cells": [
+  {
+   "family": "SHIFT",
+   "index": 0,
+   "severity": 0.0001,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 0,
+   "wrong_rate": 0.0,
+   "wrong_cp95": [
+    0.0,
+    0.10888116067935288
+   ],
+   "conventional_alarms": 2,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 1,
+   "severity": 0.00021544346900318845,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 6,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 2,
+   "severity": 0.00046415888336127773,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 1,
+   "wrong_rate": 0.03125,
+   "wrong_cp95": [
+    0.0007908685979525573,
+    0.16217099418151154
+   ],
+   "conventional_alarms": 31,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 3,
+   "severity": 0.001,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 4,
+   "severity": 0.002154434690031882,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 5,
+   "severity": 0.004641588833612777,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 2,
+   "wrong_rate": 0.0625,
+   "wrong_cp95": [
+    0.007660736346456386,
+    0.20806942989500743
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 2,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 6,
+   "severity": 0.01,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 4,
+   "wrong_rate": 0.125,
+   "wrong_cp95": [
+    0.03513065310331141,
+    0.2899484201907557
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 7,
+   "severity": 0.021544346900318822,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 6,
+   "wrong_rate": 0.1875,
+   "wrong_cp95": [
+    0.07207616545849763,
+    0.3643923098640901
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 25,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 8,
+   "severity": 0.046415888336127774,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 29,
+   "wrong_rate": 0.90625,
+   "wrong_cp95": [
+    0.7497730493162054,
+    0.9802328198267152
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 32,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "SHIFT",
+   "index": 9,
+   "severity": 0.1,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 32,
+   "wrong_rate": 1.0,
+   "wrong_cp95": [
+    0.8911188393206471,
+    1.0
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 32,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 0,
+   "severity": 0.003,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 2,
+   "wrong_rate": 0.0625,
+   "wrong_cp95": [
+    0.007660736346456386,
+    0.20806942989500743
+   ],
+   "conventional_alarms": 3,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 1,
+   "severity": 0.005296553190237298,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 4,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 2,
+   "severity": 0.009351158565670974,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 2,
+   "wrong_rate": 0.0625,
+   "wrong_cp95": [
+    0.007660736346456386,
+    0.20806942989500743
+   ],
+   "conventional_alarms": 6,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 3,
+   "severity": 0.016509636244473137,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 19,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 4,
+   "severity": 0.02914805550677383,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 0,
+   "wrong_rate": 0.0,
+   "wrong_cp95": [
+    0.0,
+    0.10888116067935288
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 5,
+   "severity": 0.05146140879453893,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 6,
+   "severity": 0.09085602964160698,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 7,
+   "severity": 0.16040793121684926,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 8,
+   "severity": 0.2832030466086561,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 2,
+   "wrong_rate": 0.0625,
+   "wrong_cp95": [
+    0.007660736346456386,
+    0.20806942989500743
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 8,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "LAG1",
+   "index": 9,
+   "severity": 0.5,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 28,
+   "wrong_rate": 0.875,
+   "wrong_cp95": [
+    0.7100515798092443,
+    0.9648693468966886
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 32,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 0,
+   "severity": 0.001,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 1,
+   "wrong_rate": 0.03125,
+   "wrong_cp95": [
+    0.0007908685979525573,
+    0.16217099418151154
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 2,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 1,
+   "severity": 0.0019947365987750282,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 2,
+   "wrong_rate": 0.0625,
+   "wrong_cp95": [
+    0.007660736346456386,
+    0.20806942989500743
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 2,
+   "severity": 0.003978974098492568,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 2,
+   "wrong_rate": 0.0625,
+   "wrong_cp95": [
+    0.007660736346456386,
+    0.20806942989500743
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 3,
+   "severity": 0.007937005259840991,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 4,
+   "wrong_rate": 0.125,
+   "wrong_cp95": [
+    0.03513065310331141,
+    0.2899484201907557
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 4,
+   "severity": 0.015832234876474737,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 1,
+   "wrong_rate": 0.03125,
+   "wrong_cp95": [
+    0.0007908685979525573,
+    0.16217099418151154
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 5,
+   "severity": 0.0315811383485066,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 1,
+   "wrong_rate": 0.03125,
+   "wrong_cp95": [
+    0.0007908685979525573,
+    0.16217099418151154
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 6,
+   "severity": 0.06299605249474363,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 0,
+   "wrong_rate": 0.0,
+   "wrong_cp95": [
+    0.0,
+    0.10888116067935288
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 7,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 7,
+   "severity": 0.12566053148961803,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 4,
+   "wrong_rate": 0.125,
+   "wrong_cp95": [
+    0.03513065310331141,
+    0.2899484201907557
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 14,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 8,
+   "severity": 0.250659661183863,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 16,
+   "wrong_rate": 0.5,
+   "wrong_cp95": [
+    0.318874964234164,
+    0.681125035765836
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 32,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "DUP",
+   "index": 9,
+   "severity": 0.5,
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 32,
+   "wrong_rate": 1.0,
+   "wrong_cp95": [
+    0.8911188393206471,
+    1.0
+   ],
+   "conventional_alarms": 32,
+   "application_alarms": 32,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "GFSR",
+   "index": 0,
+   "severity": [
+    31,
+    13
+   ],
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 5,
+   "wrong_rate": 0.15625,
+   "wrong_cp95": [
+    0.05275056440213409,
+    0.3278787656820417
+   ],
+   "conventional_alarms": 1,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "GFSR",
+   "index": 1,
+   "severity": [
+    89,
+    38
+   ],
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 2,
+   "wrong_rate": 0.0625,
+   "wrong_cp95": [
+    0.007660736346456386,
+    0.20806942989500743
+   ],
+   "conventional_alarms": 3,
+   "application_alarms": 2,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "GFSR",
+   "index": 2,
+   "severity": [
+    127,
+    63
+   ],
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 0,
+   "wrong_rate": 0.0,
+   "wrong_cp95": [
+    0.0,
+    0.10888116067935288
+   ],
+   "conventional_alarms": 0,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "GFSR",
+   "index": 3,
+   "severity": [
+    250,
+    103
+   ],
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 3,
+   "wrong_rate": 0.09375,
+   "wrong_cp95": [
+    0.019767180173284868,
+    0.25022695068379464
+   ],
+   "conventional_alarms": 0,
+   "application_alarms": 0,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "GFSR",
+   "index": 4,
+   "severity": [
+    521,
+    168
+   ],
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 1,
+   "wrong_rate": 0.03125,
+   "wrong_cp95": [
+    0.0007908685979525573,
+    0.16217099418151154
+   ],
+   "conventional_alarms": 0,
+   "application_alarms": 2,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  },
+  {
+   "family": "GFSR",
+   "index": 5,
+   "severity": [
+    1279,
+    418
+   ],
+   "replicas": 32,
+   "runs": 32,
+   "wrong": 1,
+   "wrong_rate": 0.03125,
+   "wrong_cp95": [
+    0.0007908685979525573,
+    0.16217099418151154
+   ],
+   "conventional_alarms": 0,
+   "application_alarms": 1,
+   "onset_sweeps": [
+    2472,
+    2485
+   ]
+  }
+ ]
+}

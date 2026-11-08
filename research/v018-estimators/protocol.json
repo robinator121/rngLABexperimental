@@ -1,0 +1,279 @@
+{
+  "id": "rnglab-v018-estimators-v1",
+  "status": "FROZEN_DESIGN",
+  "status_note": "Frozen 2026-11-05 after author approval in chat (\"Freeze as drafted\"). Definitions, gates, sample sizes and namespaces are fixed. SHA-256 of this file is in protocol.sha256.",
+  "drafted": "2026-11-05",
+  "drafted_by": "Claude Code (Opus 5.5); design decisions by the author",
+  "human_readable": "research/v018-estimators/PROTOCOL.md",
+  "design_numbers": "research/v018-estimators/design.json (design_calculations.py)",
+  "smoke": {
+    "namespace": "rnglab-v018-estimators-smoke",
+    "file": "research/v018-estimators/smoke/smoke_timing.json",
+    "counts_toward_endpoints": false
+  },
+  "seed": {
+    "namespace": "rnglab-v018-estimators",
+    "rule": "int.from_bytes(sha256('rnglab-v018-estimators/<condition>/<role>/<unit>').digest()[:8], 'big'); replicas are SeedSequence(seed).spawn(chunk_size) children",
+    "unused_check": "no occurrence in repository or local Codex output folders, 2026-11-05"
+  },
+  "hypotheses": {
+    "H-S": "Plug-in susceptibility fails at L4 T1.5; symmetry-aware S and generic ensemble G give calibrated intervals in all nine exact-reference cells",
+    "H-L": "Short-batch BM under-covers at long tau; BM, OBM, SV-B, SV-TH (b=512) and GEYER are calibrated at n=8192 for tau<=19",
+    "H-D": "Geyer-tau batch-length diagnostic abstains or yields calibrated adaptive intervals for every AR(1) setting; split-Rhat flags Ising sign non-mixing at L4 T1.5"
+  },
+  "definitions": {
+    "susceptibility_estimand": "chi = (N/T) Var_pi(m) = Var_pi(M)/(N T); m = M/N; zero field; periodic; J=kB=1",
+    "P": "per-chain plug-in (N/T)(mean m^2 - (mean m)^2); reproduce only",
+    "S": "per-chain (N/T) mean m^2; assumes exact E[m]=0 (global flip symmetry, h=0); interval BM 16 batches (b=96 of 1536), t15",
+    "G": "ensemble of K=16 chains; theta=(N/T)(mean_i A_i - (mean_i B_i)^2); delete-one-chain jackknife bias correction and SE; t15",
+    "chi_abs_secondary": "(N/T)(E[m^2] - E[|m|]^2), different estimand, per-chain plug-in, no gate",
+    "lrv_target": "sigma2_n = n Var(xbar_n)",
+    "lrv_estimators": {
+      "BM": "b/(a-1) sum (Ybar_j - xbar)^2, a=n/b; t_{a-1}",
+      "OBM": "n b/((n-b)(n-b+1)) sum_{j=1}^{n-b+1} (Ybar_j(b) - xbar)^2; t_nu, nu=1.5 n/b",
+      "SV-B": "sum_{|k|<b} (1-|k|/b) gamma_k; t_nu, nu=n/(b*2/3)",
+      "SV-TH": "sum_{|k|<b} (1+cos(pi k/b))/2 gamma_k; t_nu, nu=n/(b*3/4)",
+      "GEYER": "initial positive then monotone sequence, rnglab12.uncertainty._geyer; z"
+    },
+    "batch_sizes": [
+      32,
+      128,
+      512,
+      1024
+    ],
+    "autocovariance": "biased (divide by n), FFT",
+    "reported_with_each": [
+      "tau_hat = sigma2_hat/gamma0_hat",
+      "ESS = n gamma0_hat/sigma2_hat"
+    ],
+    "diagnostic": {
+      "tau_hat": "GEYER tau on the same series",
+      "adequate": "b >= 10*tau_hat and n/b >= 16",
+      "adaptive_b": "smallest power of two in [16, n/16] with b >= 10*tau_hat; none -> RUN_TOO_SHORT, abstain",
+      "convergence": "rank-normalized split-Rhat (Vehtari et al. 2021) per 16-chain ensemble for m, m^2, e; NOT_CONVERGED if > 1.01"
+    }
+  },
+  "data": {
+    "ising": {
+      "kernel": "rnglab16.core.ising unchanged, fault='healthy'",
+      "L": [
+        2,
+        3,
+        4
+      ],
+      "T": {
+        "T1.5": 1.5,
+        "Tc": "2/ln(1+sqrt(2))",
+        "T3.5": 3.5
+      },
+      "sweeps": 2048,
+      "burn_in": 512,
+      "retained": 1536,
+      "chains_per_cell": 32768,
+      "chunk_size": 256,
+      "chunks": 128,
+      "condition": "ising_L{L}_T{1.5|Tc|3.5}",
+      "role": "chains",
+      "unit": "chunk-{0000..0127}",
+      "chain_id": "256*chunk + child",
+      "ensembles": "consecutive groups of 16 chain ids; 2048 per cell",
+      "reference": "rnglab16.core.enumeration"
+    },
+    "ar1": {
+      "model": "x_t = phi x_{t-1} + sqrt(1-phi^2) eps_t, x_1 ~ N(0,1), eps iid N(0,1), numpy default_rng",
+      "phi": [
+        0.0,
+        0.5,
+        0.9,
+        0.99,
+        0.997
+      ],
+      "n": [
+        8192,
+        65536
+      ],
+      "replicas": 4096,
+      "chunk_size": {
+        "8192": 512,
+        "65536": 64
+      },
+      "condition": "ar1_phi{phi}_n{n}",
+      "role": "innovations",
+      "unit": "chunk-{c}",
+      "exact_var_mean": "[(1+phi)/(1-phi) - 2 phi (1-phi^n)/(n (1-phi)^2)]/n"
+    },
+    "regression_replay": {
+      "seed": "sha256('CALIBRATE-20261022-v1/ising_L4_T0/confirmation')[:8]",
+      "chains": 512,
+      "kernel": "rnglab16.core.ising",
+      "expected": {
+        "mean_P": 0.7458277684119011,
+        "mean_S": 10.403679741753471,
+        "relative_tolerance": 1e-09
+      },
+      "expected_source": "v0.17 SUSCEPTIBILITY_PROBE.json row ising_L4_T0 (off-repo)",
+      "classification": "deterministic replay, not confirmation",
+      "expected_source_sha256": "b2953cff893416557939885d0e9e7a48f021c7c4e0f27c72c82570d188d9d5db"
+    }
+  },
+  "analysis": {
+    "units": {
+      "S": "chain",
+      "P": "chain",
+      "G": "16-chain ensemble",
+      "ar1": "replica"
+    },
+    "coverage": "Clopper-Pearson 95%",
+    "relative_bias": "mean(estimate/chi - 1), 95% t-interval",
+    "variance_ratio": "mean estimated variance / empirical variance across units; percentile bootstrap 2000, seed rnglab-v018-estimators/analysis/bootstrap/<endpoint>",
+    "exclusions": "none; abstentions counted; numerical failures count as non-coverage and are reported",
+    "multiplicity": "none (acceptance gates, not significance tests)"
+  },
+  "gates": {
+    "failure_reproduction": {
+      "S-F1": "ising L4 T1.5, P: relative mean-bias CI upper < -0.5",
+      "L-F1": "ar1 phi=0.99 n=8192 BM(32): coverage CP95 upper < 0.92",
+      "L-F2": "ar1 phi=0.997 n=8192 BM(32): coverage CP95 upper < 0.92",
+      "D-F1": "ising L4 T1.5 split-Rhat(m) NOT_CONVERGED fraction over 2048 ensembles: CP95 lower >= 0.90"
+    },
+    "control_validity": {
+      "L-C": "every (phi, n): bootstrap CI of empirical/exact Var(xbar) contains 1; t-CI of mean xbar contains 0",
+      "S-C": "every Ising cell: relative mean-bias CI of chain-mean energy within [-0.01, 0.01]"
+    },
+    "validation": {
+      "S-S": {
+        "cells": 9,
+        "units": 32768,
+        "coverage_cp95_within": [
+          0.92,
+          0.98
+        ],
+        "relative_bias_ci_within": [
+          -0.01,
+          0.01
+        ],
+        "variance_ratio_ci_within": [
+          0.75,
+          1.25
+        ]
+      },
+      "S-G": {
+        "cells": 9,
+        "units": 2048,
+        "coverage_cp95_within": [
+          0.92,
+          0.98
+        ],
+        "relative_bias_ci_within": [
+          -0.01,
+          0.01
+        ],
+        "variance_ratio_ci_within": [
+          0.75,
+          1.25
+        ]
+      },
+      "L-A": {
+        "n": 8192,
+        "b": 512,
+        "phi": [
+          0.0,
+          0.5,
+          0.9
+        ],
+        "methods": [
+          "BM",
+          "OBM",
+          "SV-B",
+          "SV-TH"
+        ],
+        "units": 4096,
+        "coverage_cp95_within": [
+          0.92,
+          0.98
+        ],
+        "variance_ratio_vs_exact_ci_within": [
+          0.75,
+          1.25
+        ]
+      },
+      "L-G": {
+        "n": 8192,
+        "phi": [
+          0.0,
+          0.5,
+          0.9
+        ],
+        "method": "GEYER",
+        "units": 4096,
+        "coverage_cp95_within": [
+          0.92,
+          0.98
+        ],
+        "variance_ratio_vs_exact_ci_within": [
+          0.75,
+          1.25
+        ]
+      },
+      "L-D": {
+        "phi": "all",
+        "n": "all",
+        "families": [
+          "BM",
+          "OBM",
+          "SV-TH"
+        ],
+        "rule": "k>=2048 non-abstaining: CP95 within [0.92,0.98] pass/fail; 200<=k<2048: fail if CP95 upper < 0.92 else inconclusive; k<200: not evaluable"
+      }
+    },
+    "verdicts": {
+      "H-S": "S-F1 reproduces and all S-S and S-G pass",
+      "H-L": "L-F1 and L-F2 reproduce and all L-A and L-G pass",
+      "H-D": "D-F1 holds, no L-D fails, and each family has at least one evaluable passing L-D gate"
+    }
+  },
+  "secondary": [
+    "all methods and b at phi in {0.99, 0.997}: coverage, variance ratio, ESS-hat/true ESS",
+    "tau_hat/tau_n distributions; diagnostic status and abstention rates",
+    "Ising S with OBM, SV-TH, GEYER and adaptive intervals; diagnostic status of m^2 series",
+    "split-Rhat of m, m^2, e in all cells (specificity descriptive)",
+    "chi_abs against exact; P bias in all nine cells"
+  ],
+  "resources": {
+    "cpu_only": true,
+    "workers": 3,
+    "blas_threads": 1,
+    "expected_peak_MiB_per_worker": 486,
+    "gpu": false
+  },
+  "excluded": [
+    "re-analysis of Phase II PIMC traces (seen data)",
+    "heat-capacity intervals",
+    "long single-chain Ising runs"
+  ],
+  "references": [
+    "Flegal & Jones 2010, Ann. Statist. 38(2) 1034-1070, doi:10.1214/09-AOS735",
+    "Geyer 1992, Statist. Sci. 7(4) 473-483, doi:10.1214/ss/1177011137",
+    "Meketon & Schmeiser 1984, Proc. Winter Simulation Conference 227-230",
+    "Vehtari et al. 2021, Bayesian Analysis 16(2) 667-718, doi:10.1214/20-BA1221"
+  ],
+  "approval": {
+    "date": "2026-11-05",
+    "by": "author (Hevele Imre Robert), in the Claude Code session",
+    "choices": {
+      "1_generic_estimator": "G, 16-chain jackknife",
+      "2_ising_cells_gated": "all nine",
+      "3_diagnostic_constants": "10*tau_hat and 16 batches",
+      "4_S_primary_interval": "BM 16 batches, t15",
+      "5_regression_reference": "constants in the test, citing the off-repo file and its SHA-256",
+      "6_tolerances": "relative bias +-0.01; variance ratio [0.75, 1.25]; coverage [0.92, 0.98]"
+    }
+  },
+  "implementation_notes_added_at_freeze": {
+    "note": "Operational details not specified in the draft; fixed here before any campaign draw; no gate or endpoint changes.",
+    "storage": "Ising: per-chain integer total magnetization M (int8) and total energy E (int16) for all 2048 sweeps, one compressed NPZ per cell, kept outside Git under research/v018-estimators/traces/ (gitignored) with SHA-256 in the run manifest. AR(1): per-replica estimator outputs saved; traces regenerable from seeds.",
+    "geyer_undefined": "If GEYER returns INVALID_LONG_RUN_VARIANCE, the GEYER interval counts as non-coverage (numerical failure) and the diagnostic for that series abstains with status TAU_UNDEFINED, reported separately.",
+    "split_rhat_ties": "average ranks (scipy.stats.rankdata method=\"average\") before the normal-score transform",
+    "parallelism": "3 worker processes, one task per cell or (phi, n) setting; results do not depend on scheduling"
+  }
+}

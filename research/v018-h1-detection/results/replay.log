@@ -1,0 +1,104 @@
+{
+ "calibration": {
+  "I-4": true
+ },
+ "healthy": {
+  "I-4": true
+ },
+ "SHIFT-0": {
+  "I-4": true,
+  "I-3": true
+ },
+ "SHIFT-1": {
+  "I-4": true,
+  "I-3": true
+ },
+ "SHIFT-2": {
+  "I-4": true,
+  "I-3": true
+ },
+ "SHIFT-3": {
+  "I-4": true,
+  "I-3": true
+ },
+ "SHIFT-4": {
+  "I-4": true,
+  "I-3": true
+ },
+ "SHIFT-5": {
+  "I-4": true,
+  "I-3": true
+ },
+ "LAG1-0": {
+  "I-4": true,
+  "I-3": true
+ },
+ "LAG1-1": {
+  "I-4": true,
+  "I-3": true
+ },
+ "LAG1-2": {
+  "I-4": true,
+  "I-3": true
+ },
+ "LAG1-3": {
+  "I-4": true,
+  "I-3": true
+ },
+ "LAG1-4": {
+  "I-4": true,
+  "I-3": true
+ },
+ "LAG1-5": {
+  "I-4": true,
+  "I-3": true
+ },
+ "DUP-0": {
+  "I-4": true,
+  "I-3": true
+ },
+ "DUP-1": {
+  "I-4": true,
+  "I-3": true
+ },
+ "DUP-2": {
+  "I-4": true,
+  "I-3": true
+ },
+ "DUP-3": {
+  "I-4": true,
+  "I-3": true
+ },
+ "DUP-4": {
+  "I-4": true,
+  "I-3": true
+ },
+ "DUP-5": {
+  "I-4": true,
+  "I-3": true
+ },
+ "GFSR-0": {
+  "I-4": true,
+  "I-3": true
+ },
+ "GFSR-1": {
+  "I-4": true,
+  "I-3": true
+ },
+ "GFSR-2": {
+  "I-4": true,
+  "I-3": true
+ },
+ "GFSR-3": {
+  "I-4": true,
+  "I-3": true
+ },
+ "GFSR-4": {
+  "I-4": true,
+  "I-3": true
+ },
+ "GFSR-5": {
+  "I-4": true,
+  "I-3": true
+ }
+}

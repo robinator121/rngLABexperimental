@@ -1,0 +1,185 @@
+{
+ "script": "research/v018-estimators/recount.py",
+ "all_agree": true,
+ "comparisons": [
+  {
+   "item": "S-S[ising_L2_T1.5]",
+   "recount": 30339,
+   "analysis": 30339,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L2_T1.5]",
+   "recount": 1876,
+   "analysis": 1876,
+   "agree": true
+  },
+  {
+   "item": "S-S[ising_L2_T3.5]",
+   "recount": 31093,
+   "analysis": 31093,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L2_T3.5]",
+   "recount": 1952,
+   "analysis": 1952,
+   "agree": true
+  },
+  {
+   "item": "S-S[ising_L2_Tc]",
+   "recount": 30944,
+   "analysis": 30944,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L2_Tc]",
+   "recount": 1961,
+   "analysis": 1961,
+   "agree": true
+  },
+  {
+   "item": "S-S[ising_L3_T1.5]",
+   "recount": 30300,
+   "analysis": 30300,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L3_T1.5]",
+   "recount": 1713,
+   "analysis": 1713,
+   "agree": true
+  },
+  {
+   "item": "S-S[ising_L3_T3.5]",
+   "recount": 31076,
+   "analysis": 31076,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L3_T3.5]",
+   "recount": 1947,
+   "analysis": 1947,
+   "agree": true
+  },
+  {
+   "item": "S-S[ising_L3_Tc]",
+   "recount": 31072,
+   "analysis": 31072,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L3_Tc]",
+   "recount": 1981,
+   "analysis": 1981,
+   "agree": true
+  },
+  {
+   "item": "S-S[ising_L4_T1.5]",
+   "recount": 30464,
+   "analysis": 30464,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L4_T1.5]",
+   "recount": 1721,
+   "analysis": 1721,
+   "agree": true
+  },
+  {
+   "item": "S-S[ising_L4_T3.5]",
+   "recount": 31082,
+   "analysis": 31082,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L4_T3.5]",
+   "recount": 1931,
+   "analysis": 1931,
+   "agree": true
+  },
+  {
+   "item": "S-S[ising_L4_Tc]",
+   "recount": 30963,
+   "analysis": 30963,
+   "agree": true
+  },
+  {
+   "item": "S-G[ising_L4_Tc]",
+   "recount": 1976,
+   "analysis": 1976,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.0_n8192 BM32",
+   "recount": 3924,
+   "analysis": 3924,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.0_n8192 BM512",
+   "recount": 3922,
+   "analysis": 3922,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.5_n8192 BM32",
+   "recount": 3877,
+   "analysis": 3877,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.5_n8192 BM512",
+   "recount": 3897,
+   "analysis": 3897,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.9_n8192 BM32",
+   "recount": 3721,
+   "analysis": 3721,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.9_n8192 BM512",
+   "recount": 3894,
+   "analysis": 3894,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.99_n8192 BM32",
+   "recount": 2240,
+   "analysis": 2240,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.99_n8192 BM512",
+   "recount": 3793,
+   "analysis": 3793,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.997_n8192 BM32",
+   "recount": 1358,
+   "analysis": 1358,
+   "agree": true
+  },
+  {
+   "item": "ar1_phi0.997_n8192 BM512",
+   "recount": 3397,
+   "analysis": 3397,
+   "agree": true
+  }
+ ],
+ "ising_exact_recount": {
+  "ising_L2_T1.5": 2.60404724276512,
+  "ising_L2_T3.5": 0.776949874469168,
+  "ising_L2_Tc": 1.541106516485865,
+  "ising_L3_T1.5": 5.855872610916584,
+  "ising_L3_T3.5": 1.203371610749938,
+  "ising_L3_Tc": 3.2103459588880248,
+  "ising_L4_T1.5": 10.403226593514693,
+  "ising_L4_T3.5": 1.4736468843167745,
+  "ising_L4_Tc": 5.368333058035723
+ }
+}

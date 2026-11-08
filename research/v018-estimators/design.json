@@ -1,0 +1,209 @@
+{
+  "script": "research/v018-estimators/design_calculations.py",
+  "ar1": [
+    {
+      "phi": 0.0,
+      "n": 8192,
+      "tau_int": 1.0,
+      "n_over_tau": 8192.0,
+      "exact_var_mean": 0.0001220703125,
+      "asymptotic_var_mean": 0.0001220703125,
+      "run_adequate_under_rule_n_ge_160_tau": true,
+      "bm_first_order_relative_bias": {
+        "32": -0.0,
+        "128": -0.0,
+        "512": -0.0,
+        "1024": -0.0
+      }
+    },
+    {
+      "phi": 0.0,
+      "n": 65536,
+      "tau_int": 1.0,
+      "n_over_tau": 65536.0,
+      "exact_var_mean": 1.52587890625e-05,
+      "asymptotic_var_mean": 1.52587890625e-05,
+      "run_adequate_under_rule_n_ge_160_tau": true,
+      "bm_first_order_relative_bias": {
+        "32": -0.0,
+        "128": -0.0,
+        "512": -0.0,
+        "1024": -0.0
+      }
+    },
+    {
+      "phi": 0.5,
+      "n": 8192,
+      "tau_int": 3.0,
+      "n_over_tau": 2730.6666666666665,
+      "exact_var_mean": 0.0003661513328552246,
+      "asymptotic_var_mean": 0.0003662109375,
+      "run_adequate_under_rule_n_ge_160_tau": true,
+      "bm_first_order_relative_bias": {
+        "32": -0.041666666666666664,
+        "128": -0.010416666666666666,
+        "512": -0.0026041666666666665,
+        "1024": -0.0013020833333333333
+      }
+    },
+    {
+      "phi": 0.5,
+      "n": 65536,
+      "tau_int": 3.0,
+      "n_over_tau": 21845.333333333332,
+      "exact_var_mean": 4.5775435864925385e-05,
+      "asymptotic_var_mean": 4.57763671875e-05,
+      "run_adequate_under_rule_n_ge_160_tau": true,
+      "bm_first_order_relative_bias": {
+        "32": -0.041666666666666664,
+        "128": -0.010416666666666666,
+        "512": -0.0026041666666666665,
+        "1024": -0.0013020833333333333
+      }
+    },
+    {
+      "phi": 0.9,
+      "n": 8192,
+      "tau_int": 19.000000000000004,
+      "n_over_tau": 431.157894736842,
+      "exact_var_mean": 0.002316653728485108,
+      "asymptotic_var_mean": 0.0023193359375000004,
+      "run_adequate_under_rule_n_ge_160_tau": true,
+      "bm_first_order_relative_bias": {
+        "32": -0.29605263157894746,
+        "128": -0.07401315789473686,
+        "512": -0.018503289473684216,
+        "1024": -0.009251644736842108
+      }
+    },
+    {
+      "phi": 0.9,
+      "n": 65536,
+      "tau_int": 19.000000000000004,
+      "n_over_tau": 3449.263157894736,
+      "exact_var_mean": 0.00028987508267164236,
+      "asymptotic_var_mean": 0.00028991699218750005,
+      "run_adequate_under_rule_n_ge_160_tau": true,
+      "bm_first_order_relative_bias": {
+        "32": -0.29605263157894746,
+        "128": -0.07401315789473686,
+        "512": -0.018503289473684216,
+        "1024": -0.009251644736842108
+      }
+    },
+    {
+      "phi": 0.99,
+      "n": 8192,
+      "tau_int": 198.99999999999983,
+      "n_over_tau": 41.16582914572868,
+      "exact_var_mean": 0.023996949195861796,
+      "asymptotic_var_mean": 0.02429199218749998,
+      "run_adequate_under_rule_n_ge_160_tau": false,
+      "bm_first_order_relative_bias": {
+        "32": -3.1092964824120575,
+        "128": -0.7773241206030144,
+        "512": -0.1943310301507536,
+        "1024": -0.0971655150753768
+      }
+    },
+    {
+      "phi": 0.99,
+      "n": 65536,
+      "tau_int": 198.99999999999983,
+      "n_over_tau": 329.32663316582943,
+      "exact_var_mean": 0.0030318889766931508,
+      "asymptotic_var_mean": 0.0030364990234374974,
+      "run_adequate_under_rule_n_ge_160_tau": true,
+      "bm_first_order_relative_bias": {
+        "32": -3.1092964824120575,
+        "128": -0.7773241206030144,
+        "512": -0.1943310301507536,
+        "1024": -0.0971655150753768
+      }
+    },
+    {
+      "phi": 0.997,
+      "n": 8192,
+      "tau_int": 665.6666666666661,
+      "n_over_tau": 12.306459689534313,
+      "exact_var_mean": 0.07795670297417498,
+      "asymptotic_var_mean": 0.08125813802083326,
+      "run_adequate_under_rule_n_ge_160_tau": false,
+      "bm_first_order_relative_bias": {
+        "32": -10.401018193957595,
+        "128": -2.600254548489399,
+        "512": -0.6500636371223497,
+        "1024": -0.32503181856117486
+      }
+    },
+    {
+      "phi": 0.997,
+      "n": 65536,
+      "tau_int": 665.6666666666661,
+      "n_over_tau": 98.4516775162745,
+      "exact_var_mean": 0.010105682329999068,
+      "asymptotic_var_mean": 0.010157267252604157,
+      "run_adequate_under_rule_n_ge_160_tau": false,
+      "bm_first_order_relative_bias": {
+        "32": -10.401018193957595,
+        "128": -2.600254548489399,
+        "512": -0.6500636371223497,
+        "1024": -0.32503181856117486
+      }
+    }
+  ],
+  "coverage_gate": {
+    "interval": [
+      0.92,
+      0.98
+    ],
+    "method": "Clopper-Pearson 95% must lie inside the interval",
+    "by_units": [
+      {
+        "units": 1024,
+        "cp95_halfwidth_at_0.95": 0.013831329095232325,
+        "P_gate_fail_true_0.95": 0.03240645301891233,
+        "P_gate_fail_true_0.93": 0.8093860970904272,
+        "P_gate_fail_true_0.90": 0.9999862499700741
+      },
+      {
+        "units": 2048,
+        "cp95_halfwidth_at_0.95": 0.009672588451501263,
+        "P_gate_fail_true_0.95": 0.00016653755423051128,
+        "P_gate_fail_true_0.93": 0.6267316465268828,
+        "P_gate_fail_true_0.90": 0.9999997955291836
+      },
+      {
+        "units": 4096,
+        "cp95_halfwidth_at_0.95": 0.006802039783120217,
+        "P_gate_fail_true_0.95": 9.937610147833008e-10,
+        "P_gate_fail_true_0.93": 0.33635013249450996,
+        "P_gate_fail_true_0.90": 0.9999999998778356
+      },
+      {
+        "units": 32768,
+        "cp95_halfwidth_at_0.95": 0.0023748680153855006,
+        "P_gate_fail_true_0.95": 2.2778916418725777e-97,
+        "P_gate_fail_true_0.93": 3.795835304002474e-07,
+        "P_gate_fail_true_0.90": 1.0000000000000004
+      }
+    ]
+  },
+  "runtime_projection": {
+    "ising_seconds_per_chain_2048_sweeps": {
+      "4": 0.012694830507811616,
+      "2": 0.0031676403945315457,
+      "3": 0.007140842160644034
+    },
+    "ising_L3_note": "L3 scaled from L4 by 9/16 sites; not measured",
+    "ising_chains_per_cell": 32768,
+    "ising_cells": 9,
+    "ising_single_core_seconds": 2261.3176873438933,
+    "ar1_seconds_per_replica_by_n_excluding_geyer_loops": {
+      "8192": 0.0006321607070312041,
+      "65536": 0.005799615390621682
+    },
+    "ar1_single_core_seconds_excluding_geyer_loops": 131.7227744799311,
+    "source": "research/v018-estimators/smoke/smoke_timing.json"
+  }
+}

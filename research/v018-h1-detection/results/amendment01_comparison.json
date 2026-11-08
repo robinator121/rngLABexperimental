@@ -1,0 +1,33 @@
+{
+ "superseded_ran": true,
+ "different": [],
+ "only_approved": [
+  "/cells/DUP-0/A_minus_C/ci95",
+  "/cells/DUP-1/A_minus_C/ci95",
+  "/cells/DUP-2/A_minus_C/ci95",
+  "/cells/DUP-3/A_minus_C/ci95",
+  "/cells/DUP-4/A_minus_C/ci95",
+  "/cells/DUP-5/A_minus_C/ci95",
+  "/cells/GFSR-0/A_minus_C/ci95",
+  "/cells/GFSR-1/A_minus_C/ci95",
+  "/cells/GFSR-2/A_minus_C/ci95",
+  "/cells/GFSR-3/A_minus_C/ci95",
+  "/cells/GFSR-4/A_minus_C/ci95",
+  "/cells/GFSR-5/A_minus_C/ci95",
+  "/cells/LAG1-0/A_minus_C/ci95",
+  "/cells/LAG1-1/A_minus_C/ci95",
+  "/cells/LAG1-2/A_minus_C/ci95",
+  "/cells/LAG1-3/A_minus_C/ci95",
+  "/cells/LAG1-4/A_minus_C/ci95",
+  "/cells/LAG1-5/A_minus_C/ci95",
+  "/cells/SHIFT-0/A_minus_C/ci95",
+  "/cells/SHIFT-1/A_minus_C/ci95",
+  "/cells/SHIFT-2/A_minus_C/ci95",
+  "/cells/SHIFT-3/A_minus_C/ci95",
+  "/cells/SHIFT-4/A_minus_C/ci95",
+  "/cells/SHIFT-5/A_minus_C/ci95"
+ ],
+ "only_superseded": [],
+ "decision_paths_different": [],
+ "identical_except_added_fields": true
+}
