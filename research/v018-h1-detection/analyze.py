@@ -28,12 +28,15 @@ from rnglab.seeds import namespace_seed  # noqa: E402
 from rnglab12.uncertainty import summarize_series  # noqa: E402
 
 RESAMPLES, CHUNK = 10_000, 500
+BONFERRONI_CELLS = 24  # PROTOCOL.md sections 4 and 5.3: frozen multiplicity.
 V1_BAND, V2_MAX = (0.92, 0.98), 0.10
 HIGH, LOW = 0.5, 0.2
 CUSUM_K = 0.5
 
 
-def cp(k: int, n: int, level: float) -> list[float]:
+def cp(k: int, n: int, level: float) -> list[float] | None:
+    if n == 0:
+        return None
     a = 1 - level
     return [0.0 if k == 0 else float(beta_dist.ppf(a / 2, k, n - k + 1)),
             1.0 if k == n else float(beta_dist.ppf(1 - a / 2, k + 1, n - k))]
@@ -79,6 +82,8 @@ def detect(series: np.ndarray, ends: np.ndarray, cp_bytes: np.ndarray, onset: np
 
 
 def classify(wrong_cp, c_cp, a_cp, gap_ci) -> str:
+    if wrong_cp is None:
+        return "indeterminate"
     if wrong_cp[0] > HIGH and c_cp[1] < LOW and gap_ci[0] > 0:
         return "H1"
     if wrong_cp[0] > HIGH and c_cp[1] < LOW and a_cp[1] < LOW:
@@ -101,7 +106,7 @@ def gates(out: Path = HERE, ns: str | None = None, order_statistic: int | None =
     ns = ns or protocol["data"]["namespace"]
     names = cell_names(out)
     fault_names = [n for n in names if n not in ("calibration", "healthy")]
-    level = 1 - 0.05 / len(fault_names)
+    level = 1 - 0.05 / BONFERRONI_CELLS
     cal, healthy = load_cell(out, "calibration"), load_cell(out, "healthy")
     order_statistic = order_statistic or math.ceil((len(cal["records"]) + 1) * 0.95)
     constants = {"sigma_D": float(cal["app_stats"][:, :, 0].std(ddof=1)), "mu_f": float(cal["app_stats"][:, :, 1].mean()),
@@ -123,9 +128,11 @@ def gates(out: Path = HERE, ns: str | None = None, order_statistic: int | None =
         "I-1": {"failing_runs": i1, "result": "PASS" if i1 == 0 else "FAIL"},
         "I-2": {"mismatched_prefixes": i2, "result": "PASS" if i2 == 0 else "FAIL"},
         "I-3": {"cells": {k: v["I-3"] for k, v in replay.items() if "I-3" in v},
-                "result": "PASS" if all(v["I-3"] for v in replay.values() if "I-3" in v) else "FAIL"},
-        "I-4": {"cells": {k: v["I-4"] for k, v in replay.items()},
-                "result": "PASS" if all(v["I-4"] for v in replay.values()) else "FAIL"}}
+                "result": "PASS" if all(replay.get(n, {}).get("I-3", False) for n in fault_names)
+                and all(v["I-3"] for v in replay.values() if "I-3" in v) else "FAIL"},
+        "I-4": {"cells": {k: v.get("I-4", False) for k, v in replay.items()},
+                "result": "PASS" if all(replay.get(n, {}).get("I-4", False) for n in names)
+                and all(v.get("I-4", False) for v in replay.values()) else "FAIL"}}
 
     # Validity gates
     def harm(cell):
@@ -142,7 +149,7 @@ def gates(out: Path = HERE, ns: str | None = None, order_statistic: int | None =
     d = ha["A"]["whole_run"].astype(float) - ha["C"]["whole_run"].astype(float)
     validity = {
         "V1": {"covered": covered, "runs": len(hw), "onset_flagged": h_flagged, "cp95": v1_cp,
-               "result": "PASS" if V1_BAND[0] <= v1_cp[0] and v1_cp[1] <= V1_BAND[1] else "FAIL"},
+               "result": "PASS" if v1_cp is not None and V1_BAND[0] <= v1_cp[0] and v1_cp[1] <= V1_BAND[1] else "FAIL"},
         "V2": {**{f"rate_{a}": fpr[a] for a in fpr}, "paired_A_minus_C": float(d.mean()),
                "paired_ci95": bootstrap_mean(d, namespace_seed(ns, "analysis", "bootstrap", "V2"), 0.95, resamples),
                "result": "PASS" if all(fpr[a]["cp95"][1] <= V2_MAX for a in fpr) else "FAIL"}}
@@ -159,11 +166,13 @@ def gates(out: Path = HERE, ns: str | None = None, order_statistic: int | None =
         gap = det["A"]["post"].astype(float) - det["C"]["post"].astype(float)
         entry = {"family": cell["records"][0]["family"], "severity": cell["records"][0]["severity"], "runs": n,
                  "onset_flagged": flagged,
-                 "wrong": {"k": kw, "n": len(w), "rate": kw / len(w), "cp_bonferroni": cp(kw, len(w), level), "cp95": cp(kw, len(w), 0.95)},
+                 "wrong": {"k": kw, "n": len(w), "rate": kw / len(w) if len(w) else None,
+                           "cp_bonferroni": cp(kw, len(w), level), "cp95": cp(kw, len(w), 0.95)},
                  "C_alarm": {"k": kc, "rate": kc / n, "cp_bonferroni": cp(kc, n, level), "cp95": cp(kc, n, 0.95)},
                  "A_alarm": {"k": ka, "rate": ka / n, "cp_bonferroni": cp(ka, n, level), "cp95": cp(ka, n, 0.95)},
                  "A_minus_C": {"mean": float(gap.mean()),
-                               "ci_bonferroni": bootstrap_mean(gap, namespace_seed(ns, "analysis", "bootstrap", f"gap/{name}"), level, resamples)},
+                               "ci_bonferroni": bootstrap_mean(gap, namespace_seed(ns, "analysis", "bootstrap", f"gap/{name}"), level, resamples),
+                               "ci95": bootstrap_mean(gap, namespace_seed(ns, "analysis", "bootstrap", f"gap95/{name}"), 0.95, resamples)},
                  "pass_but_broken": int((~det["C"]["post"][ok] & w).sum())}
         entry["class"] = classify(entry["wrong"]["cp_bonferroni"], entry["C_alarm"]["cp_bonferroni"],
                                   entry["A_alarm"]["cp_bonferroni"], entry["A_minus_C"]["ci_bonferroni"])
@@ -182,7 +191,8 @@ def gates(out: Path = HERE, ns: str | None = None, order_statistic: int | None =
     families = sorted({c["family"] for c in cells.values()})
     verdicts = {f: "SUPPORTED" if any(c["class"] == "H1" for c in cells.values() if c["family"] == f) else "NOT SUPPORTED"
                 for f in families}
-    interpretable = validity["V1"]["result"] == validity["V2"]["result"] == "PASS"
+    interpretable = (validity["V1"]["result"] == validity["V2"]["result"] == "PASS"
+                     and all(v["result"] == "PASS" for v in implementation.values()))
     return {"thresholds": tau, "order_statistic": order_statistic, "application_constants": constants,
             "bonferroni_level": level, "resamples": resamples, "implementation": implementation, "validity": validity,
             "cells": cells, "verdicts": {"H1-C": verdicts, "interpretable": interpretable,

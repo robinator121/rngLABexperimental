@@ -1,0 +1,2 @@
+# PYTHONPATH=src .venv/bin/pytest tests -q on feature/v018 at 0aca45a + Stage C Amendment 01 (analyze.py 7d36f099…1930e5, recount.py 56c127cc…23755c), 2026-11-08T05:08Z, Python 3.14.9, Phase II lock
+425 passed in 40.68s

@@ -26,6 +26,7 @@ HERE = Path(__file__).resolve().parent
 M, BETA, ONSET_BYTES = 16, 2.0, 2**19
 HARM = (2560, 10240, 480)
 P_FLOOR = 1e-300
+BONFERRONI_CELLS = 24  # PROTOCOL.md sections 4 and 5.3: frozen multiplicity.
 
 
 def reference_energy() -> float:
@@ -37,7 +38,9 @@ def seed(ns: str, *parts) -> int:
     return int.from_bytes(hashlib.sha256("/".join([ns, *parts]).encode()).digest()[:8], "big")
 
 
-def clopper_pearson(k: int, n: int, level: float) -> tuple[float, float]:
+def clopper_pearson(k: int, n: int, level: float) -> tuple[float, float] | None:
+    if n == 0:
+        return None
     a = 1 - level
     lo = stats.beta.ppf(a / 2, k, n - k + 1) if k > 0 else 0.0
     hi = stats.beta.ppf(1 - a / 2, k + 1, n - k) if k < n else 1.0
@@ -68,8 +71,10 @@ def wrong_from_traces(out: Path, name: str, reference: float) -> np.ndarray:
         means = x.reshape(len(x), (end - start) // b, b).mean(axis=2)
         k = means.shape[1]
         centre = means.mean(axis=1)
-        half = stats.t.ppf(0.975, k - 1) * np.sqrt(means.var(axis=1, ddof=1) / k)
-        flags.append(~((centre - half <= reference) & (reference <= centre + half)))
+        variance = means.var(axis=1, ddof=1)
+        half = stats.t.ppf(0.975, k - 1) * np.sqrt(variance / k)
+        flags.append(~((variance > 0) & np.isfinite(variance)
+                       & (centre - half <= reference) & (reference <= centre + half)))
     return np.concatenate(flags)
 
 
@@ -80,7 +85,9 @@ def recount(out: Path = HERE, ns: str | None = None, resamples: int = 10_000) ->
     comparisons = []
 
     def compare(name, mine, theirs, tol=0.0):
-        if tol:
+        if mine is None or theirs is None:
+            ok = mine is None and theirs is None
+        elif tol:
             ok = all(abs(a - b) <= tol * max(1.0, abs(b)) for a, b in zip(np.atleast_1d(mine), np.atleast_1d(theirs)))
         else:
             ok = mine == theirs
@@ -88,7 +95,7 @@ def recount(out: Path = HERE, ns: str | None = None, resamples: int = 10_000) ->
 
     names = sorted(p.stem for p in (out / "results" / "cells").glob("*.npz"))
     faults = [n for n in names if n not in ("calibration", "healthy")]
-    level = 1 - 0.05 / len(faults)
+    level = 1 - 0.05 / BONFERRONI_CELLS
     cal = load(out, "calibration")
     order = g["order_statistic"]
     stats_d, stats_f = cal["app_stats"][:, :, 0], cal["app_stats"][:, :, 1]
@@ -120,7 +127,8 @@ def recount(out: Path = HERE, ns: str | None = None, resamples: int = 10_000) ->
         if name == "healthy":
             v = g["validity"]
             compare("V1 covered", int((~wrong[ok]).sum()), v["V1"]["covered"])
-            compare("V1 CP95", list(clopper_pearson(int((~wrong[ok]).sum()), int(ok.sum()), 0.95)), v["V1"]["cp95"], 1e-12)
+            compare("V1 CP95", list(clopper_pearson(int((~wrong[ok]).sum()), int(ok.sum()), 0.95)) if ok.any() else None,
+                    v["V1"]["cp95"], 1e-12)
             for arm, s in (("C", s_conv(cell)), ("A", s_app(cell))):
                 compare(f"V2 whole-run alarms {arm}", int((s > tau[arm]).any(axis=1).sum()), v["V2"][f"rate_{arm}"]["alarms"])
             continue
@@ -131,11 +139,20 @@ def recount(out: Path = HERE, ns: str | None = None, resamples: int = 10_000) ->
         compare(f"{name}: A alarms", ka, e["A_alarm"]["k"])
         compare(f"{name}: pass but broken", int((~c_post[ok] & wrong[ok]).sum()), e["pass_but_broken"])
         n, nw = len(cell["records"]), int(ok.sum())
+        compare(f"{name}: wrong n", nw, e["wrong"]["n"])
+        compare(f"{name}: runs", n, e["runs"])
+        compare(f"{name}: wrong rate", kw / nw if nw else None, e["wrong"]["rate"], 1e-12)
+        compare(f"{name}: C alarm rate", kc / n, e["C_alarm"]["rate"], 1e-12)
+        compare(f"{name}: A alarm rate", ka / n, e["A_alarm"]["rate"], 1e-12)
         w_cp, c_cp, a_cp = clopper_pearson(kw, nw, level), clopper_pearson(kc, n, level), clopper_pearson(ka, n, level)
         gap = paired_interval(a_post.astype(float) - c_post.astype(float), seed(ns, "analysis", "bootstrap", f"gap/{name}"), level, resamples)
         compare(f"{name}: A-C interval", gap, e["A_minus_C"]["ci_bonferroni"], 1e-12)
+        gap95 = paired_interval(a_post.astype(float) - c_post.astype(float), seed(ns, "analysis", "bootstrap", f"gap95/{name}"), 0.95, resamples)
+        compare(f"{name}: A-C interval 95", gap95, e["A_minus_C"]["ci95"], 1e-12)
         high, low = 0.5, 0.2
-        if w_cp[0] > high and c_cp[1] < low and gap[0] > 0:
+        if w_cp is None:
+            cls = "indeterminate"
+        elif w_cp[0] > high and c_cp[1] < low and gap[0] > 0:
             cls = "H1"
         elif w_cp[0] > high and c_cp[1] < low and a_cp[1] < low:
             cls = "undetected_harm"

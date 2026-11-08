@@ -1,0 +1,46 @@
+{
+ "written_utc": "2026-11-08T05:09:16Z",
+ "git_head": "0aca45ae88ab76f369a0118578f37139c0adca94",
+ "approval": "Author approval, 2026-11-08, text in AMENDMENT_01.md",
+ "scripts": {
+  "research/v018-h1-detection/analyze.py": {
+   "superseded_sha256": "d172f14659f3c61bbf51f98c0159d5e77b36e681d41a3b4e9117f065e3af5e42",
+   "manifest_sha256": "d172f14659f3c61bbf51f98c0159d5e77b36e681d41a3b4e9117f065e3af5e42",
+   "approved_sha256": "7d36f0999f0ef8b23c299f0440f4f3b589b9458aad7ad0e1770b631b251930e5",
+   "constants_added": {
+    "BONFERRONI_CELLS": 24
+   },
+   "constants_removed": [],
+   "constants_changed": []
+  },
+  "research/v018-h1-detection/recount.py": {
+   "superseded_sha256": "fd44ed3ad8473ab9781f1bb7ad105acf01d6d7c7c67cfc2949b72c3a6803f1e0",
+   "manifest_sha256": "fd44ed3ad8473ab9781f1bb7ad105acf01d6d7c7c67cfc2949b72c3a6803f1e0",
+   "approved_sha256": "56c127cccec034fd663cc54e0ccdddd800232d12fa89f81e8b050d371d23755c",
+   "constants_added": {
+    "BONFERRONI_CELLS": 24
+   },
+   "constants_removed": [],
+   "constants_changed": []
+  }
+ },
+ "manifest_files": 14,
+ "manifest_files_changed": [
+  "research/v018-h1-detection/analyze.py",
+  "research/v018-h1-detection/recount.py"
+ ],
+ "only_amended_files_changed": true,
+ "protocol_sha256_matches": true,
+ "grid_sha256_matches": true,
+ "run_manifest_sha256": "bf1835fc9749f189485a46f58b42dfb6bd16a6935c18d33e700edc84f8ba38f0",
+ "campaign_cells": 26,
+ "campaign_runs": 11239,
+ "planned_runs": 11239,
+ "campaign_file_mismatches": [],
+ "analysis_outputs_present": [],
+ "tests": {
+  "evidence": "docs/v018/evidence/pytest_stageC_amendment01.txt",
+  "command": "PYTHONPATH=src .venv/bin/pytest tests -q on feature/v018 at 0aca45a + Stage C Amendment 01 (analyze.py 7d36f099\u20261930e5, recount.py 56c127cc\u202623755c), 2026-11-08T05:08Z, Python 3.14.9, Phase II lock",
+  "result": "425 passed in 40.68s"
+ }
+}
