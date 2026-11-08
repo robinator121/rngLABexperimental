@@ -39,8 +39,18 @@ Running summary, updated after each phase. Every entry names its source. Produce
 | GFSR, all six lag pairs including R250: harmless and quiet in this application (wrong-rate 0.027 to 0.066; healthy 0.056) | LAG1 and DUP were caught by the two word-level tests aimed at them. Whether SP 800-22 alone would catch them first was not measured |
 | | The SP 800-90B health tests alone stayed near their healthy rate for LAG1, and for DUP up to severity 0.19 |
 
+## Stage C sensitivity 01: the battery without the targeted word tests (`research/v018-h1-detection/SENSITIVITY_01_RESULTS.md`)
+
+Post hoc and exploratory; plan frozen at `c7231fa` before the analysis; stored Stage C data only.
+
+| Positive | Negative or limiting |
+|---|---|
+| With only the seven in-repository SP 800-22 tests (C′, recalibrated; healthy 182/4096 whole-run alarms), no cell is H1 or undetected harm; the Stage C verdicts stand in all four families | **For LAG1, "the battery detects first" depended on the lag-1 test aimed at it.** C′ raised 10 to 41 post-onset alarms per 256 runs, and up to 186 of 256 runs were wrong with no C′ alarm (none with the full battery) |
+| DUP: the SP 800-22 subset still detected before harm (DUP-3: 164 alarms, 17/256 wrong) | LAG1 came close to the H1 class: the application arm alarmed in up to 256 of 256 runs, the A − C′ interval excluded zero in all six cells, and LAG1-4 missed H1 only by its wrong-rate lower bound (0.496 against 0.5). Descriptive, not a confirmed H1 result |
+| The self-check reproduced `results/gates.json` exactly | Post hoc, on the same data, with the Stage C classes; C′ is a 7-of-15 subset of SP 800-22 |
+
 ## Central hypothesis (H1–H3, `ROADMAP.md`)
 
 Evidence status:
-- **H1, as narrowed** (calibrated, matched false alarms, same stream): not supported in Stage C for SHIFT, LAG1, DUP and GFSR with the nine-test battery. Phase II's family-dependent evidence included channel-specific faults that a single-stream battery cannot see by construction; those were excluded from Stage C (PROTOCOL §9) and remain untested under matched false alarms.
+- **H1, as narrowed** (calibrated, matched false alarms, same stream): not supported in Stage C for SHIFT, LAG1, DUP and GFSR with the nine-test battery. Phase II's family-dependent evidence included channel-specific faults that a single-stream battery cannot see by construction; those were excluded from Stage C (PROTOCOL §9) and remain untested under matched false alarms. A post-hoc sensitivity analysis shows that for LAG1 the negative result relied on the targeted lag-1 test: against the SP 800-22 subset alone, LAG1 comes close to the H1 pattern (exploratory).
 - **H2 and H3** are untested.

@@ -30,6 +30,10 @@ There were four fault families: SHIFT, LAG1 and DUP (synthetic, word-level) and 
 
 Verdicts, all interpretable: H1-C **not supported** for SHIFT, LAG1, DUP and GFSR. This negative result is the main finding of Stage C.
 
+**Post-hoc sensitivity analysis** ([SENSITIVITY_01_RESULTS.md](SENSITIVITY_01_RESULTS.md); plan frozen at `c7231fa` before the analysis). Without the two word-level tests, using the SP 800-22 subset alone recalibrated to the same false-alarm rate:
+- the verdicts stand;
+- for LAG1 the battery mostly stayed quiet, while up to 186 of 256 runs were wrong and the application arm alarmed. LAG1 comes close to the H1 pattern (exploratory).
+
 ## Scope
 
 This covers one application at one parameter point, three synthetic fault families and one real generator family. The battery includes tests that target LAG1 and DUP directly. GFSR showing no harm here says nothing about cluster algorithms. Nothing here tests H2 or H3. See REPORT §8.
