@@ -17,7 +17,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SUPERSEDED_AT = "0aca45a"  # commit holding the manifest and the superseded scripts
+SUPERSEDED_AT = "e5c0140"  # commit holding the manifest and the superseded scripts (0aca45a before the 2026-11-08 rewrite)
 AMENDED = ["research/v018-h1-detection/analyze.py", "research/v018-h1-detection/recount.py"]
 ANALYSIS_OUTPUTS = ["replay.json", "gates.json", "secondary.json", "recount.json"]
 TEST_EVIDENCE = ROOT / "docs/v018/evidence/pytest_stageC_amendment01.txt"

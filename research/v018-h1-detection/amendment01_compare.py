@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the superseded analyze.py (commit 0aca45a) on the campaign data and compare it with the approved one.
+"""Run the superseded analyze.py (commit e5c0140, 0aca45a before the 2026-11-08 rewrite) on the campaign data and compare it with the approved one.
 
 Pre-declared in AMENDMENT_01.md. Run after `analyze.py` has written results/gates.json.
 
@@ -19,7 +19,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SUPERSEDED_AT = "0aca45a"
+SUPERSEDED_AT = "e5c0140"  # 0aca45a before the 2026-11-08 history rewrite; same tree
 
 
 def superseded_module() -> types.ModuleType:
