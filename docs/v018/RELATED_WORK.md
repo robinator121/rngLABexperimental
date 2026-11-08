@@ -1,6 +1,6 @@
 # Related work and novelty review (v0.18 Stage B, widened Phase 3.5)
 
-**Status: adopted by the author, 2026-11-06 ("Adopt GO").** Decision: GO for Stage C, with the H1 claim narrowed as in Section 1. Stages D and E are conditional GO, to be revisited after Stage C. The review was carried out by Claude Code (Opus 5.5) using web searches on 2026-11-06. Every reference in the list was checked against a publisher or indexing record for its authors, title, venue, year and DOI. Full texts were **not** read unless an entry says so. Statements about a paper's content therefore rest on its abstract and on bibliographic or secondary summaries. Section 6 sets out the limits.
+**Status: adopted by the author, 2026-11-06 ("Adopt GO").** Decision: GO for Stage C, with the H1 claim narrowed as in Section 1. Stages D and E are conditional GO, to be revisited after Stage C (revisited in `STAGE_DE_REVIEW.md`, decided 2026-11-08). The review was carried out by Claude Code (Opus 5.5) using web searches on 2026-11-06. Every reference in the list was checked against a publisher or indexing record for its authors, title, venue, year and DOI. Full texts were **not** read unless an entry says so. Statements about a paper's content therefore rest on its abstract and on bibliographic or secondary summaries. Section 6 sets out the limits.
 
 Scope, as adopted in `ROADMAP.md` (decision 2): the whole RNGLab sequence (degradation, detection, lifetime forecast, intervention) across five areas:
 1. application-based RNG testing;
