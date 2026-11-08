@@ -1,6 +1,6 @@
 # v0.18 results summary: positive and negative findings side by side
 
-Running summary, updated after each phase. Every entry names its source. Produced by Claude Code (Opus 5.5); the decisions are the author's. Last update: Phase 2, 2026-11-06.
+Running summary, updated after each phase. Every entry names its source. Produced by Claude Code (Opus 5.5); the decisions are the author's. Last update: Stage C, 2026-11-08.
 
 ## Phase 0: audit and consolidation
 
@@ -29,6 +29,18 @@ Running summary, updated after each phase. Every entry names its source. Produce
 | Byte ledger, start pairing, trace consistency and replay are exact (I-1 to I-4); the independent recount agrees 21/21 | Refresh-condition bias intervals exclude zero (CV −0.000321, TD +0.001713), far inside the gate; unexplained (post-hoc check in `posthoc_bias_check.json`) |
 | The PIMC run options were ported from Codex unchanged; a golden test captured before the port shows the defaults are bit-identical | A healthy baseline at one parameter point only; tests none of H1–H3 |
 
+## Stage C: application-aware detection at matched false alarms, H1 (`research/v018-h1-detection/REPORT.md`)
+
+| Positive | Negative or limiting |
+|---|---|
+| All gates pass: I-1 to I-4; V1 3867/4096 (0.944092); V2 false alarms C 0.048584, A 0.0424805. The independent recount agrees 319/319 | **H1-C NOT SUPPORTED in all four families** (SHIFT, LAG1, DUP, GFSR): no H1 cell and no undetected-harm cell among 24 |
+| Amendment 01 was approved before analysis. The superseded analysis gives identical output except the 24 added descriptive intervals | **The battery alarmed in every run of all 18 synthetic cells**, including 7 "conventional first" cells where the application's wrong-rate stayed below the class bound of 0.2 (0.027 to 0.113; healthy 0.056) |
+| The application-arm alarm rate rises with severity together with harm, while the battery is saturated (descriptive; a hypothesis for Stage D) | The application arm never alarmed alone. When both alarmed it was later by a median of 512 to 5,376 sweeps |
+| GFSR, all six lag pairs including R250: harmless and quiet in this application (wrong-rate 0.027 to 0.066; healthy 0.056) | LAG1 and DUP were caught by the two word-level tests aimed at them. Whether SP 800-22 alone would catch them first was not measured |
+| | The SP 800-90B health tests alone stayed near their healthy rate for LAG1, and for DUP up to severity 0.19 |
+
 ## Central hypothesis (H1–H3, `ROADMAP.md`)
 
-No v0.18 phase so far tests H1, H2 or H3. Evidence status: H1 is mixed and depends on the fault family (Phase II); H2 and H3 are untested.
+Evidence status:
+- **H1, as narrowed** (calibrated, matched false alarms, same stream): not supported in Stage C for SHIFT, LAG1, DUP and GFSR with the nine-test battery. Phase II's family-dependent evidence included channel-specific faults that a single-stream battery cannot see by construction; those were excluded from Stage C (PROTOCOL §9) and remain untested under matched false alarms.
+- **H2 and H3** are untested.
