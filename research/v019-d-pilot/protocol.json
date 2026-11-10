@@ -1,0 +1,478 @@
+{
+  "id": "rnglab-v019-d-pilot-v1",
+  "status": "FROZEN_DESIGN",
+  "status_note": "Frozen 2026-11-10 after author approval in chat (\"Accept and freeze\"): the proposed resolutions of Q02-Q07 and Q09 were accepted; Q01 and Q08 had been resolved by correcting PROTOCOL.md wording to the Stage C conventions. Drafted, then reviewed against the code and PROTOCOL.md and in a second, independent review. SHA-256 of this file is in protocol.sha256. No pilot, smoke or campaign data generated at freeze.",
+  "drafted": "2026-11-10",
+  "drafted_by": "Prepared for the author; the author decides the design",
+  "human_readable": "research/v019-d-pilot/PROTOCOL.md",
+  "design_numbers": "research/v019-d-pilot/design.json",
+  "source_notation": {
+    "P": "research/v019-d-pilot/PROTOCOL.md; section references below refer to this file unless qualified",
+    "D": "research/v019-d-pilot/design.json; JSON paths use zero-based array indices",
+    "C": "research/v018-h1-detection/",
+    "h1lib": "research/v018-h1-detection/h1lib.py, imported under the name h1lib without modifying it",
+    "C_analyze": "research/v018-h1-detection/analyze.py, loaded under a distinct module alias C_analyze",
+    "numeric_provenance": "Source fields apply recursively to their object. Arithmetic constants in equations follow the cited function or algebraic definition. New implementation constants, dtypes, file schemas, boundary and missing-value rules are identified by _convention or conventions_added, rather than attributed to the approved design. No rounded descriptive number overrides its source."
+  },
+  "scope": {
+    "source": "P sections 1, 6",
+    "purpose": "Decide whether Stage D is worth running; descriptive known-family laboratory feasibility experiment, not an H2-R test.",
+    "family_known": true,
+    "report_negative_results_equally": true,
+    "deferred": ["held-out rates and onsets", "unseen profile family", "Bayesian forward simulation", "oracle predictive distribution", "sharpness beyond calibration bins", "abstention", "forecasts after issuance", "campaign multiplicity hierarchy"]
+  },
+  "freeze_steps": [
+    "The author approves this design. Done 2026-11-10.",
+    "The implementation specification protocol.json is written (Section 7). It fixes every field, formula and convention that this document leaves to it, and it must agree with this document. The design numbers of Sections 2.2, 3 and 5 are already computed by design.py (output design.json), and are recomputed if a decision changes them.",
+    "The author approves the design numbers, and protocol.json is frozen with its SHA-256 recorded.",
+    "The engineering is built and tested (Section 7).",
+    "A smoke run is made in its own namespace and is excluded from every result.",
+    "A pre-generation manifest, with the hashes of all code including the imported Stage C modules, is pushed before the first pilot draw.",
+    "Generation, then fitting, then evaluation (Section 4.4)."
+  ],
+  "amendments": "P freeze procedure: after step 3, changes require a versioned amendment written before the affected analysis; failed runs are reported and never silently replaced.",
+  "approval": {"date": "2026-11-10", "by": "author (Hevele Imre Robert), in the working session", "design": "PROTOCOL.md approved 2026-11-10 (\"Approve as recommended\"): first option of all seven decisions in section 9", "specification": "\"Accept and freeze\", 2026-11-10: proposed resolutions of Q02-Q07 and Q09 accepted; Q01 and Q08 resolved before freeze by PROTOCOL.md wording corrections", "design_numbers": "design.json as written by design.py; recomputed at freeze and unchanged", "tdk_deadline": "not supplied at freeze; see stop_criteria.5.tdk_deadline_source"},
+  "author_choices": [
+    {"id": 1, "source": "P section 9 decision 1", "approved": "2026-11-10", "choice": "First option: full Stage C battery issues; SP 800-22 subset reported alongside."},
+    {"id": 2, "source": "P section 9 decision 2", "approved": "2026-11-10", "choice": "First option: H=40960; L in [10240,20480,40960]."},
+    {"id": 3, "source": "P section 9 decision 3", "approved": "2026-11-10", "choice": "First option: integer onset uniform [2048,8192], T_cap log-uniform [2048,163840], Stage C maximum caps."},
+    {"id": 4, "source": "P section 9 decision 4", "approved": "2026-11-10", "choice": "First option: stop criteria and thresholds as in section 5."},
+    {"id": 5, "source": "P section 9 decision 5", "approved": "2026-11-10", "choice": "First option: per-sweep clock."},
+    {"id": 6, "source": "P section 9 decision 6; D $.size_options[2]", "approved": "2026-11-10", "choice": "First option: 2000 healthy, 1000 per fault family, 600 fitting and 400 evaluation; 999 calibration."},
+    {"id": 7, "source": "P section 9 decision 7", "approved": "2026-11-10", "choice": "First option: feature/v019 from feature/v018. This specification does not create or switch branches."}
+  ],
+  "design_number_snapshot": {
+    "source": "D $.size_options[2] is the approved size option, despite being the third entry in design.json",
+    "total_runs": 5999,
+    "wall_minutes_extrapolated_8_workers": 235.782388705994,
+    "storage_total_GiB": 5.49224853515625,
+    "trace_baseline": {"source": "D $.storage", "bytes_per_run": 983040, "MiB_per_run": 0.9375, "formula": "3*8*40960: CV float64, TD float64, marks int64 only"},
+    "runtime_basis": {"source": "D $.runtime", "worker_seconds_per_sweep": 0.00046058924281519706, "workers": 8, "qualification": "Linear extrapolation of Stage C cost; excludes engineering, fitting and extra logging costs; not a pilot benchmark."},
+    "criterion_1": {"source": "D $.size_options[2].criterion_1", "accepted_count_inclusive": [1864, 1946], "p_pass_at_0_93": 0.38388461843833516, "p_pass_at_0_94": 0.9376722587308972, "p_pass_at_0_95": 0.9998222939629676, "joint": "Per-length probabilities; p_pass cubed in design.json is only a hypothetical independence comparison, not a joint estimate."},
+    "criterion_4": {"source": "D $.size_options[2].criterion_4", "interval_level": 0.9833333333333333, "lower_percentile": 0.00833333333333336, "minimum_eligible": 240, "power": "Use $.size_options[2].criterion_4.scenarios, keyed by eligibility_fraction and true_brier_skill. At skills 0.10/0.15/0.20: e=0.6 gives 0.536/0.782/0.923; e=0.8 gives 0.520/0.902/0.976; e=1 gives 0.489/0.908/0.992.", "qualification": "Simplified fixed predictions and fixed eligible counts, no fitting uncertainty; per-family power. Design uses 2000 bootstraps per simulated dataset, whereas pilot scoring uses the approved 10000; interval definition and pass rule agree."},
+    "cap_shares": [
+      {"source": "D $.ramp_profiles.lengths[0]", "L": 10240, "share_reaching_cap_before_L": 0.19123},
+      {"source": "D $.ramp_profiles.lengths[1]", "L": 20480, "share_reaching_cap_before_L": 0.45567},
+      {"source": "D $.ramp_profiles.lengths[2]", "L": 40960, "share_reaching_cap_before_L": 0.65147}
+    ],
+    "cap_definition": "D $.ramp_profiles.cap_note: first capped sweep t0+ceil(T_cap); cap reached before L iff that sweep is < L. These are design simulations, not pilot outcomes."
+  },
+  "application": {
+    "source": "P sections 2.1, 2.3; h1lib.run_one; src/rnglab14/models/pimc_harmonic.py",
+    "class": "rnglab14.models.pimc_harmonic.PathIntegralHarmonicOscillator",
+    "constructor": {"beads": 16, "temperature": 0.5, "displacement_delta": 0.4},
+    "H": 40960,
+    "sweep_indices": "range(40960); CV[t] and TD[t] are recorded after local updates and centroid refresh in sweep t",
+    "L": [10240, 20480, 40960],
+    "reference_call": "rnglab14.models.pimc_harmonic.exact_finite_bead_energy(16, 2.0)",
+    "reference_symbol": "E_M",
+    "start_call": "rnglab14.models.pimc_harmonic.sample_exact_finite_bead_paths(rnglab14.sources.PCG64Source(seeds['start']), 16, 2.0, 2)[0]",
+    "start_detail": "Generate the two paths required by the API and select the first, exactly as h1lib.run_one. No local-stream initialization draws.",
+    "local": "One rnglab14.sources.PCG64Source(seeds['local']) wrapped in the pilot sweep-driven fault adapter, shared by proposal and acceptance.",
+    "centroid": "Separate healthy rnglab14.sources.PCG64Source(seeds['centroid']) wrapped in the pilot sweep clock; rnglab14.models.pimc_harmonic.harmonic_centroid_heatbath(path, beta=2.0, source=clock) is called internally once after each local sweep and consumes one read_bytes(16).",
+    "simulation_call": "model.run_simulation(local, sweeps=40960, burn_in=0, initial_path=start, centroid_source=clock, initial_path_provenance={'namespace': ns, 'condition': condition, 'role': 'start', 'replica': i, 'seed': seeds['start']}, uncertainty_batch_sizes=(512,), record_trace=True)",
+    "_convention": "C01: Keep the keyword arguments of h1lib.run_one unchanged apart from sweeps, including its internal 512 batch summary, but disregard that summary for pilot endpoints. initialization is left at its default, as in Stage C; the explicit path supplies the start. Implement a pilot driver; h1lib.run_one hard-codes Stage C onset, endpoint and uncapped battery logic and is not the pilot driver."
+  },
+  "sweep_clock": {
+    "source": "P sections 2.2, 7; C protocol.json $.implementation_notes_added_at_freeze.byte_marks; h1lib.SweepClock._read_bytes; h1lib.window_bytes",
+    "B": "B(k)=marks[k]=local bytes consumed through sweep k's local updates; B(-1)=0; marks has H entries. Sweeps [a,b) consume stream[B(a-1):B(b-1)].",
+    "bytes_per_sweep": "B(t)-B(t-1)=128+8*k_t, with integer 0<=k_t<=16, because each of 16 proposals consumes one 8-byte word and only uphill proposals consume another. Source: PathIntegralHarmonicOscillator.run_simulation.",
+    "callback": "The pilot adapter starts current_sweep=0. In the centroid wrapper's _read_bytes(n), require n==16, append local.consumed_bytes as B(current_sweep), advance the adapter counter by one, then return base.read_bytes(n). There are no local reads during refresh, so all local words of the finished sweep saw its old counter. End with counter==H. Do not advance on individual local reads.",
+    "B0": "First word consumed in sweep t0 has zero-based byte offset B0=B(t0-1); t0 is not a byte offset. Transformation starts at that word even though s(t0)=0.",
+    "replay_marks": "Independent replay receives the recorded marks array explicitly. For a word beginning at byte b, t=int(np.searchsorted(marks, b, side='right')); equivalently B(t-1)<=b<B(t). Replay must not infer sweep boundaries from a healthy trajectory: faulty consumption is adaptive.",
+    "_convention": "C02: Callback ordering, explicit replay-mark input and zero-based exclusive boundary semantics implement P section 7 using the frozen byte convention."
+  },
+  "profile": {
+    "source": "P section 2.2; research/v019-d-pilot/design.py ramps and ramp_average",
+    "draw_order": [
+      "profile_rng=np.random.default_rng(seeds['profile'])",
+      "t0=int(profile_rng.integers(2048, 8193))",
+      "T_cap=np.float64(np.exp(profile_rng.uniform(np.log(2048.0), np.log(163840.0))))",
+      "r=np.float64(s_max/T_cap)"
+    ],
+    "bounds": "integers low inclusive, high exclusive; uniform is over logarithmic bounds, low inclusive and high exclusive subject to NumPy floating-point rounding. No rounding of T_cap or rejection/redraw. The two variates are successive independent draws of the same per-run generator.",
+    "severity": "For integer t in range(H): np.float64(0.0) if t<t0 else np.minimum(np.float64(s_max), np.float64(r*np.float64(t-t0))). Compute directly from t, never by cumulative increments; s(t0)=0.",
+    "caps": {
+      "SHIFT": {"s_max": 0.046415888336127774, "source": "C results/gates.json $.cells['SHIFT-5'].severity", "stage_c_wrong_source": "$.cells['SHIFT-5'].wrong: k=245,n=256"},
+      "LAG1": {"s_max": 0.5, "source": "C results/gates.json $.cells['LAG1-5'].severity", "stage_c_wrong_source": "$.cells['LAG1-5'].wrong: k=224,n=256"},
+      "DUP": {"s_max": 0.5, "source": "C results/gates.json $.cells['DUP-5'].severity", "stage_c_wrong_source": "$.cells['DUP-5'].wrong: k=256,n=256"}
+    },
+    "record": "t0 int64 sweeps; T_cap float64 sweeps; r float64 severity/sweep; s_max float64 dimensionless; B0 int64 bytes; prefix_sha256=hashlib.sha256(emitted_stream[:B0]).hexdigest(). Record draw seed and severity[0:H]. For healthy/calibration t0,T_cap,r,s_max,B0,prefix_sha256 are null and severity is all zero; do not draw a profile.",
+    "_convention": "C03: Exact float64 expression, scalar NumPy call spelling and healthy null metadata; cap literals are Python repr values from the named gates keys."
+  },
+  "fault_transforms": {
+    "source": "P section 2.2; h1lib.FaultyWords._transform and _read_bytes; C run_campaign.py expected_stream",
+    "shared": "Read exactly one raw 8-byte word per local call, before and after onset. w=struct.unpack('>Q',raw)[0]; u=(w>>11)*2.0**-53. Before t0 emit raw unchanged. Keep previous emitted word after every local word, including before onset. Local base advances for every word even when DUP replaces it. Only the local stream is faulted.",
+    "SHIFT": "u_prime=min(u+s(t), h1lib.TOP); h1lib.TOP=1-2.0**-53. Emit struct.pack('>Q', (int(u_prime*2.0**53)<<11)|(w&0x7FF)).",
+    "LAG1": {
+      "provisional": false,
+      "open_question": "Q01 (resolved)",
+      "formula": "e=h1lib.STD.inv_cdf(u+2.0**-54), with h1lib.STD=statistics.NormalDist(). At B0 set z=e. For every subsequent word set rho=s(t); z=rho*z+math.sqrt(1-rho*rho)*e, including across sweep boundaries and severity changes. u_prime=min(h1lib.STD.cdf(z), h1lib.TOP); pack exactly as SHIFT, retaining the raw word's low 11 bits.",
+      "zero_severity": "Still execute the normal-score transform at t0; do not bypass it or reset z. Floating-point normal CDF/inverse round trips need not preserve bytes. State persists into t0+1.",
+      "domain_failure": "Preserve the Stage C arithmetic and NormalDist implementation exactly. Any inv_cdf domain exception, including an argument rounded to an endpoint, is a recorded run failure, not an undocumented clipping rule."
+    },
+    "DUP": "Create fault_rng=np.random.default_rng(seeds['fault']) once per run, before the first local read, as h1lib.FaultyWords.__init__. At each word with t>=t0, draw q=fault_rng.random(), exactly once even when s(t)==0. Emit prev if q<s(t) and prev is not None, otherwise raw. Update prev to the emitted word, not the raw word. At B0 prev is the last emitted pre-onset word.",
+    "step_equivalence": "For the separate I-3 step test only, substitute s(t)=0 for t<t0 and s(t)=s_max for t>=t0. Set Stage C onset_bytes=B0 and severity=s_max, use identical raw source and fault seed, and compare full emitted bytes. Do not delay the Stage C onset by one sweep. The ramp and step tests are separate.",
+    "_convention": "C04: Preserve operation order and floating-point library calls byte for byte; Q01 resolved the first-state formula (midpoint rule, as Stage C)."
+  },
+  "endpoint": {
+    "source": "P sections 2.3, 2.4; rnglab12.uncertainty.summarize_series, _batch, _interval",
+    "call": "rnglab12.uncertainty.summarize_series(cv[0:L], reference=E_M, batch_sizes=(L//16,))['batch_means'][str(L//16)]",
+    "valid": "Only selected batch result status=='ESTIMATED' and covered is True. No other status is valid. The top-level summarize_series status and Geyer status do not replace the selected batch status.",
+    "coverage": "covered=(interval_95[0]<=E_M<=interval_95[1]); boundaries inclusive. y=int(valid).",
+    "formulas": "b=L//16; m_j=mean(cv[j*b:(j+1)*b]) for j=0..15; estimate=mean(m); v=np.var(m,ddof=1); mcse=sqrt(v/16); c=scipy.stats.t.ppf(0.975,df=15); half_width=c*mcse; signed_error=estimate-E_M. No discarded tail.",
+    "invalid_reasons": ["UNCOVERED when status ESTIMATED and covered false", "DEGENERATE_BATCH_VARIANCE", "INSUFFICIENT_BATCHES", "NONFINITE_INPUT", "INCOMPLETE_TRACE", "EXCEPTION with exception class and message", "MALFORMED_RESULT for missing keys, nonfinite endpoint values, or non-boolean coverage", "OTHER_STATUS with original status"],
+    "constant_trace": "summarize_series may report ABSTAIN_CONSTANT_TRACE at top level; its batch status is DEGENERATE_BATCH_VARIANCE and this is invalid even if the constant equals E_M.",
+    "exception_policy": "Validate a finite 1-D prefix of exactly L samples. An exception from the prescribed summarize_series call counts as invalid; do not substitute a standalone batch calculation to rescue it. Preserve diagnostic batch means and signed error if independently finite, but do not manufacture an interval. Nonfinite input and exceptions have separate counts.",
+    "stored_per_L": "L int64, input_count int64, source_status string/null, valid bool, covered bool/null, invalid_reason string/null, exception class/message/null, estimate/signed_error/mcse/half_width float64 or null, interval_95 pair float64 or null, batch_means length 16 float64 or null, severity_path reference to the run's severity[0:L] array. Energy quantities use the sampler's dimensionless oscillator energy units. Save all three validity flags, all eight possible binary patterns and all pairwise transitions without imposing monotonicity.",
+    "issuance": {
+      "n": "n=16*(alarm_sweep//16); all current checkpoint ends are already multiples of 16",
+      "call": "rnglab12.uncertainty.summarize_series(cv[0:n], reference=E_M, batch_sizes=(n//16,))['batch_means'][str(n//16)]",
+      "rule": "Same validity predicate, statuses, diagnostics and exception rule; already_invalid=not valid_at_issuance. No alarm means n and all issuance endpoint fields are null, not invalid.",
+      "short_interval_check": {
+        "provisional": false, "accepted_by_author": "2026-11-10",
+        "open_question": "Q02",
+        "procedure": "On the 2000 healthy validation runs, compute the same 16-batch prefix endpoint at every battery checkpoint n in range(512,H+1,256); report k,n_runs,CP95 per checkpoint. Separately report coverage conditional on having a full-battery alarm at each issuance n and pooled over all healthy runs with an alarm. Repeat the conditional summary for C-prime descriptively; do not treat repeated checkpoints as independent runs. Report no-alarm counts and failure counts. No additional pass/fail gate is created."
+      }
+    },
+    "_convention": "C05: Diagnostic schema, reason precedence (nonfinite/incomplete, exception, malformed, status, uncovered), finite diagnostic retention and explicit status interpretation."
+  },
+  "operational_alarm": {
+    "source": "P section 2.4; h1lib.CONV_P_KEYS, conventional_window, conventional_statistic, threshold; C sensitivity01.py SP_COLUMNS and conv_series",
+    "battery": {"window_sweeps": 512, "stride_sweeps": 256, "ends": "np.arange(512,40960+1,256,dtype=np.int64)", "checkpoints": 159, "byte_slice": "lo,hi=h1lib.window_bytes(marks,end-512,end); data=emitted_stream[lo:hi]"},
+    "application": {"window_sweeps": 1024, "stride_sweeps": 256, "ends": "np.arange(1024,40960+1,256,dtype=np.int64)", "checkpoints": 157},
+    "p_keys": ["frequency", "block_frequency", "runs", "serial_1", "serial_2", "approximate_entropy", "cumulative_sums", "longest_run", "lag1_correlation", "adjacent_duplicates"],
+    "bit_cap": {
+      "bits": 1000000,
+      "bytes": 125000,
+      "decode": "np.unpackbits(np.frombuffer(data,dtype=np.uint8),bitorder='big'); first min(original_bits,1000000) bits only",
+      "applies_to": ["frequency", "block_frequency", "runs", "serial_1", "serial_2", "approximate_entropy", "cumulative_sums", "longest_run"],
+      "full_word_window": ["lag1_correlation", "adjacent_duplicates"],
+      "exact_calls": [
+        "If len(data)*8<=1000000, p=h1lib.conventional_window(data).",
+        "Otherwise p=h1lib.conventional_window(data[:125000]); full=h1lib.word_tests(data); overwrite p['lag1_correlation']=full['lag1_correlation'] and p['adjacent_duplicates']=full['adjacent_duplicates']. The capped temporary word results are discarded.",
+        "For test statuses and logging, call rnglab11.statistics.evaluate_bits(bits_used, alpha=0.01, block_size=max(128,len(bits_used)//99+1)); counts=h1lib.pattern_counts(bits_used,9); h1lib.serial_test(bits_used,8,counts); h1lib.approximate_entropy_test(bits_used,8,counts); h1lib.cumulative_sums_forward(bits_used); h1lib.longest_run_test(bits_used); h1lib.word_tests(data). These reproduce the p-values above and expose the logged statistics."
+      ],
+      "record": "original_bytes, original_bits, bit_used_bytes, bit_used_bits, word_used_bytes, word_count, pair_count int64; was_cut bool. At maximum consumption original_bits=512*256*8=1048576; word tests still use all bytes."
+    },
+    "available_p": "Finite float64 in [0,1]. None, NaN, infinity or values outside [0,1] are unavailable, with original value represented safely and reason logged. Do not clip an out-of-range p into range. Expected runs prerequisite failure is NOT_APPLICABLE, not a run failure; unexpected computation errors are also failures under failed_runs.",
+    "statistic": "For each checkpoint, S=-math.log10(max(min(available_p),h1lib.P_FLOOR)); h1lib.P_FLOOR=1e-300. If the available set is empty, S=0.0. Implement the empty/finite guards in the pilot; h1lib.conventional_statistic alone lacks them. S is nonnegative float64 in decimal-log units, and max over all 159 checkpoints is the whole-horizon statistic.",
+    "threshold": "tau=h1lib.threshold(calibration_maxima,order_statistic=950), on exactly 999 complete healthy calibration horizons, sorted by replica before taking maxima. This is sorted_maxima[949]. Ties are retained, no jitter, no randomisation, and alarm requires S>tau, not >=. Nominal marginal rate 0.05 under exchangeability, with ties potentially conservative.",
+    "C_prime": "Use p_keys columns 0..7 only, exactly h1lib.CONV_P_KEYS[:8] as C sensitivity01.py. Compute its own checkpoint S, whole-horizon maxima and tau_prime=h1lib.threshold(maxima_prime,950) on the same 999 calibration trajectories. Report its alarms, pre/post onset classification, eligibility, healthy CP95 and short-interval coverage descriptively; it neither issues primary forecasts nor substitutes for the full battery or its gate.",
+    "issuance": "alarm_sweep=first end with S(end)>tau scanning all checkpoints in chronological order, or null. The end is exclusive: an alarm at end e has observed sweeps [0,e), ending with sweep e-1. No onset input to this algorithm; no rearming. Do not call h1lib.detection for primary issuance because it selects post-onset exceedances.",
+    "onset_classification": "After issuance, classify pre_onset if alarm_sweep<=t0 (its last observed sweep precedes onset), post_onset if alarm_sweep>t0, no_alarm if null. At equality latency=0 but the window contains no onset word. Report alarm_sweep-t0 as signed int64 sweeps, including negative and zero values.",
+    "eligibility": "At each L, eligible iff an observed primary alarm_sweep<L. Report separately no_alarm and alarm_at_or_after_L. Pre-onset alarms remain eligible when this inequality holds. An unknown alarm due to incomplete checkpoints is not a no-alarm observation.",
+    "V2_D": "Let k be the number of healthy validation runs with any strict full-battery exceedance, n=2000. Compute C_analyze.cp(k,n,0.95); equivalently [0 if k=0 else scipy.stats.beta.ppf(0.025,k,n-k+1), 1 if k=n else scipy.stats.beta.ppf(0.975,k+1,n-k)]. Pass iff upper<=0.10. This is the upper endpoint of a two-sided CP95 interval, not a one-sided 95% bound: the Stage C V2 convention (C analyze.py: fpr[a]['cp95'][1] <= V2_MAX). PROTOCOL.md section 2.4 wording clarified to match (Q08, resolved). Failure makes every issuance-based result uninterpretable. Missing horizons follow Q04.",
+    "_convention": "C06: Finite p-value guard, cap wrapper, exclusive-end equality classification and explicit CP/tie implementation. Full versus subset recalibration and cap are approved design changes from Stage C."
+  },
+  "signal_schema": {
+    "source": "P section 2.5; h1lib test functions and rnglab11.statistics.evaluate_bits",
+    "_convention": "C07: Names, signed extensions of absolute test statistics, field schemas, per-test status annotations and null rules below are added logging conventions. Formulas retain the cited Stage C test definitions; these conventions do not change p-values.",
+    "common": {
+      "float": "All real-valued scalars and vectors computed/stored as float64; JSON uses finite numbers or null. Counts and sweep/byte offsets are int64; flags bool; status and reason are strings. Units are dimensionless unless stated.",
+      "unavailable": "Each statistical field has a status and nullable reason. If required samples/denominator are absent or a value is nonfinite, store null with NOT_APPLICABLE or ERROR. Do not replace an unavailable statistic by a numerical zero. Counts and window metadata remain available when known.",
+      "p_status": "Preserve evaluate_bits statuses/reasons for frequency, block_frequency and runs. For the other p-values annotate PASS iff available p>=0.01, FAIL iff available p<0.01, otherwise NOT_APPLICABLE/ERROR with reason. This 0.01 is evaluate_bits' Stage C pointwise annotation, not the operational alarm threshold.",
+      "symbols": "b=bits_used, n=len(b), O=sum(b), pi=O/n; W=np.frombuffer(data,dtype='>u8'), N=len(W), P=N-1; U=(W>>np.uint64(11)).astype(float)*2.0**-53. Bits and words are in consumed order. Bit cap affects b only."
+    },
+    "checkpoint_metadata": [
+      {"name": "end", "formula": "window exclusive end", "dtype": "int64", "unit": "sweeps", "sign": "nonnegative", "sample_count": "one checkpoint", "unavailable": "never on a complete checkpoint"},
+      {"name": "byte_start,byte_end", "formula": "h1lib.window_bytes(marks,end-512,end)", "dtype": "int64", "unit": "bytes", "sign": "nonnegative", "sample_count": "one window", "unavailable": "null if marks incomplete"},
+      {"name": "original_bytes,original_bits,bit_used_bytes,bit_used_bits,word_used_bytes,word_count,pair_count", "formula": "hi-lo,8*(hi-lo),len(bits_used)//8,len(bits_used),hi-lo,N,N-1", "dtype": "int64", "unit": "as named", "sign": "nonnegative", "sample_count": "one window", "unavailable": "null if byte range unavailable"},
+      {"name": "was_cut", "formula": "original_bits>1000000", "dtype": "bool", "unit": "indicator", "sign": "not applicable", "sample_count": "one window", "unavailable": "null if byte range unavailable"},
+      {"name": "p_values,p_statuses,p_reasons", "formula": "vectors in operational_alarm.p_keys order", "dtype": "float64/string/string, nullable per column", "unit": "probability/status/reason", "sign": "p in [0,1]", "sample_count": "per test as below", "unavailable": "null p and reason, never omitted columns"},
+      {"name": "S,S_prime,available_p_count,available_p_count_prime", "formula": "operational_alarm statistic over full and subset columns; counts of finite usable p-values", "dtype": "float64,float64,int64,int64", "unit": "decimal-log evidence/count", "sign": "nonnegative", "sample_count": "one checkpoint", "unavailable": "empty p set has S=0, count=0 as mandated; checkpoint error separately flagged"}
+    ],
+    "battery_statistics": [
+      {"name": "frequency_signed_z", "formula": "(2*O-n)/sqrt(n)", "p_formula": "math.erfc(abs(frequency_signed_z)/sqrt(2))", "sign": "positive means excess ones", "unit": "standardised imbalance", "dtype": "float64", "sample_count": "n bits; record ones=O int64", "unavailable": "null if n=0; p NOT_APPLICABLE if n<100", "source": "rnglab11.statistics.evaluate_bits frequency"},
+      {"name": "block_frequency_chi2", "formula": "M=max(128,n//99+1); J=n//M; pi_j=mean(b[j*M:(j+1)*M]); X=4*M*sum((pi_j-0.5)^2)", "p_formula": "scipy.special.gammaincc(J/2,X/2)", "sign": "nonnegative; larger is more departure", "unit": "chi-square statistic", "dtype": "float64", "sample_count": "J*M bits; record block_size=M,blocks=J,unused_bits=n-J*M int64", "unavailable": "null and original evaluate_bits reason when n<100 or M>n or M<=0.01*n or J>=100", "source": "rnglab11.statistics.evaluate_bits block_frequency"},
+      {"name": "runs_residual,runs_signed_z", "formula": "V=1+count_nonzero(b[1:]!=b[:-1]); residual=V-2*n*pi*(1-pi); z=residual/(2*sqrt(n)*pi*(1-pi))", "p_formula": "math.erfc(abs(z)/sqrt(2)); available only if n>=100 and abs(pi-0.5)<2/sqrt(n)", "sign": "positive means excess runs/alternation; negative means clustering", "unit": "residual in runs; z dimensionless", "dtype": "float64", "sample_count": "n bits; record V int64, pi float64", "unavailable": "Record residual even if runs prerequisite fails; z null if pi in {0,1} or n=0. A finite z remains logged with a prerequisite_failed flag when p is unavailable.", "source": "rnglab11.statistics.evaluate_bits runs; signed z removes absolute value and the erfc sqrt(2) scaling"},
+      {"name": "serial_psi2,serial_delta1,serial_delta2", "formula": "counts=h1lib.pattern_counts(b,9); psi(k)=2**k/n*sum(counts[k].astype(float)**2)-n for k in (6,7,8); delta1=psi(8)-psi(7); delta2=psi(8)-2*psi(7)+psi(6)", "p_formula": "serial_1=scipy.special.gammaincc(2**6,delta1/2); serial_2=scipy.special.gammaincc(2**5,delta2/2)", "sign": "nonnegative quadratic contrasts in exact arithmetic; preserve floating values", "unit": "dimensionless", "dtype": "float64; serial_psi2 ordered [6,7,8]", "sample_count": "n cyclic overlapping patterns at each order; record pattern_counts_6,7,8,9 as int64 vectors", "unavailable": "null if n<9 or any required computation nonfinite; never drop cyclic end patterns", "source": "h1lib.pattern_counts and serial_test(m=8)"},
+      {"name": "approximate_entropy_phi8,approximate_entropy_phi9,approximate_entropy,approximate_entropy_chi2", "formula": "phi(k)=sum(c*log(c)) for positive c=counts[k]/n; ApEn=phi(8)-phi(9); X=2*n*(log(2)-ApEn)", "p_formula": "scipy.special.gammaincc(2**7,X/2)", "sign": "phi nonpositive; entropy nonnegative in exact arithmetic; X increases as entropy falls", "unit": "phi and ApEn in nats; X dimensionless", "dtype": "float64", "sample_count": "n cyclic patterns at orders 8 and 9", "unavailable": "null if n<9 or nonfinite; omit zero-count terms from phi", "source": "h1lib.approximate_entropy_test(b,8,counts)"},
+      {"name": "cumulative_sums_max_abs", "formula": "z=max(abs(cumsum(2*b.astype(np.int64)-1)))", "p_formula": "h1lib.cumulative_sums_forward(b): 1-sum_k[Phi((4k+1)z/sqrt(n))-Phi((4k-1)z/sqrt(n))]+sum_k[Phi((4k+3)z/sqrt(n))-Phi((4k+1)z/sqrt(n))]; first k from _tdiv(_tdiv(-n,z)+1,4) to _tdiv(_tdiv(n,z)-1,4), second from _tdiv(_tdiv(-n,z)-3,4) to the same upper bound, both inclusive; h1lib._tdiv truncates toward zero", "sign": "nonnegative absolute excursion; no directional sign", "unit": "net bits", "dtype": "int64", "sample_count": "n bits, forward mode only", "unavailable": "null if n=0 or z=0; do not replace truncation with floor division", "source": "h1lib.cumulative_sums_forward and _tdiv"},
+      {"name": "longest_run_chi2,longest_run_categories", "formula": "M=h1lib.longest_run_block_size(n); (K,edges,pi)=h1lib.LONGEST_RUN_TABLES[M]; J=n//M. For each of J nonoverlapping blocks count its longest ones run, clip to [edges[0],edges[-1]], and count category frequencies nu. X=sum((nu_j-J*pi_j)**2/(J*pi_j)) over K+1 categories.", "p_formula": "scipy.special.gammaincc(K/2,X/2)", "sign": "X nonnegative; category counts unsigned", "unit": "chi-square/counts", "dtype": "float64 X; int64 vector nu, block_size, blocks, unused_bits", "sample_count": "J*M bits; discard n-J*M tail bits only for this test", "unavailable": "null if J=0 or nonfinite; log table key and edges", "source": "h1lib.longest_run_test, longest_run_block_size, LONGEST_RUN_TABLES; M=10000 if n>=750000, else 128 if n>=6272, else 8; table probabilities are reused exactly from that constant"},
+      {"name": "lag1_r,lag1_test_z,lag1_feature", "formula": "r=float(np.corrcoef(U[:-1],U[1:])[0,1]); test_z=sqrt(N)*r; feature=sqrt(P)*r", "p_formula": "math.erfc(abs(sqrt(N)*r)/sqrt(2))", "sign": "signed; positive means positive lag-1 correlation", "unit": "r correlation; z and feature standardised correlation", "dtype": "float64", "sample_count": "N complete words and P=N-1 adjacent pairs from full uncapped byte window", "unavailable": "null if P<2 or either paired vector has zero variance or correlation nonfinite; p unavailable too", "source": "h1lib.word_tests uses sqrt(N); P section 4.4 explicitly specifies sqrt(pairs) for the forecaster. Preserve this intentional distinction."},
+      {"name": "duplicate_count,duplicate_rate,duplicate_lambda", "formula": "d=count_nonzero(W[1:]==W[:-1]); rate=d/P; lambda=P*2.0**-64", "p_formula": "1.0 if d==0 else max(float(scipy.stats.poisson.sf(d-1,lambda)),h1lib.P_FLOOR)", "sign": "nonnegative; larger means more adjacent repeated emitted words", "unit": "count, duplicates/pair, expected count", "dtype": "int64 d; float64 rate and lambda", "sample_count": "N words and P pairs, full uncapped window", "unavailable": "rate and p null if P<=0; count is zero for no pairs with unavailable status", "source": "h1lib.word_tests"}
+    ],
+    "application_statistics": {
+      "source": "P sections 2.5, 4.4; h1lib.run_one and application_constants",
+      "fields": [
+        {"name": "end,mean_D,count_D", "formula": "end exclusive; A1=mean_D=np.mean(TD[end-1024:end]-CV[end-1024:end]); count_D=1024", "sign": "A1 positive when TD exceeds CV", "unit": "sweeps, energy, sweeps", "dtype": "int64,float64,int64", "sample_count": "1024 consecutive sweeps", "unavailable": "mean_D null if any required input nonfinite or missing; record finite input count separately"},
+        {"name": "uphill_count,proposal_count,uphill_fraction", "formula": "k_t=(B(t)-B(t-1)-128)//8; A2=uphill_count=sum(k_t for t in [end-1024,end)); proposal_count=16*1024; uphill_fraction=uphill_count/proposal_count", "sign": "nonnegative", "unit": "proposals, proposals, fraction", "dtype": "int64,int64,float64", "sample_count": "all 16384 local proposals, including both proposal and acceptance bytes in the ledger", "unavailable": "null with ERROR if marks missing, bytes not 128+8*k, or k outside [0,16]"},
+        {"name": "A1_over_sigma_D,A2_standardised", "formula": "mean_D/sigma_D; (uphill_fraction-mu_f)/sigma_f", "sign": "signed; positive A2 means excess uphill proposals relative to calibration", "unit": "dimensionless", "dtype": "float64", "sample_count": "one application checkpoint with constants from all calibration checkpoints", "unavailable": "null if constants nonfinite or SD<=0, or raw signal unavailable"}
+      ],
+      "constants_call": "h1lib.application_constants(calibration_records), with calibration_records in replica order, each r['application'] containing every checkpoint in end order and keys mean_D and uphill_fraction",
+      "constants_formulas": "D_all concatenates 999*157 checkpoint means; f_all concatenates the matching uphill fractions. sigma_D=float(np.std(D_all,ddof=1)); mu_f=float(np.mean(f_all)); sigma_f=float(np.std(f_all,ddof=1)). No subtraction of mean_D mean for A1. Overlapping windows receive equal weight, as Stage C.",
+      "constants_record": "Store sigma_D,mu_f,sigma_f, run count, checkpoint count, calibration run IDs and input hashes before fitting; they are estimated values, not borrowed from Stage C gates.",
+      "_convention": "C08: Retain signs for predictors (Stage C application_statistic takes absolute values); log both uphill count and fraction. Failed calibration inputs invoke Q04 rather than silently pooling fewer checkpoints."
+    }
+  },
+  "data": {
+    "source": "P section 3; D $.size_options[2]",
+    "namespace": "rnglab-v019-d-pilot",
+    "conditions": [
+      {"key": "calibration", "family": "healthy", "replicas": "range(0,999)", "uses": "thresholds, application constants, sigma_eff"},
+      {"key": "healthy", "family": "healthy", "replicas": "range(0,2000)", "uses": "criterion 1, V2-D, short intervals"},
+      {"key": "fault/SHIFT", "family": "SHIFT", "replicas": "range(0,1000)", "fitting": "range(0,600)", "evaluation": "range(600,1000)"},
+      {"key": "fault/LAG1", "family": "LAG1", "replicas": "range(0,1000)", "fitting": "range(0,600)", "evaluation": "range(600,1000)"},
+      {"key": "fault/DUP", "family": "DUP", "replicas": "range(0,1000)", "fitting": "range(0,600)", "evaluation": "range(600,1000)"}
+    ],
+    "seeds": {
+      "source": "P section 3; h1lib.seeds_for; rnglab.seeds.namespace_seed",
+      "recipe": "rnglab.seeds.namespace_seed(ns,condition,role,f'{i:05d}') for roles local,centroid,start,fault,profile",
+      "exact_reuse": "base=h1lib.seeds_for(ns,condition,i); seeds={role:base[role] for role in ('local','centroid','start','fault')}; seeds['profile']=rnglab.seeds.namespace_seed(ns,condition,'profile',f'{i:05d}'). h1lib also returns gfsr: discard that unused seed. Do not substitute its gfsr seed for profile.",
+      "namespace_seed_definition": "int.from_bytes(hashlib.sha256('/'.join([ns,condition,role,f'{i:05d}']).encode()).digest()[:8],'big')",
+      "sources": "rnglab14.sources.PCG64Source(seeds[role]) for local/centroid/start; np.random.default_rng(seeds['profile']) for all three fault conditions; np.random.default_rng(seeds['fault']) consumed only by DUP. SHIFT and LAG1 record but never consume fault; healthy and calibration record seeds but consume neither profile nor fault. No GFSR condition.",
+      "no_pairing": "Different conditions, roles and replicas have different labels. There are no shared healthy prefixes across families; do not apply Stage C's paired-healthy-prefix test.",
+      "analysis": "Use rnglab.seeds.namespace_seed(ns,condition,'analysis',purpose) with the purpose strings fixed below. This explicitly makes analysis the role; it differs from the Stage C convention that used analysis as the condition. No random model initialisation or data split.",
+      "bootstrap": "seed=namespace_seed(ns,'fault/'+family,'analysis',f'bootstrap-L{L:05d}'); rng=np.random.default_rng(seed)",
+      "replay_sample": "seed=namespace_seed(ns,condition,'analysis','I4-replay-sample'); rng=np.random.default_rng(seed)",
+      "other_randomness": "None in analysis. Any future random analysis needs a prospectively amended purpose string, never a reused fitting, profile or design seed.",
+      "_convention": "C09: Seed-helper extension and fixed analysis purpose strings; roles local/centroid/start/fault/profile follow the approved recipe exactly."
+    }
+  },
+  "smoke": {
+    "source": "P section 3 and freeze step 5",
+    "namespace": "rnglab-v019-d-pilot-smoke",
+    "excluded_from_all_results": true,
+    "sizes": "2 runs for each of calibration, healthy, fault/SHIFT, fault/LAG1, fault/DUP, replicas 0 and 1; 10 total, H=40960, same L and ramp distribution. Full horizon exposes bit-cap, long-window and profile paths.",
+    "purpose": "Engineering and timing only; do not estimate a pilot threshold from two calibration runs, fit scientific models or interpret stop criteria. Exercise fallback and optimiser paths with pre-engineering deterministic fixtures; do not tune scientific conventions on smoke outcomes.",
+    "_convention": "C10: Smoke sizes are new engineering constants; the approved protocol fixes its namespace and exclusion but not its sizes. No smoke is executed while drafting this specification."
+  },
+  "storage": {
+    "source": "P sections 2.2, 2.3, 3, 7; C run_campaign.py sha256 and array_sha256 for hashing precedent",
+    "_convention": "C11: Pilot per-run format, additional severity array, canonical encoding, file naming and manifest schema. These replace Stage C's blocks of runs, without changing scientific samples.",
+    "trace_file": "research/v019-d-pilot/traces/{condition}/{i:05d}.npz; condition is the literal key, so fault/SHIFT is a subdirectory. Use np.savez_compressed with arrays CV,TD,marks,severity, allow_pickle=False on load; no object arrays.",
+    "arrays": {"CV": {"shape": "[40960]", "dtype": "<f8", "unit": "energy"}, "TD": {"shape": "[40960]", "dtype": "<f8", "unit": "energy"}, "marks": {"shape": "[40960]", "dtype": "<i8", "unit": "bytes"}, "severity": {"shape": "[40960]", "dtype": "<f8", "unit": "dimensionless family severity"}},
+    "compression": "NumPy savez_compressed ZIP_DEFLATED, default library compression settings recorded with NumPy/Python versions; file hashes identify actual containers, not assumed deterministic ZIP headers.",
+    "size_qualification": "D $.storage and $.size_options[2].storage_total_GiB cover CV,TD,marks only. Explicit severity adds 8*H=327680 uncompressed bytes/run (derived using float64 and P section 2.1 H); checkpoint logs, metadata, temporary raw buffers and containers are additional. Do not label 5.49224853515625 GiB as the complete storage requirement.",
+    "run_record": "results/runs/{condition}/{i:05d}.json contains namespace, condition, family, replica, split, all seeds, source manifests, profile fields, start hash, local_bytes, emitted-stream/base-stream/prefix hashes, all battery/application checkpoints and statuses, endpoint diagnostics, failure record, trace path/hash and array hashes. Derived alarm/eligibility/issuance endpoint records are in issuance.jsonl after thresholds are frozen.",
+    "raw_bytes": "Record base and emitted streams in memory during generation for independent transform checking and hash computation. Raw streams are not durable outputs; deterministic replay from seeds plus marks regenerates them. Record SHA-256 of raw base stream as well as emitted stream; record prefix hash before B0 for fault runs. No rg2 trace is required.",
+    "hashes": "Files: hashlib.sha256(path.read_bytes()).hexdigest(). Float arrays: hashlib.sha256(np.ascontiguousarray(a,dtype='<f8').tobytes(order='C')).hexdigest(). Marks: same but dtype='<i8', never converted to float. Initial path float64 hash uses the same canonical array rule. Raw bytes: hash bytes as consumed, without byte-order conversion. Record dtype and shape alongside each hash.",
+    "json": "UTF-8, json.dumps(...,sort_keys=True,indent=2,ensure_ascii=False,allow_nan=False)+'\n'; null for unavailable, never JSON NaN/Infinity. JSONL uses sort_keys=True,ensure_ascii=False,allow_nan=False and one record per line. Replicas ordered numerically inside each condition; conditions ordered as data.conditions.",
+    "manifest": "results/run_manifest.json lists all planned run IDs, seed labels/values, status, failure phase, completed sweeps/checkpoints, every file path and SHA-256, dtype/shape/array hashes, source/protocol/design/pre-generation-manifest hashes, software versions, workers and thread settings. Missing files are explicit failed entries; enumerate all planned IDs, not only successful files.",
+    "parallelism": "8 processes; OPENBLAS_NUM_THREADS=1, OMP_NUM_THREADS=1, MKL_NUM_THREADS=1, BLIS_NUM_THREADS=1, VECLIB_MAXIMUM_THREADS=1, NUMEXPR_NUM_THREADS=1 before NumPy/SciPy import. Aggregate deterministically by run ID. Source: D $.runtime.pilot_workers; C protocol.json implementation_notes_added_at_freeze.parallelism; additional thread controls are C11."
+  },
+  "failed_runs": {
+    "source": "P freeze procedure, sections 2.3 and 7",
+    "provisional": false, "accepted_by_author": "2026-11-10",
+    "open_question": "Q04",
+    "detection": "Catch sampler/test/serialization exceptions; verify expected file presence/hashes, array shape/dtype, finite traces, mark ledger, complete checkpoint grids, finite in-range p or recorded expected unavailability. Distinguish expected NOT_APPLICABLE test results from unexpected failures.",
+    "recording": "Every planned ID gets a success or failure record, phase, exception class/message, last completed sweep and byte count, available hashes and reason. Never rerun to replace a draw, change its seed, reduce declared denominators silently, or substitute a neighbouring replica. A diagnostic replay of the same ID is labelled replay and cannot replace its primary record.",
+    "endpoints": "Incomplete/nonfinite/exception endpoints count invalid under section 2.3; retain the fixed healthy denominator 2000. Compute each complete finite prefix independently, so failure after L need not invalidate an earlier endpoint. Unknown full-horizon alarm status remains unknown, not no alarm.",
+    "calibration": "Require exactly 999 usable whole-horizon maxima for thresholds. If any is unavailable, threshold calibration is insufficient information; do not lower the order statistic or replace runs. Application constants and each sigma_eff require their full specified calibration inputs; unavailable constants disable dependent outputs.",
+    "interpretation": "A failed implementation check blocks interpretation. Missing primary alarm information makes the relevant issuance gate/criterion insufficient information; report identifiable counts and missing counts separately. Known issuance and invalid endpoint still give a scored y=0 as prescribed. Do not infer all-success conditional results to be the approved full-design result.",
+    "_convention": "C12: Conservative missing-run interpretation and calibration completeness, proposed explicitly because P does not define failed-run denominators beyond the endpoint rule."
+  },
+  "oracle": {
+    "source": "P section 4.3; design.py ramp_average; rnglab12.uncertainty._batch",
+    "S_bar": "S_bar(L)=np.sum(severity[:L],dtype=np.float64)/L. Independent algebraic check: m=max(L-1-t0,0); q=min(m,floor(T_cap)); S_bar=(r*q*(q+1)/2+s_max*(m-q))/L. The t0 term is zero and capped terms are included; use stored per-sweep float64 severity for primary calculation.",
+    "beta": "Per family, on fitting replicas 0..599 only, pool all three L regardless of alarm eligibility: x_iL=S_bar_i(L), e_iL=estimate_i(L)-E_M; beta=sum(x*e)/sum(x*x), no intercept, equal weight to every run-length pair, no standardisation. This is the minimiser of sum((e-beta*x)^2).",
+    "sigma_eff": "For each L separately, sigma_eff[L]=sqrt(L)*mean([bm_iL['mcse'] for each of 999 calibration runs]), with bm from the exact endpoint call. Average SEs, not variances or per-run estimates of sigma; do not reuse Stage C's window or a single scale across L.",
+    "probability": "se=sigma_eff[L]/sqrt(L); delta=beta[family]*S_bar_i(L)/se; c=scipy.stats.t.ppf(0.975,df=15); q=float(scipy.stats.nct.cdf(c,df=15,nc=delta)-scipy.stats.nct.cdf(-c,df=15,nc=delta)).",
+    "report": "On evaluation replicas 600..999, report oracle Brier and five-bin calibration per family/L on all evaluation runs; additionally show the same eligible evaluation subset used by forecasters with its count. No fitting to evaluation outcomes; identify use of realised future severity as oracle information. Report signed errors and widths versus S_bar and severity path. This approximation ignores drift-induced interval widening and is not a bound.",
+    "unavailable": "If a signed fitting error is unavailable, omit that pair only from descriptive beta estimation and list its ID/reason; flag incomplete fit. If sum(x*x)<=0, beta unavailable. If any required calibration mcse is unavailable or sigma_eff<=0/nonfinite, that L's oracle is unavailable. Nonfinite/out-of-range q is unavailable with reason, without clipping or substituting F0.",
+    "_convention": "C13: Deterministic summation, equal weighting, eligibility-independent fit, missing-input reporting and oracle reporting populations."
+  },
+  "forecasters": {
+    "source": "P section 4.4",
+    "unit": "One model per family, L and model name; probabilities target y=valid_at_L. Fit on eligible fitting replicas only, not healthy/calibration or evaluation outcomes.",
+    "features_in_order": {
+      "F0": [],
+      "F0+": ["alarm_sweep"],
+      "F-B-lite": ["alarm_sweep", "target_at_alarm", "target_slope"],
+      "F-AB-lite": ["alarm_sweep", "target_at_alarm", "target_slope", "A1_over_sigma_D", "A2_standardised"]
+    },
+    "F0": "q0=sum(y)/n among eligible fitting runs for that family/L, with no pseudocount. Can equal 0 or 1. All logistic fallbacks to F0 use this same q0.",
+    "targets": {"SHIFT": "frequency_signed_z on capped bits", "LAG1": "lag1_feature=lag1_r*sqrt(pair_count) on full words", "DUP": "duplicate_rate=duplicate_count/pair_count on full words"},
+    "slope": {
+      "provisional": false, "accepted_by_author": "2026-11-10",
+      "open_question": "Q03",
+      "formula": "Use the last min(4,j+1) battery checkpoints through alarm checkpoint j, including the alarm. x=end in sweeps, v=target at those checkpoints; slope=sum((x-mean(x))*(v-mean(v)))/sum((x-mean(x))**2). Units: target units per sweep. For an alarm at 512 there is one point: set slope=0 and record slope_count=1. At 768 use two points; at 1024 three. Do not pad with pre-run zeros or use future checkpoints. If any required target is unavailable, slope unavailable.",
+      "dtype": "float64; slope_count int64"
+    },
+    "application_alignment": "For F-AB-lite, select the last application checkpoint with end<=alarm_sweep. At 512 or 768 none exists: return the F-B-lite probability and record NO_APPLICATION_CHECKPOINT. Do not fill application features with zero.",
+    "training_and_missing_features": {
+      "provisional": false, "accepted_by_author": "2026-11-10",
+      "open_question": "Q05",
+      "procedure": "F0 uses all eligible fitting labels. Each logistic model fits eligible fitting rows with all its required features finite; F-AB-lite fits only rows with an available application checkpoint and both application signals. It uses q0 from all eligible fitting runs for any fit fallback. At prediction, an absent application checkpoint gives F-B-lite as mandated; an application checkpoint with an unavailable A1 or A2 also gives F-B-lite, with reason MISSING_APPLICATION_FEATURE; a missing battery feature (alarm sweep, target or slope) gives F0 with reason MISSING_FEATURE. Do not silently drop eligible evaluation runs from scores. Report training row counts, excluded IDs, all prediction fallback counts and missing-feature counts.",
+      "empty_set": "If no eligible fitting runs exist, q0 and all forecasts are unavailable, and affected scores/criterion are insufficient information. If q0 exists but a logistic training subset is empty, use q0. One class in a logistic training subset gives q0. No synthetic labels or added pseudocounts."
+    },
+    "standardisation": "Separately per family/L/model, for its actual fitting rows and each feature column j, mu_j=np.mean(X[:,j],dtype=np.float64), sd_j=np.std(X[:,j],ddof=0,dtype=np.float64). If sd_j==0, store scale_j=1 and constant_feature=true; else scale_j=sd_j. Z=(X-mu)/scale for fitting and evaluation, using saved values only. No evaluation-based centring and no intercept standardisation.",
+    "logistic": {
+      "source": "P section 4.4 C=1, lbfgs; exact objective and scipy-only implementation required by drafting instruction",
+      "dependencies": "numpy and scipy only; do not install or import scikit-learn",
+      "parameters": "theta=(w_0,...,w_(d-1),b), float64; coefficients w penalised, intercept b unpenalised; C=1; no class weighting or sample weighting",
+      "objective": "eta=Z@w+b; J(theta)=sum(np.logaddexp(0.0,eta)-y*eta,dtype=np.float64)+0.5*np.dot(w,w). This is sum of binary log-losses plus ||w||^2/(2*C), C=1; do not use mean loss with this penalty.",
+      "gradient": "p=scipy.special.expit(eta); residual=p-y; grad_w=Z.T@residual+w; grad_b=np.sum(residual,dtype=np.float64); concatenate in theta order",
+      "call": "scipy.optimize.minimize(fun=objective, x0=np.zeros(d+1,dtype=np.float64), jac=gradient, method='L-BFGS-B', bounds=None, options={'gtol':1e-4,'ftol':64*np.finfo(np.float64).eps,'maxiter':100,'maxfun':15000,'maxls':50,'maxcor':10})",
+      "convergence_test": "Accept iff result.success is True, result.status==0, result.nit<=100, result.x/result.fun/result.jac and recomputed objective/gradient are all finite, and either max(abs(recomputed_gradient))<=1e-4 OR the solver reports its relative-function-reduction convergence test. The latter is (f_k-f_(k+1))/max(abs(f_k),abs(f_(k+1)),1)<=64*float64_eps as implemented by L-BFGS-B. Store solver message and which test terminated; an iteration limit, line-search failure, exception or any other termination is nonconvergence. Do not accept finite coefficients alone and do not retry with different tolerances.",
+      "prediction": "q=float(scipy.special.expit(Z_eval@w+b)); no probability clipping",
+      "fallback": "One-class fitting subset, empty fitting subset with available q0, or failure of convergence_test returns constant F0. Record reason, original subset class counts, optimiser status/message, nit,nfev,njev, objective and gradient infinity norm.",
+      "_convention": "C14: Optimiser initial point/options and exact stopping rule are explicit implementation constants. Objective matches LogisticRegression(C=1,solver='lbfgs') regularisation semantics; this does not claim bit-identical coefficients across scikit-learn versions or alternative optimiser stopping rules."
+    },
+    "model_file": "results/models.json, canonical JSON encoding as storage.json. Contains protocol/design/calibration hashes, fitting IDs and input hashes, feature order, fitting counts/classes, q0, standardisation arrays, coefficients/intercepts or fallback, optimiser settings/diagnostics, oracle beta and sigma_eff, and model status per family/L. Write file and record its SHA-256 in results/model_manifest.json before any evaluation endpoint/outcome is read by fitting or scoring code.",
+    "evaluation_barrier": "Generation may write endpoints as required, but the fitting process opens only calibration records, fitting records and frozen configuration. The fitting input manifest enumerates exactly those paths. Close and hash models.json, then start a separate evaluation process that verifies the model hash and reads evaluation records once. No refit, tuning, feature selection or model replacement after evaluation outcomes are opened.",
+    "_convention": "C15: Feature order, population-SD convention, model schema and explicit evaluation-access barrier; Q03 and Q05 remain provisional."
+  },
+  "scores": {
+    "source": "P section 4.4; D $.size_options[2].criterion_4.interval_level, lower_percentile, interval_method",
+    "population": "Per family/L, eligible evaluation trajectories, including pre-onset alarms, already-invalid issuance and forecast fallbacks; no fitting runs in scores. Record planned/evaluable/eligible/no-alarm/late-alarm/unknown counts.",
+    "brier": "BS_model=np.mean((q_model-y)**2,dtype=np.float64), y in {0,1}; lower is better. n=0 or any unavailable probability makes that model's primary score unavailable, with missing count; an available-case descriptive score may be labelled separately and cannot satisfy criterion 4.",
+    "skill": "skill_model=1-BS_model/BS_F0plus; if BS_F0plus==0, null with INSUFFICIENT_INFORMATION. F0plus skill is zero when its denominator is positive. Compute on identical trajectories.",
+    "contrasts": "Criterion 4: F-B-lite skill relative to F0+. Descriptive F-AB-lite versus F-B-lite: report delta_BS=BS_FB-BS_FAB (positive favours FAB) and relative skill=1-BS_FAB/BS_FB (undefined if BS_FB=0). Also report all model skills relative to F0+.",
+    "calibration": "Edges [0.0,0.2,0.4,0.6,0.8,1.0]; bins [0,.2),[.2,.4),[.4,.6),[.6,.8),[.8,1]. For finite q in [0,1], index=min(np.searchsorted(edges,q,side='right')-1,4). Report count, mean predicted probability, observed valid fraction, and CP95 for the latter. Empty bin count=0 and means/interval null. q=1 belongs to the last bin.",
+    "bootstrap": {
+      "resamples": 10000,
+      "unit": "One eligible evaluation run/trajectory. Sort by replica; resample the entire vector of outcomes and model predictions together, not sweeps, windows, models, or individual losses independently.",
+      "seed": "data.seeds.bootstrap; distinct family/L purpose, saved integer seed",
+      "exact_draws": "For b in range(10000), idx=rng.integers(0,n,size=n); compute every model BS, skill and contrast on rows idx with the same idx. No refits. The primary intervals are per L; no pooled cross-L independence claim.",
+      "interval": "np.quantile(values,[(1-level)/2,1-(1-level)/2],method='linear'); two-sided percentile intervals, no BCa/studentisation/basic interval",
+      "criterion_4_level": "level=1-0.05/3=0.9833333333333333; use both tails, lower quantile (1-level)/2=0.00833333333333336, not 0.05/3",
+      "other_level": 0.95,
+      "zero_denominator": "Record every bootstrap resample with a zero baseline BS as an undefined skill. If any resample is undefined, the corresponding primary skill interval is null/INSUFFICIENT_INFORMATION rather than discarding resamples; report undefined count. BS and delta_BS intervals can remain available.",
+      "_convention": "C16: Paired draw order, other intervals at 95%, NumPy linear percentiles, descriptive contrast sign and conservative undefined-bootstrap handling. D uses the same two-sided level and quantile method; its 2000 simulated bootstraps are design Monte Carlo effort, not the pilot resample count."
+    },
+    "rates": "C_analyze.cp(k,n,level=0.95) for all descriptive binomial rates. n=0 returns null. Windows within a run are never pooled as independent binomial observations. No family-pooled confirmatory hypothesis test."
+  },
+  "stop_criteria": {
+    "source": "P section 5",
+    "result_vocabulary": ["PASS", "FAIL", "INSUFFICIENT_INFORMATION", "UNINTERPRETABLE"],
+    "1": {
+      "source": "P section 5 criterion 1; D $.size_options[2].criterion_1; C_analyze.cp",
+      "calculation": "For each L, k=sum(valid_at_L on 2000 healthy runs), cp=C_analyze.cp(k,2000,0.95). PASS at L iff lower>=0.92 and upper<=0.98, equivalently k in [1864,1946]. Overall PASS iff all three pass.",
+      "classification": "If upper<0.92 or lower>0.98, OUTSIDE_BAND/MISCALIBRATION and stop D as designed. Otherwise a non-contained interval is STRADDLES_BAND/INSUFFICIENT_PRECISION (including overlap of either or both boundaries); overall insufficient information if no length is outside but any straddles. Equality to a band edge is contained when the other bound is inside. Report all intervals, not only the overall label.",
+      "stop_action": "Only miscalibration stops D as designed; insufficient precision alone does not assert miscalibration."
+    },
+    "2": {
+      "L": 20480,
+      "population": "All 1000 planned fault runs per family (fitting plus evaluation) with primary alarm<L",
+      "minimum_eligible_per_family": 300,
+      "calculation": "n=sum(eligible); p=sum(valid_at_L among eligible)/n; a=sum(already_invalid_at_issuance among eligible)/n. Family passes iff n>=300 and 0.2<=p<=0.8 and a<0.5. Overall passes if at least two families pass.",
+      "insufficient": "Family n<300 or unknown required issuance/outcome status is insufficient information. If fewer than two families pass, classify overall insufficient if unresolved families could bring passes to two, otherwise FAIL; both count as failed for the stop rule.",
+      "stop_action": "Stop when overall criterion does not pass; conclude only that the declared ramp model did not demonstrate sufficiently undecided outcomes."
+    },
+    "3": {
+      "L": 20480,
+      "calculation": "On the same all-fault eligible population per family as criterion 2, remaining=L-alarm_sweep; median=float(np.median(remaining)). Family passes if median>=5120; overall at least two families pass.",
+      "minimum": "Q09, accepted by the author 2026-11-10: a family needs at least 300 eligible runs at L=20480, the criterion 2 minimum on the same population; fewer gives insufficient information for that family. Even-sized median averages the two middle order statistics.", "minimum_eligible_per_family": 300, "provisional": false, "accepted_by_author": "2026-11-10", "open_question": "Q09",
+      "stop_action": "If not passing, reconsider scope; measures remaining run, not time before invalidity."
+    },
+    "4": {
+      "source": "P section 5 criterion 4; D $.size_options[2].criterion_4",
+      "L": 20480,
+      "minimum_eligible_evaluation": 240,
+      "calculation": "For each family on eligible evaluation runs only, require n>=240, BS_F0plus>0, defined two-sided bootstrap skill interval at level 1-0.05/3, observed F-B-lite skill>=0.10 and interval lower>0. Overall passes if at least one family passes. F-AB-lite is descriptive only.",
+      "insufficient": "n<240, unavailable predictions, zero BS_F0plus or undefined interval gives insufficient information. If no family passes and any family is insufficient, overall insufficient information; otherwise FAIL. Both count as failed for the stop rule.",
+      "stop_action": "Reconsider scope if not passing: these models at this sample size have not demonstrated the required skill."
+    },
+    "5": {
+      "provisional": false, "accepted_by_author": "2026-11-10",
+      "open_question": "Q06",
+      "calculation": "Engineering complete means all section 7 components implemented and pre-smoke checks pass. Approval date 2026-11-10 plus six weeks gives 2026-12-22; require completion on or before this local calendar date. Require results available on or before the date three calendar months before the recorded TDK deadline, clamping to the last day of the target month if necessary.",
+      "tdk_deadline": null, "tdk_deadline_source": "The author records the TDK submission deadline in pre_generation_manifest.json before the first pilot draw. If it is absent there, criterion 5 is INSUFFICIENT_INFORMATION.",
+      "timezone": "Europe/Budapest",
+      "result": "Until the TDK deadline and actual completion/result dates are supplied, INSUFFICIENT_INFORMATION, not PASS.",
+      "stop_action": "Reconsider scope or keep D as the declared programme in the TDK."
+    },
+    "precedence": "Any failed I-check blocks interpretation. V2-D failure makes issuance-based criteria 2,3,4 uninterpretable regardless of numerical passes, while criterion 1 and schedule remain separately reported. Apply each criterion's action, not an invented single H2-R verdict.",
+    "_convention": "C17: Explicit interval-boundary classification, family aggregation with insufficient information, empty-sample handling and date arithmetic. Thresholds and actions are unchanged."
+  },
+  "implementation_checks": {
+    "source": "P section 7; C protocol.json $.gates.implementation; C run_campaign.py expected_stream and replay",
+    "pre_smoke": "Run deterministic engineering checks before smoke; their pass evidence is distinct from the same invariants checked on pilot outputs. This specification requests no execution now.",
+    "I-1": "For every run, the recorded marks of its completed sweeps satisfy: dtype int64, all differences of [0]+marks positive and each 128+8*k with integer k in [0,16], exactly one mark per completed sweep. A run without a failure record must also have marks.shape==(H,), marks[-1]==local_bytes and counter end H. A run with a failure record (failed_runs) is checked over its completed sweeps only, and its incompleteness is handled under failed_runs, not as an I-1 failure. An incomplete run with no failure record fails I-1. Pass only if every run satisfies these conditions.",
+    "I-2": "For every fault run independently rederive t0,T_cap,r from its profile seed using the prescribed scalar draw order; compare stored draws bitwise. Independently evaluate severity at each integer sweep from the recorded draws and compare elementwise float64 equality; recompute B0=marks[t0-1], and prefix SHA-256 from independently replayed base bytes [0:B0]. The emitted prefix must have the same hash. No cross-family healthy pairing. Pass only with zero mismatches.",
+    "I-3": "For every fault run, an independently written transformer consumes the recorded raw base stream in memory and the recorded marks, uses recorded t0,T_cap,s_max and fault seed, and must reproduce every emitted byte and full-stream/prefix hashes. It must not call the production transform. Separately, for replica 0 of each fault family, test a step profile on the same recorded base stream and marks: compare the independent transformer, production pilot adapter and h1lib.FaultyWords(base, family, s_max, seeds['fault'], 0, onset_bytes=B0) byte for byte, with base a fresh PCG64Source(seeds['local']) and exactly local_bytes/8 calls read_bytes(8). For this fixed-stream test, drive the pilot adapter's counter by invoking its boundary callback whenever the consumed offset reaches the next supplied mark; do not run a new sampler or infer different boundaries. The unused gfsr_seed=0 is only an interface placeholder. The independent Stage C oracle may additionally be checked via C run_campaign.py expected_stream(family,s_max,{**seeds,'gfsr':0},local_bytes,onset=B0). Pass requires every ramp and all three step comparisons equal; step test is not evidence that ramp logic is correct.",
+    "I-4": {
+      "sample": "Per condition, select 5 planned replicas without replacement: np.sort(np.random.default_rng(namespace_seed(ns,condition,'analysis','I4-replay-sample')).choice(np.arange(N,dtype=np.int64),size=5,replace=False)); N=999,2000,1000,1000,1000 respectively. Total 25 runs. Select from planned IDs before reading outcomes; a selected failure is not replaced. Save selected IDs and seeds in the pre-generation manifest.",
+      "pass": "Regenerate from seeds/profile and complete run configuration; compare initial-path hash, raw-base and emitted-stream hashes, pre-B0 hash, CV,TD,marks,severity array byte hashes, all checkpoint p/statistic/status values and profile fields. JSON comparisons ignore only explicitly nondeterministic wall-clock/timing fields. Compressed NPZ container bytes need not be equal; canonical arrays must be bit-identical. All 25 must pass.",
+      "smoke": "Replay all smoke runs, since each condition has fewer than 5; this is separate evidence and not included in pilot sample counts."
+    },
+    "recount": "A separate script reads immutable traces, checkpoint logs, thresholds and frozen models; independently recomputes all endpoint valid flags/diagnostics at L and issuance; full and subset maxima/thresholds, first exceedance, onset class, eligibility, three-length patterns and transitions, feature alignment/slopes, model predictions from saved parameters, Brier/calibration/skills, paired bootstrap intervals with saved seeds, V2-D and criteria 1-4. Recount does not refit. All IDs, boolean flags, counts, statuses, bin assignments and pass labels must agree exactly; finite floating diagnostics must satisfy np.isclose(rtol=1e-12,atol=1e-12), null patterns exactly. A boundary-changing discrepancy fails even if floats are close. Criterion 5 evidence dates are independently checked against manifest dates and the declared deadline.",
+    "on_failure": "Block interpretation, investigate and report; correction after freeze follows amendment procedure. Do not suppress an invariant failure or replace a run to obtain a pass.",
+    "_convention": "C18: I-3 applied to all fault runs; seeded I-4 sample size and selection; strengthened replay fields and independent-recount tolerance are engineering choices, not changes to sample sizes or stop thresholds."
+  },
+  "outputs": {
+    "source": "P sections 2-5 and 7 define required contents; filenames are C19 conventions",
+    "root": "research/v019-d-pilot/",
+    "files": [
+      {"path": "protocol.sha256", "contents": "Hash of author-approved protocol.json at freeze; not generated by this draft."},
+      {"path": "pre_generation_manifest.json", "contents": "Frozen protocol/design hashes, all new code and imported Stage C/package module hashes, environment/dependency lock and versions, planned run IDs and seed labels, I-4 selections, branch/commit, worker/thread settings and timestamp; pushed before pilot draws."},
+      {"path": "smoke/smoke_timing.json", "contents": "Smoke namespace, run plan, timings, failures, cap usage and engineering check evidence, explicitly excluded from results."},
+      {"path": "smoke/traces/ and smoke/runs/", "contents": "Same per-run formats for smoke only, isolated from pilot result loaders."},
+      {"path": "traces/{condition}/{i:05d}.npz", "contents": "Compressed CV,TD,marks,severity, outside Git; per-run schema in storage."},
+      {"path": "results/runs/{condition}/{i:05d}.json", "contents": "Run provenance, seeds, profile, endpoint and checkpoint logs, hashes and failure status."},
+      {"path": "results/run_manifest.json", "contents": "All planned and actual runs/files/hashes/failures; storage.manifest."},
+      {"path": "results/failures.jsonl", "contents": "One record per failed run/check/analysis operation, phase, exception/reason, affected quantities and disposition; no replacements."},
+      {"path": "results/calibration.json", "contents": "Full and subset 999 ordered maxima and thresholds, ties, application constants, per-L sigma_eff, input IDs/hashes and completeness flags; fixed before fitting."},
+      {"path": "results/issuance.jsonl", "contents": "Per run full/subset first alarm, S at alarm, pre/post/no/unknown class, signed latency, per-L eligibility/reasons and issuance endpoint; threshold hash."},
+      {"path": "results/models.json", "contents": "All forecasters and oracle fitting parameters/diagnostics; written before evaluation outcomes are read."},
+      {"path": "results/model_manifest.json", "contents": "Model file SHA-256, write timestamp, fitting-only input manifest and evaluation barrier record."},
+      {"path": "results/predictions.jsonl", "contents": "Per eligible evaluation family/run/L/model prediction, outcome, feature vector, fallback/reason and model hash; oracle predictions for all evaluation runs with availability flags."},
+      {"path": "results/healthy.json", "contents": "Per-L coverage CP95, V2-D full/subset false alarms, unconditional checkpoint-prefix and alarm-conditional short coverage, sample counts/failures."},
+      {"path": "results/faults.json", "contents": "Per family alarm classes/latencies/eligibility, validity patterns and transitions, error/width/batch/severity summaries and references to complete per-run diagnostics; fitting/evaluation/all populations labelled."},
+      {"path": "results/scores.json", "contents": "Per family/L/model Brier/skill/calibration, contrasts, paired intervals/levels/seeds, denominator and undefined-resample counts; oracle calibration separately."},
+      {"path": "results/implementation_checks.json", "contents": "I-1 through I-4 scope, selected IDs, per-run comparisons, pass/fail details and source hashes."},
+      {"path": "results/recount.json", "contents": "Independent recomputations, mismatched IDs/fields, tolerances and final agreement flag."},
+      {"path": "results/criteria.json", "contents": "All five criteria with underlying counts/intervals/medians/dates, PASS/FAIL/INSUFFICIENT_INFORMATION/UNINTERPRETABLE and resulting action; V2-D and I-check precedence."},
+      {"path": "results/report_numbers.json", "contents": "Runtime/storage actually observed, run and failure counts, design extrapolations labelled, all numbers used in final descriptive report and their result-key provenance."},
+      {"path": "RESULTS.md", "contents": "Descriptive findings, equal prominence to negative outcomes, all stop actions, known-family and ramp-distribution limitations, deferred campaign features and reproducibility links."}
+    ],
+    "_convention": "C19: This is the future implementation output contract. This drafting task writes only protocol.json and does not create any listed output."
+  },
+  "reuse_and_compatibility": {
+    "source": "P section 7; inspected Stage C source",
+    "adaptation_review": {"provisional": false, "accepted_by_author": "2026-11-10", "open_question": "Q07", "scope": "The pilot-owned adaptations below implement explicit Stage D requirements; the scientific definitions and frozen Stage C files remain as governed. Resolve their reuse boundary at freeze."},
+    "direct_reuse": [
+      "h1lib.seeds_for(ns,condition,i), extended with namespace_seed profile as specified in data.seeds",
+      "h1lib.window_bytes(marks,start,end), exact start/end definitions in operational_alarm",
+      "h1lib.conventional_window(data) or capped prefix with full-word overwrite, as specified",
+      "h1lib.word_tests(data), pattern_counts(bits_used,9), serial_test(bits_used,8,counts), approximate_entropy_test(bits_used,8,counts), cumulative_sums_forward(bits_used), longest_run_test(bits_used), longest_run_block_size(len(bits_used))",
+      "h1lib.threshold(calibration_maxima,950), independently for full battery and C-prime",
+      "h1lib.application_constants(calibration_records)",
+      "C_analyze.cp(k,n,level), including 0.95 for healthy coverage and V2-D",
+      "rnglab12.uncertainty.summarize_series(cv[0:L],reference=E_M,batch_sizes=(L//16,)) and its issuance n equivalent",
+      "rnglab14.sources.PCG64Source(seed), sample_exact_finite_bead_paths and PathIntegralHarmonicOscillator calls fixed in application"
+    ],
+    "required_pilot_adaptations": [
+      "h1lib.FaultyWords and SweepClock must be adapted in pilot-owned code for sweep-driven severity and B0; no mutation or monkeypatch of frozen Stage C files.",
+      "h1lib.conventional_statistic has min([]) failure and no finite guard; implement approved empty/unavailable rules explicitly.",
+      "h1lib.detection chooses first post-onset alarm; primary pilot issuance must instead choose the first alarm without onset knowledge.",
+      "h1lib.run_one assumes fixed severity and byte onset, Stage C harm interval, no bit cap and no pilot profile seed; do not invoke as the pilot driver.",
+      "C sensitivity01.py documents subset columns; its gates routine hard-codes Stage C populations/analysis and must not be invoked for the pilot.",
+      "C run_campaign.py expected_stream accepts a fixed severity and byte onset; use only for step equivalence. Ramp replay requires marks and the sweep profile."
+    ]
+  },
+  "open_questions": [
+    {"id": "Q01", "protocol_section": "2.2 and 7 I-3", "problem": "P says first LAG1 state is Phi^-1(u), but frozen Stage C uses Phi^-1(u+2^-54), including the first word. Literal adherence to both is impossible and u=0 is outside the unshifted inverse CDF domain.", "proposed_resolution": "Use h1lib's midpoint rule at every transformed word, including B0, and correct the human-readable first-word formula before freeze. The fault_transforms.LAG1 field is provisional.", "resolution": "RESOLVED 2026-11-10 in review: PROTOCOL.md section 2.2 now states z = Phi^-1(u + 2^-54), the Stage C midpoint rule, as Stage C itself fixed at its freeze. The LAG1 field is no longer provisional.", "changes_any_design_number": false, "evidence": ["research/v019-d-pilot/PROTOCOL.md:38", "research/v018-h1-detection/h1lib.py:305", "research/v018-h1-detection/h1lib.py:307", "research/v018-h1-detection/protocol.json $.implementation_notes_added_at_freeze.lag1_first_word"]},
+    {"id": "Q02", "resolution": "ACCEPTED by the author at freeze, 2026-11-10 (\"Accept and freeze\"): the proposed resolution applies.", "protocol_section": "2.4 and 4.1", "problem": "The procedure for checking coverage of short issuance-time intervals on healthy runs is unspecified; conditioning on alarm need not have the same coverage as a fixed-time interval.", "proposed_resolution": "Report fixed-checkpoint prefix coverage on all healthy validation runs and separate alarm-conditional coverage per issuance checkpoint and pooled, with run-level counts and CP95; no new gate. See endpoint.issuance.short_interval_check.", "changes_any_design_number": false, "evidence": ["research/v019-d-pilot/PROTOCOL.md:78", "research/v019-d-pilot/PROTOCOL.md:111"]},
+    {"id": "Q03", "resolution": "ACCEPTED by the author at freeze, 2026-11-10 (\"Accept and freeze\"): the proposed resolution applies.", "protocol_section": "4.4", "problem": "The last-four-checkpoint slope has no stated x-axis unit or rule when alarms occur before four checkpoints exist.", "proposed_resolution": "Use end sweeps as x, all available trailing checkpoints up to four, and zero slope with an explicit one-point flag at the first checkpoint. See forecasters.slope.", "changes_any_design_number": false, "evidence": ["research/v019-d-pilot/PROTOCOL.md:141"]},
+    {"id": "Q04", "resolution": "ACCEPTED by the author at freeze, 2026-11-10 (\"Accept and freeze\"): the proposed resolution applies.", "protocol_section": "freeze procedure; 2.3, 2.4, 3, 4.3 and 7", "problem": "Failed runs must not be replaced, but the protocol does not define calibration with fewer than 999 complete maxima, missing alarm outcomes, or downstream denominator handling.", "proposed_resolution": "Keep planned IDs and endpoint-invalid rules; require complete calibration inputs for the quantities they calibrate, and mark unknown issuance-dependent conclusions insufficient/uninterpretable rather than silently shrinking sample sizes or treating failures as quiet. See failed_runs.", "changes_any_design_number": false, "evidence": ["research/v019-d-pilot/PROTOCOL.md:15", "research/v019-d-pilot/PROTOCOL.md:54", "research/v019-d-pilot/PROTOCOL.md:74"]},
+    {"id": "Q05", "resolution": "ACCEPTED by the author at freeze, 2026-11-10 (\"Accept and freeze\"): the proposed resolution applies.", "protocol_section": "4.4", "problem": "F-AB-lite has a prediction fallback without an application checkpoint but no training-subset rule; empty eligible fitting sets and unavailable battery/application features also lack a rule.", "proposed_resolution": "Fit each logistic model on finite complete fitting feature rows, train F-AB-lite only where its application checkpoint exists, retain the mandated F-B-lite early-alarm fallback and extend it to unavailable application features (from the second, independent review), use F0 for missing battery features, and mark all predictions unavailable if no F0 fitting fraction exists. Report exclusions and fallbacks; see forecasters.training_and_missing_features.", "changes_any_design_number": false, "evidence": ["research/v019-d-pilot/PROTOCOL.md:133", "research/v019-d-pilot/PROTOCOL.md:142"]},
+    {"id": "Q06", "resolution": "ACCEPTED by the author at freeze, 2026-11-10: calendar arithmetic and the 2026-12-22 engineering date apply. The deadline was not supplied at freeze; see stop_criteria.5.tdk_deadline_source.", "protocol_section": "5 criterion 5", "problem": "No TDK deadline is supplied, and the calendar interpretation of three months is not specified.", "proposed_resolution": "Record the actual deadline before evaluating criterion 5; use calendar months with end-of-month clamping and Europe/Budapest dates. Engineering is due by 2026-12-22 from the approved six-week interval. Until dates are supplied, schedule is insufficient information.", "changes_any_design_number": false, "evidence": ["research/v019-d-pilot/PROTOCOL.md:160"]},
+    {"id": "Q07", "resolution": "ACCEPTED by the author at freeze, 2026-11-10 (\"Accept and freeze\"): the proposed resolution applies.", "protocol_section": "2.4, 3 and 7", "problem": "Literal reuse of Stage C helpers conflicts with explicit pilot requirements: seeds_for has gfsr but no profile; conventional_statistic cannot handle an empty p-value set; detection selects post-onset alarms; conventional_window applies one byte slice to bit and word tests without a cap. These are reuse-interface incompatibilities, distinct from Q01's contradictory formula.", "proposed_resolution": "Use the pilot-owned seed extension, guarded statistic, onset-blind first exceedance and capped-bit/full-word wrapper specified here, while preserving frozen Stage C source. Confirm this explicit reuse boundary before freeze; do not invoke Stage C's run_one or detection as the primary pilot implementation.", "changes_any_design_number": false, "evidence": ["research/v019-d-pilot/PROTOCOL.md:69", "research/v019-d-pilot/PROTOCOL.md:73", "research/v019-d-pilot/PROTOCOL.md:76", "research/v019-d-pilot/PROTOCOL.md:101", "research/v018-h1-detection/h1lib.py:160", "research/v018-h1-detection/h1lib.py:347", "research/v018-h1-detection/h1lib.py:415", "research/v018-h1-detection/h1lib.py:442"]},
+    {"id": "Q08", "protocol_section": "2.4", "problem": "PROTOCOL.md said '95% Clopper-Pearson upper bound', which can be read as a one-sided 95% bound; the specification uses the upper end of the two-sided CP95 interval (raised in the second, independent review).", "proposed_resolution": "Keep the Stage C V2 convention, the upper end of the two-sided 95% interval, and state it in PROTOCOL.md section 2.4.", "resolution": "RESOLVED 2026-11-10 in review: PROTOCOL.md section 2.4 now names the two-sided interval and the Stage C convention. The stricter reading is kept.", "changes_any_design_number": false, "evidence": ["research/v018-h1-detection/analyze.py:155", "research/v018-h1-detection/PROTOCOL.md:182"]},
+    {"id": "Q09", "resolution": "ACCEPTED by the author at freeze, 2026-11-10 (\"Accept and freeze\"): the proposed resolution applies.", "protocol_section": "5 criterion 3", "problem": "Criterion 3 has no stated eligibility minimum, so its median could rest on a handful of runs (raised in the second, independent review).", "proposed_resolution": "Require at least 300 eligible runs per family at L=20480, the criterion 2 minimum on the same population; fewer gives insufficient information. Needs the author's confirmation because it is a criterion threshold.", "changes_any_design_number": false, "evidence": ["research/v019-d-pilot/PROTOCOL.md:157", "research/v019-d-pilot/PROTOCOL.md:158", "research/v019-d-pilot/PROTOCOL.md:164"]}
+  ],
+  "conventions_added": [
+    {"id": "C01", "json_path": "$.application", "what": "Exact source/start/simulation calls and disposition of Stage C's internal summary.", "why": "Prevent sampler-default or endpoint substitution."},
+    {"id": "C02", "json_path": "$.sweep_clock", "what": "Callback order, sweep counter and explicit replay-mark mapping.", "why": "Apply one severity to all words consumed by the same sweep."},
+    {"id": "C03", "json_path": "$.profile", "what": "Scalar NumPy draw expressions, float64 evaluation and healthy null profile metadata.", "why": "Make profile draws and replay deterministic."},
+    {"id": "C04", "json_path": "$.fault_transforms", "what": "Preserve transform operation order and domain exceptions; midpoint LAG1 first state, as Stage C (Q01, resolved).", "why": "Maintain Stage C step equivalence while exposing Q01."},
+    {"id": "C05", "json_path": "$.endpoint", "what": "Endpoint diagnostic schema, invalid-reason precedence and proposed short-interval coverage procedure.", "why": "Distinguish noncoverage, unavailable uncertainty and run errors."},
+    {"id": "C06", "json_path": "$.operational_alarm", "what": "Bit-cap wrapper, finite-p guard, exclusive-end onset equality, ties and CP implementation.", "why": "Retain full word windows and onset-blind issuance."},
+    {"id": "C07", "json_path": "$.signal_schema", "what": "Checkpoint field names, signed statistic extensions, dtypes, units, counts and unavailable statuses.", "why": "Make every logged signal interpretable and reproducible."},
+    {"id": "C08", "json_path": "$.signal_schema.application_statistics", "what": "Signed application features, count/fraction logging and calibration pooling order.", "why": "Expose the exact application inputs used by F-AB-lite."},
+    {"id": "C09", "json_path": "$.data.seeds", "what": "Profile extension to seeds_for and fixed analysis-purpose seed labels.", "why": "Avoid seed-role substitutions and scheduling-dependent randomness."},
+    {"id": "C10", "json_path": "$.smoke", "what": "Two full-horizon smoke runs per condition, ten total, no scientific threshold fitting.", "why": "Fix the otherwise unspecified engineering sample size."},
+    {"id": "C11", "json_path": "$.storage", "what": "Per-run compressed NPZ/JSON, explicit severity array, canonical hashes, manifests and thread controls.", "why": "Enable audit/replay and distinguish baseline storage estimates from complete outputs."},
+    {"id": "C12", "json_path": "$.failed_runs", "what": "Proposed complete-calibration requirement and missing-run/unknown-alarm handling.", "why": "Avoid silent replacements or denominator changes."},
+    {"id": "C13", "json_path": "$.oracle", "what": "Equal run-length weights, all-fitting-run oracle fit, missing-input rules and reporting populations.", "why": "Keep oracle fitting independent of evaluation and alarm selection."},
+    {"id": "C14", "json_path": "$.forecasters.logistic", "what": "Zero initialisation, explicit L-BFGS-B options, convergence test and solver diagnostics.", "why": "Specify the required C=1 summed-loss objective using SciPy only."},
+    {"id": "C15", "json_path": "$.forecasters", "what": "Feature order, proposed early slopes/training subsets, ddof=0 scaling, model schema and evaluation barrier.", "why": "Remove implementer choices and prevent evaluation leakage."},
+    {"id": "C16", "json_path": "$.scores", "what": "Calibration-bin boundaries, descriptive contrast sign, paired bootstrap draws, 95% other intervals and undefined-resample rules.", "why": "Match design.py's two-sided linear-percentile interval and keep denominators explicit."},
+    {"id": "C17", "json_path": "$.stop_criteria", "what": "Straddle/outside equality rules, family aggregation, empty samples and proposed calendar arithmetic.", "why": "Make criteria operational without changing approved thresholds."},
+    {"id": "C18", "json_path": "$.implementation_checks", "what": "All-run ramp checks, 25 seeded replay runs and independent recount with exact classifications and floating tolerance.", "why": "Fix engineering-check scope, selection and pass conditions."},
+    {"id": "C19", "json_path": "$.outputs", "what": "Future output filenames, contents and separation of smoke, fitting and evaluation artifacts.", "why": "Give the implementer a complete auditable output contract."}
+  ]
+}

@@ -1,0 +1,1053 @@
+{
+ "seed_recipe": "namespace_seed(\"rnglab-v019-d-pilot\", \"design\", purpose, \"00000\")",
+ "runtime": {
+  "source": "research/v018-h1-detection/results/report_numbers.json",
+  "stage_c_wall_minutes": 110.43333333333334,
+  "stage_c_workers": 8,
+  "stage_c_runs_stored": 11239,
+  "stage_c_sweeps_per_run": 10240,
+  "worker_seconds_per_sweep": 0.00046058924281519706,
+  "pilot_sweeps_per_run": 40960,
+  "pilot_workers": 8,
+  "note": "Linear cost-per-sweep extrapolation from Stage C, not a pilot benchmark; assumes unchanged throughput, excludes new engineering and model fitting."
+ },
+ "storage": {
+  "bytes_per_run": 983040,
+  "MiB_per_run": 0.9375,
+  "note": "Uncompressed CV float64, TD float64, int64 marks: 3*8*H bytes per run; excludes other logs, metadata, checkpoint statistics and container overhead."
+ },
+ "size_options": [
+  {
+   "healthy": 2000,
+   "fault_per_family": 500,
+   "fitting_per_family": 300,
+   "evaluation_per_family": 200,
+   "calibration": 999,
+   "total_runs": 4499,
+   "wall_minutes_extrapolated_8_workers": 176.82696562564877,
+   "storage_total_GiB": 4.11895751953125,
+   "criterion_1": {
+    "n": 2000,
+    "cp_level": 0.95,
+    "band": [
+     0.92,
+     0.98
+    ],
+    "accepted_counts": [
+     1864,
+     1865,
+     1866,
+     1867,
+     1868,
+     1869,
+     1870,
+     1871,
+     1872,
+     1873,
+     1874,
+     1875,
+     1876,
+     1877,
+     1878,
+     1879,
+     1880,
+     1881,
+     1882,
+     1883,
+     1884,
+     1885,
+     1886,
+     1887,
+     1888,
+     1889,
+     1890,
+     1891,
+     1892,
+     1893,
+     1894,
+     1895,
+     1896,
+     1897,
+     1898,
+     1899,
+     1900,
+     1901,
+     1902,
+     1903,
+     1904,
+     1905,
+     1906,
+     1907,
+     1908,
+     1909,
+     1910,
+     1911,
+     1912,
+     1913,
+     1914,
+     1915,
+     1916,
+     1917,
+     1918,
+     1919,
+     1920,
+     1921,
+     1922,
+     1923,
+     1924,
+     1925,
+     1926,
+     1927,
+     1928,
+     1929,
+     1930,
+     1931,
+     1932,
+     1933,
+     1934,
+     1935,
+     1936,
+     1937,
+     1938,
+     1939,
+     1940,
+     1941,
+     1942,
+     1943,
+     1944,
+     1945,
+     1946
+    ],
+    "probabilities": [
+     {
+      "true_coverage": 0.92,
+      "p_pass": 0.024346155985721752,
+      "all_three_if_independent": 1.443082634669488e-05
+     },
+     {
+      "true_coverage": 0.93,
+      "p_pass": 0.38388461843833516,
+      "all_three_if_independent": 0.05657207822425968
+     },
+     {
+      "true_coverage": 0.94,
+      "p_pass": 0.9376722587308972,
+      "all_three_if_independent": 0.8244288906612297
+     },
+     {
+      "true_coverage": 0.945,
+      "p_pass": 0.994193672854988,
+      "all_three_if_independent": 0.9826819631184766
+     },
+     {
+      "true_coverage": 0.95,
+      "p_pass": 0.9998222939629676,
+      "all_three_if_independent": 0.9994669766215978
+     },
+     {
+      "true_coverage": 0.955,
+      "p_pass": 0.9999869137996814,
+      "all_three_if_independent": 0.9999607419127879
+     },
+     {
+      "true_coverage": 0.96,
+      "p_pass": 0.999295087007748,
+      "all_three_if_independent": 0.9978867513799512
+     },
+     {
+      "true_coverage": 0.97,
+      "p_pass": 0.8014063172915673,
+      "all_three_if_independent": 0.5147048785291017
+     }
+    ],
+    "joint_note": "p_pass^3 is only 'if independent'. Lengths are positively correlated in reality; this is not an upper bound or an estimate of their joint pass probability. Pairwise coverage correlation alone does not determine joint band acceptance."
+   },
+   "criterion_4": {
+    "evaluation_per_family": 200,
+    "minimum_eligible": 120,
+    "minimum_note": "120 at n_eval=200; scaled proportionally (60 at 100, 240 at 400).",
+    "datasets_per_scenario": 1000,
+    "bootstrap_resamples_per_dataset": 2000,
+    "interval_level": 0.9833333333333333,
+    "lower_percentile": 0.00833333333333336,
+    "interval_method": "Two-sided percentile paired bootstrap, NumPy linear quantile.",
+    "pass_rule": "eligible >= minimum AND observed skill >= 0.10 AND lower bound > 0",
+    "construction": "Independent equiprobable signs Z; q_model=0.5+Z*d; Y|Z~Bernoulli(q_model); q_base=0.5. Both forecasts are calibrated, with marginal outcome rate 0.5. E[BS_base]=0.25, E[BS_model]=0.25-d^2, so d=sqrt(skill)/2. F0+ is represented by a constant baseline (uninformative alarm time). Predictions are fixed, with no fitting uncertainty or refitting.",
+    "eligibility_note": "Conditional power at fixed round(e*n_eval) eligible runs, independent of outcome; does not model random eligibility counts or selection effects.",
+    "scope": "Per-family power, identical assumptions for SHIFT, LAG1 and DUP; not the probability that at least one family passes.",
+    "bootstrap_note": "Binomial counts resample the two observed loss-pair types exactly, equivalent in distribution to resampling eligible trajectories.",
+    "scenarios": [
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 120,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 91,
+      "power": 0.091,
+      "monte_carlo_se": 0.009094998625618368,
+      "data_seed_purpose": "power-eval200-e0.6-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval200-e0.6-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 120,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 282,
+      "power": 0.282,
+      "monte_carlo_se": 0.014229406171727617,
+      "data_seed_purpose": "power-eval200-e0.6-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval200-e0.6-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 120,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 469,
+      "power": 0.469,
+      "monte_carlo_se": 0.01578096955196353,
+      "data_seed_purpose": "power-eval200-e0.6-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval200-e0.6-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 120,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 598,
+      "power": 0.598,
+      "monte_carlo_se": 0.015504708962118573,
+      "data_seed_purpose": "power-eval200-e0.6-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval200-e0.6-skill0.20-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 160,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 78,
+      "power": 0.078,
+      "monte_carlo_se": 0.008480330182251162,
+      "data_seed_purpose": "power-eval200-e0.8-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval200-e0.8-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 160,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 396,
+      "power": 0.396,
+      "monte_carlo_se": 0.01546557467409472,
+      "data_seed_purpose": "power-eval200-e0.8-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval200-e0.8-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 160,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 572,
+      "power": 0.572,
+      "monte_carlo_se": 0.015646597074124458,
+      "data_seed_purpose": "power-eval200-e0.8-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval200-e0.8-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 160,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 756,
+      "power": 0.756,
+      "monte_carlo_se": 0.013581752464244074,
+      "data_seed_purpose": "power-eval200-e0.8-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval200-e0.8-skill0.20-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 200,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 56,
+      "power": 0.056,
+      "monte_carlo_se": 0.007270763371201128,
+      "data_seed_purpose": "power-eval200-e1.0-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval200-e1.0-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 200,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 503,
+      "power": 0.503,
+      "monte_carlo_se": 0.01581110369329099,
+      "data_seed_purpose": "power-eval200-e1.0-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval200-e1.0-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 200,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 695,
+      "power": 0.695,
+      "monte_carlo_se": 0.014559361249725209,
+      "data_seed_purpose": "power-eval200-e1.0-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval200-e1.0-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 200,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 850,
+      "power": 0.85,
+      "monte_carlo_se": 0.011291589790636216,
+      "data_seed_purpose": "power-eval200-e1.0-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval200-e1.0-skill0.20-bootstrap"
+     }
+    ]
+   }
+  },
+  {
+   "healthy": 1000,
+   "fault_per_family": 300,
+   "fitting_per_family": 200,
+   "evaluation_per_family": 100,
+   "calibration": 999,
+   "total_runs": 2899,
+   "wall_minutes_extrapolated_8_workers": 113.94118100661386,
+   "storage_total_GiB": 2.65411376953125,
+   "criterion_1": {
+    "n": 1000,
+    "cp_level": 0.95,
+    "band": [
+     0.92,
+     0.98
+    ],
+    "accepted_counts": [
+     937,
+     938,
+     939,
+     940,
+     941,
+     942,
+     943,
+     944,
+     945,
+     946,
+     947,
+     948,
+     949,
+     950,
+     951,
+     952,
+     953,
+     954,
+     955,
+     956,
+     957,
+     958,
+     959,
+     960,
+     961,
+     962,
+     963,
+     964,
+     965,
+     966,
+     967,
+     968,
+     969,
+     970
+    ],
+    "probabilities": [
+     {
+      "true_coverage": 0.92,
+      "p_pass": 0.024270872321186725,
+      "all_three_if_independent": 1.429737001604006e-05
+     },
+     {
+      "true_coverage": 0.93,
+      "p_pass": 0.21200573858840327,
+      "all_three_if_independent": 0.009528901766296147
+     },
+     {
+      "true_coverage": 0.94,
+      "p_pass": 0.6848305192509551,
+      "all_three_if_independent": 0.3211806102089735
+     },
+     {
+      "true_coverage": 0.945,
+      "p_pass": 0.8793798306697519,
+      "all_three_if_independent": 0.6800322377438395
+     },
+     {
+      "true_coverage": 0.95,
+      "p_pass": 0.9708524054357891,
+      "all_three_if_independent": 0.9150811998344839
+     },
+     {
+      "true_coverage": 0.955,
+      "p_pass": 0.9900325593759154,
+      "all_three_if_independent": 0.970394737481574
+     },
+     {
+      "true_coverage": 0.96,
+      "p_pass": 0.9596012791436063,
+      "all_three_if_independent": 0.8836340743704201
+     },
+     {
+      "true_coverage": 0.97,
+      "p_pass": 0.5253918439377369,
+      "all_three_if_independent": 0.14502737284431322
+     }
+    ],
+    "joint_note": "p_pass^3 is only 'if independent'. Lengths are positively correlated in reality; this is not an upper bound or an estimate of their joint pass probability. Pairwise coverage correlation alone does not determine joint band acceptance."
+   },
+   "criterion_4": {
+    "evaluation_per_family": 100,
+    "minimum_eligible": 60,
+    "minimum_note": "120 at n_eval=200; scaled proportionally (60 at 100, 240 at 400).",
+    "datasets_per_scenario": 1000,
+    "bootstrap_resamples_per_dataset": 2000,
+    "interval_level": 0.9833333333333333,
+    "lower_percentile": 0.00833333333333336,
+    "interval_method": "Two-sided percentile paired bootstrap, NumPy linear quantile.",
+    "pass_rule": "eligible >= minimum AND observed skill >= 0.10 AND lower bound > 0",
+    "construction": "Independent equiprobable signs Z; q_model=0.5+Z*d; Y|Z~Bernoulli(q_model); q_base=0.5. Both forecasts are calibrated, with marginal outcome rate 0.5. E[BS_base]=0.25, E[BS_model]=0.25-d^2, so d=sqrt(skill)/2. F0+ is represented by a constant baseline (uninformative alarm time). Predictions are fixed, with no fitting uncertainty or refitting.",
+    "eligibility_note": "Conditional power at fixed round(e*n_eval) eligible runs, independent of outcome; does not model random eligibility counts or selection effects.",
+    "scope": "Per-family power, identical assumptions for SHIFT, LAG1 and DUP; not the probability that at least one family passes.",
+    "bootstrap_note": "Binomial counts resample the two observed loss-pair types exactly, equivalent in distribution to resampling eligible trajectories.",
+    "scenarios": [
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 60,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 62,
+      "power": 0.062,
+      "monte_carlo_se": 0.007626008130076967,
+      "data_seed_purpose": "power-eval100-e0.6-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval100-e0.6-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 60,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 170,
+      "power": 0.17,
+      "monte_carlo_se": 0.011878552100319299,
+      "data_seed_purpose": "power-eval100-e0.6-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval100-e0.6-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 60,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 238,
+      "power": 0.238,
+      "monte_carlo_se": 0.01346684818359515,
+      "data_seed_purpose": "power-eval100-e0.6-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval100-e0.6-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 60,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 384,
+      "power": 0.384,
+      "monte_carlo_se": 0.015379986996093333,
+      "data_seed_purpose": "power-eval100-e0.6-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval100-e0.6-skill0.20-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 80,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 103,
+      "power": 0.103,
+      "monte_carlo_se": 0.009612023720320296,
+      "data_seed_purpose": "power-eval100-e0.8-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval100-e0.8-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 80,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 188,
+      "power": 0.188,
+      "monte_carlo_se": 0.012355403676124872,
+      "data_seed_purpose": "power-eval100-e0.8-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval100-e0.8-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 80,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 320,
+      "power": 0.32,
+      "monte_carlo_se": 0.014751271131668619,
+      "data_seed_purpose": "power-eval100-e0.8-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval100-e0.8-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 80,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 469,
+      "power": 0.469,
+      "monte_carlo_se": 0.01578096955196353,
+      "data_seed_purpose": "power-eval100-e0.8-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval100-e0.8-skill0.20-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 100,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 110,
+      "power": 0.11,
+      "monte_carlo_se": 0.009894442884771228,
+      "data_seed_purpose": "power-eval100-e1.0-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval100-e1.0-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 100,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 235,
+      "power": 0.235,
+      "monte_carlo_se": 0.013408019988051927,
+      "data_seed_purpose": "power-eval100-e1.0-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval100-e1.0-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 100,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 390,
+      "power": 0.39,
+      "monte_carlo_se": 0.01542400726140908,
+      "data_seed_purpose": "power-eval100-e1.0-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval100-e1.0-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 100,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 498,
+      "power": 0.498,
+      "monte_carlo_se": 0.01581126180922952,
+      "data_seed_purpose": "power-eval100-e1.0-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval100-e1.0-skill0.20-bootstrap"
+     }
+    ]
+   }
+  },
+  {
+   "healthy": 2000,
+   "fault_per_family": 1000,
+   "fitting_per_family": 600,
+   "evaluation_per_family": 400,
+   "calibration": 999,
+   "total_runs": 5999,
+   "wall_minutes_extrapolated_8_workers": 235.782388705994,
+   "storage_total_GiB": 5.49224853515625,
+   "criterion_1": {
+    "n": 2000,
+    "cp_level": 0.95,
+    "band": [
+     0.92,
+     0.98
+    ],
+    "accepted_counts": [
+     1864,
+     1865,
+     1866,
+     1867,
+     1868,
+     1869,
+     1870,
+     1871,
+     1872,
+     1873,
+     1874,
+     1875,
+     1876,
+     1877,
+     1878,
+     1879,
+     1880,
+     1881,
+     1882,
+     1883,
+     1884,
+     1885,
+     1886,
+     1887,
+     1888,
+     1889,
+     1890,
+     1891,
+     1892,
+     1893,
+     1894,
+     1895,
+     1896,
+     1897,
+     1898,
+     1899,
+     1900,
+     1901,
+     1902,
+     1903,
+     1904,
+     1905,
+     1906,
+     1907,
+     1908,
+     1909,
+     1910,
+     1911,
+     1912,
+     1913,
+     1914,
+     1915,
+     1916,
+     1917,
+     1918,
+     1919,
+     1920,
+     1921,
+     1922,
+     1923,
+     1924,
+     1925,
+     1926,
+     1927,
+     1928,
+     1929,
+     1930,
+     1931,
+     1932,
+     1933,
+     1934,
+     1935,
+     1936,
+     1937,
+     1938,
+     1939,
+     1940,
+     1941,
+     1942,
+     1943,
+     1944,
+     1945,
+     1946
+    ],
+    "probabilities": [
+     {
+      "true_coverage": 0.92,
+      "p_pass": 0.024346155985721752,
+      "all_three_if_independent": 1.443082634669488e-05
+     },
+     {
+      "true_coverage": 0.93,
+      "p_pass": 0.38388461843833516,
+      "all_three_if_independent": 0.05657207822425968
+     },
+     {
+      "true_coverage": 0.94,
+      "p_pass": 0.9376722587308972,
+      "all_three_if_independent": 0.8244288906612297
+     },
+     {
+      "true_coverage": 0.945,
+      "p_pass": 0.994193672854988,
+      "all_three_if_independent": 0.9826819631184766
+     },
+     {
+      "true_coverage": 0.95,
+      "p_pass": 0.9998222939629676,
+      "all_three_if_independent": 0.9994669766215978
+     },
+     {
+      "true_coverage": 0.955,
+      "p_pass": 0.9999869137996814,
+      "all_three_if_independent": 0.9999607419127879
+     },
+     {
+      "true_coverage": 0.96,
+      "p_pass": 0.999295087007748,
+      "all_three_if_independent": 0.9978867513799512
+     },
+     {
+      "true_coverage": 0.97,
+      "p_pass": 0.8014063172915673,
+      "all_three_if_independent": 0.5147048785291017
+     }
+    ],
+    "joint_note": "p_pass^3 is only 'if independent'. Lengths are positively correlated in reality; this is not an upper bound or an estimate of their joint pass probability. Pairwise coverage correlation alone does not determine joint band acceptance."
+   },
+   "criterion_4": {
+    "evaluation_per_family": 400,
+    "minimum_eligible": 240,
+    "minimum_note": "120 at n_eval=200; scaled proportionally (60 at 100, 240 at 400).",
+    "datasets_per_scenario": 1000,
+    "bootstrap_resamples_per_dataset": 2000,
+    "interval_level": 0.9833333333333333,
+    "lower_percentile": 0.00833333333333336,
+    "interval_method": "Two-sided percentile paired bootstrap, NumPy linear quantile.",
+    "pass_rule": "eligible >= minimum AND observed skill >= 0.10 AND lower bound > 0",
+    "construction": "Independent equiprobable signs Z; q_model=0.5+Z*d; Y|Z~Bernoulli(q_model); q_base=0.5. Both forecasts are calibrated, with marginal outcome rate 0.5. E[BS_base]=0.25, E[BS_model]=0.25-d^2, so d=sqrt(skill)/2. F0+ is represented by a constant baseline (uninformative alarm time). Predictions are fixed, with no fitting uncertainty or refitting.",
+    "eligibility_note": "Conditional power at fixed round(e*n_eval) eligible runs, independent of outcome; does not model random eligibility counts or selection effects.",
+    "scope": "Per-family power, identical assumptions for SHIFT, LAG1 and DUP; not the probability that at least one family passes.",
+    "bootstrap_note": "Binomial counts resample the two observed loss-pair types exactly, equivalent in distribution to resampling eligible trajectories.",
+    "scenarios": [
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 240,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 34,
+      "power": 0.034,
+      "monte_carlo_se": 0.005730968504537431,
+      "data_seed_purpose": "power-eval400-e0.6-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval400-e0.6-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 240,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 536,
+      "power": 0.536,
+      "monte_carlo_se": 0.015770351930125083,
+      "data_seed_purpose": "power-eval400-e0.6-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval400-e0.6-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 240,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 782,
+      "power": 0.782,
+      "monte_carlo_se": 0.013056645817360598,
+      "data_seed_purpose": "power-eval400-e0.6-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval400-e0.6-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.6,
+      "eligible_count": 240,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 923,
+      "power": 0.923,
+      "monte_carlo_se": 0.008430361795320529,
+      "data_seed_purpose": "power-eval400-e0.6-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval400-e0.6-skill0.20-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 320,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 15,
+      "power": 0.015,
+      "monte_carlo_se": 0.003843826218756514,
+      "data_seed_purpose": "power-eval400-e0.8-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval400-e0.8-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 320,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 520,
+      "power": 0.52,
+      "monte_carlo_se": 0.0157987341265052,
+      "data_seed_purpose": "power-eval400-e0.8-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval400-e0.8-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 320,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 902,
+      "power": 0.902,
+      "monte_carlo_se": 0.009401914698613255,
+      "data_seed_purpose": "power-eval400-e0.8-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval400-e0.8-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 0.8,
+      "eligible_count": 320,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 976,
+      "power": 0.976,
+      "monte_carlo_se": 0.004839834707921338,
+      "data_seed_purpose": "power-eval400-e0.8-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval400-e0.8-skill0.20-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 400,
+      "true_brier_skill": 0.05,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.38819660112501053,
+       0.6118033988749895
+      ],
+      "passed_datasets": 14,
+      "power": 0.014,
+      "monte_carlo_se": 0.003715373467095872,
+      "data_seed_purpose": "power-eval400-e1.0-skill0.05-data",
+      "bootstrap_seed_purpose": "power-eval400-e1.0-skill0.05-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 400,
+      "true_brier_skill": 0.1,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.341886116991581,
+       0.658113883008419
+      ],
+      "passed_datasets": 489,
+      "power": 0.489,
+      "monte_carlo_se": 0.015807561481771943,
+      "data_seed_purpose": "power-eval400-e1.0-skill0.10-data",
+      "bootstrap_seed_purpose": "power-eval400-e1.0-skill0.10-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 400,
+      "true_brier_skill": 0.15,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.30635083268962915,
+       0.6936491673103709
+      ],
+      "passed_datasets": 908,
+      "power": 0.908,
+      "monte_carlo_se": 0.009139803061335619,
+      "data_seed_purpose": "power-eval400-e1.0-skill0.15-data",
+      "bootstrap_seed_purpose": "power-eval400-e1.0-skill0.15-bootstrap"
+     },
+     {
+      "eligibility_fraction": 1.0,
+      "eligible_count": 400,
+      "true_brier_skill": 0.2,
+      "q_base": 0.5,
+      "q_model_values": [
+       0.27639320225002106,
+       0.7236067977499789
+      ],
+      "passed_datasets": 992,
+      "power": 0.992,
+      "monte_carlo_se": 0.0028170906978654425,
+      "data_seed_purpose": "power-eval400-e1.0-skill0.20-data",
+      "bootstrap_seed_purpose": "power-eval400-e1.0-skill0.20-bootstrap"
+     }
+    ]
+   }
+  }
+ ],
+ "ramp_profiles": {
+  "draws": 100000,
+  "seed_purpose": "ramp-profiles",
+  "onset": "Integer uniform [2048,8192], inclusive",
+  "cap_time": "Independent log-uniform [2048,163840], float64",
+  "cap_note": "First capped sweep is t0+ceil(T_cap); reaching the cap before L means this is < L. Continuous crossing t0+T_cap < L is also reported separately.",
+  "quantile_probabilities": [
+   0.05,
+   0.25,
+   0.5,
+   0.75,
+   0.95
+  ],
+  "lengths": [
+   {
+    "L": 10240,
+    "share_reaching_cap_before_L": 0.19123,
+    "share_continuous_crossing_before_L": 0.19129,
+    "mean_severity_over_cap_quantiles": [
+     0.005228283564157047,
+     0.020220760450953047,
+     0.060460091536440386,
+     0.18555743176481543,
+     0.4976498070385095
+    ]
+   },
+   {
+    "L": 20480,
+    "share_reaching_cap_before_L": 0.45567,
+    "share_continuous_crossing_before_L": 0.45569,
+    "mean_severity_over_cap_quantiles": [
+     0.04207356042572797,
+     0.10344418942416167,
+     0.3076325570288857,
+     0.5759151187502666,
+     0.7488249035192548
+    ]
+   },
+   {
+    "L": 40960,
+    "share_reaching_cap_before_L": 0.65147,
+    "share_continuous_crossing_before_L": 0.65147,
+    "mean_severity_over_cap_quantiles": [
+     0.11865485525806811,
+     0.28461070664552013,
+     0.6449161386256979,
+     0.7879575593751332,
+     0.8744124517596273
+    ]
+   }
+  ]
+ }
+}

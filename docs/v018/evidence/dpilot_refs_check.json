@@ -1,0 +1,70 @@
+[
+ {
+  "authors": "Gebraeel, Lawley, Li, Ryan",
+  "title": "Residual-life distributions from component degradation signals: A Bayesian approach",
+  "year": 2005,
+  "doi": "10.1080/07408170590929018",
+  "verdict": "MATCH",
+  "crossref_title": "Residual-life distributions from component degradation signals: A Bayesian approach",
+  "crossref_year": 2005,
+  "crossref_first_author": "GEBRAEEL",
+  "crossref_venue": "IIE Transactions",
+  "title_similarity": 1.0
+ },
+ {
+  "authors": "Si, Wang, Hu, Zhou",
+  "title": "Remaining useful life estimation \u2013 A review on the statistical data driven approaches",
+  "year": 2011,
+  "doi": "10.1016/j.ejor.2010.11.018",
+  "verdict": "MATCH",
+  "crossref_title": "Remaining useful life estimation \u2013 A review on the statistical data driven approaches",
+  "crossref_year": 2011,
+  "crossref_first_author": "Si",
+  "crossref_venue": "European Journal of Operational Research",
+  "title_similarity": 1.0
+ },
+ {
+  "authors": "Gneiting, Raftery",
+  "title": "Strictly proper scoring rules, prediction, and estimation",
+  "year": 2007,
+  "doi": "10.1198/016214506000001437",
+  "verdict": "MATCH",
+  "crossref_title": "Strictly Proper Scoring Rules, Prediction, and Estimation",
+  "crossref_year": 2007,
+  "crossref_first_author": "Gneiting",
+  "crossref_venue": "Journal of the American Statistical Association",
+  "title_similarity": 1.0
+ },
+ {
+  "authors": "Brier",
+  "title": "Verification of forecasts expressed in terms of probability",
+  "year": 1950,
+  "doi": "10.1175/1520-0493(1950)078<0001:VOFEIT>2.0.CO;2",
+  "verdict": "MATCH",
+  "crossref_title": "VERIFICATION OF FORECASTS EXPRESSED IN TERMS OF PROBABILITY",
+  "crossref_year": 1950,
+  "crossref_first_author": "BRIER",
+  "crossref_venue": "Monthly Weather Review",
+  "title_similarity": 1.0
+ },
+ {
+  "authors": "Schmeiser",
+  "title": "Batch size effects in the analysis of simulation output",
+  "year": 1982,
+  "doi": "10.1287/opre.30.3.556",
+  "verdict": "MATCH",
+  "crossref_title": "Batch Size Effects in the Analysis of Simulation Output",
+  "crossref_year": 1982,
+  "crossref_first_author": "Schmeiser",
+  "crossref_venue": "Operations Research",
+  "title_similarity": 1.0
+ },
+ {
+  "authors": "Steiger, Wilson",
+  "title": "Convergence properties of the batch means method for simulation output analysis",
+  "year": 2002,
+  "doi": "10.1287/ijoc.14.4.379.1472",
+  "verdict": "DOI_NOT_FOUND",
+  "detail": "HTTP Error 404: Not Found"
+ }
+]
