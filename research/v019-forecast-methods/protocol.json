@@ -1,0 +1,53 @@
+{
+  "id": "rnglab-v019-forecast-methods-v1",
+  "status": "FROZEN_BEFORE_GENERATION",
+  "human_readable": "research/v019-forecast-methods/PROTOCOL.md",
+  "scope": "Validation of forecasting methods on a Gaussian surrogate workload with known laws. Not a test of H2 or H2-R, not evidence about the path-integral sampler or about any random number generator, and not part of the Stage D pilot.",
+  "namespace": "rnglab-v019-forecast-methods",
+  "smoke_namespace": "rnglab-v019-forecast-methods-smoke",
+  "seed_recipe": "rnglab.seeds.namespace_seed(namespace, set_name, role); roles: paths, noise, forward-simulation; bootstrap: namespace_seed(namespace, scenario, 'analysis', purpose)",
+  "surrogate": {"horizon": 40960, "block": 16, "stride": 256, "window": 512, "lengths": [10240, 20480, 40960],
+                "batches": 16, "level": 0.95, "beta": 0.06, "sigma_eff": 0.613, "kappa": 103.0, "s_max": 0.5, "sustain": 3},
+  "declared_prior": {"t0_low": 2048, "t0_high": 8192, "t_cap_low": 2048.0, "t_cap_high": 163840.0, "s_max": 0.5},
+  "sets": {"calibration_healthy": 999, "training": 4000, "evaluation_per_scenario": 2000},
+  "alarm": {"statistic": "window statistic, one-sided", "threshold": "950th order statistic of the 999 calibration maxima", "rule": "first strict exceedance"},
+  "posterior_grid": {"onsets": 49, "rates": 48},
+  "forward_simulations_per_hypothesis": 100,
+  "bootstrap": {"resamples": 10000, "level": 0.95},
+  "scenarios": {
+    "A_declared": {"family": "ramp", "prior": "declared"},
+    "B1_slow_rates": {"family": "ramp", "t0": [2048, 8192], "t_cap": [163840.0, 655360.0]},
+    "B2_late_onsets": {"family": "ramp", "t0": [8193, 16384], "t_cap": [2048.0, 163840.0]},
+    "C_step_hold": {"family": "step_hold", "t0": [2048, 8192], "level_log_uniform": [0.005, 0.5]},
+    "D_random_walk": {"family": "random_walk", "t0": [2048, 8192], "drift_per_sweep": 1.25e-05, "volatility_per_sqrt_sweep": 0.0015},
+    "E_continue": {"family": "ramp", "prior": "declared", "paired_with": "E_freeze"},
+    "E_freeze": {"family": "ramp_then_hold", "freeze": "the run's own alarm sweep; the horizon when there is no alarm",
+                 "same_paths_and_noise_as": "E_continue"}
+  },
+  "forecasters": {
+    "base-rate": "training fraction valid among eligible training runs",
+    "alarm-time": "logistic regression on the alarm sweep",
+    "lite-logistic": "logistic regression on the alarm sweep, the statistic at the alarm and its slope over the last four checkpoints",
+    "persistence": "severity implied by the alarm-window statistic held from the middle of that window; estimated beta, sigma_eff, kappa",
+    "bayes-ramp": "posterior over the declared ramp parameters from the joint likelihood of the statistic history, mixed over the validity model; estimated beta, sigma_eff, kappa",
+    "bayes-ramp-no-widening": "the same with the drift-widening term of the validity model switched off (the noncentral-t formula)",
+    "oracle": "validity model at the true severity path with the estimated beta and sigma_eff; evaluation truth, a reference only"
+  },
+  "estimation": {"sigma_eff": "healthy calibration runs", "beta": "training runs, least squares through the origin, exact reference used",
+                 "kappa": "training runs, least squares through the origin on the window-mean severity"},
+  "eligibility": "a run is scored at length L only if its alarm sweep is below L; counts of no alarm and late alarm are reported",
+  "failure_time": {"definition": "first checkpoint from which the interval excludes the reference at 3 consecutive checkpoints",
+                   "censoring": "administrative, at sweep 40448", "population": "evaluation runs with an alarm",
+                   "forecasters": ["bayes-ramp forward simulation", "empirical by alarm-time quintile"],
+                   "interval_level": 0.8},
+  "reading_rules": {
+    "R1": "Scenario A, bayes-ramp and oracle, each L: calibrated iff |Spiegelhalter Z| < 3 and count-weighted reliability gap (10 equal-width bins, bins with at least 50 runs) < 0.05. MET iff calibrated at all three L for both. Basis of the thresholds, fixed on development seeds before the freeze: for the oracle with the generating parameters and 2000 runs, 16 replicates gave |Z| at most 2.28 and a weighted gap at most 0.028.",
+    "R2": "Scenario A, L = 20480: MET iff the 95% paired-bootstrap lower bound of the Brier skill of bayes-ramp over alarm-time is above 0.",
+    "R3": "Scenario A, L = 20480: MET iff the 95% paired-bootstrap interval of Brier(bayes-ramp) - Brier(lite-logistic) lies entirely below 0.",
+    "R4": "Scenario A, each L: the drift-widening term matters iff the 95% paired-bootstrap interval of Brier(bayes-ramp) - Brier(bayes-ramp-no-widening) lies entirely below 0. Reported per L; no overall label.",
+    "R5": "Scenarios B1, B2, C, D: the R1 calibration rule and the Brier skill over alarm-time are reported for every forecaster and L. Expectation stated in advance: in C and in D, bayes-ramp fails the R1 rule at one L at least. The outcome is reported as EXPECTATION MET or NOT MET.",
+    "R6": "Scenarios E: every forecast must be identical in the two worlds (exact equality; a difference is an implementation error and stops interpretation). Reported: Brier score of every forecaster in each world, the realised valid fractions, and the bound mean((p_continue - p_freeze)^2)/4 over eligible runs, with p from the validity model at the true paths and the generating parameters.",
+    "R7": "Scenario A, failure time: MET iff the 95% paired-bootstrap lower bound of the ranked-probability-score skill of bayes-ramp over the empirical baseline is above 0. Coverage of the 80% central interval with its Clopper-Pearson interval, median errors, censoring counts and Kaplan-Meier medians are reported.",
+    "general": "Every outcome is reported whichever way it falls. The study runs once. A code change after the freeze is an amendment written before the affected numbers are regenerated."
+  }
+}
