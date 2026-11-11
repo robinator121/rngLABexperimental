@@ -1,0 +1,37 @@
+{
+  "digests": {
+    "DUP": {
+      "CV": "062c7a8fe6c42eafcb3d683dbd29ca19e5e7646b56ab865044bd07ad91052b72",
+      "TD": "3f1f3c3e80fba9742abc60a36ce0b3594b40614d34212f803e5f8f46b0fc2bcf",
+      "emitted": "428f069a93462df43e009ff0acf2269f7b245e357df9ad7081fc9d926a5a05b9",
+      "marks": "c8a7c440083151df2140e47122b52e16faa00873d204df34a5f24644cc036efe"
+    },
+    "LAG1": {
+      "CV": "9733ce941fbbb744182dc6fd19ce95afa878fea64f7662d4a3afaf9ddb54ab22",
+      "TD": "03797c29b1e90b672182ed9376fe1406fe572261c096ab1e8f61601f3c54d0f2",
+      "emitted": "2b703c1cd9c39040c8a494a6f415ed7b2c4976577856e25d060012b78ba0bc6d",
+      "marks": "52d7a7685bc9797931256ab70dbfb10bcbfe734a8f91272d375f3a03d86bc487"
+    },
+    "SHIFT": {
+      "CV": "e6f4d7824bf7d9ccc595c841eafe603ae0a15b8c85f8524001a36b756bb82605",
+      "TD": "16ae5df255d7193e6cd94468ec35fa32b46da2c5041016960f33954df8805dcc",
+      "emitted": "e384e638fe59c81379e0c4da21fdccc232acc149cf86448abe788692b50f52f3",
+      "marks": "2951542106aa20660a9433e593d405c334974810ec41a660b47327e3c45bc70a"
+    },
+    "healthy": {
+      "CV": "3f9ff5098208ace9f66b8836a033e4713e66589491fae67198f1d328d9790c36",
+      "TD": "49bcb06f48a9b27a4fc0a226ce1858f2f0f3bff485e65bd446afdbe18aeff1fa",
+      "emitted": "ea8e50e6189d60c34bf2538f6d56ab2561836bfd7906f0bb4e769489be55b283",
+      "marks": "0cf848736104502dc71cfea1293d1d18e78dfa17ef7dff0bfb8a32d43ec0aefd"
+    }
+  },
+  "environment": {
+    "libc": "glibc 2.44",
+    "machine": "x86_64",
+    "numpy": "2.5.3",
+    "python": "3.14.9",
+    "scipy": "1.18.1"
+  },
+  "namespace": "rnglab-v019-audit-smoke",
+  "runs": "replica 2, 96 sweeps, profile t0=3, T_cap=7.5, s_max=cap"
+}
