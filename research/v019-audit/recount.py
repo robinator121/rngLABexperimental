@@ -717,22 +717,30 @@ def validity_probability_frozen(delta: float) -> float:
     return float(stats.nct.cdf(c, df=15, nc=delta) - stats.nct.cdf(-c, df=15, nc=delta))
 
 
+_GL_NODES, _GL_WEIGHTS = np.polynomial.legendre.leggauss(200)
+
+
 def validity_probability_stable(delta: float) -> float:
     """The same probability, P(|T| <= c) for T ~ noncentral t(15, delta), by quadrature.
 
-    T = (Z + delta) / sqrt(V/15) with Z standard normal and V chi-square(15), hence
-    P = E_V[Phi(c sqrt(V/15) - delta) - Phi(-c sqrt(V/15) - delta)]. The integration
-    variable is w = sqrt(V/15) and the breakpoints follow the mass of the integrand.
+    T = (Z + delta) / W with Z standard normal and W = sqrt(V/15), V chi-square(15), hence
+    P = E_W[Phi(c W - |delta|) - Phi(-c W - |delta|)] (the probability is even in delta).
+    Gauss-Legendre panels of width at most 0.75 cover [0, |delta|/c + 6]; the density of W
+    beyond that is below exp(-270) of its value at |delta|/c. Against a 70-digit reference
+    (research/v019-audit/f01_oracle.py) the absolute error is below 3e-15 everywhere and
+    the relative error below 1e-13 down to 1e-306.
     """
     c, d = T975_15, abs(float(delta))
-
-    def integrand(w: float) -> float:
-        return (special.ndtr(c * w - d) - special.ndtr(-c * w - d)) * stats.chi.pdf(w * math.sqrt(15), 15) * math.sqrt(15)
-
-    centre = d / c
-    points = sorted({p for p in (1.0, centre, max(centre - 1, 0.05), centre + 1) if 0 < p < 60})
-    value, _ = integrate.quad(integrand, 0.0, 60.0 + centre, points=points, epsabs=1e-16, epsrel=1e-12, limit=800)
-    return float(min(max(value, 0.0), 1.0))
+    top = d / c + 6.0
+    edges = np.linspace(0.0, top, max(8, int(math.ceil(top / 0.75))) + 1)
+    log_constant = math.log(2.0) + 7.5 * math.log(7.5) - math.lgamma(7.5)
+    total = 0.0
+    for a, b in zip(edges[:-1], edges[1:]):
+        w = (a + b) / 2 + (b - a) / 2 * _GL_NODES
+        density = np.exp(log_constant + 14 * np.log(w) - 7.5 * w * w)
+        inside = special.ndtr(c * w - d) - special.ndtr(-c * w - d)
+        total += float(np.sum(_GL_WEIGHTS * inside * density)) * (b - a) / 2
+    return float(min(max(total, 0.0), 1.0))
 
 
 # ---------------------------------------------------------------------------
