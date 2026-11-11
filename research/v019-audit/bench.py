@@ -136,8 +136,10 @@ def main(argv: list[str] | None = None) -> int:
                               "platform": platform.platform(), "cpu_count": os.cpu_count(),
                               "load_average_before": os.getloadavg(),
                               "thread_variables": {k: os.environ.get(k) for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS")}},
+              # The file is identified by its hash; a local path would not help a reader and is not recorded.
               "measure_layer": None if measure_path is None else {
-                  "path": measure_path, "sha256": hashlib.sha256(Path(measure_path).read_bytes()).hexdigest()},
+                  "file": Path(measure_path).name, "in_tree": Path(measure_path).resolve() == in_tree.resolve(),
+                  "sha256": hashlib.sha256(Path(measure_path).read_bytes()).hexdigest()},
               "dlib_sha256": hashlib.sha256((REPO / "research/v019-d-pilot/dlib.py").read_bytes()).hexdigest()}
     with ProcessPoolExecutor(1) as pool:  # one fresh process per family, alone on the machine
         report["single"] = [pool.submit(one_run, (family, 20, measure_path, True)).result() for family in FAMILIES]

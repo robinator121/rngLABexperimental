@@ -1,0 +1,26 @@
+# v0.19 audit branch: test evidence
+commit: 23e08ab5f9316fc7f9cebb12e974fa9f6052a64e
+date: 2026-11-11T22:17:59Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite, tree as committed (measurement layer and Stage C traces absent: those tests skip)
+$ PYTHONPATH=src python -m pytest tests -q -rs
+........................................................................ [ 12%]
+........................................................................ [ 25%]
+........................................................................ [ 38%]
+........................................................................ [ 50%]
+........................................................................ [ 63%]
+........................................................................ [ 76%]
+...........ssss.s....................................................... [ 89%]
+..............................................................           [100%]
+=========================== short test summary info ============================
+SKIPPED [4] tests/v019/_audit_loader.py:57: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_audit_d_pilot.py:356: Stage C traces are not in this tree (set RNGLAB_STAGEC_TRACES to their directory)
+561 passed, 5 skipped in 113.06s (0:01:53)
+
+## 2. tests/v019 with the optional inputs: the uncommitted measurement layer and the Stage C traces
+$ RNGLAB_DPILOT_MEASURE=<main checkout>/research/v019-d-pilot/measure.py RNGLAB_STAGEC_TRACES=<main checkout>/research/v018-h1-detection/traces RNGLAB_AUDIT_FULL=1 python -m pytest tests/v019 -q -rs
+measure.py sha256: f8d5ac52ecef7f0366dbd6fdccedfb9aec3b8a9d24e8f2127e9d29b11e21b9be
+........................................................................ [ 51%]
+.....................................................................    [100%]
+141 passed in 85.09s (0:01:25)

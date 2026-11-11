@@ -26,7 +26,10 @@ def brief(item):
 
 def main():
     out = []
-    for argument in sys.argv[1:]:
+    arguments = []
+    for argument in sys.argv[1:]:  # "@file" reads one lookup per line
+        arguments += [line.strip() for line in open(argument[1:]) if line.strip()] if argument.startswith("@") else [argument]
+    for argument in arguments:
         kind, _, value = argument.partition(":")
         try:
             if kind == "doi":

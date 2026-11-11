@@ -82,5 +82,5 @@ Tests that need the measurement layer or the Stage C traces skip unless `RNGLAB_
 
 - The second measurement snapshot was not re-read line by line; it was compared through its outputs.
 - F-03 rests on one SHIFT run. F-06 was measured once, at six workers.
-- The full test suite was last run before the forecasting and integrity code was added; `tests/v019` passed after each addition.
+- The whole suite passes on this branch: 561 passed and 5 skipped as committed; with the measurement layer and the Stage C traces supplied, the skipped tests run (`docs/v019/evidence/pytest_v019_audit.txt`). The measurement layer itself is not on this branch.
 - Nothing downstream of the per-run records exists in the pilot, so none of it could be audited.

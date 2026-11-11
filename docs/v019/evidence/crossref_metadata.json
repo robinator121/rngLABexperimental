@@ -1,0 +1,299 @@
+[
+ {
+  "lookup": "doi:10.1103/PhysRevE.75.066701",
+  "result": {
+   "doi": "10.1103/physreve.75.066701",
+   "title": "Random numbers for large-scale distributed Monte Carlo simulations",
+   "authors": [
+    "Bauke",
+    "Mertens"
+   ],
+   "venue": "Physical Review E",
+   "volume": "75",
+   "issue": "6",
+   "page": null,
+   "year": 2007,
+   "published_print": null
+  }
+ },
+ {
+  "lookup": "doi:10.1287/moor.19.2.494",
+  "result": {
+   "doi": "10.1287/moor.19.2.494",
+   "title": "Strong Consistency of the Variance Estimator in Steady-State Simulation Output Analysis",
+   "authors": [
+    "Damerdji"
+   ],
+   "venue": "Mathematics of Operations Research",
+   "volume": "19",
+   "issue": "2",
+   "page": "494-512",
+   "year": 1994,
+   "published_print": 1994
+  }
+ },
+ {
+  "lookup": "doi:10.1109/TPDS.2016.2517639",
+  "result": {
+   "doi": "10.1109/tpds.2016.2517639",
+   "title": "Adaptive Impact-Driven Detection of Silent Data Corruption for HPC Applications",
+   "authors": [
+    "Di",
+    "Cappello"
+   ],
+   "venue": "IEEE Transactions on Parallel and Distributed Systems",
+   "volume": "27",
+   "issue": "10",
+   "page": "2809-2823",
+   "year": 2016,
+   "published_print": 2016
+  }
+ },
+ {
+  "lookup": "doi:10.1063/1.457480",
+  "result": {
+   "doi": "10.1063/1.457480",
+   "title": "Error estimates on averages of correlated data",
+   "authors": [
+    "Flyvbjerg",
+    "Petersen"
+   ],
+   "venue": "The Journal of Chemical Physics",
+   "volume": "91",
+   "issue": "1",
+   "page": "461-466",
+   "year": 1989,
+   "published_print": 1989
+  }
+ },
+ {
+  "lookup": "doi:10.1016/0167-6377(91)90019-L",
+  "result": {
+   "doi": "10.1016/0167-6377(91)90019-l",
+   "title": "Estimating the asymptotic variance with batch means",
+   "authors": [
+    "Glynn",
+    "Whitt"
+   ],
+   "venue": "Operations Research Letters",
+   "volume": "10",
+   "issue": "8",
+   "page": "431-435",
+   "year": 1991,
+   "published_print": 1991
+  }
+ },
+ {
+  "lookup": "doi:10.1016/S0378-4754(98)00078-0",
+  "result": {
+   "doi": "10.1016/s0378-4754(98)00078-0",
+   "title": "Good random number generators are (not so) easy to find",
+   "authors": [
+    "Hellekalek"
+   ],
+   "venue": "Mathematics and Computers in Simulation",
+   "volume": "46",
+   "issue": "5-6",
+   "page": "485-505",
+   "year": 1998,
+   "published_print": 1998
+  }
+ },
+ {
+  "lookup": "doi:10.1016/j.ymssp.2017.11.016",
+  "result": {
+   "doi": "10.1016/j.ymssp.2017.11.016",
+   "title": "Machinery health prognostics: A systematic review from data acquisition to RUL prediction",
+   "authors": [
+    "Lei",
+    "Li",
+    "Guo",
+    "Li",
+    "Yan",
+    "Lin"
+   ],
+   "venue": "Mechanical Systems and Signal Processing",
+   "volume": "104",
+   "issue": null,
+   "page": "799-834",
+   "year": 2018,
+   "published_print": 2018
+  }
+ },
+ {
+  "lookup": "doi:10.1103/PhysRevE.70.027701",
+  "result": {
+   "doi": "10.1103/physreve.70.027701",
+   "title": "Systematic errors due to linear congruential random-number generators with the Swendsen-Wang algorithm: A warning",
+   "authors": [
+    "Ossola",
+    "Sokal"
+   ],
+   "venue": "Physical Review E",
+   "volume": "70",
+   "issue": "2",
+   "page": null,
+   "year": 2004,
+   "published_print": null
+  }
+ },
+ {
+  "lookup": "doi:10.1177/1094342014522573",
+  "result": {
+   "doi": "10.1177/1094342014522573",
+   "title": "Addressing failures in exascale computing",
+   "authors": [
+    "Snir",
+    "Wisniewski",
+    "Abraham",
+    "Adve",
+    "Bagchi",
+    "Balaji",
+    "Belak",
+    "Bose",
+    "Cappello",
+    "Carlson",
+    "Chien",
+    "Coteus",
+    "DeBardeleben",
+    "Diniz",
+    "Engelmann",
+    "Erez",
+    "Fazzari",
+    "Geist",
+    "Gupta",
+    "Johnson",
+    "Krishnamoorthy",
+    "Leyffer",
+    "Liberty",
+    "Mitra",
+    "Munson",
+    "Schreiber",
+    "Stearley",
+    "Hensbergen"
+   ],
+   "venue": "The International Journal of High Performance Computing Applications",
+   "volume": "28",
+   "issue": "2",
+   "page": "129-173",
+   "year": 2014,
+   "published_print": 2014
+  }
+ },
+ {
+  "lookup": "doi:10.1007/978-1-4899-0319-8_6",
+  "result": {
+   "doi": "10.1007/978-1-4899-0319-8_6",
+   "title": "Monte Carlo Methods in Statistical Mechanics: Foundations and New Algorithms",
+   "authors": [
+    "Sokal"
+   ],
+   "venue": "NATO ASI Series",
+   "volume": null,
+   "issue": null,
+   "page": "131-192",
+   "year": 1997,
+   "published_print": 1997
+  }
+ },
+ {
+  "lookup": "doi:10.1287/mnsc.41.1.110",
+  "result": {
+   "doi": "10.1287/mnsc.41.1.110",
+   "title": "Optimal Mean-Squared-Error Batch Sizes",
+   "authors": [
+    "Song",
+    "Schmeiser"
+   ],
+   "venue": "Management Science",
+   "volume": "41",
+   "issue": "1",
+   "page": "110-123",
+   "year": 1995,
+   "published_print": 1995
+  }
+ },
+ {
+  "lookup": "doi:10.1016/j.nuclphysb.2010.11.020",
+  "result": {
+   "doi": "10.1016/j.nuclphysb.2010.11.020",
+   "title": "Critical slowing down and error analysis in lattice QCD simulations",
+   "authors": [
+    "Schaefer",
+    "Sommer",
+    "Virotta"
+   ],
+   "venue": "Nuclear Physics B",
+   "volume": "845",
+   "issue": "1",
+   "page": "93-119",
+   "year": 2011,
+   "published_print": 2011
+  }
+ },
+ {
+  "lookup": "doi:10.1016/S0010-4655(03)00467-3",
+  "result": {
+   "doi": "10.1016/s0010-4655(03)00467-3",
+   "title": "Monte Carlo errors with less errors",
+   "authors": [
+    "Wolff"
+   ],
+   "venue": "Computer Physics Communications",
+   "volume": "156",
+   "issue": "2",
+   "page": "143-153",
+   "year": 2004,
+   "published_print": 2004
+  }
+ },
+ {
+  "lookup": "doi:10.1175/1520-0450(1969)008<0985:ASSFPF>2.0.CO;2",
+  "result": {
+   "doi": "10.1175/1520-0450(1969)008<0985:assfpf>2.0.co;2",
+   "title": "A Scoring System for Probability Forecasts of Ranked Categories",
+   "authors": [
+    "Epstein"
+   ],
+   "venue": "Journal of Applied Meteorology",
+   "volume": "8",
+   "issue": "6",
+   "page": "985-987",
+   "year": 1969,
+   "published_print": 1969
+  }
+ },
+ {
+  "lookup": "doi:10.1080/01621459.1958.10501452",
+  "result": {
+   "doi": "10.1080/01621459.1958.10501452",
+   "title": "Nonparametric Estimation from Incomplete Observations",
+   "authors": [
+    "Kaplan",
+    "Meier"
+   ],
+   "venue": "Journal of the American Statistical Association",
+   "volume": "53",
+   "issue": "282",
+   "page": "457-481",
+   "year": 1958,
+   "published_print": 1958
+  }
+ },
+ {
+  "lookup": "doi:10.1002/sim.4780050506",
+  "result": {
+   "doi": "10.1002/sim.4780050506",
+   "title": "Probabilistic prediction in patient management and clinical trials",
+   "authors": [
+    "Spiegelhalter"
+   ],
+   "venue": "Statistics in Medicine",
+   "volume": "5",
+   "issue": "5",
+   "page": "421-433",
+   "year": 1986,
+   "published_print": 1986
+  }
+ }
+]
