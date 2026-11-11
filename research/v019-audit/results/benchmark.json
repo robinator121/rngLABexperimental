@@ -1,0 +1,288 @@
+{
+  "dlib_sha256": "37d46671d54eb69da6e6d5852d8dc035ff710f208781a901e08f8d39e51cec2e",
+  "environment": {
+    "cpu_count": 16,
+    "load_average_after": [
+      3.30859375,
+      1.39306640625,
+      0.81640625
+    ],
+    "load_average_before": [
+      1.01953125,
+      0.7255859375,
+      0.56982421875
+    ],
+    "numpy": "2.5.3",
+    "platform": "Linux-7.2.14-arch1-1-x86_64-with-glibc2.44",
+    "python": "3.14.9",
+    "scipy": "1.18.1",
+    "thread_variables": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "measure_layer": {
+    "file": "measure.py",
+    "sha256": "f8d5ac52ecef7f0366dbd6fdccedfb9aec3b8a9d24e8f2127e9d29b11e21b9be"
+  },
+  "namespace": "rnglab-v019-audit-smoke",
+  "parallel": {
+    "jobs": [
+      {
+        "family": "healthy",
+        "generate_seconds": 5.884483984031249,
+        "local_bytes": 8661904,
+        "measure_seconds": 16.946330605016556,
+        "pid": 3986396,
+        "replica": 30,
+        "rss_after_generate_kb": 146336,
+        "rss_after_measure_kb": 146336,
+        "rss_peak_kb": 146336
+      },
+      {
+        "family": "SHIFT",
+        "generate_seconds": 9.428363247017842,
+        "local_bytes": 8714952,
+        "measure_seconds": 17.937123450974468,
+        "pid": 3986399,
+        "replica": 31,
+        "rss_after_generate_kb": 146656,
+        "rss_after_measure_kb": 146656,
+        "rss_peak_kb": 146656
+      },
+      {
+        "family": "LAG1",
+        "generate_seconds": 11.36324685200816,
+        "local_bytes": 8603568,
+        "measure_seconds": 16.41184799099574,
+        "pid": 3986400,
+        "replica": 32,
+        "rss_after_generate_kb": 145744,
+        "rss_after_measure_kb": 145744,
+        "rss_peak_kb": 145744
+      },
+      {
+        "family": "DUP",
+        "generate_seconds": 8.9383771699504,
+        "local_bytes": 8563448,
+        "measure_seconds": 17.575785956985783,
+        "pid": 3986401,
+        "replica": 33,
+        "rss_after_generate_kb": 145748,
+        "rss_after_measure_kb": 145748,
+        "rss_peak_kb": 145748
+      },
+      {
+        "family": "healthy",
+        "generate_seconds": 5.897472792014014,
+        "local_bytes": 8659728,
+        "measure_seconds": 16.803900261002127,
+        "pid": 3986402,
+        "replica": 34,
+        "rss_after_generate_kb": 146588,
+        "rss_after_measure_kb": 146588,
+        "rss_peak_kb": 146588
+      },
+      {
+        "family": "SHIFT",
+        "generate_seconds": 9.298968541959766,
+        "local_bytes": 8713864,
+        "measure_seconds": 17.946114680962637,
+        "pid": 3986403,
+        "replica": 35,
+        "rss_after_generate_kb": 146260,
+        "rss_after_measure_kb": 146260,
+        "rss_peak_kb": 146260
+      }
+    ],
+    "max_rss_kb": 146656,
+    "slowdown_per_job": [
+      2.13873195866088,
+      2.5545579836526637,
+      2.413916914161182,
+      2.520859055183397,
+      2.126606208665877,
+      2.54331836413141
+    ],
+    "wall_seconds": 28.381681844999548,
+    "worker_seconds": 154.43201553291874,
+    "workers": 6
+  },
+  "profile_generation_4096_sweeps": [
+    {
+      "calls": 223121,
+      "function": "base.py:read_bytes",
+      "own_seconds": 0.2467,
+      "share_of_profiled_time": 0.1185
+    },
+    {
+      "calls": 109865,
+      "function": "dlib.py:severity",
+      "own_seconds": 0.216,
+      "share_of_profiled_time": 0.1037
+    },
+    {
+      "calls": 105769,
+      "function": "dlib.py:_transform",
+      "own_seconds": 0.2047,
+      "share_of_profiled_time": 0.0983
+    },
+    {
+      "calls": 1,
+      "function": "pimc_harmonic.py:run_simulation",
+      "own_seconds": 0.1956,
+      "share_of_profiled_time": 0.0939
+    },
+    {
+      "calls": 111561,
+      "function": "reference.py:_read_bytes",
+      "own_seconds": 0.1491,
+      "share_of_profiled_time": 0.0716
+    },
+    {
+      "calls": 107464,
+      "function": "dlib.py:_read_bytes",
+      "own_seconds": 0.1043,
+      "share_of_profiled_time": 0.0501
+    },
+    {
+      "calls": 929418,
+      "function": "~:<built-in method builtins.isinstance>",
+      "own_seconds": 0.0929,
+      "share_of_profiled_time": 0.0446
+    },
+    {
+      "calls": 107464,
+      "function": "dlib.py:read_bytes",
+      "own_seconds": 0.077,
+      "share_of_profiled_time": 0.037
+    },
+    {
+      "calls": 115691,
+      "function": "reference.py:_step",
+      "own_seconds": 0.0763,
+      "share_of_profiled_time": 0.0366
+    },
+    {
+      "calls": 107464,
+      "function": "base.py:random_float",
+      "own_seconds": 0.0552,
+      "share_of_profiled_time": 0.0265
+    },
+    {
+      "calls": 4096,
+      "function": "pimc_harmonic.py:harmonic_centroid_heatbath",
+      "own_seconds": 0.0528,
+      "share_of_profiled_time": 0.0254
+    },
+    {
+      "calls": 450416,
+      "function": "~:<built-in method builtins.len>",
+      "own_seconds": 0.0427,
+      "share_of_profiled_time": 0.0205
+    }
+  ],
+  "schema": "rnglab-v019-audit-benchmark-v1",
+  "single": [
+    {
+      "I-2": true,
+      "I-3": true,
+      "check_i2_seconds": 0.0006081379833631217,
+      "check_i3_seconds": 2.570874353987165,
+      "family": "healthy",
+      "generate_seconds": 5.730606861994602,
+      "local_bytes": 8657440,
+      "measure_seconds": 4.944323437986895,
+      "pid": 3986265,
+      "record_file_bytes": 3357420,
+      "replay_bit_identical": true,
+      "replay_seconds": 0.8107483710045926,
+      "replica": 20,
+      "rss_after_generate_kb": 147944,
+      "rss_after_measure_kb": 147944,
+      "rss_peak_kb": 286012,
+      "trace_file_bytes": 722339,
+      "vector_transform_equal": true,
+      "vector_transform_seconds": 0.03029800800140947,
+      "verify_comparisons": 1943,
+      "verify_discrepancies": 0,
+      "verify_seconds": 1.82540227600839,
+      "write_seconds": 0.11011584498919547
+    },
+    {
+      "I-2": true,
+      "I-3": true,
+      "check_i2_seconds": 0.07703239104012027,
+      "check_i3_seconds": 4.583457708009519,
+      "family": "SHIFT",
+      "generate_seconds": 8.032114007975906,
+      "local_bytes": 8699912,
+      "measure_seconds": 2.6803015539771877,
+      "pid": 3986265,
+      "record_file_bytes": 3184580,
+      "replay_bit_identical": true,
+      "replay_seconds": 1.077243770007044,
+      "replica": 20,
+      "rss_after_generate_kb": 286012,
+      "rss_after_measure_kb": 286012,
+      "rss_peak_kb": 320448,
+      "trace_file_bytes": 837935,
+      "vector_transform_equal": true,
+      "vector_transform_seconds": 0.10596711601829156,
+      "verify_comparisons": 1625,
+      "verify_discrepancies": 0,
+      "verify_seconds": 1.6386447030236013,
+      "write_seconds": 0.11253672698512673
+    },
+    {
+      "I-2": true,
+      "I-3": true,
+      "check_i2_seconds": 0.032020069018471986,
+      "check_i3_seconds": 5.329236088960897,
+      "family": "LAG1",
+      "generate_seconds": 9.057547594013158,
+      "local_bytes": 8642808,
+      "measure_seconds": 2.4486872229608707,
+      "pid": 3986265,
+      "record_file_bytes": 3190352,
+      "replay_bit_identical": true,
+      "replay_seconds": 1.5042266179807484,
+      "replica": 20,
+      "rss_after_generate_kb": 320448,
+      "rss_after_measure_kb": 320448,
+      "rss_peak_kb": 321984,
+      "trace_file_bytes": 936735,
+      "vector_transform_equal": true,
+      "vector_transform_seconds": 0.637534236011561,
+      "verify_comparisons": 1625,
+      "verify_discrepancies": 0,
+      "verify_seconds": 2.0321308330167085,
+      "write_seconds": 0.12095022801076993
+    },
+    {
+      "I-2": true,
+      "I-3": true,
+      "check_i2_seconds": 0.06968882796354592,
+      "check_i3_seconds": 4.311992430011742,
+      "family": "DUP",
+      "generate_seconds": 8.006853771046735,
+      "local_bytes": 8602568,
+      "measure_seconds": 2.5110540320165455,
+      "pid": 3986265,
+      "record_file_bytes": 3195330,
+      "replay_bit_identical": true,
+      "replay_seconds": 1.1902222899952903,
+      "replica": 20,
+      "rss_after_generate_kb": 321984,
+      "rss_after_measure_kb": 321984,
+      "rss_peak_kb": 321984,
+      "trace_file_bytes": 874783,
+      "vector_transform_equal": true,
+      "vector_transform_seconds": 0.10385078995022923,
+      "verify_comparisons": 1625,
+      "verify_discrepancies": 0,
+      "verify_seconds": 1.6399091469938867,
+      "write_seconds": 0.11879612895427272
+    }
+  ]
+}

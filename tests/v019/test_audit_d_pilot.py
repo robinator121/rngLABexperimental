@@ -263,10 +263,14 @@ def test_measure_battery_matches_independent_battery_including_cut_windows():
                 assert rc.compare(theirs[key], mine[key], rtol=1e-9, atol=1e-9), key
 
 
-@pytest.mark.xfail(strict=True, reason="zero-variance window: np.corrcoef returns r = 1 from a rounding residue, "
-                                       "so lag1 is logged as available with p = 0 (signal_schema says unavailable)")
 def test_measure_lag1_is_unavailable_for_a_constant_window():
+    """signal_schema lag1: unavailable when a paired vector has zero variance. np.corrcoef on a
+    constant vector returns r = 1 from a rounding residue in the mean for some lengths (the Stage C
+    word test does, and the first measurement-layer draft did): the value itself must be tested."""
     m = au.measure()
+    h1 = au.h1lib()
+    stage_c = h1.word_tests(rc.words_to_bytes(np.full(4096, np.uint64(int(0.3 * 2**53)) << np.uint64(11))))
+    assert stage_c["lag1_r"] == 1.0 and stage_c["lag1_correlation"] == 0.0  # the inherited behaviour, unchanged
     logged_as_available = []
     for per_sweep in (128, 208):
         marks = synthetic_marks(per_sweep, 512)
