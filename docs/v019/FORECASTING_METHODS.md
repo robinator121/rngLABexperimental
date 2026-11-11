@@ -1,6 +1,6 @@
 # Forecasting the remaining useful run under a degrading random input: what is possible, methods, and a validation study
 
-**Status: 2026-11-11.** The code is in `src/rnglab/prognosis/` (tests: `tests/v019/test_prognosis.py`). The validation study is in `research/v019-forecast-methods/`: protocol frozen at `459d144` (SHA-256 `4b3b6a24…0dba`), run once, results at `a568973`. Every study number below is copied from `results/tables.md` or `results/verdicts.json` there.
+**Status: 2026-11-11.** The code is in `src/rnglab/prognosis/` (tests: `tests/v019/test_prognosis.py`). The validation study is in `research/v019-forecast-methods/`: protocol frozen at `abce189` (SHA-256 `4b3b6a24…0dba`), run once, results at `6b350ae`. Every study number below is copied from `results/tables.md` or `results/verdicts.json` there.
 
 **Scope.** The study uses a Gaussian surrogate workload. It says how the *methods* behave. It is not a test of H2 or H2-R, and it says nothing about the path-integral sampler or about any generator. The frozen Stage D pilot is unchanged: its forecasters and endpoints are not replaced by anything here.
 

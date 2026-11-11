@@ -1,5 +1,5 @@
 # v0.19 audit branch: test evidence
-commit: 23e08ab5f9316fc7f9cebb12e974fa9f6052a64e
+commit: d097bba797ada71bd0222b895d2d99d7350c328c (run on the same tree before one line of research/v019-audit/results/benchmark.json was redacted; see docs/v019/RESEARCH_REPORT.md, history note)
 date: 2026-11-11T22:17:59Z
 python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
 

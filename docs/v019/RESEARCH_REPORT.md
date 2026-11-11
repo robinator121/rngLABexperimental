@@ -85,4 +85,6 @@ PYTHONPATH=src .venv/bin/python research/v019-audit/audit_numbers.py
 .venv/bin/python research/v019-forecast-methods/report_tables.py
 ```
 
-Source commits on `feature/v019-audit`: `4b55378` recount and replay; `326f795` verifier; `3cacdfa` integrity and preflight; `4e38355` forecasting components and benchmark; `459d144` methods protocol, frozen; `a568973` its results; `783c1c2` audit numbers; `6afaf69` audit; `23e08ab` forecasting document; then the assessment documents.
+Source commits on `feature/v019-audit`: `4b55378` recount and replay; `326f795` verifier; `3cacdfa` integrity and preflight; `b2001a6` forecasting components and benchmark; `abce189` methods protocol, frozen; `6b350ae` its results; `59c1900` audit numbers; `9f566ad` audit; `d097bba` forecasting document; `f1f7cfd` assessment, gap analysis, this report and the test evidence.
+
+**History note.** On 2026-11-11 the commits from `b2001a6` on were rebuilt once, to replace a local file path in `research/v019-audit/results/benchmark.json` by the file name. Nothing else differs: the same files, messages, author dates and order, with the protocol commit before the results commit. The original commits are kept on the local branch `backup/feature-v019-audit-before-path-redaction`, which must not be pushed.
