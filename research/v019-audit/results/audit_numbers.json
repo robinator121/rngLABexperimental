@@ -1,0 +1,146 @@
+{
+ "campaign_cost": {
+  "bytes_per_run": {
+   "record_json": 3231920.5,
+   "trace_npz": 842948.0
+  },
+  "campaign_bytes": {
+   "protocol_trace_baseline_GiB": 5.49224853515625,
+   "records": 19388291079.5,
+   "total_GiB": 22.76630711881444,
+   "traces": 5056845052.0
+  },
+  "campaign_wall_hours_at_benchmark_parallelism": 8.807895556277806,
+  "campaign_wall_hours_with_vectorised_i3": 7.332054541966536,
+  "campaign_worker_hours_if_alone": 22.17683949158666,
+  "independent_replay_seconds_per_run": 1.1456102622469189,
+  "independent_verification_seconds_per_run": 1.7840217397606466,
+  "mean_slowdown_per_job_at_those_workers": 2.3829984140759017,
+  "measure_layer_sha256": "f8d5ac52ecef7f0366dbd6fdccedfb9aec3b8a9d24e8f2127e9d29b11e21b9be",
+  "peak_rss_MiB": 314.4375,
+  "protocol_extrapolation_wall_hours_8_workers": 3.9297064784332334,
+  "worker_seconds_alone": {
+   "fault_run": 15.830756260314956,
+   "fault_run_with_vectorised_i3": 11.371644898647597,
+   "healthy_run": 10.785046144970693
+  },
+  "workers_in_benchmark": 6
+ },
+ "environment": {
+  "libc": "glibc 2.44",
+  "numpy": "2.5.3",
+  "python": "3.14.9",
+  "scipy": "1.18.1"
+ },
+ "full_length_runs": {
+  "DUP": {
+   "bytes_per_sweep_mean": 209.295703125,
+   "local_bytes": 8572752,
+   "uphill_fraction": 0.6351226806640625,
+   "uphill_fraction_needed_for_a_cut": 0.9073486328125,
+   "window_bits_max": 869056,
+   "window_bits_min": 849344,
+   "windows_below_750000_bits": 0,
+   "windows_over_bit_cap": 0
+  },
+  "LAG1": {
+   "bytes_per_sweep_mean": 210.1734375,
+   "local_bytes": 8608704,
+   "uphill_fraction": 0.64197998046875,
+   "uphill_fraction_needed_for_a_cut": 0.9073486328125,
+   "window_bits_max": 870464,
+   "window_bits_min": 853056,
+   "windows_below_750000_bits": 0,
+   "windows_over_bit_cap": 0
+  },
+  "SHIFT": {
+   "bytes_per_sweep_mean": 212.52734375,
+   "local_bytes": 8705120,
+   "shift_saturation": {
+    "frequency_z_in_those_windows_mean": 0.7954890965378337,
+    "frequency_z_per_unit_mean_severity": 830.8592125567745,
+    "saturated_fraction_before_onset_max": 0.0,
+    "saturated_fraction_per_unit_mean_severity": 0.9961171370568107,
+    "saturated_words_in_those_windows_mean": 10.2,
+    "t0": 3550,
+    "windows_after_onset": 147,
+    "windows_with_mean_severity_below_0.002": 5
+   },
+   "uphill_fraction": 0.660369873046875,
+   "uphill_fraction_needed_for_a_cut": 0.9073486328125,
+   "window_bits_max": 876928,
+   "window_bits_min": 863872,
+   "windows_below_750000_bits": 0,
+   "windows_over_bit_cap": 0
+  },
+  "healthy": {
+   "bytes_per_sweep_mean": 211.4986328125,
+   "local_bytes": 8662984,
+   "uphill_fraction": 0.6523330688476563,
+   "uphill_fraction_needed_for_a_cut": 0.9073486328125,
+   "window_bits_max": 871872,
+   "window_bits_min": 860032,
+   "windows_below_750000_bits": 0,
+   "windows_over_bit_cap": 0
+  }
+ },
+ "gates": {
+  "V2_D_cp95_upper_at_that_count": 0.09968426603990928,
+  "V2_D_largest_passing_alarm_count_of_2000": 173,
+  "calibration_false_alarm_rate_given_threshold_sd": 0.006888580946214354,
+  "criterion_1_accepted_counts": [
+   1864,
+   1946
+  ],
+  "criterion_1_pass_probability": {
+   "0.93": 0.3838846184383359,
+   "0.94": 0.9376722587308965,
+   "0.95": 0.9998222939629682
+  },
+  "ramp_cap_shares": [
+   {
+    "L": 10240,
+    "design_simulation": 0.19123,
+    "difference_in_standard_errors": -1.8570260973669708,
+    "exact": 0.1935500822857431
+   },
+   {
+    "L": 20480,
+    "design_simulation": 0.45567,
+    "difference_in_standard_errors": -1.6407643180579616,
+    "exact": 0.4582552186525977
+   },
+   {
+    "L": 40960,
+    "design_simulation": 0.65147,
+    "difference_in_standard_errors": -0.9377960481298986,
+    "exact": 0.6528817714022668
+   }
+  ],
+  "sigma_eff_mean_of_standard_errors_bias_factor": 0.9834835316158409
+ },
+ "namespace": "rnglab-v019-audit-smoke",
+ "oracle_call": {
+  "delta_where_stable_value_is_1e-3": 5.45,
+  "first_not_finite": 8.55,
+  "grid": [
+   0.0,
+   45.0,
+   0.05
+  ],
+  "last_not_finite": 43.6,
+  "max_abs_error_where_finite": 7.28583859910259e-14,
+  "not_finite": 312,
+  "points": 901,
+  "share_not_finite_between_first_and_last": 0.4444444444444444,
+  "stable_value_at_first_not_finite": 1.1764789823151216e-09
+ },
+ "power_versus_product": {
+  "libc": "glibc 2.44",
+  "numpy_scalar_power_equals_python_power": true,
+  "python_float_power_differs_from_product": 912,
+  "share": 0.000912,
+  "values": 1000000
+ },
+ "schema": "rnglab-v019-audit-numbers-v1"
+}
