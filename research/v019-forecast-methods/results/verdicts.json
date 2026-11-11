@@ -1,0 +1,103 @@
+{
+ "R1": {
+  "per_length": {
+   "10240": {
+    "bayes-ramp": true,
+    "oracle": true
+   },
+   "20480": {
+    "bayes-ramp": true,
+    "oracle": true
+   },
+   "40960": {
+    "bayes-ramp": true,
+    "oracle": true
+   }
+  },
+  "result": "MET"
+ },
+ "R2": {
+  "interval": [
+   0.18862793176964332,
+   0.2680609177796609
+  ],
+  "result": "MET",
+  "skill": 0.22830928579581355
+ },
+ "R3": {
+  "difference": -0.013242934160994278,
+  "interval": [
+   -0.01805441749096195,
+   -0.008407374437098573
+  ],
+  "level": 0.95,
+  "n": 2000,
+  "result": "MET"
+ },
+ "R4": {
+  "10240": {
+   "difference": -0.0002572515856292104,
+   "interval": [
+    -0.0018779646587609047,
+    0.0014085166613586292
+   ],
+   "level": 0.95,
+   "n": 1734,
+   "widening_matters": false
+  },
+  "20480": {
+   "difference": -0.003275719808055788,
+   "interval": [
+    -0.005605372213796757,
+    -0.0009175071475722528
+   ],
+   "level": 0.95,
+   "n": 2000,
+   "widening_matters": true
+  },
+  "40960": {
+   "difference": -0.0014306356399896671,
+   "interval": [
+    -0.0025961283797450163,
+    -0.0002682458368106096
+   ],
+   "level": 0.95,
+   "n": 2000,
+   "widening_matters": true
+  }
+ },
+ "R5": {
+  "C_step_hold": {
+   "bayes_ramp_calibrated": {
+    "10240": false,
+    "20480": false,
+    "40960": false
+   },
+   "result": "EXPECTATION MET"
+  },
+  "D_random_walk": {
+   "bayes_ramp_calibrated": {
+    "10240": false,
+    "20480": false,
+    "40960": false
+   },
+   "result": "EXPECTATION MET"
+  }
+ },
+ "R6": {
+  "bound": {
+   "10240": 0.007895137759200175,
+   "20480": 0.07005900284345609,
+   "40960": 0.12682430997146196
+  },
+  "forecasts_identical": true
+ },
+ "R7": {
+  "interval": [
+   0.09216850003652434,
+   0.12943735571943038
+  ],
+  "result": "MET",
+  "rps_skill": 0.11072774826690646
+ }
+}

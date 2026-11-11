@@ -1,0 +1,248 @@
+[
+ {
+  "key": "FHJ08",
+  "authors": "Flegal, Haran, Jones",
+  "title": "Markov chain Monte Carlo: Can we trust the third significant figure?",
+  "year": 2008,
+  "doi": "10.1214/08-STS257"
+ },
+ {
+  "key": "JHCN06",
+  "authors": "Jones, Haran, Caffo, Neath",
+  "title": "Fixed-width output analysis for Markov chain Monte Carlo",
+  "year": 2006,
+  "doi": "10.1198/016214506000000492"
+ },
+ {
+  "key": "VFJ19",
+  "authors": "Vats, Flegal, Jones",
+  "title": "Multivariate output analysis for Markov chain Monte Carlo",
+  "year": 2019,
+  "doi": "10.1093/biomet/asz002"
+ },
+ {
+  "key": "LVF22",
+  "authors": "Liu, Vats, Flegal",
+  "title": "Batch size selection for variance estimators in MCMC",
+  "year": 2021,
+  "doi": "10.1007/s11009-020-09841-7",
+  "note": "Crossref issued 2021 (online); print volume 24(1), 65-93, 2022"
+ },
+ {
+  "key": "Wol04",
+  "authors": "Wolff",
+  "title": "Monte Carlo errors with less errors",
+  "year": 2004,
+  "doi": "10.1016/S0010-4655(03)00467-3"
+ },
+ {
+  "key": "SSV11",
+  "authors": "Schaefer, Sommer, Virotta",
+  "title": "Critical slowing down and error analysis in lattice QCD simulations",
+  "year": 2011,
+  "doi": "10.1016/j.nuclphysb.2010.11.020"
+ },
+ {
+  "key": "FP89",
+  "authors": "Flyvbjerg, Petersen",
+  "title": "Error estimates on averages of correlated data",
+  "year": 1989,
+  "doi": "10.1063/1.457480"
+ },
+ {
+  "key": "VK21",
+  "authors": "Vats, Knudson",
+  "title": "Revisiting the Gelman-Rubin Diagnostic",
+  "year": 2021,
+  "doi": "10.1214/20-STS812"
+ },
+ {
+  "key": "GF16",
+  "authors": "Gong, Flegal",
+  "title": "A practical sequential stopping rule for high-dimensional Markov chain Monte Carlo",
+  "year": 2016,
+  "doi": "10.1080/10618600.2015.1044092"
+ },
+ {
+  "key": "Cep95",
+  "authors": "Ceperley",
+  "title": "Path integrals in the theory of condensed helium",
+  "year": 1995,
+  "doi": "10.1103/RevModPhys.67.279"
+ },
+ {
+  "key": "MS88",
+  "authors": "Madras, Sokal",
+  "title": "The pivot algorithm: A highly efficient Monte Carlo method for the self-avoiding walk",
+  "year": 1988,
+  "doi": "10.1007/BF01022990"
+ },
+ {
+  "key": "SS95",
+  "authors": "Song, Schmeiser",
+  "title": "Optimal mean-squared-error batch sizes",
+  "year": 1995,
+  "doi": "10.1287/mnsc.41.1.110"
+ },
+ {
+  "key": "Dam94",
+  "authors": "Damerdji",
+  "title": "Strong consistency of the variance estimator in steady-state simulation output analysis",
+  "year": 1994,
+  "doi": "10.1287/moor.19.2.494"
+ },
+ {
+  "key": "GW91",
+  "authors": "Glynn, Whitt",
+  "title": "Estimating the asymptotic variance with batch means",
+  "year": 1991,
+  "doi": "10.1016/0167-6377(91)90019-L"
+ },
+ {
+  "key": "Sok97",
+  "authors": "Sokal",
+  "title": "Monte Carlo methods in statistical mechanics: foundations and new algorithms",
+  "year": 1997,
+  "doi": "10.1007/978-1-4899-0319-8_6"
+ },
+ {
+  "key": "TBGM93",
+  "authors": "Tuckerman, Berne, Martyna, Klein",
+  "title": "Efficient molecular dynamics and hybrid Monte Carlo algorithms for path integrals",
+  "year": 1993,
+  "doi": "10.1063/1.465188"
+ },
+ {
+  "key": "Spi86",
+  "authors": "Spiegelhalter",
+  "title": "Probabilistic prediction in patient management and clinical trials",
+  "year": 1986,
+  "doi": "10.1002/sim.4780050506"
+ },
+ {
+  "key": "BA68",
+  "authors": "Bulgren, Amos",
+  "title": "A note on representations of the doubly non-central t distribution",
+  "year": 1968,
+  "doi": "10.1080/01621459.1968.11009328"
+ },
+ {
+  "key": "KM58",
+  "authors": "Kaplan, Meier",
+  "title": "Nonparametric estimation from incomplete observations",
+  "year": 1958,
+  "doi": "10.1080/01621459.1958.10501452"
+ },
+ {
+  "key": "Eps69",
+  "authors": "Epstein",
+  "title": "A scoring system for probability forecasts of ranked categories",
+  "year": 1969,
+  "doi": "10.1175/1520-0450(1969)008<0985:ASSFPF>2.0.CO;2"
+ },
+ {
+  "key": "Lor71",
+  "authors": "Lorden",
+  "title": "Procedures for reacting to a change in distribution",
+  "year": 1971,
+  "doi": "10.1214/aoms/1177693055"
+ },
+ {
+  "key": "LLGLL18",
+  "authors": "Lei, Li, Guo, Li, Yan, Lin",
+  "title": "Machinery health prognostics: A systematic review from data acquisition to RUL prediction",
+  "year": 2018,
+  "doi": "10.1016/j.ymssp.2017.11.016"
+ },
+ {
+  "key": "CP34",
+  "authors": "Clopper, Pearson",
+  "title": "The use of confidence or fiducial limits illustrated in the case of the binomial",
+  "year": 1934,
+  "doi": "10.1093/biomet/26.4.404"
+ },
+ {
+  "key": "Mur73",
+  "authors": "Murphy",
+  "title": "A new vector partition of the probability score",
+  "year": 1973,
+  "doi": "10.1175/1520-0450(1973)012<0595:ANVPOT>2.0.CO;2"
+ },
+ {
+  "key": "Sni14",
+  "authors": "Snir, Wisniewski, Abraham, Adve",
+  "title": "Addressing failures in exascale computing",
+  "year": 2014,
+  "doi": "10.1177/1094342014522573"
+ },
+ {
+  "key": "DC16",
+  "authors": "Di, Cappello",
+  "title": "Adaptive impact-driven detection of silent data corruption for HPC applications",
+  "year": 2016,
+  "doi": "10.1109/TPDS.2016.2517639"
+ },
+ {
+  "key": "Hel98",
+  "authors": "Hellekalek",
+  "title": "Good random number generators are (not so) easy to find",
+  "year": 1998,
+  "doi": "10.1016/S0378-4754(98)00078-0"
+ },
+ {
+  "key": "OS04",
+  "authors": "Ossola, Sokal",
+  "title": "Systematic errors due to linear congruential random-number generators with the Swendsen-Wang algorithm: a warning",
+  "year": 2004,
+  "doi": "10.1103/PhysRevE.70.027701"
+ },
+ {
+  "key": "BM07",
+  "authors": "Bauke, Mertens",
+  "title": "Random numbers for large-scale distributed Monte Carlo simulations",
+  "year": 2007,
+  "doi": "10.1103/PhysRevE.75.066701"
+ },
+ {
+  "key": "SP80022",
+  "authors": "Bassham, Rukhin, Soto, Nechvatal, Smid, Barker, Leigh, Levenson, Vangel, Banks, Heckert, Dray, Vo",
+  "title": "A statistical test suite for random and pseudorandom number generators for cryptographic applications",
+  "year": 2010,
+  "doi": "10.6028/NIST.SP.800-22r1a"
+ },
+ {
+  "key": "Efr79",
+  "authors": "Efron",
+  "title": "Bootstrap methods: another look at the jackknife",
+  "year": 1979,
+  "doi": "10.1214/aos/1176344552"
+ },
+ {
+  "key": "CONTROL",
+  "authors": "(control entry)",
+  "title": "a DOI that does not exist; the checker must report DOI_NOT_FOUND",
+  "year": 0,
+  "doi": "10.0000/placeholder-not-a-real-doi"
+ },
+ {
+  "key": "Kri68",
+  "authors": "Krishnan",
+  "title": "Series representations of the doubly noncentral t-distribution",
+  "year": 1968,
+  "doi": "10.1080/01621459.1968.11009327"
+ },
+ {
+  "key": "Ram19",
+  "authors": "Ramos",
+  "title": "Automatic differentiation for error analysis of Monte Carlo data",
+  "year": 2019,
+  "doi": "10.1016/j.cpc.2018.12.020"
+ },
+ {
+  "key": "GF25",
+  "authors": "Gerolimetto Fabrello, Rossi, Witek, Trombetta, Baszczyk, Dorosz, Kucewicz, Caccia",
+  "title": "Entropy measurement and online quality control of bit streams by a true random bit generator",
+  "year": 2025,
+  "doi": "10.3389/fcomp.2025.1642566"
+ }
+]

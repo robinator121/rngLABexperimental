@@ -1,0 +1,213 @@
+[
+ {
+  "lookup": "doi:10.1016/j.cpc.2018.12.020",
+  "result": {
+   "doi": "10.1016/j.cpc.2018.12.020",
+   "title": "Automatic differentiation for error analysis of Monte Carlo data",
+   "authors": [
+    "Ramos"
+   ],
+   "venue": "Computer Physics Communications",
+   "volume": "238",
+   "issue": null,
+   "page": "19-35",
+   "year": 2019,
+   "published_print": 2019
+  }
+ },
+ {
+  "lookup": "doi:10.3389/fcomp.2025.1642566",
+  "result": {
+   "doi": "10.3389/fcomp.2025.1642566",
+   "title": "Entropy measurement and online quality control of bit streams by a true random bit generator",
+   "authors": [
+    "Gerolimetto Fabrello",
+    "Rossi",
+    "Witek",
+    "Trombetta",
+    "Baszczyk",
+    "Dorosz",
+    "Kucewicz",
+    "Caccia"
+   ],
+   "venue": "Frontiers in Computer Science",
+   "volume": "7",
+   "issue": null,
+   "page": null,
+   "year": 2025,
+   "published_print": null
+  }
+ },
+ {
+  "lookup": "doi:10.1007/s11009-020-09841-7",
+  "result": {
+   "doi": "10.1007/s11009-020-09841-7",
+   "title": "Batch Size Selection for Variance Estimators in MCMC",
+   "authors": [
+    "Liu",
+    "Vats",
+    "Flegal"
+   ],
+   "venue": "Methodology and Computing in Applied Probability",
+   "volume": "24",
+   "issue": "1",
+   "page": "65-93",
+   "year": 2021,
+   "published_print": 2022
+  }
+ },
+ {
+  "lookup": "doi:10.1080/01621459.1968.11009327",
+  "result": {
+   "doi": "10.1080/01621459.1968.11009327",
+   "title": "Series Representations of the Doubly Noncentral<i>t</i>-Distribution",
+   "authors": [
+    "Krishnan"
+   ],
+   "venue": "Journal of the American Statistical Association",
+   "volume": "63",
+   "issue": "323",
+   "page": "1004-1012",
+   "year": 1968,
+   "published_print": 1968
+  }
+ },
+ {
+  "lookup": "doi:10.6028/NIST.SP.800-22r1a",
+  "result": {
+   "doi": "10.6028/nist.sp.800-22r1a",
+   "title": "A statistical test suite for random and pseudorandom number generators for cryptographic applications",
+   "authors": [
+    "Bassham",
+    "Rukhin",
+    "Soto",
+    "Nechvatal",
+    "Smid",
+    "Barker",
+    "Leigh",
+    "Levenson",
+    "Vangel",
+    "Banks",
+    "Heckert",
+    "Dray",
+    "Vo"
+   ],
+   "venue": "",
+   "volume": null,
+   "issue": null,
+   "page": null,
+   "year": 2010,
+   "published_print": null
+  }
+ },
+ {
+  "lookup": "query:Bulgren Amos representations of the doubly non-central t distribution",
+  "result": [
+   {
+    "doi": "10.1080/01621459.1968.11009328",
+    "title": "A Note on Representations of the Doubly Non-Central\n                    <i>t</i>\n                    Distribution",
+    "authors": [
+     "Bulgren",
+     "Amos"
+    ],
+    "venue": "Journal of the American Statistical Association",
+    "volume": "63",
+    "issue": "323",
+    "page": "1013-1019",
+    "year": 1968,
+    "published_print": 1968
+   },
+   {
+    "doi": "10.2307/2284870",
+    "title": "On Representations of the Doubly Non-Central F Distribution",
+    "authors": [
+     "Bulgren"
+    ],
+    "venue": "Journal of the American Statistical Association",
+    "volume": "66",
+    "issue": "333",
+    "page": "184",
+    "year": 1971,
+    "published_print": 1971
+   },
+   {
+    "doi": "10.1080/01621459.1971.10482241",
+    "title": "On Representations of the Doubly Non-Central\n                    <i>F</i>\n                    Distribution",
+    "authors": [
+     "Bulgren"
+    ],
+    "venue": "Journal of the American Statistical Association",
+    "volume": "66",
+    "issue": "333",
+    "page": "184-186",
+    "year": 1971,
+    "published_print": 1971
+   },
+   {
+    "doi": "10.2307/2334151",
+    "title": "Representations of the Central and Non-Central t Distributions",
+    "authors": [
+     "Amos"
+    ],
+    "venue": "Biometrika",
+    "volume": "51",
+    "issue": "3/4",
+    "page": "451",
+    "year": 1964,
+    "published_print": 1964
+   }
+  ]
+ },
+ {
+  "lookup": "query:Bahrami aging SR-latch true random number generator stochastic model",
+  "result": [
+   {
+    "doi": "10.1021/acsami.5c18669.s001",
+    "title": "A Cryptographic Transistor with Stochastic Carrier Trapping and Detrapping for a True Random Number Generator",
+    "authors": [],
+    "venue": "",
+    "volume": null,
+    "issue": null,
+    "page": null,
+    "year": null,
+    "published_print": null
+   },
+   {
+    "doi": "10.1021/acsami.5c18669.s002",
+    "title": "A Cryptographic Transistor with Stochastic Carrier Trapping and Detrapping for a True Random Number Generator",
+    "authors": [],
+    "venue": "",
+    "volume": null,
+    "issue": null,
+    "page": null,
+    "year": null,
+    "published_print": null
+   },
+   {
+    "doi": "10.1587/elex.15.20180386",
+    "title": "A latch-latch composition of metastability-based true random number generator for Xilinx FPGAs",
+    "authors": [
+     "Fujieda",
+     "Ichikawa"
+    ],
+    "venue": "IEICE Electronics Express",
+    "volume": "15",
+    "issue": "10",
+    "page": "20180386-20180386",
+    "year": 2018,
+    "published_print": 2018
+   },
+   {
+    "doi": "10.1021/acsnano.1c05984.s001",
+    "title": "A Machine Learning Attack Resilient True Random Number Generator Based on Stochastic Programming of Atomically Thin Transistors",
+    "authors": [],
+    "venue": "",
+    "volume": null,
+    "issue": null,
+    "page": null,
+    "year": null,
+    "published_print": null
+   }
+  ]
+ }
+]
