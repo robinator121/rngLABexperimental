@@ -1,6 +1,6 @@
 # F-01: the Stage D oracle probability returns NaN. Diagnosis and proposed resolution
 
-**Status: for the author's decision, 2026-11-12.** Nothing in the frozen protocol or in the pilot's code was changed. Every number comes from `research/v019-audit/results/f01_oracle.json`, written by `research/v019-audit/f01_oracle.py`. Tests: `tests/v019/test_f01_oracle.py` (12).
+**Status: for the author's decision, 2026-11-12.** Nothing in the frozen protocol or in the pilot's code was changed. Every number comes from `research/v019-audit/results/f01_oracle.json`, written by `research/v019-audit/f01_oracle.py`. Tests: `tests/v019/test_f01_oracle.py` (13).
 
 ## 1. Summary
 
