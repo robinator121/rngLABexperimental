@@ -1,0 +1,172 @@
+{
+  "criterion_1": [
+    {
+      "all_three_if_fully_dependent": 0.024346155985721752,
+      "all_three_if_independent": 1.443082634669488e-05,
+      "p_pass_one_length": 0.024346155985721752,
+      "true_coverage": 0.92
+    },
+    {
+      "all_three_if_fully_dependent": 0.38388461843833516,
+      "all_three_if_independent": 0.05657207822425968,
+      "p_pass_one_length": 0.38388461843833516,
+      "true_coverage": 0.93
+    },
+    {
+      "all_three_if_fully_dependent": 0.9376722587308972,
+      "all_three_if_independent": 0.8244288906612297,
+      "p_pass_one_length": 0.9376722587308972,
+      "true_coverage": 0.94
+    },
+    {
+      "all_three_if_fully_dependent": 0.994193672854988,
+      "all_three_if_independent": 0.9826819631184766,
+      "p_pass_one_length": 0.994193672854988,
+      "true_coverage": 0.945
+    },
+    {
+      "all_three_if_fully_dependent": 0.9998222939629676,
+      "all_three_if_independent": 0.9994669766215978,
+      "p_pass_one_length": 0.9998222939629676,
+      "true_coverage": 0.95
+    },
+    {
+      "all_three_if_fully_dependent": 0.9999869137996814,
+      "all_three_if_independent": 0.9999607419127879,
+      "p_pass_one_length": 0.9999869137996814,
+      "true_coverage": 0.955
+    },
+    {
+      "all_three_if_fully_dependent": 0.999295087007748,
+      "all_three_if_independent": 0.9978867513799512,
+      "p_pass_one_length": 0.999295087007748,
+      "true_coverage": 0.96
+    },
+    {
+      "all_three_if_fully_dependent": 0.8014063172915673,
+      "all_three_if_independent": 0.5147048785291017,
+      "p_pass_one_length": 0.8014063172915673,
+      "true_coverage": 0.97
+    }
+  ],
+  "criterion_4_note": "design.py's simplified model; bootstrap replaced by its exact binomial quantile",
+  "criterion_4_selection": [
+    {
+      "eligible": 240,
+      "mean_observed_skill": 0.0,
+      "mean_observed_skill_given_pass": null,
+      "p_at_least_one_of_three_families": 0.0,
+      "p_observed_at_least_0.10": 0.0,
+      "p_pass": 0.0,
+      "true_skill": 0.0
+    },
+    {
+      "eligible": 240,
+      "mean_observed_skill": 0.04999999999999999,
+      "mean_observed_skill_given_pass": 0.1118289493637305,
+      "p_at_least_one_of_three_families": 0.098920265735158,
+      "p_observed_at_least_0.10": 0.034124668963871764,
+      "p_pass": 0.034124668963871764,
+      "true_skill": 0.05
+    },
+    {
+      "eligible": 240,
+      "mean_observed_skill": 0.10000000000000005,
+      "mean_observed_skill_given_pass": 0.12929101297428386,
+      "p_at_least_one_of_three_families": 0.8942508932992462,
+      "p_observed_at_least_0.10": 0.5271113369115603,
+      "p_pass": 0.5271113369115603,
+      "true_skill": 0.1
+    },
+    {
+      "eligible": 240,
+      "mean_observed_skill": 0.14999999999999997,
+      "mean_observed_skill_given_pass": 0.169099041919172,
+      "p_at_least_one_of_three_families": 0.9859054335043473,
+      "p_observed_at_least_0.10": 0.8675495298078666,
+      "p_pass": 0.7584443272797418,
+      "true_skill": 0.15
+    },
+    {
+      "eligible": 240,
+      "mean_observed_skill": 0.20000000000000004,
+      "mean_observed_skill_given_pass": 0.20971058474023435,
+      "p_at_least_one_of_three_families": 0.9991657070909961,
+      "p_observed_at_least_0.10": 0.9696293067652105,
+      "p_pass": 0.9058602911557707,
+      "true_skill": 0.2
+    },
+    {
+      "eligible": 400,
+      "mean_observed_skill": 0.0,
+      "mean_observed_skill_given_pass": null,
+      "p_at_least_one_of_three_families": 0.0,
+      "p_observed_at_least_0.10": 0.0,
+      "p_pass": 0.0,
+      "true_skill": 0.0
+    },
+    {
+      "eligible": 400,
+      "mean_observed_skill": 0.04999999999999999,
+      "mean_observed_skill_given_pass": 0.10812585788822685,
+      "p_at_least_one_of_three_families": 0.027391036077257458,
+      "p_observed_at_least_0.10": 0.00921500076375924,
+      "p_pass": 0.00921500076375924,
+      "true_skill": 0.05
+    },
+    {
+      "eligible": 400,
+      "mean_observed_skill": 0.10000000000000005,
+      "mean_observed_skill_given_pass": 0.1243570664156473,
+      "p_at_least_one_of_three_families": 0.8685320607345473,
+      "p_observed_at_least_0.10": 0.4915206912028707,
+      "p_pass": 0.4915206912028707,
+      "true_skill": 0.1
+    },
+    {
+      "eligible": 400,
+      "mean_observed_skill": 0.15,
+      "mean_observed_skill_given_pass": 0.15588004847952533,
+      "p_at_least_one_of_three_families": 0.9994714924217111,
+      "p_observed_at_least_0.10": 0.9191493083155502,
+      "p_pass": 0.9191493083155502,
+      "true_skill": 0.15
+    },
+    {
+      "eligible": 400,
+      "mean_observed_skill": 0.19999999999999998,
+      "mean_observed_skill_given_pass": 0.20088572004918992,
+      "p_at_least_one_of_three_families": 0.999999516819014,
+      "p_observed_at_least_0.10": 0.9921530067583325,
+      "p_pass": 0.9921530067583325,
+      "true_skill": 0.2
+    }
+  ],
+  "pre_onset_alarms": {
+    "assumption": "nominal 0.05 whole-horizon rate, spread evenly over checkpoints; not a measurement",
+    "battery_checkpoints": 159,
+    "mean_checkpoints_ending_at_or_before_onset": 18.502034174125306,
+    "share_of_fault_runs_if_false_alarms_were_uniform": 0.005818249740290977
+  },
+  "schema": "rnglab-v020-redteam-numbers-v1",
+  "short_intervals": [
+    {
+      "alarm_sweep": 512,
+      "batch_sweeps": 32,
+      "implied_healthy_coverage": 0.8807719922339374,
+      "variance_ratio": 0.601
+    },
+    {
+      "alarm_sweep": 2048,
+      "batch_sweeps": 128,
+      "implied_healthy_coverage": 0.9353155946423668,
+      "variance_ratio": 0.875
+    },
+    {
+      "alarm_sweep": 8192,
+      "batch_sweeps": 512,
+      "implied_healthy_coverage": 0.9469762943650843,
+      "variance_ratio": 0.971
+    }
+  ]
+}
