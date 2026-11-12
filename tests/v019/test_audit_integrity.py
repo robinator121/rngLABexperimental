@@ -40,7 +40,7 @@ def fill(root, plan=PLAN):
 
 
 def test_commit_scan_and_manifest_round_trip(tmp_path):
-    assert ig.scan_store(tmp_path, PLAN)["counts"] == {"COMPLETE": 0, "MISSING": 5, "PARTIAL": 0, "CORRUPT": 0}
+    assert ig.scan_store(tmp_path, PLAN)["counts"] == {"COMPLETE": 0, "FAILED_RECORD": 0, "MISSING": 5, "PARTIAL": 0, "CORRUPT": 0}
     fill(tmp_path)
     scan = ig.scan_store(tmp_path, PLAN)
     assert scan["all_complete"] and scan["counts"]["COMPLETE"] == 5 and ig.pending(tmp_path, PLAN) == []
@@ -92,6 +92,30 @@ def test_every_damaged_state_is_classified_and_never_complete(tmp_path, damage, 
     scan = ig.scan_store(tmp_path, PLAN)
     assert not scan["all_complete"] and scan["counts"][state] == 1 and scan["counts"]["COMPLETE"] == 4
     assert ig.pending(tmp_path, PLAN) == [("healthy", 1, state)] or damage == "flip_trace_byte"  # pending skips hashing
+
+
+def test_a_recorded_failure_is_final_and_is_not_mistaken_for_damage(tmp_path):
+    fill(tmp_path)
+    record_path, trace_path = ig.run_paths(tmp_path, "healthy", 1)
+    trace_path.unlink()
+    failure = {"condition": "healthy", "replica": 1, "status": "FAILED", "failure": {"phase": "generation"},
+               "trace_path": None, "trace_sha256": None}
+    record_path.write_bytes(ig.canonical_json(failure))
+    found = ig.classify_run(tmp_path, "healthy", 1)
+    assert found["state"] == "FAILED_RECORD" and found["run_status"] == "FAILED" and found["reason"] is None
+    scan = ig.scan_store(tmp_path, PLAN)
+    assert scan["counts"]["FAILED_RECORD"] == 1 and scan["counts"]["COMPLETE"] == 4 and not scan["all_complete"]
+    assert ig.pending(tmp_path, PLAN) == []                                # it is not drawn again
+    manifest = ig.build_manifest(tmp_path, PLAN)
+    entry = next(e for e in manifest["runs"] if e["state"] == "FAILED_RECORD")
+    assert entry["trace"]["sha256"] is None and entry["record"]["sha256"] and ig.verify_manifest(tmp_path, manifest)["ok"]
+    ig.atomic_write(trace_path, b"not a trace")                            # a trace beside a failure record is damage
+    assert ig.classify_run(tmp_path, "healthy", 1, verify_hash=False)["state"] == "CORRUPT"
+    assert ig.verify_manifest(tmp_path, manifest)["problems"] == [{"kind": "APPEARED", "path": "traces/healthy/00001.npz"}]
+    trace_path.unlink()
+    for incomplete in ({**failure, "failure": None}, {**failure, "status": "SUCCESS"}, {**failure, "trace_sha256": "00"}):
+        record_path.write_bytes(ig.canonical_json(incomplete))             # a record that does not declare the failure
+        assert ig.classify_run(tmp_path, "healthy", 1)["state"] == "CORRUPT"
 
 
 def test_manifest_detects_change_loss_addition_and_self_alteration(tmp_path):
@@ -196,13 +220,27 @@ def test_preflight_checks_on_the_current_tree(tmp_path):
 def test_preflight_manifest_and_store_rules(tmp_path):
     code = {"sha256": {"a.py": "1" * 64, "b.py": "2" * 64}}
     path = tmp_path / "pre_generation_manifest.json"
-    path.write_text(json.dumps({"code_sha256": code["sha256"], "tdk_deadline": "2027-04-30"}))
+    full = {"code_sha256": code["sha256"], "tdk_deadline": "2027-04-30", "interrupted_run_policy": "record_failure", "workers": 8}
+    path.write_text(json.dumps(full))
+    out = pf.check_manifest(tmp_path, code)
+    assert out["status"] == "WARN" and out["authorised_for_this_manifest"] is False     # written, not yet authorised
+    (tmp_path / "authorization.json").write_text(json.dumps({
+        "pre_generation_manifest_sha256": pf.sha256_file(path), "authorized_by": "author", "authorized_on": "2026-12-01"}))
     assert pf.check_manifest(tmp_path, code)["status"] == "PASS"
-    path.write_text(json.dumps({"code_sha256": code["sha256"]}))
+    path.write_text(json.dumps({**full, "workers": 6}))
+    out = pf.check_manifest(tmp_path, code)                   # another manifest: the authorisation no longer names it
+    assert out["status"] == "WARN" and out["workers_deviate_from_protocol"] and not out["authorised_for_this_manifest"]
+    for policy in (None, "rerun", ""):
+        path.write_text(json.dumps({**full, "interrupted_run_policy": policy}))
+        out = pf.check_manifest(tmp_path, code)
+        assert out["status"] == "FAIL" and out["interrupted_run_policy"] is None       # the decision is not recorded
+    path.write_text(json.dumps({k: v for k, v in full.items() if k != "tdk_deadline"}))
     out = pf.check_manifest(tmp_path, code)
     assert out["status"] == "WARN" and out["criterion_5"] == "INSUFFICIENT_INFORMATION"
-    path.write_text(json.dumps({"code_sha256": {**code["sha256"], "a.py": "3" * 64}, "tdk_deadline": "2027-04-30"}))
-    assert pf.check_manifest(tmp_path, code)["code_hashes_differing"] == ["a.py"]
+    path.write_text(json.dumps({**full, "code_sha256": {**code["sha256"], "a.py": "3" * 64}}))
+    out = pf.check_manifest(tmp_path, code)
+    assert out["code_hashes_differing"] == ["a.py"] and out["status"] == "FAIL"
+    (tmp_path / "authorization.json").unlink()
     path.write_text("{not json")
     assert pf.check_manifest(tmp_path, code)["status"] == "FAIL"
     ig.commit_run(tmp_path, {"condition": "healthy", "replica": 0, "status": "SUCCESS"}, {"CV": np.zeros(4)})

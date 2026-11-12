@@ -56,6 +56,8 @@ HASHED = ("research/v019-d-pilot/protocol.json", "research/v019-d-pilot/design.j
 BYTES_PER_RUN = 4_400_000        # compressed trace plus the indented run record
 RSS_BYTES_PER_WORKER = 300 * 2**20
 LOCK_FILE = "research/phase2-20261030/environment/requirements-lock.txt"
+INTERRUPTED_RUN_POLICIES = ("regenerate_same_id", "record_failure")
+PROTOCOL_WORKERS = 8                # protocol.json storage.parallelism
 
 
 def _load(name: str, path: Path):
@@ -225,10 +227,27 @@ def check_manifest(root: Path, code: dict[str, Any]) -> dict[str, Any]:
     listed = manifest.get("code_sha256") or manifest.get("sha256") or {}
     differing = sorted(p for p, h in code["sha256"].items() if p in listed and listed[p] != h)
     unlisted = sorted(p for p in code["sha256"] if p not in listed)
-    status = "FAIL" if differing else "WARN" if deadline is None or unlisted else "PASS"
+    # What happens to a run that was interrupted is the author's decision; the pipeline refuses to
+    # generate from a manifest that does not record it.
+    policy = manifest.get("interrupted_run_policy")
+    policy_recorded = policy in INTERRUPTED_RUN_POLICIES
+    authorised, authorisation = False, root / "authorization.json"
+    if authorisation.is_file():
+        try:
+            entry = json.loads(authorisation.read_text(encoding="utf-8"))
+            authorised = bool(entry.get("pre_generation_manifest_sha256") == sha256_file(path)
+                              and entry.get("authorized_by") and entry.get("authorized_on"))
+        except ValueError:
+            authorised = False
+    deviates = manifest.get("workers") not in (None, PROTOCOL_WORKERS)
+    status = ("FAIL" if differing or not policy_recorded
+              else "WARN" if deadline is None or unlisted or deviates or not authorised else "PASS")
     return result("manifest", status, tdk_deadline=deadline,
                   criterion_5=None if deadline else "INSUFFICIENT_INFORMATION",
-                  code_hashes_differing=differing, code_hashes_not_listed=unlisted)
+                  code_hashes_differing=differing, code_hashes_not_listed=unlisted,
+                  interrupted_run_policy=policy if policy_recorded else None,
+                  workers=manifest.get("workers"), workers_deviate_from_protocol=deviates,
+                  authorised_for_this_manifest=authorised)
 
 
 def run(root: Path, namespace: str, workers: int) -> dict[str, Any]:

@@ -31,7 +31,9 @@ from typing import Any, Iterable, Mapping
 
 import numpy as np
 
-STATES = ("COMPLETE", "MISSING", "PARTIAL", "CORRUPT")
+# FAILED_RECORD: a planned run that failed and says so (protocol.json failed_runs.recording). It is
+# a final state like COMPLETE: the run is reported as failed and is not drawn again.
+STATES = ("COMPLETE", "FAILED_RECORD", "MISSING", "PARTIAL", "CORRUPT")
 TMP_SUFFIX = ".tmp"
 
 
@@ -122,8 +124,14 @@ def classify_run(root: Path, condition: str, replica: int, *, verify_hash: bool 
         return {**out, "state": "CORRUPT", "reason": f"unreadable record: {type(error).__name__}: {error}"}
     if record.get("condition") != condition or record.get("replica") != replica:
         return {**out, "state": "CORRUPT", "reason": "record identity differs from its path"}
+    declared_failure = record.get("status") == "FAILED" and record.get("trace_sha256") is None and bool(record.get("failure"))
     if not trace_path.exists():
+        if declared_failure:
+            return {**out, "state": "FAILED_RECORD", "reason": None, "record_sha256": sha256_bytes(raw),
+                    "record_bytes": len(raw), "run_status": "FAILED"}
         return {**out, "state": "CORRUPT", "reason": "record without a trace"}
+    if declared_failure:
+        return {**out, "state": "CORRUPT", "reason": "failure record beside a trace file"}
     if trace_path.stat().st_size == 0:
         return {**out, "state": "CORRUPT", "reason": "empty trace"}
     out.update(record_sha256=sha256_bytes(raw), record_bytes=len(raw), trace_bytes=trace_path.stat().st_size,
@@ -211,9 +219,10 @@ def append_journal(root: Path, event: str, **fields: Any) -> None:
 
 
 def pending(root: Path, plan: Mapping[str, int]) -> list[tuple[str, int, str]]:
-    """Planned runs that are not COMPLETE, with their state: the work list a restart must look at."""
+    """Planned runs in no final state, with their state: the work list a restart must look at.
+    A recorded failure is final and is not listed."""
     return [(r["condition"], r["replica"], r["state"]) for r in scan_store(root, plan, verify_hash=False)["runs"]
-            if r["state"] != "COMPLETE"]
+            if r["state"] not in ("COMPLETE", "FAILED_RECORD")]
 
 
 def namespace_collisions(seed_of, namespaces: Mapping[str, Mapping[str, int]], roles: Iterable[str]) -> list[Any]:
