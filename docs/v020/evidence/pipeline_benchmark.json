@@ -1,0 +1,1271 @@
+{
+  "configurations": [
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 0.7666015625,
+        "memory_available_mib": 5482.13671875
+      },
+      "cpu_seconds": 77.48078699999999,
+      "cpu_utilisation_of_workers": 0.9864886250483336,
+      "idle_tail_share": 0.01173255997796141,
+      "involuntary_switches_per_job": 694.6666666666666,
+      "jobs": 6,
+      "lowest_memory_available_mib": 5255.0625,
+      "mean_job_seconds": 12.928452399499898,
+      "mean_stage_seconds": {
+        "check_seconds": 2.383783701331898,
+        "generation_seconds": 7.251776780000607,
+        "measurement_seconds": 3.160316574669802,
+        "storage_seconds": 0.13257534349759226
+      },
+      "peak_rss_mib_max": 294.91015625,
+      "peak_rss_mib_sum": 294.91015625,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.000253988997428678,
+          "generation_seconds": 5.9318626890017185,
+          "job_seconds": 9.77096708099998,
+          "jobs": 1,
+          "measurement_seconds": 3.7043861870042747,
+          "record_bytes": 3193045.0,
+          "storage_seconds": 0.13446421599655878,
+          "trace_bytes": 722422.0
+        },
+        "fault/DUP": {
+          "check_seconds": 4.521649228998285,
+          "generation_seconds": 8.350434166000923,
+          "job_seconds": 15.992264131004049,
+          "jobs": 1,
+          "measurement_seconds": 2.9900471190048847,
+          "record_bytes": 3195832.0,
+          "storage_seconds": 0.13013361699995585,
+          "trace_bytes": 855774.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 5.094089327001711,
+          "generation_seconds": 8.879177718998108,
+          "job_seconds": 17.10740436600463,
+          "jobs": 1,
+          "measurement_seconds": 3.0000578930048505,
+          "record_bytes": 3193403.0,
+          "storage_seconds": 0.13407942699996056,
+          "trace_bytes": 922995.0
+        },
+        "fault/SHIFT": {
+          "check_seconds": 4.6862195979992975,
+          "generation_seconds": 8.420445488998666,
+          "job_seconds": 15.99283944099443,
+          "jobs": 1,
+          "measurement_seconds": 2.7646707099993364,
+          "record_bytes": 3187386.0,
+          "storage_seconds": 0.12150364399712998,
+          "trace_bytes": 836043.0
+        },
+        "healthy": {
+          "check_seconds": 0.0002450324973324314,
+          "generation_seconds": 5.964370308502112,
+          "job_seconds": 9.353619688998151,
+          "jobs": 2,
+          "measurement_seconds": 3.251368769502733,
+          "record_bytes": 3358024.0,
+          "storage_seconds": 0.1376355784959742,
+          "trace_bytes": 722207.0
+        }
+      },
+      "pilot_projection_gib": 22.597095494158566,
+      "pilot_projection_hours": 21.544706508310664,
+      "repetition": 0,
+      "runs_per_hour": 275.0121046272285,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 123.73667378682269,
+        "runs": 6,
+        "seconds_per_run": 0.020626216667248325
+      },
+      "startup_seconds_mean": 0.04975057899719104,
+      "system_share_of_cpu": 0.014646134144197583,
+      "wall_seconds": 78.54199737599993,
+      "worker_exit_codes": [
+        0
+      ],
+      "workers": 1
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 2.1513671875,
+        "memory_available_mib": 5370.6484375
+      },
+      "cpu_seconds": 242.44190600000002,
+      "cpu_utilisation_of_workers": 0.924555144393804,
+      "idle_tail_share": 0.07312359072214081,
+      "involuntary_switches_per_job": 961.75,
+      "jobs": 12,
+      "lowest_memory_available_mib": 4829.4375,
+      "mean_job_seconds": 20.235154676833798,
+      "mean_stage_seconds": {
+        "check_seconds": 2.949360380333625,
+        "generation_seconds": 8.840751093582488,
+        "measurement_seconds": 8.285914943083602,
+        "storage_seconds": 0.1591282598340816
+      },
+      "peak_rss_mib_max": 297.40625,
+      "peak_rss_mib_sum": 1160.01171875,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.0007729229982942343,
+          "generation_seconds": 6.235953608502314,
+          "job_seconds": 16.568924951501685,
+          "jobs": 2,
+          "measurement_seconds": 10.165588588501123,
+          "record_bytes": 3193010.0,
+          "storage_seconds": 0.16660983149995445,
+          "trace_bytes": 722379.5
+        },
+        "fault/DUP": {
+          "check_seconds": 5.237740513501194,
+          "generation_seconds": 12.280073408503085,
+          "job_seconds": 26.263439381502394,
+          "jobs": 2,
+          "measurement_seconds": 8.585097593499086,
+          "record_bytes": 3195351.5,
+          "storage_seconds": 0.16052786599902902,
+          "trace_bytes": 823582.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 6.445501301001059,
+          "generation_seconds": 11.503388277997146,
+          "job_seconds": 24.291813616997388,
+          "jobs": 2,
+          "measurement_seconds": 6.187299632496433,
+          "record_bytes": 3190228.0,
+          "storage_seconds": 0.15562440550274914,
+          "trace_bytes": 831485.0
+        },
+        "fault/SHIFT": {
+          "check_seconds": 6.011555558001419,
+          "generation_seconds": 10.796617600499303,
+          "job_seconds": 24.05186928850162,
+          "jobs": 2,
+          "measurement_seconds": 7.104598516001715,
+          "record_bytes": 3185663.5,
+          "storage_seconds": 0.13909761399918352,
+          "trace_bytes": 831980.5
+        },
+        "healthy": {
+          "check_seconds": 0.00029599324989249,
+          "generation_seconds": 6.114236832996539,
+          "job_seconds": 15.117440411249845,
+          "jobs": 4,
+          "measurement_seconds": 8.836452664001627,
+          "record_bytes": 3357835.75,
+          "storage_seconds": 0.16645492100178672,
+          "trace_bytes": 722272.0
+        }
+      },
+      "pilot_projection_gib": 22.47279520193115,
+      "pilot_projection_hours": 8.43016382889245,
+      "repetition": 0,
+      "runs_per_hour": 658.9748925305402,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 134.7233413682267,
+        "runs": 12,
+        "seconds_per_run": 0.022457633166898933
+      },
+      "startup_seconds_mean": 0.05715117700128758,
+      "system_share_of_cpu": 0.039918779552904515,
+      "wall_seconds": 65.55636715400033,
+      "worker_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "workers": 4
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 4.8330078125,
+        "memory_available_mib": 5467.0546875
+      },
+      "cpu_seconds": 440.262221,
+      "cpu_utilisation_of_workers": 0.9105160743538966,
+      "idle_tail_share": 0.0840834326860801,
+      "involuntary_switches_per_job": 558.5,
+      "jobs": 18,
+      "lowest_memory_available_mib": 4647.1796875,
+      "mean_job_seconds": 24.58278698000019,
+      "mean_stage_seconds": {
+        "check_seconds": 3.4377220317215285,
+        "generation_seconds": 11.195815580055852,
+        "measurement_seconds": 9.753066183499161,
+        "storage_seconds": 0.19618318472364787
+      },
+      "peak_rss_mib_max": 295.65625,
+      "peak_rss_mib_sum": 1741.02734375,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.0008424973299649233,
+          "generation_seconds": 8.30168016833583,
+          "job_seconds": 19.277210686668695,
+          "jobs": 3,
+          "measurement_seconds": 10.75670365433325,
+          "record_bytes": 3193018.3333333335,
+          "storage_seconds": 0.2179843666696494,
+          "trace_bytes": 722320.6666666666
+        },
+        "fault/DUP": {
+          "check_seconds": 6.881785270331117,
+          "generation_seconds": 13.597674694336698,
+          "job_seconds": 27.22797188066761,
+          "jobs": 3,
+          "measurement_seconds": 6.606362906330712,
+          "record_bytes": 3195146.6666666665,
+          "storage_seconds": 0.14214900966908317,
+          "trace_bytes": 794286.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 7.474621088333758,
+          "generation_seconds": 14.275989349664693,
+          "job_seconds": 31.388432283332804,
+          "jobs": 3,
+          "measurement_seconds": 9.476367477999398,
+          "record_bytes": 3190390.6666666665,
+          "storage_seconds": 0.16145436733495444,
+          "trace_bytes": 856486.3333333334
+        },
+        "fault/SHIFT": {
+          "check_seconds": 6.268238501666929,
+          "generation_seconds": 14.50601365766488,
+          "job_seconds": 31.90758415833261,
+          "jobs": 3,
+          "measurement_seconds": 10.918237381333407,
+          "record_bytes": 3188372.0,
+          "storage_seconds": 0.21509461766739454,
+          "trace_bytes": 872308.6666666666
+        },
+        "healthy": {
+          "check_seconds": 0.0004224163337009183,
+          "generation_seconds": 8.246767805166504,
+          "job_seconds": 18.847761435499706,
+          "jobs": 6,
+          "measurement_seconds": 10.380362840499098,
+          "record_bytes": 3357769.0,
+          "storage_seconds": 0.22020837350040287,
+          "trace_bytes": 722274.3333333334
+        }
+      },
+      "pilot_projection_gib": 22.508670260198414,
+      "pilot_projection_hours": 6.827659475431225,
+      "repetition": 0,
+      "runs_per_hour": 804.0859124925802,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 157.41296246754024,
+        "runs": 18,
+        "seconds_per_run": 0.026239867055766
+      },
+      "startup_seconds_mean": 0.06383910649916895,
+      "system_share_of_cpu": 0.030046284620910045,
+      "wall_seconds": 80.58840354400309,
+      "worker_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "workers": 6
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 7.52197265625,
+        "memory_available_mib": 5464.05859375
+      },
+      "cpu_seconds": 793.854762,
+      "cpu_utilisation_of_workers": 0.8580037338013432,
+      "idle_tail_share": 0.13175766624608454,
+      "involuntary_switches_per_job": 1375.8333333333333,
+      "jobs": 24,
+      "lowest_memory_available_mib": 4163.85546875,
+      "mean_job_seconds": 33.44312515995807,
+      "mean_stage_seconds": {
+        "check_seconds": 3.8759971276261544,
+        "generation_seconds": 14.263118674874022,
+        "measurement_seconds": 15.065140809333267,
+        "storage_seconds": 0.23886854812462843
+      },
+      "peak_rss_mib_max": 301.3359375,
+      "peak_rss_mib_sum": 2194.36328125,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.0010967600010189926,
+          "generation_seconds": 12.443382273748284,
+          "job_seconds": 27.43367183999908,
+          "jobs": 4,
+          "measurement_seconds": 14.732046346749485,
+          "record_bytes": 3192993.25,
+          "storage_seconds": 0.2571464595002908,
+          "trace_bytes": 722317.25
+        },
+        "fault/DUP": {
+          "check_seconds": 7.023959615251442,
+          "generation_seconds": 15.394271044498964,
+          "job_seconds": 37.777663737249895,
+          "jobs": 4,
+          "measurement_seconds": 15.160821737750666,
+          "record_bytes": 3195432.5,
+          "storage_seconds": 0.1986113397488225,
+          "trace_bytes": 831613.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 8.490956544248547,
+          "generation_seconds": 19.49145814700023,
+          "job_seconds": 43.47014997574843,
+          "jobs": 4,
+          "measurement_seconds": 15.241150024750823,
+          "record_bytes": 3191126.0,
+          "storage_seconds": 0.2465852597488265,
+          "trace_bytes": 881445.5
+        },
+        "fault/SHIFT": {
+          "check_seconds": 7.738404721252664,
+          "generation_seconds": 15.483780485998068,
+          "job_seconds": 38.93784455474997,
+          "jobs": 4,
+          "measurement_seconds": 15.48837633374751,
+          "record_bytes": 3187429.75,
+          "storage_seconds": 0.22728301375173032,
+          "trace_bytes": 867699.75
+        },
+        "healthy": {
+          "check_seconds": 0.0007825625016266713,
+          "generation_seconds": 11.382910048999292,
+          "job_seconds": 26.51971042600053,
+          "jobs": 8,
+          "measurement_seconds": 14.88422520650056,
+          "record_bytes": 3357793.75,
+          "storage_seconds": 0.25179260799905023,
+          "trace_bytes": 722274.5
+        }
+      },
+      "pilot_projection_gib": 22.562479776795954,
+      "pilot_projection_hours": 6.966365183607931,
+      "repetition": 0,
+      "runs_per_hour": 747.0537549077376,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 147.90714145015895,
+        "runs": 24,
+        "seconds_per_run": 0.024655299458269535
+      },
+      "startup_seconds_mean": 0.08654943862529763,
+      "system_share_of_cpu": 0.04840189898615233,
+      "wall_seconds": 115.65432799500559,
+      "worker_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "workers": 8
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 9.51806640625,
+        "memory_available_mib": 5247.42578125
+      },
+      "cpu_seconds": 1771.600336,
+      "cpu_utilisation_of_workers": 0.8563963590721899,
+      "idle_tail_share": 0.0933481818316082,
+      "involuntary_switches_per_job": 8074.027777777777,
+      "jobs": 36,
+      "lowest_memory_available_mib": 3818.671875,
+      "mean_job_seconds": 52.067963518471316,
+      "mean_stage_seconds": {
+        "check_seconds": 6.115129903471421,
+        "generation_seconds": 23.656870856694997,
+        "measurement_seconds": 21.969950882416825,
+        "storage_seconds": 0.3260118758880708
+      },
+      "peak_rss_mib_max": 301.15625,
+      "peak_rss_mib_sum": 3469.19140625,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.0013136093330103904,
+          "generation_seconds": 16.505662552501843,
+          "job_seconds": 38.28134674483226,
+          "jobs": 6,
+          "measurement_seconds": 21.485786777667574,
+          "record_bytes": 3192982.0,
+          "storage_seconds": 0.28858380532983574,
+          "trace_bytes": 722311.5
+        },
+        "fault/DUP": {
+          "check_seconds": 10.679378709498755,
+          "generation_seconds": 32.277410986499795,
+          "job_seconds": 67.87074053150111,
+          "jobs": 6,
+          "measurement_seconds": 24.48714626916626,
+          "record_bytes": 3195434.5,
+          "storage_seconds": 0.42680456633631064,
+          "trace_bytes": 827943.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 15.00659433966454,
+          "generation_seconds": 30.418831230334035,
+          "job_seconds": 65.35033270666706,
+          "jobs": 6,
+          "measurement_seconds": 19.634935573001712,
+          "record_bytes": 3191103.6666666665,
+          "storage_seconds": 0.2899715636667679,
+          "trace_bytes": 880710.8333333334
+        },
+        "fault/SHIFT": {
+          "check_seconds": 11.00099477366651,
+          "generation_seconds": 29.75598774116588,
+          "job_seconds": 64.18359063833122,
+          "jobs": 6,
+          "measurement_seconds": 23.10894844033343,
+          "record_bytes": 3187982.6666666665,
+          "storage_seconds": 0.3176596831654024,
+          "trace_bytes": 878250.1666666666
+        },
+        "healthy": {
+          "check_seconds": 0.001248994332854636,
+          "generation_seconds": 16.49166631483422,
+          "job_seconds": 38.36088524474811,
+          "jobs": 12,
+          "measurement_seconds": 21.551444117165982,
+          "record_bytes": 3357780.9166666665,
+          "storage_seconds": 0.31652581841505406,
+          "trace_bytes": 722283.3333333334
+        }
+      },
+      "pilot_projection_gib": 22.56867619215821,
+      "pilot_projection_hours": 7.230775457501923,
+      "repetition": 0,
+      "runs_per_hour": 751.78785562675,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 159.36261163659117,
+        "runs": 36,
+        "seconds_per_run": 0.02656486274989018
+      },
+      "startup_seconds_mean": 0.09289147450120556,
+      "system_share_of_cpu": 0.05875390565516352,
+      "wall_seconds": 172.38905767100368,
+      "worker_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "workers": 12
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 16.154296875,
+        "memory_available_mib": 5331.66796875
+      },
+      "cpu_seconds": 78.322835,
+      "cpu_utilisation_of_workers": 0.9846684239494813,
+      "idle_tail_share": 0.0148266308386511,
+      "involuntary_switches_per_job": 155.5,
+      "jobs": 6,
+      "lowest_memory_available_mib": 5124.18359375,
+      "mean_job_seconds": 13.051981349833417,
+      "mean_stage_seconds": {
+        "check_seconds": 2.401724578332505,
+        "generation_seconds": 7.29142509666417,
+        "measurement_seconds": 3.225068007667384,
+        "storage_seconds": 0.13376366716935686
+      },
+      "peak_rss_mib_max": 302.71875,
+      "peak_rss_mib_sum": 302.71875,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.0002574729951447807,
+          "generation_seconds": 5.971974498999771,
+          "job_seconds": 9.47486707999633,
+          "jobs": 1,
+          "measurement_seconds": 3.3712096640010714,
+          "record_bytes": 3193045.0,
+          "storage_seconds": 0.1314254440003424,
+          "trace_bytes": 722422.0
+        },
+        "fault/DUP": {
+          "check_seconds": 4.597403581996332,
+          "generation_seconds": 8.545105477001925,
+          "job_seconds": 16.19540700699872,
+          "jobs": 1,
+          "measurement_seconds": 2.920632696004759,
+          "record_bytes": 3195831.0,
+          "storage_seconds": 0.1322652519957046,
+          "trace_bytes": 855774.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 5.157954777998384,
+          "generation_seconds": 8.96389514299517,
+          "job_seconds": 17.345640956998977,
+          "jobs": 1,
+          "measurement_seconds": 3.0893377250031335,
+          "record_bytes": 3193402.0,
+          "storage_seconds": 0.1344533110022894,
+          "trace_bytes": 922995.0
+        },
+        "fault/SHIFT": {
+          "check_seconds": 4.654279479000252,
+          "generation_seconds": 8.274233694995928,
+          "job_seconds": 16.457553868000105,
+          "jobs": 1,
+          "measurement_seconds": 3.39835776900145,
+          "record_bytes": 3187383.0,
+          "storage_seconds": 0.1306829250024748,
+          "trace_bytes": 836043.0
+        },
+        "healthy": {
+          "check_seconds": 0.00022607900245930068,
+          "generation_seconds": 5.9966708829961135,
+          "job_seconds": 9.419209593503183,
+          "jobs": 2,
+          "measurement_seconds": 3.285435095996945,
+          "record_bytes": 3358024.5,
+          "storage_seconds": 0.13687753550766502,
+          "trace_bytes": 722207.0
+        }
+      },
+      "pilot_projection_gib": 22.597091768868268,
+      "pilot_projection_hours": 21.75067034220014,
+      "repetition": 1,
+      "runs_per_hour": 271.55347424935263,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 150.5610303140323,
+        "runs": 6,
+        "seconds_per_run": 0.025097688000338774
+      },
+      "startup_seconds_mean": 0.05107389699696796,
+      "system_share_of_cpu": 0.022471415903165405,
+      "wall_seconds": 79.54234450399963,
+      "worker_exit_codes": [
+        0
+      ],
+      "workers": 1
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 5.64208984375,
+        "memory_available_mib": 5287.6875
+      },
+      "cpu_seconds": 245.016657,
+      "cpu_utilisation_of_workers": 0.9343914201673041,
+      "idle_tail_share": 0.06331530043138833,
+      "involuntary_switches_per_job": 738.9166666666666,
+      "jobs": 12,
+      "lowest_memory_available_mib": 4145.30859375,
+      "mean_job_seconds": 20.449009791499822,
+      "mean_stage_seconds": {
+        "check_seconds": 3.0793207206661464,
+        "generation_seconds": 8.923462995917362,
+        "measurement_seconds": 8.258855491666813,
+        "storage_seconds": 0.1873705832495034
+      },
+      "peak_rss_mib_max": 292.953125,
+      "peak_rss_mib_sum": 1163.45703125,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.00047481749788857996,
+          "generation_seconds": 6.3449390580026375,
+          "job_seconds": 16.855012693999015,
+          "jobs": 2,
+          "measurement_seconds": 10.30125496200344,
+          "record_bytes": 3193010.5,
+          "storage_seconds": 0.20834385649504839,
+          "trace_bytes": 722379.5
+        },
+        "fault/DUP": {
+          "check_seconds": 5.362769041996216,
+          "generation_seconds": 12.037199503502052,
+          "job_seconds": 25.32393934550055,
+          "jobs": 2,
+          "measurement_seconds": 7.750649097502901,
+          "record_bytes": 3195351.5,
+          "storage_seconds": 0.17332170249937917,
+          "trace_bytes": 823582.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 6.930021337502694,
+          "generation_seconds": 11.180452388998674,
+          "job_seconds": 24.468410486999346,
+          "jobs": 2,
+          "measurement_seconds": 6.209777714000666,
+          "record_bytes": 3190230.0,
+          "storage_seconds": 0.14815904649731237,
+          "trace_bytes": 831485.0
+        },
+        "fault/SHIFT": {
+          "check_seconds": 6.18184328949792,
+          "generation_seconds": 11.206349715499528,
+          "job_seconds": 24.406294457498007,
+          "jobs": 2,
+          "measurement_seconds": 6.846906156497425,
+          "record_bytes": 3185663.0,
+          "storage_seconds": 0.171195296003134,
+          "trace_bytes": 831980.5
+        },
+        "healthy": {
+          "check_seconds": 0.00040791875107970554,
+          "generation_seconds": 6.38591865475064,
+          "job_seconds": 15.820200882501013,
+          "jobs": 4,
+          "measurement_seconds": 9.22227250999822,
+          "record_bytes": 3357835.75,
+          "storage_seconds": 0.21160179900107323,
+          "trace_bytes": 722272.0
+        }
+      },
+      "pilot_projection_gib": 22.472797064110637,
+      "pilot_projection_hours": 8.519250259465622,
+      "repetition": 1,
+      "runs_per_hour": 658.9871863483557,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 144.0180469894191,
+        "runs": 12,
+        "seconds_per_run": 0.024007008999736474
+      },
+      "startup_seconds_mean": 0.05743516499933321,
+      "system_share_of_cpu": 0.04241889154499402,
+      "wall_seconds": 65.55514415899961,
+      "worker_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "workers": 4
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 6.068359375,
+        "memory_available_mib": 5128.09765625
+      },
+      "cpu_seconds": 426.036794,
+      "cpu_utilisation_of_workers": 0.8978707560321878,
+      "idle_tail_share": 0.09707626341479103,
+      "involuntary_switches_per_job": 633.7222222222222,
+      "jobs": 18,
+      "lowest_memory_available_mib": 3841.5234375,
+      "mean_job_seconds": 23.780732392833468,
+      "mean_stage_seconds": {
+        "check_seconds": 3.394653137332676,
+        "generation_seconds": 11.179119111223068,
+        "measurement_seconds": 9.0051249768876,
+        "storage_seconds": 0.20183516739012297
+      },
+      "peak_rss_mib_max": 302.31640625,
+      "peak_rss_mib_sum": 1744.9921875,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.0004701363310838739,
+          "generation_seconds": 7.875637231671135,
+          "job_seconds": 17.881888197334774,
+          "jobs": 3,
+          "measurement_seconds": 9.730929143671043,
+          "record_bytes": 3193018.6666666665,
+          "storage_seconds": 0.27485168566151214,
+          "trace_bytes": 722320.6666666666
+        },
+        "fault/DUP": {
+          "check_seconds": 6.7703434363332535,
+          "generation_seconds": 12.350427187334086,
+          "job_seconds": 26.61099255633356,
+          "jobs": 3,
+          "measurement_seconds": 7.337347666330364,
+          "record_bytes": 3195146.3333333335,
+          "storage_seconds": 0.1528742663358571,
+          "trace_bytes": 794286.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 7.21796778299904,
+          "generation_seconds": 14.99324802266589,
+          "job_seconds": 32.547032550663666,
+          "jobs": 3,
+          "measurement_seconds": 10.168438660330139,
+          "record_bytes": 3190390.6666666665,
+          "storage_seconds": 0.1673780846685986,
+          "trace_bytes": 856486.3333333334
+        },
+        "fault/SHIFT": {
+          "check_seconds": 6.378017841331409,
+          "generation_seconds": 14.27821171933465,
+          "job_seconds": 30.668840822002192,
+          "jobs": 3,
+          "measurement_seconds": 9.834716971667754,
+          "record_bytes": 3188372.0,
+          "storage_seconds": 0.1778942896683778,
+          "trace_bytes": 872308.6666666666
+        },
+        "healthy": {
+          "check_seconds": 0.0005598135006342394,
+          "generation_seconds": 8.788595253166326,
+          "job_seconds": 17.487820115333307,
+          "jobs": 6,
+          "measurement_seconds": 8.47965870966315,
+          "record_bytes": 3357767.8333333335,
+          "storage_seconds": 0.21900633900319613,
+          "trace_bytes": 722274.3333333334
+        }
+      },
+      "pilot_projection_gib": 22.508668086801965,
+      "pilot_projection_hours": 6.604931132814976,
+      "repetition": 1,
+      "runs_per_hour": 819.3943688941445,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 144.531642044493,
+        "runs": 18,
+        "seconds_per_run": 0.02409262244448958
+      },
+      "startup_seconds_mean": 0.06348243999915819,
+      "system_share_of_cpu": 0.03920720988244035,
+      "wall_seconds": 79.08279878400208,
+      "worker_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "workers": 6
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 7.572265625,
+        "memory_available_mib": 5148.984375
+      },
+      "cpu_seconds": 773.04125,
+      "cpu_utilisation_of_workers": 0.8654622090644414,
+      "idle_tail_share": 0.1259196336485463,
+      "involuntary_switches_per_job": 1067.625,
+      "jobs": 24,
+      "lowest_memory_available_mib": 4072.19140625,
+      "mean_job_seconds": 32.507271104833,
+      "mean_stage_seconds": {
+        "check_seconds": 4.031372848417959,
+        "generation_seconds": 13.881418061915914,
+        "measurement_seconds": 14.367257082416776,
+        "storage_seconds": 0.22722311208235624
+      },
+      "peak_rss_mib_max": 298.1640625,
+      "peak_rss_mib_sum": 2191.25,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.0008714927535038441,
+          "generation_seconds": 12.130582434248936,
+          "job_seconds": 27.41822092874827,
+          "jobs": 4,
+          "measurement_seconds": 15.003298813251604,
+          "record_bytes": 3192993.0,
+          "storage_seconds": 0.2834681884942256,
+          "trace_bytes": 722317.25
+        },
+        "fault/DUP": {
+          "check_seconds": 8.415500930501366,
+          "generation_seconds": 14.336590907749269,
+          "job_seconds": 36.97689818025174,
+          "jobs": 4,
+          "measurement_seconds": 14.042604631498762,
+          "record_bytes": 3195433.25,
+          "storage_seconds": 0.18220171050234057,
+          "trace_bytes": 831613.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 8.165124162749635,
+          "generation_seconds": 19.128155548251016,
+          "job_seconds": 41.99414199574676,
+          "jobs": 4,
+          "measurement_seconds": 14.479939894999916,
+          "record_bytes": 3191124.75,
+          "storage_seconds": 0.2209223897461925,
+          "trace_bytes": 881445.5
+        },
+        "fault/SHIFT": {
+          "check_seconds": 7.6053967137504515,
+          "generation_seconds": 14.463642231998165,
+          "job_seconds": 37.9776322757516,
+          "jobs": 4,
+          "measurement_seconds": 15.688098667500526,
+          "record_bytes": 3187429.0,
+          "storage_seconds": 0.22049466250246041,
+          "trace_bytes": 867699.75
+        },
+        "healthy": {
+          "check_seconds": 0.0006718953763993341,
+          "generation_seconds": 11.614768624624048,
+          "job_seconds": 25.33836662424983,
+          "jobs": 8,
+          "measurement_seconds": 13.494800243624923,
+          "record_bytes": 3357794.375,
+          "storage_seconds": 0.22812586062445916,
+          "trace_bytes": 722274.5
+        }
+      },
+      "pilot_projection_gib": 22.56247954419814,
+      "pilot_projection_hours": 6.771396125280183,
+      "repetition": 1,
+      "runs_per_hour": 773.8364271057228,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 149.92878045499188,
+        "runs": 24,
+        "seconds_per_run": 0.024992295458408382
+      },
+      "startup_seconds_mean": 0.07051420312564005,
+      "system_share_of_cpu": 0.03533930304495394,
+      "wall_seconds": 111.65150279000227,
+      "worker_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "workers": 8
+    },
+    {
+      "all_implementation_checks_passed": true,
+      "all_runs_succeeded": true,
+      "before": {
+        "load_average_1min": 10.162109375,
+        "memory_available_mib": 5244.65234375
+      },
+      "cpu_seconds": 1731.389573,
+      "cpu_utilisation_of_workers": 0.8646113753405498,
+      "idle_tail_share": 0.09767980566879719,
+      "involuntary_switches_per_job": 6916.666666666667,
+      "jobs": 36,
+      "lowest_memory_available_mib": 3768.53125,
+      "mean_job_seconds": 50.161873284527445,
+      "mean_stage_seconds": {
+        "check_seconds": 6.687828404721383,
+        "generation_seconds": 22.192731005111554,
+        "measurement_seconds": 20.93556174286136,
+        "storage_seconds": 0.34575213183315
+      },
+      "peak_rss_mib_max": 302.15234375,
+      "peak_rss_mib_sum": 3480.953125,
+      "per_condition": {
+        "calibration": {
+          "check_seconds": 0.001234273832475689,
+          "generation_seconds": 15.179340603001037,
+          "job_seconds": 37.904355679501656,
+          "jobs": 6,
+          "measurement_seconds": 22.31741060716619,
+          "record_bytes": 3192982.0,
+          "storage_seconds": 0.40637019550194964,
+          "trace_bytes": 722311.5
+        },
+        "fault/DUP": {
+          "check_seconds": 12.401137246833969,
+          "generation_seconds": 26.26767733583377,
+          "job_seconds": 62.124467171333286,
+          "jobs": 6,
+          "measurement_seconds": 23.135694367501856,
+          "record_bytes": 3195434.1666666665,
+          "storage_seconds": 0.319958221163688,
+          "trace_bytes": 827943.0
+        },
+        "fault/LAG1": {
+          "check_seconds": 15.102057991332307,
+          "generation_seconds": 28.718459251666598,
+          "job_seconds": 60.2708942116648,
+          "jobs": 6,
+          "measurement_seconds": 16.203423160835275,
+          "record_bytes": 3191104.1666666665,
+          "storage_seconds": 0.24695380783062623,
+          "trace_bytes": 880710.8333333334
+        },
+        "fault/SHIFT": {
+          "check_seconds": 12.620432043499022,
+          "generation_seconds": 26.847606532333884,
+          "job_seconds": 63.12890986683245,
+          "jobs": 6,
+          "measurement_seconds": 23.378053391332895,
+          "record_bytes": 3187981.5,
+          "storage_seconds": 0.282817899666649,
+          "trace_bytes": 878250.1666666666
+        },
+        "healthy": {
+          "check_seconds": 0.0010544364152641113,
+          "generation_seconds": 18.07165115391702,
+          "job_seconds": 38.77130638891625,
+          "jobs": 12,
+          "measurement_seconds": 20.28939446516597,
+          "record_bytes": 3357780.6666666665,
+          "storage_seconds": 0.40920633341799356,
+          "trace_bytes": 722283.3333333334
+        }
+      },
+      "pilot_projection_gib": 22.56867479517435,
+      "pilot_projection_hours": 6.966049429432528,
+      "repetition": 1,
+      "runs_per_hour": 776.6268388689338,
+      "scan": {
+        "all_complete": true,
+        "pilot_projection_seconds": 154.4687039241429,
+        "runs": 36,
+        "seconds_per_run": 0.02574907549994047
+      },
+      "startup_seconds_mean": 0.08944846241562725,
+      "system_share_of_cpu": 0.03738476886391645,
+      "wall_seconds": 166.8755102369978,
+      "worker_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "workers": 12
+    }
+  ],
+  "environment": {
+    "disk_free_gib_at_start": 92.2479248046875,
+    "logical_cpus": 16,
+    "machine": "x86_64",
+    "memory_total_mib": 15665.93359375,
+    "numpy": "2.5.3",
+    "python": "3.14.9",
+    "scipy": "1.18.1",
+    "thread_variables": 1
+  },
+  "job_mix": "1 calibration : 2 healthy : 1 SHIFT : 1 LAG1 : 1 DUP, replicas from 1",
+  "namespace": "rnglab-v019-audit-smoke",
+  "pilot_counts": {
+    "calibration": 999,
+    "fault/DUP": 1000,
+    "fault/LAG1": 1000,
+    "fault/SHIFT": 1000,
+    "healthy": 2000
+  },
+  "pilot_runs": 5999,
+  "replica_zero_step_check": {
+    "all_implementation_checks_passed": true,
+    "jobs": 3,
+    "per_condition": {
+      "calibration": {
+        "check_seconds": null,
+        "generation_seconds": null,
+        "job_seconds": null,
+        "jobs": 0,
+        "measurement_seconds": null,
+        "record_bytes": null,
+        "storage_seconds": null,
+        "trace_bytes": null
+      },
+      "fault/DUP": {
+        "check_seconds": 11.135012218001066,
+        "generation_seconds": 8.290067627996905,
+        "job_seconds": 22.55300281399832,
+        "jobs": 1,
+        "measurement_seconds": 2.995361323999532,
+        "record_bytes": 3195096.0,
+        "storage_seconds": 0.13256164400081616,
+        "trace_bytes": 785055.0
+      },
+      "fault/LAG1": {
+        "check_seconds": 14.343954689000384,
+        "generation_seconds": 9.417293692000385,
+        "job_seconds": 26.591226076001476,
+        "jobs": 1,
+        "measurement_seconds": 2.702215999997861,
+        "record_bytes": 3187905.0,
+        "storage_seconds": 0.12776169500284595,
+        "trace_bytes": 794792.0
+      },
+      "fault/SHIFT": {
+        "check_seconds": 12.39936105000379,
+        "generation_seconds": 8.468898241000716,
+        "job_seconds": 24.36410461900232,
+        "jobs": 1,
+        "measurement_seconds": 3.358506074997422,
+        "record_bytes": 3185618.0,
+        "storage_seconds": 0.13733925300039118,
+        "trace_bytes": 859335.0
+      },
+      "healthy": {
+        "check_seconds": null,
+        "generation_seconds": null,
+        "job_seconds": null,
+        "jobs": 0,
+        "measurement_seconds": null,
+        "record_bytes": null,
+        "storage_seconds": null,
+        "trace_bytes": null
+      }
+    }
+  },
+  "schema": "rnglab-v020-pipeline-benchmark-v1",
+  "skipped": [
+    {
+      "memory_available_mib": 5324.98046875,
+      "needed_mib": 6026.71875,
+      "reason": "not enough available memory on the machine at that moment",
+      "repetition": 0,
+      "workers": 16
+    },
+    {
+      "memory_available_mib": 5233.1484375,
+      "needed_mib": 6054.375,
+      "reason": "not enough available memory on the machine at that moment",
+      "repetition": 1,
+      "workers": 16
+    }
+  ],
+  "summary": {
+    "bytes_per_run": {
+      "calibration": 3915467.0,
+      "fault/DUP": 4051605.5,
+      "fault/LAG1": 4116397.5,
+      "fault/SHIFT": 4023427.5,
+      "healthy": 4080231.25
+    },
+    "per_worker_count": [
+      {
+        "all_implementation_checks_passed": true,
+        "all_runs_succeeded": true,
+        "cpu_utilisation_of_workers": 0.9855785244989075,
+        "involuntary_switches_per_job": 425.0833333333333,
+        "lowest_memory_available_mib": 5124.18359375,
+        "mean_job_seconds": 12.990216874666658,
+        "peak_rss_mib_max": 302.71875,
+        "peak_rss_mib_sum": 302.71875,
+        "pilot_hours": [
+          21.544706508310664,
+          21.75067034220014
+        ],
+        "repetitions": 2,
+        "runs_per_hour": [
+          271.55347424935263,
+          275.0121046272285
+        ],
+        "runs_timed": 12,
+        "slowdown_per_job": 1.0,
+        "system_share_of_cpu": 0.018558775023681494,
+        "workers": 1
+      },
+      {
+        "all_implementation_checks_passed": true,
+        "all_runs_succeeded": true,
+        "cpu_utilisation_of_workers": 0.929473282280554,
+        "involuntary_switches_per_job": 850.3333333333333,
+        "lowest_memory_available_mib": 4145.30859375,
+        "mean_job_seconds": 20.34208223416681,
+        "peak_rss_mib_max": 297.40625,
+        "peak_rss_mib_sum": 1163.45703125,
+        "pilot_hours": [
+          8.43016382889245,
+          8.519250259465622
+        ],
+        "repetitions": 2,
+        "runs_per_hour": [
+          658.9748925305402,
+          658.9871863483557
+        ],
+        "runs_timed": 24,
+        "slowdown_per_job": 1.5659540121949511,
+        "system_share_of_cpu": 0.04116883554894927,
+        "workers": 4
+      },
+      {
+        "all_implementation_checks_passed": true,
+        "all_runs_succeeded": true,
+        "cpu_utilisation_of_workers": 0.9041934151930422,
+        "involuntary_switches_per_job": 596.1111111111111,
+        "lowest_memory_available_mib": 3841.5234375,
+        "mean_job_seconds": 24.18175968641683,
+        "peak_rss_mib_max": 302.31640625,
+        "peak_rss_mib_sum": 1744.9921875,
+        "pilot_hours": [
+          6.604931132814976,
+          6.827659475431225
+        ],
+        "repetitions": 2,
+        "runs_per_hour": [
+          804.0859124925802,
+          819.3943688941445
+        ],
+        "runs_timed": 36,
+        "slowdown_per_job": 1.861536256070964,
+        "system_share_of_cpu": 0.034626747251675194,
+        "workers": 6
+      },
+      {
+        "all_implementation_checks_passed": true,
+        "all_runs_succeeded": true,
+        "cpu_utilisation_of_workers": 0.8617329714328923,
+        "involuntary_switches_per_job": 1221.7291666666665,
+        "lowest_memory_available_mib": 4072.19140625,
+        "mean_job_seconds": 32.97519813239553,
+        "peak_rss_mib_max": 301.3359375,
+        "peak_rss_mib_sum": 2194.36328125,
+        "pilot_hours": [
+          6.771396125280183,
+          6.966365183607931
+        ],
+        "repetitions": 2,
+        "runs_per_hour": [
+          747.0537549077376,
+          773.8364271057228
+        ],
+        "runs_timed": 48,
+        "slowdown_per_job": 2.5384640187727205,
+        "system_share_of_cpu": 0.041870601015553136,
+        "workers": 8
+      },
+      {
+        "all_implementation_checks_passed": true,
+        "all_runs_succeeded": true,
+        "cpu_utilisation_of_workers": 0.8605038672063698,
+        "involuntary_switches_per_job": 7495.347222222223,
+        "lowest_memory_available_mib": 3768.53125,
+        "mean_job_seconds": 51.11491840149938,
+        "peak_rss_mib_max": 302.15234375,
+        "peak_rss_mib_sum": 3480.953125,
+        "pilot_hours": [
+          6.966049429432528,
+          7.230775457501923
+        ],
+        "repetitions": 2,
+        "runs_per_hour": [
+          751.78785562675,
+          776.6268388689338
+        ],
+        "runs_timed": 72,
+        "slowdown_per_job": 3.9348779850768305,
+        "system_share_of_cpu": 0.04806933725953999,
+        "workers": 12
+      }
+    ],
+    "pilot_hours_at_6_or_more_workers": [
+      6.604931132814976,
+      7.230775457501923
+    ],
+    "pilot_hours_planning_allowance": 10.846163186252884,
+    "pilot_storage_gib": 22.541942818439566,
+    "planning_allowance_factor": 1.5,
+    "runs_timed_in_total": 195,
+    "scan_pilot_minutes": 2.444418224060698,
+    "scan_seconds_per_run": 0.024448256950098664,
+    "single_process_per_condition": {
+      "calibration": {
+        "check_seconds": 0.00025573099628672935,
+        "generation_seconds": 5.951918594000745,
+        "job_seconds": 9.622917080498155,
+        "measurement_seconds": 3.537797925502673,
+        "record_bytes": 3193045.0,
+        "storage_seconds": 0.1329448299984506,
+        "trace_bytes": 722422.0
+      },
+      "fault/DUP": {
+        "check_seconds": 4.559526405497309,
+        "generation_seconds": 8.447769821501424,
+        "job_seconds": 16.093835569001385,
+        "measurement_seconds": 2.955339907504822,
+        "record_bytes": 3195831.5,
+        "storage_seconds": 0.13119943449783023,
+        "trace_bytes": 855774.0
+      },
+      "fault/LAG1": {
+        "check_seconds": 5.126022052500048,
+        "generation_seconds": 8.921536430996639,
+        "job_seconds": 17.226522661501804,
+        "measurement_seconds": 3.044697809003992,
+        "record_bytes": 3193402.5,
+        "storage_seconds": 0.13426636900112499,
+        "trace_bytes": 922995.0
+      },
+      "fault/SHIFT": {
+        "check_seconds": 4.670249538499775,
+        "generation_seconds": 8.347339591997297,
+        "job_seconds": 16.225196654497267,
+        "measurement_seconds": 3.081514239500393,
+        "record_bytes": 3187384.5,
+        "storage_seconds": 0.1260932844998024,
+        "trace_bytes": 836043.0
+      },
+      "healthy": {
+        "check_seconds": 0.00023555574989586603,
+        "generation_seconds": 5.9805205957491125,
+        "job_seconds": 9.386414641250667,
+        "measurement_seconds": 3.268401932749839,
+        "record_bytes": 3358024.25,
+        "storage_seconds": 0.1372565570018196,
+        "trace_bytes": 722207.0
+      }
+    },
+    "single_process_stage_seconds": {
+      "check_seconds": 2.392754139832202,
+      "generation_seconds": 7.271600938332389,
+      "measurement_seconds": 3.192692291168593,
+      "storage_seconds": 0.13316950533347455
+    },
+    "single_process_stage_share": {
+      "check_seconds": 0.18419662757890656,
+      "generation_seconds": 0.5597751760798825,
+      "measurement_seconds": 0.24577667347455434,
+      "storage_seconds": 0.010251522866656667
+    },
+    "step_check_extra_seconds_replica_zero": {
+      "fault/DUP": 6.575485812503757,
+      "fault/LAG1": 9.217932636500336,
+      "fault/SHIFT": 7.729111511504016
+    }
+  },
+  "sweeps_per_run": 40960,
+  "what": "timing of the generation path in the audit-only namespace; the runs are deleted and are not pilot, smoke or campaign results"
+}

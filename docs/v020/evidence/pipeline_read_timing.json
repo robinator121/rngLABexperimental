@@ -1,0 +1,58 @@
+{
+  "independent_verification_issues": 0,
+  "namespace": "rnglab-v019-audit-smoke",
+  "note": "reading only: the arithmetic of the stages (fits, bootstrap, summaries) is not included",
+  "operations": {
+    "audit_classify": {
+      "max_seconds": 0.023020656997687183,
+      "mean_seconds": 0.021914264083534363,
+      "pilot_minutes_single_process": 2.1910611706187106,
+      "runs_timed": 12,
+      "uses_in_a_pilot": 5999
+    },
+    "audit_load_view": {
+      "max_seconds": 0.07403884599625599,
+      "mean_seconds": 0.04729157891779323,
+      "pilot_minutes_single_process": 4.72836969879736,
+      "runs_timed": 12,
+      "uses_in_a_pilot": 5999
+    },
+    "audit_verify_deep": {
+      "max_seconds": 2.063149353998597,
+      "mean_seconds": 1.67343373433323,
+      "pilot_minutes_single_process": 0.6972640559721791,
+      "runs_timed": 6,
+      "uses_in_a_pilot": 25
+    },
+    "audit_verify_shallow": {
+      "max_seconds": 0.14717191599629587,
+      "mean_seconds": 0.07797779891431371,
+      "pilot_minutes_single_process": 7.763989511901835,
+      "runs_timed": 12,
+      "uses_in_a_pilot": 5974
+    },
+    "pipeline_classify": {
+      "max_seconds": 0.025029345997609198,
+      "mean_seconds": 0.02373154441374936,
+      "pilot_minutes_single_process": 7.118276746904121,
+      "runs_timed": 12,
+      "uses_in_a_pilot": 17997
+    },
+    "pipeline_load": {
+      "max_seconds": 0.061266933000297286,
+      "mean_seconds": 0.048024293332370384,
+      "pilot_minutes_single_process": 17.605705935646984,
+      "runs_timed": 12,
+      "uses_in_a_pilot": 21996
+    }
+  },
+  "pilot_minutes_single_process": {
+    "independent_verification": 13.189623266671374,
+    "pipeline_analysis_stages": 17.605705935646984,
+    "pipeline_scans": 7.118276746904121
+  },
+  "runs": 12,
+  "schema": "rnglab-v020-pipeline-read-timing-v1",
+  "single_process": true,
+  "what": "timing of reading stored runs in the audit-only namespace; the runs are deleted and are not pilot, smoke or campaign results"
+}
