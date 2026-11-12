@@ -125,6 +125,24 @@ def view_from_record(record: Mapping[str, Any], arrays: Mapping[str, np.ndarray]
                    complete=record.get("status", "SUCCESS") == "SUCCESS")
 
 
+def view_from_failure_record(record: Mapping[str, Any]) -> RunView:
+    """A run that has only a failure record: no statistics, no trace. Its issuance is unknown and
+    every endpoint is invalid (protocol.json failed_runs.endpoints)."""
+    empty = np.zeros(0, dtype=np.float64)
+    profile = record.get("profile") or {}
+    return RunView(condition=record["condition"], family=record["family"], replica=int(record["replica"]),
+                   t0=profile.get("t0"), t_cap=profile.get("T_cap"), s_max=profile.get("s_max"), statistic=empty,
+                   statistic_prime=empty, target=None, mean_d=empty, uphill_fraction=empty, cv=empty, complete=False,
+                   notes=["failure record"])
+
+
+def load_view(root: Path, condition: str, replica: int) -> RunView:
+    record = json.loads(stored_paths(root, condition, replica)[0].read_text(encoding="utf-8"))
+    if record.get("trace_path") is None:
+        return view_from_failure_record(record)
+    return view_from_record(*load_stored(root, condition, replica))
+
+
 # ---------------------------------------------------------------------------
 # Per-run verification
 # ---------------------------------------------------------------------------
@@ -293,7 +311,8 @@ def fit_and_predict(fit_rows: list[dict[str, Any]], fit_y: list[int], eval_rows:
     Without `saved` parameters the logistic models are fitted by the Newton reference
     optimiser; the pilot's own L-BFGS-B fit may differ from it by its stopping tolerance.
     """
-    out: dict[str, Any] = {"models": {}, "predictions": {m: [] for m in rc.MODELS}, "fallbacks": {m: {} for m in rc.MODELS}}
+    out: dict[str, Any] = {"models": {}, "predictions": {m: [] for m in rc.MODELS}, "fallbacks": {m: {} for m in rc.MODELS},
+                           "reasons": {m: [] for m in rc.MODELS}}
     if not fit_y:
         return {**out, "q0": None}
     q0 = sum(fit_y) / len(fit_y)
@@ -303,9 +322,14 @@ def fit_and_predict(fit_rows: list[dict[str, Any]], fit_y: list[int], eval_rows:
         usable = [i for i, row in enumerate(fit_rows) if all(row[c] is not None and math.isfinite(row[c]) for c in columns)]
         y = np.array([fit_y[i] for i in usable], dtype=np.float64)
         info: dict[str, Any] = {"rows": len(usable), "classes": [int((y == 0).sum()), int((y == 1).sum())], "fallback": None}
-        if saved is not None and model in saved:
-            fitted[model] = saved[model]
-            info["source"] = "saved"
+        if saved is not None:
+            if model not in saved:
+                raise rc.RecountError(f"saved models hold no entry for {model}")
+            if "theta" in saved[model]:
+                fitted[model] = saved[model]
+                info["source"] = "saved"
+            else:
+                info.update(source="saved", fallback=saved[model]["fallback"])
         elif len(usable) == 0 or y.min() == y.max():
             info["fallback"] = "EMPTY_SUBSET" if len(usable) == 0 else "ONE_CLASS"
         else:
@@ -337,9 +361,11 @@ def fit_and_predict(fit_rows: list[dict[str, Any]], fit_y: list[int], eval_rows:
 
     for row in eval_rows:
         out["predictions"]["F0"].append(q0)
+        out["reasons"]["F0"].append(None)
         for model in _COLUMNS:
             q, reason = predict(model, row)
             out["predictions"][model].append(q)
+            out["reasons"][model].append(reason)
             if reason:
                 out["fallbacks"][model][reason] = out["fallbacks"][model].get(reason, 0) + 1
     return out
@@ -418,6 +444,11 @@ def recount_campaign(views: Mapping[str, list[RunView]], namespace: str, *, plan
             n = rc.issuance_length(alarm) if alarm not in (None, "UNKNOWN") else None
             invalid_list.append(n is not None and not rc.endpoint(v.cv, n, reference)["valid"])
         criterion_input[family] = {"alarm": alarm_list, "valid": valid_list, "already_invalid": invalid_list}
+        row["per_run"] = [{"replica": v.replica, "alarm_sweep": issued[v.replica]["alarm_sweep"],
+                           "class": issued[v.replica]["class"], "alarm_minus_t0": issued[v.replica]["alarm_minus_t0"],
+                           "already_invalid": invalid, "valid": {L: bool(endpoints[(v.condition, v.replica)][L]["valid"])
+                                                                 for L in rc.LENGTHS}}
+                          for v, invalid in zip(runs, invalid_list)]
         x, e = [], []
         for v in runs:
             if v.replica in fitting:
@@ -457,7 +488,8 @@ def recount_campaign(views: Mapping[str, list[RunView]], namespace: str, *, plan
             row["per_length"][L] = {"eligible": len(usable), "eligible_fitting": len(fit), "eligible_evaluation": len(held),
                                     "valid_among_eligible": sum(y.values()), "q0": model["q0"], "models": model["models"],
                                     "fallbacks": model["fallbacks"], "scores": scored, "calibration": calibration_table,
-                                    "oracle": oracle}
+                                    "oracle": oracle, "eligible_evaluation_ids": [v.replica for v in held],
+                                    "predictions": model["predictions"], "reasons": model["reasons"], "y": y_eval}
             if L == 20480:
                 bootstrap[family] = scored
         families[family] = row
@@ -479,8 +511,167 @@ def recount_campaign(views: Mapping[str, list[RunView]], namespace: str, *, plan
 
 
 # ---------------------------------------------------------------------------
+# Comparison with the pilot's own analysis outputs (protocol.json implementation_checks.recount)
+# ---------------------------------------------------------------------------
+def saved_models_from_primary(models: Mapping[str, Any]) -> dict[str, Any]:
+    """Parameters of results/models.json in the form fit_and_predict takes. The recount does not refit."""
+    out: dict[str, Any] = {}
+    for family, cells in models["families"].items():
+        out[family] = {}
+        for length, cell in cells.items():
+            out[family][length] = {name: ({"theta": list(m["w"]) + [m["b"]], "mu": m["mu"], "scale": m["scale"]}
+                                          if m["status"] == "FITTED" else {"fallback": m["fallback_reason"]})
+                                   for name, m in cell["models"].items()}
+    return out
+
+
+def _jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+def compare_with_primary(root: Path, independent: Mapping[str, Any]) -> dict[str, Any]:
+    """Every quantity of the pilot's result files that the independent recount also has.
+
+    Flags, counts, labels, identifiers and null patterns must be equal; finite floats must agree to
+    1e-12 relative and absolute. A file that does not exist yet is listed, not treated as agreement.
+    """
+    results = Path(root) / "results"
+    issues: list[dict[str, Any]] = []
+    compared = 0
+    absent: list[str] = []
+
+    def check(where: str, name: str, stored: Any, mine: Any) -> None:
+        nonlocal compared
+        compared += 1
+        if not rc.compare(stored, mine):
+            issues.append({"scope": "campaign", "id": where, "field": name, "stored": _brief(stored), "independent": _brief(mine)})
+
+    def read(name: str) -> Any:
+        path = results / name
+        if not path.is_file():
+            absent.append(name)
+            return None
+        return _jsonl(path) if name.endswith(".jsonl") else json.loads(path.read_text(encoding="utf-8"))
+
+    calibration = read("calibration.json")
+    if calibration is not None:
+        check("calibration", "threshold_full", calibration["threshold_full"], independent["thresholds"]["full"])
+        check("calibration", "threshold_prime", calibration["threshold_prime"], independent["thresholds"]["prime"])
+        check("calibration", "application_constants", calibration["application_constants"],
+              independent.get("application_constants"))
+        for length in rc.LENGTHS:
+            check("calibration", f"sigma_eff[{length}]", calibration["sigma_eff"][str(length)],
+                  (independent.get("sigma_eff") or {}).get(length))
+    if independent.get("status") != "RECOUNTED":
+        return {"compared": compared, "discrepancies": issues, "files_absent": absent, "agrees": not issues and not absent,
+                "note": "calibration is incomplete: nothing downstream exists to compare"}
+    healthy = read("healthy.json")
+    if healthy is not None:
+        for length in rc.LENGTHS:
+            mine = independent["criterion_1"]["per_length"][length]
+            check("healthy", f"coverage[{length}].covered", healthy["coverage"][str(length)]["covered"], mine["covered"])
+            check("healthy", f"coverage[{length}].cp95", healthy["coverage"][str(length)]["cp95"], mine["cp95"])
+        gate = independent["V2_D"]
+        check("healthy", "V2_D.alarms", healthy["V2_D"]["alarms"], gate["alarms"])
+        check("healthy", "V2_D.unknown", healthy["V2_D"]["unknown"], gate["unknown"])
+        check("healthy", "V2_D.cp95", healthy["V2_D"]["cp95"], gate["cp95"])
+        check("healthy", "V2_D.result", healthy["V2_D"]["result"],
+              "INSUFFICIENT_INFORMATION" if gate["unknown"] else "PASS" if gate["pass"] else "FAIL")
+    issuance = read("issuance.jsonl")
+    if issuance is not None:
+        stored_rows = {(r["family"], r["replica"]): r for r in issuance if r["family"] != "healthy"}
+        for family, row in independent["families"].items():
+            for run in row["per_run"]:
+                stored = stored_rows.get((family, run["replica"]))
+                where = f"issuance {family}/{run['replica']:05d}"
+                if stored is None:
+                    issues.append({"scope": "campaign", "id": where, "field": "row", "stored": None, "independent": "present"})
+                    continue
+                unknown = run["alarm_sweep"] == "UNKNOWN"
+                check(where, "status", stored["full"]["status"],
+                      "UNKNOWN" if unknown else "NO_ALARM" if run["alarm_sweep"] is None else "ALARM")
+                check(where, "alarm_sweep", stored["full"]["alarm_sweep"], None if unknown else run["alarm_sweep"])
+                check(where, "class", stored["full"]["onset_classification"], run["class"])
+                check(where, "alarm_minus_t0", stored["full"]["alarm_minus_t0"], run["alarm_minus_t0"])
+                if not unknown and run["alarm_sweep"] is not None:
+                    check(where, "already_invalid", stored["full"]["issuance_endpoint"]["already_invalid"], run["already_invalid"])
+                for length in rc.LENGTHS:
+                    check(where, f"valid[{length}]", stored["valid"][str(length)], run["valid"][length])
+                    check(where, f"eligible[{length}]", stored["full"]["eligibility"][str(length)]["eligible"],
+                          None if unknown else rc.eligible(run["alarm_sweep"], length))
+    models = read("models.json")
+    if models is not None:
+        for family, row in independent["families"].items():
+            check(f"models {family}", "oracle.beta", models["oracle"]["beta"][family], row["oracle_beta"])
+            for length in rc.LENGTHS:
+                cell, mine = models["families"][family][str(length)], row["per_length"][length]
+                check(f"models {family} L={length}", "eligible_fitting", cell["eligible_fitting"], mine["eligible_fitting"])
+                check(f"models {family} L={length}", "q0", cell["q0"], mine["q0"])
+    predictions = read("predictions.jsonl")
+    if predictions is not None:
+        for family, row in independent["families"].items():
+            for length in rc.LENGTHS:
+                mine = row["per_length"][length]
+                stored = sorted((p for p in predictions if p["family"] == family and p["L"] == length and p["eligible"]),
+                                key=lambda p: p["replica"])
+                where = f"predictions {family} L={length}"
+                check(where, "eligible evaluation ids", [p["replica"] for p in stored], mine["eligible_evaluation_ids"])
+                if [p["replica"] for p in stored] != mine["eligible_evaluation_ids"]:
+                    continue
+                check(where, "y", [p["y"] for p in stored], mine["y"])
+                for model in rc.MODELS:
+                    check(where, f"q[{model}]", [p["predictions"][model]["q"] for p in stored], mine["predictions"][model])
+                    check(where, f"fallback[{model}]", [p["predictions"][model]["fallback"] for p in stored], mine["reasons"][model])
+    scores = read("scores.json")
+    if scores is not None:
+        for family, row in independent["families"].items():
+            for length in rc.LENGTHS:
+                cell, mine = scores["families"][family][str(length)], row["per_length"][length]
+                where = f"scores {family} L={length}"
+                check(where, "eligible", cell["counts"]["eligible"], mine["eligible_evaluation"])
+                # Under the frozen rule the oracle is unavailable where scipy.stats.nct returns NaN. Under
+                # Amendment A01 it is available wherever its parameters are, and its values are compared
+                # with the quadrature form (they agree to better than 1e-14 in the Brier score).
+                amended = scores.get("oracle_rule") == "A01"
+                check(where, "oracle.unavailable", cell["oracle_all_evaluation_runs"]["unavailable"],
+                      0 if amended and mine["oracle"].get("runs") else mine["oracle"]["frozen_unavailable"])
+                check(where, "oracle.brier", cell["oracle_all_evaluation_runs"]["brier"],
+                      mine["oracle"].get("brier_stable" if amended else "brier_frozen"))
+                for model in rc.MODELS:
+                    stored_model, my_model = cell["models"][model], mine["scores"]["models"].get(model)
+                    if my_model is None:
+                        check(where, f"{model}.brier", stored_model["brier"], None)
+                        continue
+                    check(where, f"{model}.brier", stored_model["brier"], my_model["brier"])
+                    check(where, f"{model}.skill", stored_model["skill"], my_model["skill"])
+                    check(where, f"{model}.brier_interval_95", stored_model.get("brier_interval_95"), my_model["brier_ci95"])
+                    check(where, f"{model}.skill_interval_95", stored_model.get("skill_interval_95"), my_model["skill_ci95"])
+                    check(where, f"{model}.skill_interval_criterion_4", stored_model.get("skill_interval_criterion_4"),
+                          my_model["skill_ci_criterion"])
+                    check(where, f"{model}.calibration", [[b["count"], b["mean_predicted"], b["observed_valid_fraction"]]
+                                                           for b in stored_model["calibration"]],
+                          [[b["count"], b["mean_predicted"], b["observed_fraction"]] for b in mine["calibration"][model]])
+    criteria = read("criteria.json")
+    if criteria is not None:
+        before = criteria["results_before_precedence"]
+        check("criteria", "1", before["1"], independent["criterion_1"]["result"])
+        check("criteria", "2", before["2"], independent["criteria_2_3"]["criterion_2"])
+        check("criteria", "3", before["3"], independent["criteria_2_3"]["criterion_3"])
+        check("criteria", "4", before["4"], independent["criterion_4"]["result"])
+        for key in ("1", "2", "3", "4"):
+            check("criteria", f"final {key}", criteria["results"][key], independent["verdicts"][f"criterion_{key}"])
+        for family, row in independent["criteria_2_3"]["per_family"].items():
+            stored = criteria["criteria_2_3"]["per_family"][family]
+            for name in ("eligible", "fraction_valid", "fraction_already_invalid", "median_remaining"):
+                check(f"criteria {family}", name, stored[name], row[name])
+    return {"compared": compared, "discrepancies": issues, "files_absent": absent, "agrees": not issues and not absent,
+            "tolerance": {"rtol": 1e-12, "atol": 1e-12}}
+
+
+# ---------------------------------------------------------------------------
 # Command line
 # ---------------------------------------------------------------------------
+
 def _verify_one(job: tuple[str, str, int, str, bool, int]) -> dict[str, Any]:
     root, condition, replica, namespace, deep, stride = job
     try:
@@ -512,6 +703,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--replicas", type=int, default=None, help="verify only replicas below this number (smoke: 2)")
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--no-campaign", action="store_true", help="skip the campaign recount (smoke namespaces)")
+    parser.add_argument("--compare-primary", action="store_true",
+                        help="recount with the saved model parameters and compare with the pilot's result files")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args(argv)
     plan = PLAN if args.replicas is None else {c: (f, min(n, args.replicas)) for c, (f, n) in PLAN.items()}
@@ -539,11 +732,20 @@ def main(argv: list[str] | None = None) -> int:
     if not args.no_campaign and not report["runs_missing"]:
         views: dict[str, list[RunView]] = {}
         for condition, (_, count) in plan.items():
-            views[condition] = [view_from_record(*load_stored(args.root, condition, replica)) for replica in range(count)]
-        report["campaign"] = recount_campaign(views, args.namespace, plan=plan)
+            views[condition] = [load_view(args.root, condition, replica) for replica in range(count)]
+        saved = None
+        models_path = Path(args.root) / "results/models.json"
+        if args.compare_primary and models_path.is_file():
+            saved = saved_models_from_primary(json.loads(models_path.read_text(encoding="utf-8")))
+        report["campaign"] = recount_campaign(views, args.namespace, plan=plan, saved_models=saved)
+        if args.compare_primary:
+            report["primary_comparison"] = compare_with_primary(args.root, report["campaign"])
+            issues = issues + report["primary_comparison"]["discrepancies"]
+            report["discrepancies"], report["discrepancy_count"] = issues, len(issues)
     else:
         report["campaign"] = {"status": "NOT_RUN", "reason": "disabled" if args.no_campaign else "runs missing"}
-    report["agrees"] = not issues and not report["runs_missing"]
+    report["agrees"] = (not issues and not report["runs_missing"]
+                        and not (args.compare_primary and report.get("primary_comparison", {}).get("files_absent")))
     text = json.dumps(report, sort_keys=True, indent=2, allow_nan=False, default=_brief) + "\n"
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

@@ -153,8 +153,13 @@ def test_fit_and_predict_fallback_rules():
     one_class = vf.fit_and_predict(rows, [1] * len(rows), rows[:2])
     assert one_class["predictions"]["F-B-lite"] == [1.0, 1.0] and one_class["models"]["F0+"]["fallback"] == "ONE_CLASS"
     assert vf.fit_and_predict([], [], rows[:1])["q0"] is None
-    saved = {"F0+": {"theta": [0.0, 0.0], "mu": [0.0], "scale": [1.0]}}
-    assert vf.fit_and_predict(rows, y, rows[:1], saved)["predictions"]["F0+"] == [0.5]
+    saved = {"F0+": {"theta": [0.0, 0.0], "mu": [0.0], "scale": [1.0]}, "F-B-lite": {"fallback": "NOT_CONVERGED"},
+             "F-AB-lite": {"fallback": "ONE_CLASS"}}
+    from_saved = vf.fit_and_predict(rows, y, rows[:1], saved)   # saved parameters are used; nothing is refitted
+    assert from_saved["predictions"]["F0+"] == [0.5] and from_saved["predictions"]["F-B-lite"] == [q0]
+    assert from_saved["reasons"]["F-B-lite"] == ["NOT_CONVERGED"] and from_saved["models"]["F0+"]["source"] == "saved"
+    with pytest.raises(rc.RecountError):
+        vf.fit_and_predict(rows, y, rows[:1], {"F0+": saved["F0+"]})
 
 
 def assemble_record(namespace, condition, family, replica):
