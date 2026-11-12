@@ -10,6 +10,7 @@
 | Where? | Only for positive δ, at 1,554 of 12,001 points on [−60, 60] in steps of 0.01: between 8.53 and 43.61, at 44% of the points in that range. The upper term never fails |
 | What kind of defect? | A numerical failure inside the library routine. The parameters are valid, and the formula is the intended one |
 | How large is the failing term in truth? | At most Φ(−δ), which is 7.3 × 10⁻¹⁸ at 8.53. At 8.55 it is 3.6 × 10⁻²⁴, against q = 1.18 × 10⁻⁹ |
+| Is the failure reproducible? | On one machine, for one double, yes. Across a rounding-level change of δ, no: 521 of 20,000 points change between NaN and a number when δ moves to the next double (section 3.1) |
 | Is there a stable equivalent? | Yes, three. All agree with a 70-digit reference to better than 3 × 10⁻¹⁵ in absolute terms |
 | Is an amendment needed? | **Yes, if the oracle is to be scored where the call fails.** The protocol fixes the call and says a non-finite value is unavailable |
 | Is this the missing widening term (F-02)? | No. F-02 is a declared modelling choice. Fixing F-01 leaves it untouched |
@@ -41,6 +42,20 @@ Two facts used below, both exact:
 | Numerical failure in the library | **yes** | the routine reports that it obtained no result, for a tail probability below 10⁻²³ |
 
 The library's source was not read. The diagnosis rests on its own error report and on the measured behaviour.
+
+### 3.1 Whether a value exists depends on the last bits of δ
+
+`rounding_sensitivity` in `results/f01_oracle.json`, on 20,000 equally spaced δ in [8.6, 43.5]:
+
+| | Count |
+|---|---|
+| lower term not finite | 8,655 |
+| changes between NaN and a number when δ moves to the next double | 521 |
+| changes when δ is multiplied by 1 + 10⁻¹³ | 496 (2.5%) |
+
+- **Consequence for the frozen rule.** "Non-finite q is unavailable" then makes the *set of runs with an oracle value* depend on rounding. Two correct programs that evaluate δ = β·S̄/se with S̄ summed in a different order agree on δ to 15 digits and can still disagree on availability.
+- **Observed.** On a synthetic campaign of 207 runs, the pipeline and the independent recount agreed on 1,972 of 1,974 compared fields. The two differences were counts of unavailable oracle values: 3 against 2 (SHIFT, L = 20,480) and 7 against 8 (LAG1, L = 40,960). With option A of section 8 forced in memory on the same campaign, all 1,974 fields agreed and all nine oracle cells were scored (`docs/v020/evidence/synthetic_agreement.json`).
+- **What this is not.** The synthetic campaign says nothing about how often the pilot's δ will fall in the failing range. It shows that when it does, exact agreement of two implementations cannot be demanded under the frozen rule.
 
 **The frozen expression has a second, harmless weakness.** For negative δ it subtracts two numbers close to 1. At δ = −10 it returns the right value with a relative error of 2 × 10⁻⁴; at δ = −20 it returns 0 where the truth is 1.7 × 10⁻⁶⁰. The absolute error stays below 10⁻¹⁶.
 
@@ -116,7 +131,10 @@ F-01 is about evaluating the frozen formula. F-02 is about whether that formula 
 
 **Option B: evaluate q by the mixture quadrature everywhere.** More accurate in the far tail, exactly even and monotone, but it changes available values by up to 2.2 × 10⁻¹⁵ and puts a new algorithm into the protocol.
 
-**Option C: no amendment.** Every evaluation run whose δ falls on a failing point has no oracle probability, and one such run makes the oracle's score for that family and length unavailable (`scores.brier`). Stop criteria 1 to 4 are unaffected.
+**Option C: no amendment.** Every evaluation run whose δ falls on a failing point has no oracle probability, and one such run makes the oracle's score for that family and length unavailable (`scores.brier`). Stop criteria 1 to 4 are unaffected. Two further costs follow from section 3.1:
+
+- The count of unavailable oracle values is not a reproducible number: another SciPy build, another platform or another summation order can change it.
+- The independent recount cannot be required to match that count exactly. Under option C the recount gate needs a declared exception for `oracle.unavailable` and `oracle.brier`, and that exception is itself a decision for the author.
 
 How often option C would bite is **not known**: δ = β·S̄·√L/σ_eff depends on the bias slope and the noise scale, which the pilot estimates. With the scales used in the surrogate study (β = 0.06, σ_eff = 0.613), δ reaches about 9.3 at L = 40,960 for the fastest ramps, just inside the failing range. That figure is an illustration, not a prediction.
 
@@ -141,6 +159,12 @@ PYTHONPATH=src .venv/bin/python research/v019-audit/f01_oracle.py
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m pytest tests/v019/test_f01_oracle.py -q
+```
+
+The synthetic comparison of section 3.1 (needs the measurement layer; synthetic fixtures only):
+
+```bash
+PYTHONPATH=src RNGLAB_DPILOT_MEASURE=research/v019-d-pilot/measure.py .venv/bin/python tests/v019/synthetic_agreement.py
 ```
 
 Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1, glibc 2.44.

@@ -307,6 +307,21 @@ def properties() -> dict:
     return out
 
 
+def rounding_sensitivity() -> dict:
+    """Does the failure depend on the last bits of delta? Compare each grid point with its
+    floating-point neighbour and with the same value changed by one part in 10^13."""
+    grid = np.linspace(8.6, 43.5, 20000)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        here = np.isnan(sc.nctdtr(DF, grid, -C))
+        neighbour = np.isnan(sc.nctdtr(DF, np.nextafter(grid, np.inf), -C))
+        relative = np.isnan(sc.nctdtr(DF, grid * (1 + 1e-13), -C))
+    return {"points": int(len(grid)), "range": [8.6, 43.5], "not_finite": int(here.sum()),
+            "flips_at_next_double": int(np.sum(here != neighbour)),
+            "flips_at_relative_change_1e-13": int(np.sum(here != relative)),
+            "share_flipping_at_1e-13": float(np.mean(here != relative))}
+
+
 def widening_is_separate() -> dict:
     """F-02 is a different matter: the same formula with a spread of batch means (lambda > 0)."""
     sys.path.insert(0, str(_HERE.parents[1] / "src"))
@@ -324,7 +339,7 @@ def main() -> int:
                            "libc": " ".join(platform.libc_ver())},
            "critical_value": {"c": C, "c_exact_decimal": str(Decimal(C))},
            "failure_map": failure_map(), "against_reference": against_reference(), "properties": properties(),
-           "widening_is_separate": widening_is_separate()}
+           "rounding_sensitivity": rounding_sensitivity(), "widening_is_separate": widening_is_separate()}
     target = _HERE / "results/f01_oracle.json"
     target.write_text(json.dumps(out, indent=1, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
     print(json.dumps({k: out[k] for k in ("failure_map",)}, indent=1)[:2500])
@@ -332,6 +347,7 @@ def main() -> int:
     print(json.dumps({k: v for k, v in out["properties"].items() if k != "mixture_convergence_in_nodes_per_panel"}, indent=1))
     print(json.dumps(out["properties"]["mixture_convergence_in_nodes_per_panel"]))
     print(json.dumps(out["widening_is_separate"]))
+    print(json.dumps(out["rounding_sensitivity"]))
     print("reference converged everywhere:", out["against_reference"]["reference_converged_everywhere"],
           "largest last change:", out["against_reference"]["reference_last_relative_change_max"])
     for row in out["against_reference"]["points"]:

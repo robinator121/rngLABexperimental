@@ -163,3 +163,26 @@ def test_widening_is_a_different_question():
         assert row["lambda_0"] == pytest.approx(row["mixture"], rel=1e-9, abs=1e-15)
         assert row["lambda_0"] < row["lambda_5"] < row["lambda_15"]
     assert rows["3.0"]["lambda_15"] > 2 * rows["3.0"]["lambda_0"]
+
+
+def test_failure_depends_on_the_last_bits_of_delta():
+    """Whether the frozen call returns a number or NaN changes with a rounding-level change of delta.
+    Two correct programs that compute delta in a different order of operations can therefore disagree
+    on which runs have an oracle value, although both follow the frozen rule."""
+    stored = STORED["rounding_sensitivity"]
+    assert stored["points"] == 20000 and stored["range"] == [8.6, 43.5]
+    grid = np.linspace(8.6, 43.5, 20000)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        here = np.isnan(sc.nctdtr(15, grid, -f01.C))
+        neighbour = np.isnan(sc.nctdtr(15, np.nextafter(grid, np.inf), -f01.C))
+    if not here.any():
+        pytest.skip("this SciPy does not return NaN here")
+    flips = np.flatnonzero(here != neighbour)
+    assert stored["not_finite"] == int(here.sum()) and stored["flips_at_next_double"] == len(flips) > 100
+    assert 0.01 < stored["share_flipping_at_1e-13"] < 0.10
+    for index in flips[:: max(1, len(flips) // 25)]:
+        a, b = float(grid[index]), float(np.nextafter(grid[index], np.inf))
+        assert math.isnan(quiet(f01.frozen, a)) != math.isnan(quiet(f01.frozen, b))     # one has a value, the other has none
+        assert abs(f01.bounded(a) - f01.bounded(b)) <= 1e-12 * f01.bounded(a) + 1e-300  # the filled rule does not jump
+        assert abs(f01.mixture(a) - f01.mixture(b)) <= 1e-12 * f01.mixture(a) + 1e-300

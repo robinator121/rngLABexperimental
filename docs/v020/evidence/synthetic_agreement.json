@@ -1,0 +1,76 @@
+{
+  "environment": {
+    "numpy": "2.5.3",
+    "python": "3.14.9",
+    "scipy": "1.18.1"
+  },
+  "frozen": {
+    "discrepancies": 2,
+    "discrepancies_by_field": {
+      "oracle.unavailable": 2
+    },
+    "discrepancy_list": [
+      {
+        "field": "oracle.unavailable",
+        "id": "scores SHIFT L=20480",
+        "independent": 2,
+        "scope": "campaign",
+        "stored": 3
+      },
+      {
+        "field": "oracle.unavailable",
+        "id": "scores LAG1 L=40960",
+        "independent": 8,
+        "scope": "campaign",
+        "stored": 7
+      }
+    ],
+    "fields_compared": 1974,
+    "files_absent": [],
+    "oracle_cells": 9,
+    "oracle_cells_scored": 3,
+    "oracle_cells_with_an_unavailable_run": 6,
+    "oracle_rule": "frozen",
+    "oracle_runs_lower_term_replaced": 0,
+    "oracle_runs_unavailable": 33,
+    "recount_status": "RECOUNTED",
+    "runs": {
+      "COMPLETE": 207,
+      "CORRUPT": 0,
+      "FAILED_RECORD": 0,
+      "MISSING": 0,
+      "PARTIAL": 0
+    }
+  },
+  "hypothetical_A": {
+    "discrepancies": 0,
+    "discrepancies_by_field": {},
+    "discrepancy_list": [],
+    "fields_compared": 1974,
+    "files_absent": [],
+    "oracle_cells": 9,
+    "oracle_cells_scored": 9,
+    "oracle_cells_with_an_unavailable_run": 0,
+    "oracle_rule": "A01",
+    "oracle_runs_lower_term_replaced": 33,
+    "oracle_runs_unavailable": 0,
+    "recount_status": "RECOUNTED",
+    "runs": {
+      "COMPLETE": 207,
+      "CORRUPT": 0,
+      "FAILED_RECORD": 0,
+      "MISSING": 0,
+      "PARTIAL": 0
+    }
+  },
+  "namespace": "rnglab-v019-audit-smoke",
+  "plan": {
+    "calibration": 39,
+    "fault/DUP": 48,
+    "fault/LAG1": 48,
+    "fault/SHIFT": 48,
+    "healthy": 24
+  },
+  "schema": "rnglab-v020-synthetic-agreement-v1",
+  "what": "synthetic fixtures in the audit-only namespace; not Monte Carlo output and not a pilot result"
+}

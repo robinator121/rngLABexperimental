@@ -1358,6 +1358,17 @@
    "mixture": 0.9500000000000007
   }
  },
+ "rounding_sensitivity": {
+  "flips_at_next_double": 521,
+  "flips_at_relative_change_1e-13": 496,
+  "not_finite": 8655,
+  "points": 20000,
+  "range": [
+   8.6,
+   43.5
+  ],
+  "share_flipping_at_1e-13": 0.0248
+ },
  "schema": "rnglab-v019-audit-f01-v1",
  "widening_is_separate": {
   "1.0": {
