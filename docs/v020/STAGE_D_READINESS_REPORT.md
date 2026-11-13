@@ -194,16 +194,16 @@ The allowance is not a measurement. The projection rests on minutes of load on a
 
 ## 6. Tests
 
-Evidence: `docs/v020/evidence/pytest_v020.txt` (commit `425dc61`, Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1).
+Evidence: `docs/v020/evidence/pytest_v020_criterion5.txt` (Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1). The counts before the criterion 5 date check are in `docs/v020/evidence/pytest_v020.txt` (commit `425dc61`): 614 passed with 31 skipped, and 220 passed.
 
 | Run | Passed | Failed | Skipped |
 |---|---|---|---|
-| Whole suite, tree as committed | 614 | 0 | 31 |
-| `tests/v019` with the measurement layer and the Stage C traces supplied | 220 | 0 | 0 |
+| Whole suite, tree as committed | 638 | 0 | 42 |
+| `tests/v019` with the measurement layer and the Stage C traces supplied | 255 | 0 | 0 |
 
-- The 31 skips are tests that need the measurement layer (30) or the Stage C traces (1). Neither is in this branch. With both supplied, every test of `tests/v019` runs and passes.
+- The 42 skips are tests that need the measurement layer (41) or the Stage C traces (1). Neither is in this branch. With both supplied, every test of `tests/v019` runs and passes.
 - Before this work the same two runs gave 561 passed with 5 skipped, and 141 passed (`docs/v019/evidence/pytest_v019_audit.txt`).
-- New test files: `test_f01_oracle.py` (13 tests), `test_pilot_driver.py` (29), `test_pilot_pipeline.py` (36); extended: `test_audit_verify.py`, `test_audit_integrity.py`.
+- New test files: `test_f01_oracle.py` (13 tests), `test_pilot_driver.py` (29), `test_pilot_pipeline.py` (48); extended: `test_audit_verify.py`, `test_audit_integrity.py`, `test_audit_recount.py` (23 tests of the criterion 5 dates).
 - The measurement layer used had SHA-256 `f8d5ac52…1b9be`. It is an uncommitted file and can change; the counts hold for that version.
 
 ## 7. Reproduction

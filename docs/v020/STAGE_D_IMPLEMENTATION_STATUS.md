@@ -29,14 +29,14 @@ All primary code is in `research/v019-d-pilot/`. The independent verification is
 | Implementation checks file (I-1 to I-4) | `pilot_analysis.implementation_checks` | `test_pilot_pipeline.py` | Done |
 | Stop criteria 1 to 5 with precedence | `pilot_analysis.criteria` | `test_criterion_1_…`, `test_criteria_2_and_3_…`, `test_criterion_4_and_5`, `test_precedence_rules_…` | Done |
 | Command line | `run_pilot.py` | `test_command_line_stops_without_the_measurement_layer` | Done |
-| Independent recount and comparison with every result file | `research/v019-audit/verify.py --compare-primary`, `recount.py` | `test_audit_verify.py`, `test_audit_recount.py`, `test_independent_recount_agrees_…` | Done for criteria 1 to 4. See Section 2 |
+| Independent recount and comparison with every result file | `research/v019-audit/verify.py --compare-primary`, `recount.py` | `test_audit_verify.py`, `test_audit_recount.py`, `test_independent_recount_agrees_…`, `test_criterion_5_…` | Done. Criterion 5: dates only, see Section 2 |
 | Store integrity scan and preflight | `research/v019-audit/integrity.py`, `preflight.py` | `test_audit_integrity.py` | Done |
 
 ## 2. What is not implemented or not done
 
 - **`results/report_numbers.json` and `RESULTS.md`.** They hold the author's report. The pipeline stops at `criteria.json` (B-8).
 - **`results/recount.json` is not written by the pipeline.** It is the output of the independent script (`verify.py --out`). The script records the `--root` argument as given: pass a relative path, so that no local path enters a committed file.
-- **Criterion 5 is not recounted.** The protocol asks that its dates be "independently checked against manifest dates and the declared deadline". The recount reports criterion 5 as INSUFFICIENT_INFORMATION and compares criteria 1 to 4 only.
+- **Criterion 5 is checked for consistency, not for truth.** The protocol asks that its dates be "independently checked against manifest dates and the declared deadline". With `--compare-primary`, `verify.py` now recomputes the label and both deadlines from the frozen protocol and the manifest, and compares them with `criteria.json`. It also reports a date that is not a calendar date, an engineering date later than the manifest, and a results date earlier than the manifest; the last two follow from the order of the freeze steps and do not change the label. The two evidence dates themselves are the author's statement. Nothing in the repository can confirm them.
 - **The smoke has not been run,** so `smoke/smoke_timing.json` does not exist. The command exists (`run_pilot.py smoke-timing --smoke`).
 - **The pipeline has never run on real pilot data.** The analysis stages were exercised on 207 synthetic runs in the audit-only namespace; the generation path was timed on full-length runs in that namespace and the runs were deleted (`STAGE_D_READINESS_REPORT.md`, Section 3).
 - **No amendment is applied.** `amendments.json` does not exist, so the oracle follows the frozen rule.
@@ -84,16 +84,16 @@ Invalid input is reported and stops the stage. Nothing is repaired, clipped or f
 
 ## 6. Tests
 
-Evidence: `docs/v020/evidence/pytest_v020.txt` (commit `425dc61`, Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1).
+Evidence: `docs/v020/evidence/pytest_v020_criterion5.txt` (Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1). The counts before the criterion 5 date check are in `docs/v020/evidence/pytest_v020.txt` (commit `425dc61`): 614 passed with 31 skipped, and 220 passed.
 
 | Run | Passed | Failed | Skipped |
 |---|---|---|---|
-| Whole suite, tree as committed | 614 | 0 | 31 |
-| `tests/v019` with the measurement layer and the Stage C traces supplied | 220 | 0 | 0 |
+| Whole suite, tree as committed | 638 | 0 | 42 |
+| `tests/v019` with the measurement layer and the Stage C traces supplied | 255 | 0 | 0 |
 
-- The 31 skips are tests that need the measurement layer (30) or the Stage C traces (1). Neither is in this branch. With both supplied, every test of `tests/v019` runs and passes.
+- The 42 skips are tests that need the measurement layer (41) or the Stage C traces (1). Neither is in this branch. With both supplied, every test of `tests/v019` runs and passes.
 - Before this work the same two runs gave 561 passed with 5 skipped, and 141 passed (`docs/v019/evidence/pytest_v019_audit.txt`).
-- New test files: `test_f01_oracle.py` (13 tests), `test_pilot_driver.py` (29), `test_pilot_pipeline.py` (36); extended: `test_audit_verify.py`, `test_audit_integrity.py`.
+- New test files: `test_f01_oracle.py` (13 tests), `test_pilot_driver.py` (29), `test_pilot_pipeline.py` (48); extended: `test_audit_verify.py`, `test_audit_integrity.py`, `test_audit_recount.py` (23 tests of the criterion 5 dates).
 - The measurement layer used had SHA-256 `f8d5ac52…1b9be`. It is an uncommitted file and can change; the counts hold for that version.
 
 ## 7. Commands

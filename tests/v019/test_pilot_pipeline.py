@@ -637,3 +637,64 @@ def test_a_damaged_store_stops_the_analysis(campaign):
     finally:
         record_path.write_bytes(original)
     assert pg.require_complete(ctx) == {"complete": 207, "failed_records": 0}
+
+
+def test_criterion_5_of_both_implementations_agree_on_every_day_of_two_years():
+    import datetime
+    day, checked = datetime.date(2027, 1, 1), 0
+    while day <= datetime.date(2028, 12, 31):
+        deadline = day.isoformat()
+        boundary = datetime.date.fromisoformat(pa.criterion_5(deadline, "2026-12-01", "2026-12-01")["results_deadline"])
+        for engineering in ("2026-12-22", "2026-12-23"):
+            for shift in (-1, 0, 1):
+                results = (boundary + datetime.timedelta(days=shift)).isoformat()
+                primary, independent = pa.criterion_5(deadline, engineering, results), rc.criterion_5(deadline, engineering, results)
+                assert primary["result"] == independent["result"] and primary["results_deadline"] == independent["results_deadline"]
+                assert primary["engineering_deadline"] == independent["engineering_deadline"]
+                checked += 1
+        day += datetime.timedelta(days=1)
+    assert checked == 731 * 6
+
+
+def criterion_5_tree(ctx, tmp_path, engineering, results, *, deadline="2027-04-30", written="2026-12-05T10:00:00+0100"):
+    """A copy of the result files with a manifest and the criterion 5 block the pipeline would write."""
+    shutil.copytree(ctx.root / "results", tmp_path / "results", ignore=shutil.ignore_patterns("runs"))
+    (tmp_path / "pre_generation_manifest.json").write_bytes(pc.canonical_json({"tdk_deadline": deadline, "written_at": written}))
+    criteria = pc.read_json(tmp_path / "results/criteria.json")
+    criteria["criterion_5"] = pa.criterion_5(deadline, engineering, results)
+    criteria["results_before_precedence"]["5"] = criteria["results"]["5"] = criteria["criterion_5"]["result"]
+    (tmp_path / "results/criteria.json").write_bytes(pc.canonical_json(criteria))
+    return criteria
+
+
+def test_criterion_5_check_on_the_campaign_and_with_dates(campaign, tmp_path):
+    ctx, _ = campaign
+    bare = vf.check_criterion_5(ctx.root)                               # a test plan: no manifest, no dates
+    assert bare["agrees"] and bare["compared"] == 7 and bare["independent"]["result"] == "INSUFFICIENT_INFORMATION"
+    assert bare["manifest_present"] is False
+    criterion_5_tree(ctx, tmp_path, "2026-12-01", "2026-12-20")
+    dated = vf.check_criterion_5(tmp_path)
+    assert dated["agrees"] and dated["independent"]["result"] == "PASS" and dated["independent"]["manifest_date"] == "2026-12-05"
+    absent = vf.check_criterion_5(tmp_path / "nowhere")
+    assert absent["status"] == "NOT_CHECKED" and not absent["agrees"]
+
+
+@pytest.mark.parametrize("engineering, results, change, expected", [
+    ("2026-12-01", "2026-12-20", lambda c: c["results"].update({"5": "FAIL"}), "final 5"),
+    ("2026-12-23", "2026-12-28", lambda c: c["results_before_precedence"].update({"5": "PASS"}), "5"),
+    ("2026-12-01", "2026-12-20", lambda c: c["criterion_5"].update(tdk_deadline="2027-06-30"), "5 declared deadline"),
+    ("2026-12-01", "2026-12-20", lambda c: c["criterion_5"].update(results_deadline="2027-02-28"), "5 results deadline"),
+    ("2026-12-01", "2026-12-20", lambda c: c["criterion_5"].update(engineering_deadline="2027-01-31"), "5 engineering deadline"),
+    ("2026-12-01", "2026-12-20", lambda c: c["criterion_5"].update(result="FAIL"), "5 result"),
+    ("2026-12-01", "2026-12-20", lambda c: c["criterion_5"].update(results_available_on="2026-12-04"), "5 dates"),
+    ("2026-12-01", "2026-12-20", lambda c: c["criterion_5"].update(engineering_complete_on="2026-12-06"), "5 dates"),
+    ("2026-12-01", "2026-12-20", lambda c: c["criterion_5"].update(results_available_on="20 December"), "5 dates"),
+    ("2026-12-01", "2026-12-20", lambda c: c["criterion_5"].update(results_available_on="2027-02-15"), "5"),
+])
+def test_criterion_5_check_reports_a_changed_or_inconsistent_date(campaign, tmp_path, engineering, results, change, expected):
+    ctx, _ = campaign
+    criteria = criterion_5_tree(ctx, tmp_path, engineering, results)
+    change(criteria)
+    (tmp_path / "results/criteria.json").write_bytes(pc.canonical_json(criteria))
+    out = vf.check_criterion_5(tmp_path)
+    assert expected in {d["field"] for d in out["discrepancies"]} and not out["agrees"]

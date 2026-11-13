@@ -30,9 +30,13 @@ docs/v019/IMPLEMENTATION_AUDIT.md.
 """
 from __future__ import annotations
 
+import calendar
+import datetime
 import hashlib
 import json
 import math
+import re
+import zoneinfo
 from fractions import Fraction
 from pathlib import Path
 from statistics import NormalDist
@@ -808,6 +812,74 @@ def criterion_4(per_family: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
 def gate_v2d(alarms: int, runs: int = 2000) -> dict[str, Any]:
     interval = clopper_pearson(alarms, runs, 0.95)
     return {"alarms": alarms, "runs": runs, "cp95": interval, "pass": bool(interval[1] <= 0.10)}
+
+
+def _calendar_date(value: Any) -> datetime.date | None:
+    """A date written as YYYY-MM-DD, or None when the text is not one."""
+    if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value, flags=re.ASCII):
+        return None
+    try:
+        return datetime.date.fromisoformat(value)
+    except ValueError:
+        return None
+
+
+def months_earlier(day: datetime.date, months: int) -> datetime.date:
+    """Calendar months back, clamped to the last day of the target month (P stop_criteria.5.calculation)."""
+    year, month0 = divmod(day.year * 12 + day.month - 1 - months, 12)
+    return datetime.date(year, month0 + 1, min(day.day, calendar.monthrange(year, month0 + 1)[1]))
+
+
+def manifest_date(written_at: Any, zone: str) -> datetime.date | None:
+    """Local calendar date, in the protocol's time zone, of a manifest's written_at stamp."""
+    if not isinstance(written_at, str):
+        return None
+    try:
+        stamp = datetime.datetime.fromisoformat(written_at)
+    except ValueError:
+        return None
+    return stamp.astimezone(zoneinfo.ZoneInfo(zone)).date() if stamp.tzinfo else stamp.date()
+
+
+def criterion_5(tdk_deadline: Any, engineering_complete_on: Any, results_available_on: Any,
+                manifest_written_at: Any = None, protocol: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """P stop_criteria.5 and the last sentence of implementation_checks.recount.
+
+    The label follows the two deadlines only: engineering on or before the approval date plus six
+    weeks, results on or before three calendar months before the declared deadline. A missing date
+    (None or an empty text) gives INSUFFICIENT_INFORMATION. A date that is not a calendar date gives no label. The order
+    of the freeze steps (engineering, then the pre-generation manifest, then generation) is checked
+    against the manifest's date and reported in date_problems; it does not change the label.
+    """
+    protocol = load_protocol() if protocol is None else protocol
+    rule = protocol["stop_criteria"]["5"]
+    engineering_deadline = datetime.date.fromisoformat(protocol["approval"]["date"]) + datetime.timedelta(weeks=6)
+    given = {"tdk_deadline": tdk_deadline, "engineering_complete_on": engineering_complete_on,
+             "results_available_on": results_available_on}
+    dates = {name: _calendar_date(value) for name, value in given.items()}
+    problems = [f"{name} is not a calendar date (YYYY-MM-DD): {value!r}"
+                for name, value in given.items() if value not in (None, "") and dates[name] is None]
+    written = manifest_date(manifest_written_at, rule["timezone"])
+    if manifest_written_at is not None and written is None:
+        problems.append(f"the manifest's written_at is not a time stamp: {manifest_written_at!r}")
+    out: dict[str, Any] = {**given, "engineering_deadline": engineering_deadline.isoformat(), "results_deadline": None,
+                           "manifest_date": None if written is None else written.isoformat(), "timezone": rule["timezone"]}
+    if dates["tdk_deadline"] is not None:
+        out["results_deadline"] = months_earlier(dates["tdk_deadline"], 3).isoformat()
+    if written is not None:
+        if dates["engineering_complete_on"] is not None and dates["engineering_complete_on"] > written:
+            problems.append("engineering_complete_on is later than the pre-generation manifest (freeze steps 4 and 6)")
+        if dates["results_available_on"] is not None and dates["results_available_on"] < written:
+            problems.append("results_available_on is earlier than the pre-generation manifest (freeze steps 6 and 7)")
+    if any(value in (None, "") for value in given.values()):
+        result: str | None = "INSUFFICIENT_INFORMATION"
+    elif any(day is None for day in dates.values()):
+        result = None
+    else:
+        on_time = (dates["engineering_complete_on"] <= engineering_deadline
+                   and dates["results_available_on"] <= months_earlier(dates["tdk_deadline"], 3))
+        result = "PASS" if on_time else "FAIL"
+    return {**out, "result": result, "date_problems": problems}
 
 
 def compare(primary: Any, independent: Any, rtol: float = 1e-12, atol: float = 1e-12) -> bool:

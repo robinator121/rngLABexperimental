@@ -546,3 +546,53 @@ def test_compare_is_exact_for_flags_and_null_patterns():
     assert rc.compare([1.0, None, "a"], (1.0, None, "a")) and not rc.compare([1.0], [1.0, 2.0])
     assert rc.compare({"a": [1, 2]}, {"a": [1, 2]}) and not rc.compare({"a": 1}, {"b": 1})
     assert rc.compare(3, 3) and not rc.compare(3, 4) and not rc.compare(float("nan"), float("nan"))
+
+
+def test_criterion_5_label_follows_the_two_deadlines():
+    assert rc.criterion_5("2027-04-30", "2026-12-22", "2027-01-30")["result"] == "PASS"
+    assert rc.criterion_5("2027-04-30", "2026-12-23", "2027-01-30")["result"] == "FAIL"      # engineering one day late
+    assert rc.criterion_5("2027-04-30", "2026-12-22", "2027-01-31")["result"] == "FAIL"      # results one day late
+    for missing in range(3):
+        for absent in (None, ""):
+            dates = ["2027-04-30", "2026-12-01", "2027-01-10"]
+            dates[missing] = absent
+            out = rc.criterion_5(*dates)
+            assert out["result"] == "INSUFFICIENT_INFORMATION" and out["date_problems"] == []
+    out = rc.criterion_5("2027-04-30", "2026-12-01", "2027-01-10")
+    assert out["engineering_deadline"] == "2026-12-22" and out["timezone"] == "Europe/Budapest"
+    # the frozen text states the same date: approval 2026-11-10 plus six weeks
+    assert "gives 2026-12-22" in rc.load_protocol()["stop_criteria"]["5"]["calculation"]
+
+
+@pytest.mark.parametrize("deadline, expected", [
+    ("2027-04-30", "2027-01-30"), ("2027-05-31", "2027-02-28"), ("2028-05-31", "2028-02-29"),
+    ("2027-05-29", "2027-02-28"), ("2027-02-15", "2026-11-15"), ("2027-03-31", "2026-12-31"),
+    ("2027-01-31", "2026-10-31"), ("2027-07-31", "2027-04-30"), ("2027-12-31", "2027-09-30"),
+    ("2028-03-01", "2027-12-01")])
+def test_criterion_5_three_calendar_months_with_clamping(deadline, expected):
+    assert rc.criterion_5(deadline, "2026-12-01", "2026-12-02")["results_deadline"] == expected
+
+
+@pytest.mark.parametrize("position, value", [
+    (0, "2027-4-30"), (0, "30/04/2027"), (0, 20270430), (0, "2027-02-30"), (1, "2026-12-22T10:00:00"),
+    (2, "soon"), (2, 5.0), (1, True), (0, "20270430"), (0, "2027-W17-5"), (2, "2027-01-10\n")])
+def test_criterion_5_gives_no_label_for_a_text_that_is_not_a_date(position, value):
+    dates = ["2027-04-30", "2026-12-01", "2027-01-10"]
+    dates[position] = value
+    out = rc.criterion_5(*dates)
+    assert out["result"] is None and len(out["date_problems"]) == 1 and "not a calendar date" in out["date_problems"][0]
+
+
+def test_criterion_5_dates_against_the_manifest_date():
+    stamp = "2026-12-05T10:00:00+0100"
+    clean = rc.criterion_5("2027-04-30", "2026-12-05", "2026-12-05", stamp)       # the same day is consistent
+    assert clean["result"] == "PASS" and clean["date_problems"] == [] and clean["manifest_date"] == "2026-12-05"
+    late = rc.criterion_5("2027-04-30", "2026-12-06", "2026-12-20", stamp)        # engineering after the manifest
+    assert late["result"] == "PASS" and len(late["date_problems"]) == 1 and "freeze steps 4 and 6" in late["date_problems"][0]
+    early = rc.criterion_5("2027-04-30", "2026-12-01", "2026-12-04", stamp)       # results before the manifest
+    assert early["result"] == "PASS" and len(early["date_problems"]) == 1 and "freeze steps 6 and 7" in early["date_problems"][0]
+    # the date is taken in the protocol's time zone: 23:30 UTC is the next day in Budapest
+    assert rc.criterion_5("2027-04-30", "2026-12-01", "2026-12-09", "2026-12-05T23:30:00+0000")["manifest_date"] == "2026-12-06"
+    assert rc.manifest_date("2026-12-05T10:00:00", "Europe/Budapest").isoformat() == "2026-12-05"   # no offset: as written
+    broken = rc.criterion_5("2027-04-30", "2026-12-01", "2026-12-09", "yesterday")
+    assert broken["manifest_date"] is None and "written_at" in broken["date_problems"][0]

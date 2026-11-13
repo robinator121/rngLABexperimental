@@ -1,0 +1,44 @@
+# v0.20 Stage D readiness branch: test evidence after the criterion 5 date check
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-13T11:22:30Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite, tree as committed (measurement layer and Stage C traces absent: those tests skip)
+$ PYTHONPATH=src python -m pytest tests -q -rs -p no:cacheprovider --import-mode=importlib
+........................................................................ [ 10%]
+........................................................................ [ 21%]
+........................................................................ [ 31%]
+........................................................................ [ 42%]
+........................................................................ [ 52%]
+........................................................................ [ 63%]
+...........ssss.s....................................................... [ 74%]
+........................................................................ [ 84%]
+..............................ssssssssssssssssssss.ss....ss........s.s.s [ 95%]
+ssssssssss......................                                         [100%]
+=========================== short test summary info ============================
+SKIPPED [10] tests/v019/_audit_loader.py:57: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_audit_d_pilot.py:356: Stage C traces are not in this tree (set RNGLAB_STAGEC_TRACES to their directory)
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:86: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:103: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [9] tests/v019/test_pilot_pipeline.py:113: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:135: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:155: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:207: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:264: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:288: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:444: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:475: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:586: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:616: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [1] tests/v019/test_pilot_pipeline.py:670: Stage D measurement layer (measure.py) is not present in this tree
+SKIPPED [10] tests/v019/test_pilot_pipeline.py:682: Stage D measurement layer (measure.py) is not present in this tree
+638 passed, 42 skipped in 130.20s (0:02:10)
+
+## 2. tests/v019 with the optional inputs: the uncommitted measurement layer and the Stage C traces
+$ PYTHONPATH=src RNGLAB_DPILOT_MEASURE=<main checkout>/research/v019-d-pilot/measure.py RNGLAB_STAGEC_TRACES=<main checkout>/research/v018-h1-detection/traces RNGLAB_AUDIT_FULL=1 python -m pytest tests/v019 -q -rs -p no:cacheprovider --import-mode=importlib
+measure.py sha256: f8d5ac52ecef7f0366dbd6fdccedfb9aec3b8a9d24e8f2127e9d29b11e21b9be
+........................................................................ [ 28%]
+........................................................................ [ 56%]
+........................................................................ [ 84%]
+.......................................                                  [100%]
+255 passed in 146.74s (0:02:26)

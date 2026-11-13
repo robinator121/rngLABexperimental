@@ -14,7 +14,9 @@ Two levels:
   independent regeneration of the whole run (marks, traces, stream hashes),
   battery statistics at a subset of checkpoints, application signals, endpoints;
 - campaign: alarm thresholds, gate V2-D, issuance, eligibility, stop criteria
-  1 to 3, the forecaster features, a reference fit, scores and criterion 4.
+  1 to 3, the forecaster features, a reference fit, scores and criterion 4;
+- with --compare-primary: every recounted quantity against the pilot's result
+  files, and the dates of criterion 5 against the pre-generation manifest.
 
 Every disagreement is a record {scope, id, field, stored, independent}. The
 field names of the stored run record are read in `view_from_record` and
@@ -668,6 +670,41 @@ def compare_with_primary(root: Path, independent: Mapping[str, Any]) -> dict[str
             "tolerance": {"rtol": 1e-12, "atol": 1e-12}}
 
 
+def check_criterion_5(root: Path) -> dict[str, Any]:
+    """Criterion 5 of results/criteria.json against the pre-generation manifest and the protocol.
+
+    protocol.json implementation_checks.recount: "Criterion 5 evidence dates are independently
+    checked against manifest dates and the declared deadline." The two evidence dates exist only
+    in criteria.json (the author supplies them); the declared deadline and the manifest date are
+    read from pre_generation_manifest.json. A missing criteria.json is reported, not passed.
+    """
+    root = Path(root)
+    criteria_path, manifest_path = root / "results/criteria.json", root / "pre_generation_manifest.json"
+    if not criteria_path.is_file():
+        return {"status": "NOT_CHECKED", "reason": "results/criteria.json is absent", "discrepancies": [], "agrees": False}
+    criteria = json.loads(criteria_path.read_text(encoding="utf-8"))
+    stored = criteria["criterion_5"]
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else {}
+    mine = rc.criterion_5(manifest.get("tdk_deadline"), stored.get("engineering_complete_on"),
+                          stored.get("results_available_on"), manifest.get("written_at"))
+    issues: list[dict[str, Any]] = []
+    pairs = [("5 declared deadline", stored.get("tdk_deadline"), manifest.get("tdk_deadline")),
+             ("5 engineering deadline", stored.get("engineering_deadline"), mine["engineering_deadline"]),
+             ("5 results deadline", stored.get("results_deadline"), mine["results_deadline"]),
+             ("5 timezone", stored.get("timezone"), mine["timezone"]),
+             ("5", criteria["results_before_precedence"]["5"], mine["result"]),
+             ("final 5", criteria["results"]["5"], mine["result"]),
+             ("5 result", stored.get("result"), mine["result"])]
+    for name, primary, independent in pairs:
+        if not rc.compare(primary, independent):
+            issues.append({"scope": "campaign", "id": "criteria", "field": name, "stored": _brief(primary),
+                           "independent": _brief(independent)})
+    issues += [{"scope": "campaign", "id": "criteria", "field": "5 dates", "stored": None, "independent": problem}
+               for problem in mine["date_problems"]]
+    return {"status": "CHECKED", "manifest_present": manifest_path.is_file(), "compared": len(pairs),
+            "independent": mine, "discrepancies": issues, "agrees": not issues}
+
+
 # ---------------------------------------------------------------------------
 # Command line
 # ---------------------------------------------------------------------------
@@ -740,7 +777,11 @@ def main(argv: list[str] | None = None) -> int:
         report["campaign"] = recount_campaign(views, args.namespace, plan=plan, saved_models=saved)
         if args.compare_primary:
             report["primary_comparison"] = compare_with_primary(args.root, report["campaign"])
-            issues = issues + report["primary_comparison"]["discrepancies"]
+            five = check_criterion_5(args.root)
+            report["criterion_5_check"] = five
+            if five["status"] == "CHECKED" and report["campaign"].get("status") == "RECOUNTED":
+                report["campaign"]["verdicts"]["criterion_5"] = five["independent"]["result"]
+            issues = issues + report["primary_comparison"]["discrepancies"] + five["discrepancies"]
             report["discrepancies"], report["discrepancy_count"] = issues, len(issues)
     else:
         report["campaign"] = {"status": "NOT_RUN", "reason": "disabled" if args.no_campaign else "runs missing"}
