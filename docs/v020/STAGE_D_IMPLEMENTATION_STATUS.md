@@ -1,8 +1,10 @@
 # Stage D pilot: implementation status
 
-**Status: 2026-11-12, branch `feature/v020-stage-d-readiness`.** The execution path from the pre-generation manifest to `criteria.json` is implemented and tested on synthetic fixtures. **Nothing has been generated:** no pilot run, no smoke run, no campaign result. The frozen protocol (`research/v019-d-pilot/protocol.json`, SHA-256 `5329464210019e968116e8c3c3a13a09f33b12e0368ecfaa69752a1eb43c5e97`) is unchanged, and no amendment has been applied.
+**Status: 2026-11-13, branch `feature/v020-stage-d-readiness`.** The execution path from the pre-generation manifest to `criteria.json` is implemented and tested on synthetic fixtures. **Nothing has been generated:** no pilot run, no smoke run, no campaign result. The frozen protocol (`research/v019-d-pilot/protocol.json`, SHA-256 `5329464210019e968116e8c3c3a13a09f33b12e0368ecfaa69752a1eb43c5e97`) is unchanged, and no amendment has been applied.
 
-The pilot cannot be started from this branch as it is. Section 3 lists what is missing and which decisions only the author can take.
+Changes of 2026-11-13: the author's decision on interrupted runs (`regenerate_same_id`, Section 3a) is implemented on both sides; the measurement layer is in the branch (B-1); preflight also checks the smoke namespace.
+
+Neither the smoke nor the pilot can be started yet. Section 3 lists what is missing and which decisions only the author can take.
 
 ## 1. What is implemented
 
@@ -11,11 +13,12 @@ All primary code is in `research/v019-d-pilot/`. The independent verification is
 | Protocol component | Where | Tests | State |
 |---|---|---|---|
 | Sampler adapter, ramp profile, fault transforms, I-2, I-3 (`dlib.py`) | already in v0.19 | `test_d_pilot_lib.py`, `test_audit_d_pilot.py` | Done before this work; unchanged |
-| Measurement layer: checkpoints, endpoints, issuance rule, run format (`measure.py`) | **another developer's uncommitted file; not in this branch** | its own tests, and the tests here when the file is supplied | Used read-only. See B-1 |
+| Measurement layer: checkpoints, endpoints, issuance rule, run format (`measure.py`) | its developer's file, copied into this branch byte for byte (SHA-256 `f8d5ac52…1b9be`) | `test_d_pilot_measure.py` (its own 23 tests), and the pipeline tests | In the branch, unchanged. See B-1 and B-12 |
 | Run plan, canonical JSON, atomic write, context (`pilot_common.py`) | new | `test_pilot_driver.py` | Done |
-| Generation driver: one record per planned run, failure records, staging and rename with the record last, journal, shards, resume (`pilot_generate.py`) | new | `test_pilot_driver.py` | Done |
-| Pre-generation manifest: protocol and design hashes, every executed file's hash, versions and libc, planned runs and seed labels, I-4 selection, commit, workers, policy, deadline, approved amendments | `pilot_generate.build_pre_generation_manifest` | `test_pre_generation_manifest_contents` | Done. Pushing it is the author's step |
-| Authorisation gate: no draw in the pilot or smoke namespace without the manifest, unchanged code hashes, a named policy, the author's `authorization.json`, and thread variables at 1 | `pilot_generate.require_generation_allowed` | `test_generation_is_refused_without_the_authors_authorization` | Done. The authorisation file is an engineering addition (B-9) |
+| Generation driver: one record per planned run, failure records, staging and rename with the record last, shards, resume (`pilot_generate.py`) | new | `test_pilot_driver.py` | Done |
+| Interrupted runs: same identity run again, at most three retries, then an explicit unresolved status; append-only chained audit log; one `generate` per output tree; stop on request without losing an attempt | `pilot_generate.prepare`, `run_one`, `journal`, `generate` | Section 3a | Done |
+| Pre-generation manifest: protocol and design hashes, every executed file's hash, versions and libc, planned runs with seed labels, seeds and the hash of their random input, I-4 selection, commit, workers, the interrupted-run rules, deadline, approved amendments | `pilot_generate.build_pre_generation_manifest`; `run_pilot.py manifest [--preview]` | `test_pre_generation_manifest_contents`, `test_manifest_preview_…` | Done. Pushing it is the author's step |
+| Authorisation gate: no draw in the pilot or smoke namespace without the manifest, unchanged code hashes, the decided interrupted-run rules, the author's `authorization.json`, and thread variables at 1 | `pilot_generate.require_generation_allowed` | `test_generation_is_refused_without_the_authors_authorization` | Done. The authorisation file is an engineering addition (B-9) |
 | Step check of I-3 for replica 0 of each fault family | `pilot_generate.step_check` | `test_step_check_agrees_with_stage_c_and_detects_a_wrong_stream` | Done |
 | I-4 replay of the 25 selected runs | `pilot_generate.replay_check` | `test_replay_detects_a_changed_value` | Done |
 | Run manifest and failure list | `pilot_generate.finalize` | `test_pilot_driver.py` | Done |
@@ -28,9 +31,10 @@ All primary code is in `research/v019-d-pilot/`. The independent verification is
 | Healthy and fault summaries, V2-D, short-interval check | `pilot_analysis.healthy_summary`, `fault_summary` | `test_pilot_pipeline.py` | Done |
 | Implementation checks file (I-1 to I-4) | `pilot_analysis.implementation_checks` | `test_pilot_pipeline.py` | Done |
 | Stop criteria 1 to 5 with precedence | `pilot_analysis.criteria` | `test_criterion_1_…`, `test_criteria_2_and_3_…`, `test_criterion_4_and_5`, `test_precedence_rules_…` | Done |
-| Command line | `run_pilot.py` | `test_command_line_stops_without_the_measurement_layer` | Done |
+| Command line | `run_pilot.py` | `test_manifest_preview_shows_the_decision_and_writes_nothing` | Done |
 | Independent recount and comparison with every result file | `research/v019-audit/verify.py --compare-primary`, `recount.py` | `test_audit_verify.py`, `test_audit_recount.py`, `test_independent_recount_agrees_…`, `test_criterion_5_…` | Done. Criterion 5: dates only, see Section 2 |
-| Store integrity scan and preflight | `research/v019-audit/integrity.py`, `preflight.py` | `test_audit_integrity.py` | Done |
+| Independent check of the audit log: run identity, completion status, retry history | `research/v019-audit/verify.py` (`check_attempt_log`, part of every run of the script), `integrity.read_journal`, `recount.rng_input_sha256` | `test_the_independent_check_of_the_attempt_log_finds_what_was_changed`, `test_the_attempt_log_of_the_campaign_is_checked_independently` | Done |
+| Store integrity scan and preflight, for the pilot and for the smoke | `research/v019-audit/integrity.py`, `preflight.py [--namespace rnglab-v019-d-pilot-smoke]` | `test_audit_integrity.py` | Done |
 
 ## 2. What is not implemented or not done
 
@@ -40,15 +44,16 @@ All primary code is in `research/v019-d-pilot/`. The independent verification is
 - **The smoke has not been run,** so `smoke/smoke_timing.json` does not exist. The command exists (`run_pilot.py smoke-timing --smoke`).
 - **The pipeline has never run on real pilot data.** The analysis stages were exercised on 207 synthetic runs in the audit-only namespace; the generation path was timed on full-length runs in that namespace and the runs were deleted (`STAGE_D_READINESS_REPORT.md`, Section 3).
 - **No amendment is applied.** `amendments.json` does not exist, so the oracle follows the frozen rule.
+- **Generation with several worker processes has not been run under test.** The tests run the same functions (`prepare`, `work`, `run_one`, `finalize`) in one process, and kill and resume that process. The command that starts eight processes exists and was used for the timing runs before the audit log was added; the smoke will be its first run with the log.
 
 ## 3. Blocking items and decisions for the author
 
-The pipeline has no default for any of these. Where a value is needed and missing, the command stops and says which.
+Where a value is needed and missing, the command stops and says which.
 
 | ID | Item | Options or what is needed | What the pipeline does until then |
 |---|---|---|---|
-| B-1 | **The measurement layer is not in the repository.** `research/v019-d-pilot/measure.py` is an uncommitted file of another developer | Its author commits it. Its hash then enters the pre-generation manifest | `run_pilot.py` stops: "measure.py is not in this tree". Preflight reports NOT READY |
-| B-2 | **Policy for a run that was started and left no record** (killed process, power cut). The protocol is silent | `regenerate_same_id`: run the same identity again; same seed labels, same bytes. `record_failure`: write a failure record and never run it. Consequence of the second: an interrupted calibration run makes the threshold unavailable (protocol, `failed_runs.calibration`) | `manifest` refuses to write without `--interrupted-run-policy`; `generate` refuses to pass an interrupted run |
+| B-1 | **The measurement layer.** Settled in this branch on 2026-11-13: `measure.py` and `tests/v019/test_d_pilot_measure.py` were copied byte for byte from the main checkout, where they are still untracked | The author confirms that this is the version to freeze. The untracked copies in the main checkout will stand in the way of a later merge there until they are removed or committed | The file's hash enters the pre-generation manifest. A change of the file after the manifest stops `generate` |
+| B-2 | **Policy for a run that was started and left no record.** Decided by the author on 2026-11-13: `regenerate_same_id`, at most three retries | Section 3a lists the implementation and five readings that the author should confirm | Implemented. No other policy exists in the code |
 | B-3 | **Oracle rule (F-01).** The frozen call returns NaN for part of the noncentralities between 8.53 and 43.61, and which ones depends on the last bits of δ | Proposed Amendment 01, option A (replace only a non-finite lower term at δ > 0 by 0), option B (a stable formula everywhere), or option C (no amendment, with a declared exception in the recount for oracle availability). To be decided before `fit` | Frozen rule. Option A exists behind a switch that is off unless `amendments.json` records an approved amendment `A01` with the hash of its document. The rule in force is written into `models.json` |
 | B-4 | **Criterion 5 dates** | TDK deadline (`manifest --tdk-deadline`), date the engineering was complete, date the results were available (`criteria --engineering-complete-on --results-available-on`) | Criterion 5 is INSUFFICIENT_INFORMATION |
 | B-5 | **Number of worker processes.** The protocol says 8. The v0.19 timing used 6 | 8, or another number recorded as a deviation. Throughput at 6, 8 and 12 workers is in the readiness report | Default 8. Another value sets `workers_deviate_from_protocol` in the manifest |
@@ -57,17 +62,50 @@ The pipeline has no default for any of these. Where a value is needed and missin
 | B-8 | **Report files** (`report_numbers.json`, `RESULTS.md`) | Written by the author after the criteria | Not produced |
 | B-9 | **`authorization.json`.** An interlock added here: generation needs a file in which the author names the SHA-256 of the manifest. Not in the protocol | Keep it, or remove the check | Generation is refused without it |
 | B-10 | **Supplementary descriptive analyses** raised by the red-team review (state baseline, flexible alarm-time baseline, scores split by state at issuance) | Amend before generation, or treat as exploratory afterwards | Not implemented |
-| B-11 | **A storage error during generation** (disk full, input/output error). The protocol lists serialization exceptions among the failures that get a record, and a run with a record is never run again | Keep this reading, or declare that an error of the storage medium stops the driver and is handled as an interruption under B-2 | The run gets a failure record with phase `serialization`. Preflight requires about 31 GiB free to keep this from happening |
+| B-11 | **A storage error during generation** (disk full, input/output error). Settled by the decision of 2026-11-13, requirement 5, as read here: an error of the operating system is an interruption of the infrastructure, not a failure of the run | The author confirms the reading (Section 3a, reading R-1). Before the decision such a run got a failure record with phase `serialization` | No record is written; the attempt is logged as interrupted and the worker stops. An encoding failure that is not an operating-system error (a non-finite array) still gets its failure record |
+| B-12 | **The measurement layer's own tests make one full-length sampler run with seeds of the smoke namespace** (`test_d_pilot_measure.py`, fixture `full_run`: identity `fault/SHIFT`, replica 0, with a supplied saturating profile). Three tests use it. Nothing is stored, and the smoke is excluded from every result, but the run is made before the smoke manifest exists | Leave it (engineering use of the excluded namespace), or change one constant of that file to the audit-only namespace. The file is not changed here | In the test runs reported in Section 6 these three tests were deselected, and run separately with the audit-only namespace substituted at collection |
+
+## 3a. Interrupted runs: the decision of 2026-11-13
+
+The frozen protocol says what happens to a run that failed (`failed_runs`), and is silent on a run that was started and left no record because its process ended. The author decided `regenerate_same_id` with eight requirements. The decision changes no seed, sample size, threshold, criterion or label of the protocol. It is frozen into the pre-generation manifest as `interrupted_run_policy` and `interrupted_run_rules`; `generate` refuses a manifest that carries anything else.
+
+| # | Requirement | Implementation | Tests (`tests/v019`) |
+|---|---|---|---|
+| 1 | An interrupted run without a committed result is run again with its run ID, seed labels, generator configuration and protocol parameters | `prepare` puts the same identity back on the work list with the next attempt number. `run_one` derives the seeds from the same labels and refuses to draw if the seeds or the hash of the random input differ from the manifest. Code and protocol hashes are compared with the manifest at every `generate` | `test_a_run_that_was_started_and_left_no_record_is_run_again_with_the_same_identity`, `test_seeds_and_random_input_are_checked_against_the_manifest_before_anything_is_drawn`, `test_killed_generation_resumes_to_the_same_store` |
+| 2 | Every attempt and every interruption reason in an append-only audit log | `results/journal.jsonl`: opened for appending, locked for each write, flushed to disk. Each entry has a sequence number and the SHA-256 of the entry before it. Entries: `generate_begin`, `start`, `commit`, `interrupted` (with the reason and who detected it), `restart`, `unresolved`, `trace_set_aside`, `stop_requested`, `worker_exit`, `generate_end`. A log that does not verify stops the driver | `test_the_audit_log_is_append_only_and_chained`, `test_a_write_cut_short_is_left_in_place_and_declared` |
+| 3 | Atomic result commits; a partial output is never a result | Unchanged: files are staged, flushed and renamed, the record last. A trace without a record is moved to `interrupted/` and logged. A trace without a record and without a logged attempt stops the driver, because the driver cannot have left it | `test_killed_generation_resumes_to_the_same_store`, `test_a_trace_without_a_record_is_set_aside_not_deleted`, `test_a_record_stored_before_the_log_said_so_is_reconciled_not_rerun` |
+| 4 | At most three infrastructure retries; exhaustion gives an explicit unresolved status and keeps the affected criteria from passing | Four attempts at most. After the fourth interruption the run gets a failure record with phase `infrastructure` and `infrastructure_status: UNRESOLVED_INFRASTRUCTURE`, listing its attempts, and is never run again. `criteria.json` names the runs and the criteria they touch; a `PASS` of such a criterion becomes `INSUFFICIENT_INFORMATION` | `test_three_retries_then_the_run_is_unresolved_and_never_run_again`, `test_an_unresolved_run_keeps_the_criteria_that_use_it_from_passing` |
+| 5 | Infrastructure interruptions are kept apart from numerical, statistical and application failures; the latter stay as evidence | Infrastructure: the process ended without a record; an operating-system error or a memory error anywhere in the chain of the exception; a memory error that the measurement layer recorded inside a checkpoint. Everything else is the run's failure: it gets a failure record and is never retried | `test_an_error_of_the_system_leaves_no_record_and_is_retried`, `test_the_runs_own_failure_is_evidence_and_is_never_retried`, `test_a_memory_error_recorded_inside_the_measurement_is_an_interruption` |
+| 6 | No seed, parameter, threshold or criterion is changed to obtain output | No code path takes a seed or parameter from anywhere but the frozen labels and the protocol. The manifest comparison of requirement 1 and the independent recomputation of requirement 8 would report it | as 1 and 8 |
+| 7 | Deterministic generator input is verified with hashes; no bit-identical floating-point output is assumed across environments | `rng_input_sha256` per planned run: per generator, the SHA-256 of its first 128 64-bit outputs; integer arithmetic only. It is in the manifest, is checked before every attempt, and is in every `start` entry. Every attempt also logs the hash of its software versions. The I-4 replay stays a same-platform comparison | `test_the_random_input_hash_is_reproduced_by_the_independent_generators` |
+| 8 | The independent recount verifies run identity, completion status and retry history | `verify.py` (`check_attempt_log`): the chain of the log; seeds and random-input hash recomputed with its own generators against the manifest, every attempt and the stored record; attempt numbers without gaps, four at most; every attempt but the last logged as interrupted for an infrastructure reason before the next starts; no attempt after a record exists; exactly one commit entry naming the hash of the record file; the unresolved runs and blocked criteria of `criteria.json`; the same history in `run_manifest.json`. Preflight recomputes every planned run of the manifest | `test_the_independent_check_of_the_attempt_log_finds_what_was_changed`, `test_the_attempt_log_of_the_campaign_is_checked_independently`, `test_preflight_manifest_and_store_rules` |
+
+**Stopping on purpose.** The first Ctrl-C or SIGTERM lets every process finish the run in progress and then stops; no attempt is consumed. Only one `generate` can work on an output tree (`.generate.lock`).
+
+**Readings applied here that the author should confirm.** Each follows from the eight requirements as read, and each could have been read otherwise.
+
+| ID | Reading | Alternative |
+|---|---|---|
+| R-1 | An operating-system error (full disk, quota, input/output error, lost mount) and a memory error are infrastructure interruptions. This reverses the earlier behaviour (B-11), under which a failed write gave a failure record | Keep storage errors as recorded failures |
+| R-2 | An unresolved run changes only a `PASS`. A criterion that is already `FAIL`, `INSUFFICIENT_INFORMATION` or `UNINTERPRETABLE` keeps its label, and the file names the unresolved runs beside it. The existing label `INSUFFICIENT_INFORMATION` is used; no label was added. Criterion 5 (dates) is not touched. Which criteria a condition touches: calibration 2 to 4, healthy 1 to 4, fault 2 to 4 | Replace every label of a touched criterion |
+| R-3 | An unresolved run still gets a record, because the protocol requires one for every planned ID, and it counts as a failed run in every denominator, as the protocol prescribes for failed runs. One unresolved calibration run therefore leaves the thresholds unavailable | None seen that respects the protocol |
+| R-4 | Every start is an attempt, whatever ended it. A run whose process ends every time for a reason of its own (a crash in native code) cannot be told apart from an infrastructure fault at this level: it ends as `UNRESOLVED_INFRASTRUCTURE` after four attempts, with its history, and blocks its criteria | Treat a repeated identical crash as an experimental failure |
+| R-5 | The manifest step hashes the first 128 outputs of each planned run's five generators. This reads generator output of the pilot namespace when the manifest is written, before the first draw. No sampler is run, no statistic is computed and no outcome is seen | Hash the seeds only, which would not test that the generators reproduce |
+
+A retry happens only at the next `generate`: an interruption ends the work of its process, since its cause would meet the next run too. With several worker processes the others go on.
 
 ## 4. What the pipeline refuses
 
 Invalid input is reported and stops the stage. Nothing is repaired, clipped or filled in.
 
 - A stored run that does not verify (changed record, changed trace, record without trace, wrong identity, wrong namespace): generation and every analysis stage stop; the files are left as found.
-- A trace without a record: moved to `interrupted/`, never deleted, and only under the author's policy.
+- A trace without a record after a logged attempt: moved to `interrupted/`, never deleted, and the run is run again (Section 3a). Without a logged attempt: the driver stops and leaves it.
+- An audit log whose chain does not verify, or a second `generate` on the same output tree: the driver stops.
+- Seeds or a random-input hash that differ from the pre-generation manifest: nothing is drawn.
 - An existing record or trace is never replaced. A run with a record, including a failure record, is never run again.
 - A non-finite trace: refused by the storage layer and recorded as a failure.
-- A sampler or measurement exception: a failure record with the phase, the exception and the progress made.
+- A sampler or measurement exception: a failure record with the phase, the exception and the progress made. It is never retried.
+- A fifth attempt at a run: never made. The run is recorded as unresolved.
 - Incomplete calibration (fewer than 999 usable maxima): no threshold; issuance UNKNOWN; criteria 2 to 4 INSUFFICIENT_INFORMATION or UNINTERPRETABLE.
 - A non-finite or out-of-range oracle probability: unavailable with a reason; the cell's primary score is unavailable.
 - A missing forecast: the model's primary score is unavailable; criterion 4 is INSUFFICIENT_INFORMATION for that family.
@@ -84,17 +122,19 @@ Invalid input is reported and stops the stage. Nothing is repaired, clipped or f
 
 ## 6. Tests
 
-Evidence: `docs/v020/evidence/pytest_v020_criterion5.txt` (Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1). The counts before the criterion 5 date check are in `docs/v020/evidence/pytest_v020.txt` (commit `425dc61`): 614 passed with 31 skipped, and 220 passed.
+Evidence: `docs/v020/evidence/pytest_v020_policy.txt` (Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1). Earlier counts: `pytest_v020_criterion5.txt` (commit `0b1addc`, before the interrupted-run policy and without the measurement layer in the tree): 638 passed with 42 skipped, and 255 passed; `pytest_v020.txt` (commit `425dc61`): 614 passed with 31 skipped, and 220 passed.
 
-| Run | Passed | Failed | Skipped |
-|---|---|---|---|
-| Whole suite, tree as committed | 638 | 0 | 42 |
-| `tests/v019` with the measurement layer and the Stage C traces supplied | 255 | 0 | 0 |
+| Run | Passed | Failed | Skipped | Deselected |
+|---|---|---|---|---|
+| Whole suite, tree as committed | 715 | 0 | 2 | 3 |
+| `tests/v019` with the Stage C traces supplied and the full-length storage test enabled | 292 | 0 | 0 | 3 |
+| The three deselected tests, with the audit-only namespace substituted | 3 | 0 | 0 | — |
 
-- The 42 skips are tests that need the measurement layer (41) or the Stage C traces (1). Neither is in this branch. With both supplied, every test of `tests/v019` runs and passes.
+- The two skips need the Stage C traces, which are not in this branch, and the switch for a 30-second storage test. With both supplied, every test of `tests/v019` but the three deselected ones runs and passes.
+- **The three deselected tests** belong to the measurement layer's own test file. They share one full-length sampler run made with seeds of the smoke namespace (status document, B-12). To keep the rule that no smoke run is made before its manifest, they were not run as written. They pass when the namespace constant of the test module is replaced by the audit-only namespace at collection; the seven lines that do this are quoted in the evidence file and are not part of the repository. A plain `pytest tests` runs them as written.
 - Before this work the same two runs gave 561 passed with 5 skipped, and 141 passed (`docs/v019/evidence/pytest_v019_audit.txt`).
-- New test files: `test_f01_oracle.py` (13 tests), `test_pilot_driver.py` (29), `test_pilot_pipeline.py` (48); extended: `test_audit_verify.py`, `test_audit_integrity.py`, `test_audit_recount.py` (23 tests of the criterion 5 dates).
-- The measurement layer used had SHA-256 `f8d5ac52…1b9be`. It is an uncommitted file and can change; the counts hold for that version.
+- New test files: `test_f01_oracle.py` (13 tests), `test_pilot_driver.py` (43, of which 16 on interrupted runs), `test_pilot_pipeline.py` (51); extended: `test_audit_verify.py`, `test_audit_integrity.py`, `test_audit_recount.py` (23 tests of the criterion 5 dates). From its developer: `test_d_pilot_measure.py` (23).
+- The measurement layer has SHA-256 `f8d5ac52…1b9be`, the version that was used read-only before. It is now in the branch; its hash enters the pre-generation manifest.
 
 ## 7. Commands
 
@@ -102,9 +142,10 @@ Order of a pilot, once the items of Section 3 are settled (nothing below has bee
 
     PYTHONPATH=src python research/v019-audit/preflight.py --workers 8
     PYTHONPATH=src python research/v019-d-pilot/run_pilot.py status
-    PYTHONPATH=src python research/v019-d-pilot/run_pilot.py manifest --interrupted-run-policy <policy> --tdk-deadline <YYYY-MM-DD> --workers <n>
+    PYTHONPATH=src python research/v019-d-pilot/run_pilot.py manifest --preview --tdk-deadline <YYYY-MM-DD> --workers <n>   # writes nothing
+    PYTHONPATH=src python research/v019-d-pilot/run_pilot.py manifest --tdk-deadline <YYYY-MM-DD> --workers <n>
     # the author reviews and pushes pre_generation_manifest.json, then writes authorization.json
-    PYTHONPATH=src python research/v019-d-pilot/run_pilot.py generate
+    PYTHONPATH=src python research/v019-d-pilot/run_pilot.py generate    # again after an interruption; Ctrl-C once to stop cleanly
     PYTHONPATH=src python research/v019-d-pilot/run_pilot.py replay
     PYTHONPATH=src python research/v019-d-pilot/run_pilot.py calibrate
     PYTHONPATH=src python research/v019-d-pilot/run_pilot.py fit
@@ -115,11 +156,12 @@ Order of a pilot, once the items of Section 3 are settled (nothing below has bee
     PYTHONPATH=src python research/v019-d-pilot/run_pilot.py criteria --engineering-complete-on <YYYY-MM-DD> --results-available-on <YYYY-MM-DD>
     python research/v019-audit/verify.py --root research/v019-d-pilot --namespace rnglab-v019-d-pilot --deep sample --compare-primary --out research/v019-d-pilot/results/recount.json
 
-The smoke uses the same `status`, `manifest`, `generate` and `replay` with `--smoke`, then `smoke-timing --smoke`.
+The smoke comes first (freeze step 5). It uses the same `status`, `manifest`, `generate` and `replay` with `--smoke`, then `smoke-timing --smoke`; its preflight is `preflight.py --namespace rnglab-v019-d-pilot-smoke`, and its verification is `verify.py --root research/v019-d-pilot/smoke --namespace rnglab-v019-d-pilot-smoke --replicas 2 --deep all --no-campaign`.
 
-Verification without any pilot data:
+Verification without any pilot data (the three deselected tests are those of B-12):
 
-    python -m pytest tests/v019 -q -p no:cacheprovider
-    RNGLAB_DPILOT_MEASURE=<path to measure.py> python -m pytest tests/v019 -q -p no:cacheprovider
-    PYTHONPATH=src RNGLAB_DPILOT_MEASURE=<path to measure.py> python tests/v019/synthetic_agreement.py
+    D=tests/v019/test_d_pilot_measure.py
+    PYTHONPATH=src python -m pytest -q -p no:cacheprovider --import-mode=importlib --deselect $D::test_full_horizon_smoke \
+        --deselect $D::test_storage_round_trip_canonical_hashes --deselect $D::test_incomplete_run_keeps_earlier_endpoints
+    PYTHONPATH=src python tests/v019/synthetic_agreement.py
     PYTHONPATH=src python research/v019-audit/f01_oracle.py

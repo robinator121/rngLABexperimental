@@ -1,0 +1,53 @@
+# v0.20 Stage D readiness branch: test evidence after the interrupted-run policy and the measurement layer
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-14T00:42:06Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+research/v019-d-pilot/measure.py sha256: f8d5ac52ecef7f0366dbd6fdccedfb9aec3b8a9d24e8f2127e9d29b11e21b9be
+D=tests/v019/test_d_pilot_measure.py
+
+Three tests of the measurement layer make a full-length sampler run with seeds of the smoke namespace.
+They are deselected in runs 1 and 2, so that no such run was made, and run in 3 with the audit-only
+namespace substituted at collection. The test file itself is unchanged.
+
+## 1. Whole suite, tree as committed (Stage C traces absent, RNGLAB_AUDIT_FULL unset: two tests skip)
+$ PYTHONPATH=src python -m pytest tests -q -rs -p no:cacheprovider --import-mode=importlib --deselect $D::test_full_horizon_smoke --deselect $D::test_storage_round_trip_canonical_hashes --deselect $D::test_incomplete_run_keeps_earlier_endpoints
+........................................................................ [ 10%]
+........................................................................ [ 20%]
+........................................................................ [ 30%]
+........................................................................ [ 40%]
+........................................................................ [ 50%]
+........................................................................ [ 60%]
+..............s.s....................................................... [ 70%]
+........................................................................ [ 80%]
+........................................................................ [ 90%]
+.....................................................................    [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/v019/test_audit_d_pilot.py:318: full-length storage round trip runs only with RNGLAB_AUDIT_FULL=1 (about 30 s)
+SKIPPED [1] tests/v019/test_audit_d_pilot.py:356: Stage C traces are not in this tree (set RNGLAB_STAGEC_TRACES to their directory)
+715 passed, 2 skipped, 3 deselected in 194.92s (0:03:14)
+
+## 2. tests/v019 with the optional inputs: the Stage C traces and the full-length storage round trip
+$ PYTHONPATH=src RNGLAB_STAGEC_TRACES=<main checkout>/research/v018-h1-detection/traces RNGLAB_AUDIT_FULL=1 python -m pytest tests/v019 -q -rs -p no:cacheprovider --import-mode=importlib --deselect $D::test_full_horizon_smoke --deselect $D::test_storage_round_trip_canonical_hashes --deselect $D::test_incomplete_run_keeps_earlier_endpoints
+........................................................................ [ 24%]
+........................................................................ [ 49%]
+........................................................................ [ 73%]
+........................................................................ [ 98%]
+....                                                                     [100%]
+292 passed, 3 deselected in 158.93s (0:02:38)
+
+## 3. The three deselected tests, with the namespace constant of the test module replaced at collection
+$ PYTHONPATH=src:<directory of the plugin> python -m pytest $D -q -rs -p no:cacheprovider --import-mode=importlib -p audit_ns_plugin -k "full_horizon_smoke or storage_round_trip or incomplete_run_keeps"
+The plugin (audit_ns_plugin.py) is not in the repository. Its whole text:
+    """pytest plugin (not part of the repository): run the measurement-layer tests with the
+    audit-only namespace in place of the smoke namespace, so that no sampler run is made with
+    smoke-namespace seeds. The test file itself is not changed."""
+    
+    
+    def pytest_collection_modifyitems(config, items):
+        for item in items:
+            module = getattr(item, "module", None)
+            if module is not None and module.__name__.endswith("test_d_pilot_measure") \
+                    and getattr(module, "SMOKE", None) == "rnglab-v019-d-pilot-smoke":
+                module.SMOKE = "rnglab-v019-audit-smoke"
+...                                                                      [100%]
+3 passed, 20 deselected in 14.88s
