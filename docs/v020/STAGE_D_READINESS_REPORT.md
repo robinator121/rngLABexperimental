@@ -1,10 +1,12 @@
 # Stage D pilot: readiness report
 
-**Status: for the author's review, 2026-11-13.** Branch `feature/v020-stage-d-readiness`, not pushed. The frozen protocol is unchanged (`research/v019-d-pilot/protocol.json`, SHA-256 `5329464210019e968116e8c3c3a13a09f33b12e0368ecfaa69752a1eb43c5e97`). **No pilot, smoke or campaign run was generated.** No pilot execution is permitted until the author has reviewed this report and approved it.
+**Status: for the author's review, 2026-11-14.** Branch `feature/v020-stage-d-readiness`, not pushed. The frozen protocol is unchanged (`research/v019-d-pilot/protocol.json`, SHA-256 `5329464210019e968116e8c3c3a13a09f33b12e0368ecfaa69752a1eb43c5e97`). **No pilot, smoke or campaign run was generated.** No pilot execution is permitted until the author has reviewed this report and approved it.
 
 Companion documents: `F01_NUMERICAL_RESOLUTION.md`, `STAGE_D_IMPLEMENTATION_STATUS.md`, `SCIENTIFIC_RED_TEAM.md`.
 
-**Update of 2026-11-13.** The author decided the interrupted-run policy: `regenerate_same_id`, at most three retries. It is implemented and tested on both sides (`STAGE_D_IMPLEMENTATION_STATUS.md`, Section 3a), the measurement layer is in the branch, and preflight can check the smoke. Conditions C-1 and C-2 below are met, subject to the author's confirmation of the readings R-1 to R-5 and of item B-12 in the status document. The assessment is unchanged.
+**Update of 2026-11-13.** The author decided the interrupted-run policy: `regenerate_same_id`, at most three retries. It is implemented and tested on both sides (`STAGE_D_IMPLEMENTATION_STATUS.md`, Section 3a), the measurement layer is in the branch, and preflight can check the smoke. Conditions C-1 and C-2 below are met. The assessment is unchanged.
+
+**Update of 2026-11-14.** The author confirmed the readings R-1 to R-5 as implemented, with two clarifications: the status `UNRESOLVED_INFRASTRUCTURE` describes an unresolved execution, not a proven cause, and keeps its whole attempt history and error evidence; the generator fingerprint computed for the manifest is authorised as identity verification only. The author also decided that no test may sample in the pilot or smoke namespace before the manifest. Two test files did; both now use the audit-only namespace (status document, B-12). The assessment is unchanged.
 
 ## 1. Assessment: CONDITIONAL GO, for the smoke first
 
@@ -16,7 +18,7 @@ Companion documents: `F01_NUMERICAL_RESOLUTION.md`, `STAGE_D_IMPLEMENTATION_STAT
 
 | # | Condition | Who |
 |---|---|---|
-| C-1 | `research/v019-d-pilot/measure.py` and its tests are committed; the full test suite passes with the file in the tree. **Met in this branch on 2026-11-13,** with three of the file's tests run under the audit-only namespace (B-12) | its developer |
+| C-1 | `research/v019-d-pilot/measure.py` and its tests are committed; the full test suite passes with the file in the tree. **Met in this branch.** Since 2026-11-14 the file's tests use the audit-only namespace (B-12) and the whole suite runs without deselection | its developer |
 | C-2 | Interrupted-run policy chosen. **Decided on 2026-11-13: `regenerate_same_id`, at most three retries** | author |
 | C-3 | Storage location with about 31 GiB free for the pilot (the preflight requirement); `results/runs/` and `traces/` kept outside Git | author |
 | C-4 | Worker count chosen; a value other than 8 is recorded as a deviation from the protocol | author |
@@ -80,8 +82,8 @@ Nothing in the repository supports or contradicts these yet. They are what the p
 
 | Decision | Options | Needed before |
 |---|---|---|
-| Interrupted-run policy | decided 2026-11-13: `regenerate_same_id`, three retries. Open: confirmation of the readings R-1 to R-5 (status document, Section 3a) | the smoke manifest |
-| The measurement layer's tests run a sampler under smoke-namespace seeds (B-12) | leave / change one constant of that test file | the smoke manifest (advised) |
+| Interrupted-run policy | decided 2026-11-13: `regenerate_same_id`, three retries. The readings R-1 to R-5 were confirmed on 2026-11-14 (status document, Section 3a) | the smoke manifest |
+| Tests that sampled under smoke-namespace seeds (B-12) | decided 2026-11-14: not authorised. Both test files now use the audit-only namespace | done |
 | Worker count | 8 (protocol) / another value, recorded as a deviation | the smoke manifest |
 | Storage location and archive | — | the smoke |
 | Smoke directory layout | as the measurement layer writes it / as the protocol names it | the smoke |
@@ -201,33 +203,29 @@ The allowance is not a measurement. The projection rests on minutes of load on a
 
 ## 6. Tests
 
-Evidence: `docs/v020/evidence/pytest_v020_policy.txt` (Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1). Earlier counts: `pytest_v020_criterion5.txt` (commit `0b1addc`, before the interrupted-run policy and without the measurement layer in the tree): 638 passed with 42 skipped, and 255 passed; `pytest_v020.txt` (commit `425dc61`): 614 passed with 31 skipped, and 220 passed.
+Evidence: `docs/v020/evidence/pytest_v020_confirmed.txt` (Python 3.14.9, NumPy 2.5.3, SciPy 1.18.1). Earlier counts: `pytest_v020_policy.txt` (commit `8725fc4`, three tests deselected): 715 passed with 2 skipped, and 292 passed; `pytest_v020_criterion5.txt` (commit `0b1addc`, before the interrupted-run policy and without the measurement layer in the tree): 638 passed with 42 skipped, and 255 passed; `pytest_v020.txt` (commit `425dc61`): 614 passed with 31 skipped, and 220 passed.
 
 | Run | Passed | Failed | Skipped | Deselected |
 |---|---|---|---|---|
-| Whole suite, tree as committed | 715 | 0 | 2 | 3 |
-| `tests/v019` with the Stage C traces supplied and the full-length storage test enabled | 292 | 0 | 0 | 3 |
-| The three deselected tests, with the audit-only namespace substituted | 3 | 0 | 0 | — |
+| Whole suite, tree as committed | 718 | 0 | 2 | 0 |
+| `tests/v019` with the Stage C traces supplied and the full-length storage test enabled | 295 | 0 | 0 | 0 |
 
-- The two skips need the Stage C traces, which are not in this branch, and the switch for a 30-second storage test. With both supplied, every test of `tests/v019` but the three deselected ones runs and passes.
-- **The three deselected tests** belong to the measurement layer's own test file. They share one full-length sampler run made with seeds of the smoke namespace (status document, B-12). To keep the rule that no smoke run is made before its manifest, they were not run as written. They pass when the namespace constant of the test module is replaced by the audit-only namespace at collection; the seven lines that do this are quoted in the evidence file and are not part of the repository. A plain `pytest tests` runs them as written.
+- The two skips need the Stage C traces, which are not in this branch, and the switch for a 30-second storage test. With both supplied, every test of `tests/v019` runs and passes.
+- **No test is deselected, and no test samples in the pilot or smoke namespace** (B-12). The earlier evidence files were produced while `test_d_pilot_lib.py` still made short runs with smoke-namespace seeds.
 - Before this work the same two runs gave 561 passed with 5 skipped, and 141 passed (`docs/v019/evidence/pytest_v019_audit.txt`).
 - New test files: `test_f01_oracle.py` (13 tests), `test_pilot_driver.py` (43, of which 16 on interrupted runs), `test_pilot_pipeline.py` (51); extended: `test_audit_verify.py`, `test_audit_integrity.py`, `test_audit_recount.py` (23 tests of the criterion 5 dates). From its developer: `test_d_pilot_measure.py` (23).
 - The measurement layer has SHA-256 `f8d5ac52…1b9be`, the version that was used read-only before. It is now in the branch; its hash enters the pre-generation manifest.
 
 ## 7. Reproduction
 
-Everything below runs without pilot data. `$SKIP` deselects the three tests of B-12, which would make a sampler run with seeds of the smoke namespace:
-
-    D=tests/v019/test_d_pilot_measure.py
-    SKIP="--deselect $D::test_full_horizon_smoke --deselect $D::test_storage_round_trip_canonical_hashes --deselect $D::test_incomplete_run_keeps_earlier_endpoints"
+Everything below runs without pilot data, and nothing below samples in the pilot or smoke namespace.
 
     # numerical study of the oracle call (F-01)
     PYTHONPATH=src python research/v019-audit/f01_oracle.py
     python -m pytest tests/v019/test_f01_oracle.py -q
 
     # pipeline and independent recount on synthetic fixtures
-    PYTHONPATH=src python -m pytest tests/v019 -q -p no:cacheprovider --import-mode=importlib $SKIP
+    PYTHONPATH=src python -m pytest tests/v019 -q -p no:cacheprovider --import-mode=importlib
     PYTHONPATH=src python tests/v019/synthetic_agreement.py
 
     # timing (generates and deletes full-length runs in the audit-only namespace; about 25 minutes).
@@ -239,7 +237,7 @@ Everything below runs without pilot data. `$SKIP` deselects the three tests of B
     python research/v019-audit/redteam_numbers.py
 
     # whole suite
-    PYTHONPATH=src python -m pytest tests -q -rs -p no:cacheprovider --import-mode=importlib $SKIP
+    PYTHONPATH=src python -m pytest tests -q -rs -p no:cacheprovider --import-mode=importlib
 
     # preflight for the smoke, and a preview of its manifest; neither writes anything
     PYTHONPATH=src python research/v019-audit/preflight.py --namespace rnglab-v019-d-pilot-smoke

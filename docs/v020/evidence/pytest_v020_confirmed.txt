@@ -1,0 +1,39 @@
+# v0.20 Stage D readiness branch: test evidence after the author's confirmation of 2026-11-14
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-14T17:36:52Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+research/v019-d-pilot/measure.py sha256: f8d5ac52ecef7f0366dbd6fdccedfb9aec3b8a9d24e8f2127e9d29b11e21b9be
+
+No test is deselected. No test makes a sampler run with seeds of the pilot or smoke namespace:
+tests/v019/test_d_pilot_measure.py and tests/v019/test_d_pilot_lib.py use the audit-only namespace.
+
+Correction to pytest_v020_policy.txt and the evidence files before it: while those runs were made,
+tests/v019/test_d_pilot_lib.py still made short sampler runs (64 sweeps, and one run up to 16 sweeps
+past its onset) with seeds of the smoke namespace. Nothing was stored. The statement in
+pytest_v020_policy.txt that no smoke-seeded run was made holds for the three deselected tests only.
+
+## 1. Whole suite, tree as committed (Stage C traces absent, RNGLAB_AUDIT_FULL unset: two tests skip)
+$ PYTHONPATH=src python -m pytest tests -q -rs -p no:cacheprovider --import-mode=importlib
+........................................................................ [ 10%]
+........................................................................ [ 20%]
+........................................................................ [ 30%]
+........................................................................ [ 40%]
+........................................................................ [ 50%]
+........................................................................ [ 60%]
+..............s.s....................................................... [ 70%]
+........................................................................ [ 80%]
+........................................................................ [ 90%]
+........................................................................ [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/v019/test_audit_d_pilot.py:318: full-length storage round trip runs only with RNGLAB_AUDIT_FULL=1 (about 30 s)
+SKIPPED [1] tests/v019/test_audit_d_pilot.py:356: Stage C traces are not in this tree (set RNGLAB_STAGEC_TRACES to their directory)
+718 passed, 2 skipped in 202.85s (0:03:22)
+
+## 2. tests/v019 with the optional inputs: the Stage C traces and the full-length storage round trip
+$ PYTHONPATH=src RNGLAB_STAGEC_TRACES=<main checkout>/research/v018-h1-detection/traces RNGLAB_AUDIT_FULL=1 python -m pytest tests/v019 -q -rs -p no:cacheprovider --import-mode=importlib
+........................................................................ [ 24%]
+........................................................................ [ 48%]
+........................................................................ [ 73%]
+........................................................................ [ 97%]
+.......                                                                  [100%]
+295 passed in 169.13s (0:02:49)
