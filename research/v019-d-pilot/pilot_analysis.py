@@ -428,8 +428,9 @@ def unresolved_infrastructure(context: pc.Context) -> dict:
     """Runs whose infrastructure retries were exhausted, and the criteria they keep from passing.
 
     Such a run has a failure record with phase 'infrastructure'. It is counted like any failed run
-    in the analysis (protocol.json failed_runs), but it is no experimental evidence: a criterion
-    that uses it cannot be PASS (the author's decision of 2026-11-13).
+    in the analysis (protocol.json failed_runs). Its status says that it has no result after the
+    allowed attempts, not what the cause was, so it is not read as evidence either way: a criterion
+    that uses it cannot be PASS (the author's decision of 2026-11-13, confirmed 2026-11-14).
     """
     runs = []
     for condition, family, replica in context.plan.runs():
@@ -437,7 +438,8 @@ def unresolved_infrastructure(context: pc.Context) -> dict:
             runs.append({"condition": condition, "replica": replica})
     blocked = sorted({key for run in runs for key in CRITERIA_USING["fault" if run["condition"].startswith("fault/")
                                                                     else run["condition"]]})
-    return {"status": pg.UNRESOLVED if runs else None, "runs": runs,
+    return {"status": pg.UNRESOLVED if runs else None, "status_meaning": pg.INTERRUPTED_RUN_RULES["unresolved_status"],
+            "runs": runs,
             "per_condition": {condition: sum(1 for run in runs if run["condition"] == condition)
                               for condition, _, _ in context.plan.conditions},
             "criteria_that_cannot_pass": blocked, "max_infrastructure_retries": pg.MAX_INFRASTRUCTURE_RETRIES}

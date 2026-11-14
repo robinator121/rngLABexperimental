@@ -709,7 +709,7 @@ def test_the_attempt_log_of_the_campaign_is_checked_independently(campaign, reco
     assert check["run_manifest_present"] and not check["pre_generation_manifest_present"] and len(check["environments"]) == 1
     criteria = pc.read_json(ctx.result("criteria.json"))
     assert criteria["unresolved_infrastructure"] == {
-        "status": None, "runs": [], "per_condition": {c: 0 for c, _, _ in ctx.plan.conditions},
+        "status": None, "status_meaning": pg.INTERRUPTED_RUN_RULES["unresolved_status"], "runs": [], "per_condition": {c: 0 for c, _, _ in ctx.plan.conditions},
         "criteria_that_cannot_pass": [], "max_infrastructure_retries": 3}
     assert recounted[0]["unresolved_infrastructure"] == {
         "runs": [], "per_condition": {c: 0 for c, _, _ in ctx.plan.conditions}, "criteria_that_cannot_pass": []}
@@ -752,7 +752,7 @@ def test_an_unresolved_run_keeps_the_criteria_that_use_it_from_passing(tmp_path,
     assert criteria["counts_as_failed_for_the_stop_rule"]["1"] is True
     assert "PASS" not in [criteria["results"][key] for key in "1234"]
     assert criteria["unresolved_infrastructure"] == {
-        "status": "UNRESOLVED_INFRASTRUCTURE", "runs": [{"condition": "healthy", "replica": 1}],
+        "status": "UNRESOLVED_INFRASTRUCTURE", "status_meaning": pg.INTERRUPTED_RUN_RULES["unresolved_status"], "runs": [{"condition": "healthy", "replica": 1}],
         "per_condition": {"calibration": 0, "healthy": 1, "fault/SHIFT": 0, "fault/LAG1": 0, "fault/DUP": 0},
         "criteria_that_cannot_pass": ["1", "2", "3", "4"], "max_infrastructure_retries": 3}
     independent, comparison = recount(ctx)

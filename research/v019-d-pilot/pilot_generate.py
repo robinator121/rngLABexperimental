@@ -7,12 +7,15 @@ copied into the pre-generation manifest):
     regenerate_same_id   the same identity is run again: same run ID, seed labels, seeds,
                          generator configuration and protocol parameters. Before every attempt
                          the first outputs of the run's five generators are hashed and compared
-                         with the manifest (`rng_input_sha256`). Nothing is assumed about
-                         floating-point output being identical in another environment.
+                         with the manifest (`rng_input_sha256`). The hash verifies identity and
+                         is used for nothing else. Nothing is assumed about floating-point
+                         output being identical in another environment.
     three retries        a run may be attempted four times. After the fourth interruption it
                          gets a failure record with phase 'infrastructure' and the status
                          UNRESOLVED_INFRASTRUCTURE, is never run again, and the stop criteria
-                         it touches cannot be PASS (pilot_analysis.criteria).
+                         it touches cannot be PASS (pilot_analysis.criteria). The status says
+                         that the run has no result; it does not say that the infrastructure
+                         was the cause. The record keeps every attempt and its error evidence.
     two kinds of failure an interruption of the infrastructure (the process ended without a
                          record, an error of the operating system or of memory) is retried.
                          An exception of the sampler, a check, the measurement or the encoding
@@ -39,6 +42,7 @@ import subprocess
 import sys
 import threading
 import time
+import traceback
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -60,7 +64,7 @@ RNG_INPUT_WORDS = 128
 # The author's decision of 2026-11-13 on a question the frozen protocol leaves open. It changes no
 # seed, sample size, threshold or criterion. The pre-generation manifest carries a copy.
 INTERRUPTED_RUN_RULES = {
-    "policy": POLICY, "decided_by": "author", "decided_on": "2026-11-13",
+    "policy": POLICY, "decided_by": "author", "decided_on": "2026-11-13", "confirmed_on": "2026-11-14",
     "max_infrastructure_retries": MAX_INFRASTRUCTURE_RETRIES,
     "retry_identity": "same run ID, seed labels, seeds, generator configuration and protocol parameters",
     "infrastructure_interruptions": ["process_ended_without_record", "operating_system_error", "memory_error"],
@@ -68,9 +72,15 @@ INTERRUPTED_RUN_RULES = {
                              "record (protocol.json failed_runs) and is never retried",
     "exhaustion": f"failure record with phase '{INFRASTRUCTURE_PHASE}' and infrastructure_status {UNRESOLVED}; "
                   "the stop criteria that use the run cannot be PASS",
+    "unresolved_status": f"{UNRESOLVED} is an execution status: the run has no result after "
+                         f"{1 + MAX_INFRASTRUCTURE_RETRIES} attempts. It does not establish that the infrastructure was "
+                         "the cause. The record and the audit log keep every attempt and the error evidence of each",
     "rng_input": f"per role, SHA-256 of the first {RNG_INPUT_WORDS} 64-bit outputs, big-endian: the repository's PCG64 "
                  "source for local, centroid and start; numpy.random.default_rng(seed).bit_generator for fault and "
                  "profile. rng_input_sha256 is the SHA-256 of the compact sorted JSON of the five hashes",
+    "rng_input_use": "identity verification only, computed when the manifest is written and before every attempt, "
+                     "authorised by the author on 2026-11-14. It is not experimental sampling. No generated value "
+                     "may influence parameters, selection, measurements or scientific decisions",
     "floating_point": "no bit-identical floating-point output is assumed across execution environments; every "
                       "attempt records the hash of its software versions",
 }
@@ -178,10 +188,46 @@ def recorded_memory_error(value: Any) -> dict | None:
     return None
 
 
-def interruption_reason(error: BaseException) -> dict:
+def _evidence_text(text: str, root: Path | None) -> str:
+    """Error text as raised, with the output root and the repository root written as <root> and <repo>,
+    so that no path of the machine enters a result file."""
+    for path, name in ((root, "<root>"), (pc.REPO, "<repo>")):
+        if path is not None:
+            for form in {str(Path(path).resolve()), str(path)}:
+                text = text.replace(form, name)
+    return text
+
+
+def _frame_file(filename: str) -> str:
+    path = Path(filename)
+    try:
+        return path.resolve().relative_to(pc.REPO.resolve()).as_posix()
+    except ValueError:
+        pass
+    if "site-packages" in path.parts:
+        return "/".join(path.parts[path.parts.index("site-packages"):])
+    return path.name
+
+
+def interruption_reason(error: BaseException, root: Path | None = None) -> dict:
+    """What is known about an interruption: its kind, and the error as raised.
+
+    The evidence is kept whole: every exception of the chain with its message, and the frames in
+    which the operating-system or memory error was raised. Nothing is summarised away, because the
+    kind is a classification and not a finding about the cause.
+    """
     cause = infrastructure_cause(error)
+    chain, seen, link = [], set(), error
+    while link is not None and id(link) not in seen:
+        chain.append({"class": type(link).__name__, "message": _evidence_text(str(link), root)})
+        seen.add(id(link))
+        link = link.__cause__ or link.__context__
+    frames = [f"{_frame_file(frame.filename)}:{frame.lineno} in {frame.name}"
+              for frame in traceback.extract_tb(cause.__traceback__)]
     return {"kind": "memory_error" if isinstance(cause, MemoryError) else "operating_system_error",
-            "detail": f"{type(cause).__name__}: {cause}"[:300]}
+            "detail": _evidence_text(f"{type(cause).__name__}: {cause}", root),
+            "exception_chain": chain, "traceback": frames,
+            "paths": "the output root and the repository root are written as <root> and <repo>"}
 
 
 def rng_input(dlib: Any, seeds: Mapping[str, int]) -> dict:
@@ -425,13 +471,18 @@ def attempt_history(events: list[dict]) -> dict[tuple[str, int], dict]:
         if "condition" not in entry or "replica" not in entry:
             continue
         run = history.setdefault((entry["condition"], entry["replica"]),
-                                 {"starts": 0, "interrupted": {}, "commits": 0, "unresolved": False, "environments": []})
+                                 {"starts": 0, "started": [], "interrupted": {}, "commits": 0, "unresolved": False,
+                                  "environments": []})
         if entry["event"] == "start":
             run["starts"] += 1
+            run["started"].append({"attempt": entry.get("attempt"), "time": entry.get("time"), "pid": entry.get("pid"),
+                                   "environment_sha256": entry.get("environment_sha256"), "journal_seq": entry.get("seq")})
             if entry.get("environment_sha256") and entry["environment_sha256"] not in run["environments"]:
                 run["environments"].append(entry["environment_sha256"])
         elif entry["event"] == "interrupted":
-            run["interrupted"][entry.get("attempt")] = {"reason": entry.get("reason"), "detected_by": entry.get("detected_by")}
+            run["interrupted"][entry.get("attempt")] = {
+                "reason": entry.get("reason"), "detected_by": entry.get("detected_by"), "time": entry.get("time"),
+                "trace_set_aside": entry.get("trace_set_aside"), "journal_seq": entry.get("seq")}
         elif entry["event"] == "commit":
             run["commits"] += 1
         elif entry["event"] == "unresolved":
@@ -603,7 +654,7 @@ def run_one(context: pc.Context, engine: Any, condition: str, family: str, repli
     except Exception as error:
         if infrastructure_cause(error) is None:
             raise
-        reason = interruption_reason(error)
+        reason = interruption_reason(error, context.root)
         try:
             journal(context, "interrupted", condition=condition, replica=replica, attempt=attempt, reason=reason,
                     detected_by="attempt")
@@ -677,8 +728,10 @@ def prepare(context: pc.Context) -> list[tuple[str, str, int, int]]:
                 seeds = context.dlib.seeds_for(context.plan.namespace, condition, replica)
                 record = failure_record(
                     context.plan, condition, family, replica, INFRASTRUCTURE_PHASE, None, seeds,
-                    {"infrastructure_status": UNRESOLVED, "attempts": past["starts"],
-                     "max_infrastructure_retries": MAX_INFRASTRUCTURE_RETRIES,
+                    {"infrastructure_status": UNRESOLVED,
+                     "infrastructure_status_meaning": INTERRUPTED_RUN_RULES["unresolved_status"],
+                     "attempts": past["starts"], "max_infrastructure_retries": MAX_INFRASTRUCTURE_RETRIES,
+                     "attempts_started": list(past["started"]),
                      "interruptions": [{"attempt": number, **past["interrupted"][number]}
                                        for number in sorted(past["interrupted"], key=lambda n: (n is None, n))]})
                 commit_run(context, record, None)
@@ -832,8 +885,8 @@ def finalize(context: pc.Context, *, workers: int, seconds: float | None, manife
                 entry["infrastructure_status"] = UNRESOLVED
             for item in record.get("failures") or []:
                 failures.append({"condition": condition, "replica": replica,
-                                 "disposition": ("infrastructure unresolved, not an experimental failure" if unresolved
-                                                 else "recorded, not replaced"), **item})
+                                 "disposition": ("unresolved: no result after the allowed attempts; the cause is not "
+                                                 "established" if unresolved else "recorded, not replaced"), **item})
         else:
             failures.append({"condition": condition, "replica": replica, "phase": "storage", "state": state["state"],
                              "reason": state["reason"], "disposition": "no valid record"})

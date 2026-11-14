@@ -142,6 +142,11 @@ def test_the_decided_policy_is_the_only_one():
     assert pg.POLICY == rules["policy"] == "regenerate_same_id" == RC.INTERRUPTED_RUN_POLICY
     assert pg.MAX_INFRASTRUCTURE_RETRIES == rules["max_infrastructure_retries"] == 3 == RC.MAX_INFRASTRUCTURE_RETRIES
     assert pg.MAX_ATTEMPTS == 4 == VERIFY.MAX_ATTEMPTS and rules["decided_by"] == "author"
+    assert rules["decided_on"] == "2026-11-13" and rules["confirmed_on"] == "2026-11-14"
+    # The author's two clarifications of 2026-11-14 are part of what the manifest freezes.
+    assert "execution status" in rules["unresolved_status"] and "does not establish" in rules["unresolved_status"]
+    assert "identity verification only" in rules["rng_input_use"] and "not experimental sampling" in rules["rng_input_use"]
+    assert "No generated value may influence parameters, selection, measurements or scientific decisions" in rules["rng_input_use"]
     assert tuple(rules["infrastructure_interruptions"]) == RC.INFRASTRUCTURE_REASONS
     assert pg.INFRASTRUCTURE_PHASE == RC.INFRASTRUCTURE_PHASE and pg.UNRESOLVED == RC.UNRESOLVED_INFRASTRUCTURE
     assert not hasattr(pg, "POLICIES")
@@ -188,6 +193,15 @@ def test_an_error_of_the_system_leaves_no_record_and_is_retried(tmp_path, kind, 
     events = events_of(ctx, "healthy", 0)
     assert [e["event"] for e in events] == ["start", "interrupted"]
     assert events[1]["reason"]["kind"] == reason and events[1]["detected_by"] == "attempt" and events[1]["attempt"] == 1
+    # The error is kept as raised: the whole chain, and where the system error came from. No path of the machine.
+    evidence = events[1]["reason"]
+    expected_chain = {"OSError": ["OSError"], "MemoryError": ["MemoryError"], "wrapped": ["RuntimeError", "OSError"]}[kind]
+    assert [link["class"] for link in evidence["exception_chain"]] == expected_chain
+    assert evidence["exception_chain"][0]["message"] in {"OSError": "[Errno 28] No space left on device", "MemoryError": "synthetic",
+                                                         "wrapped": "serialization: could not write the trace"}[kind]
+    assert evidence["traceback"] and all(not frame.startswith("/") for frame in evidence["traceback"])
+    assert any(frame.startswith("tests/v019/_pilot_fixture.py:") and frame.endswith(" in _interrupt") for frame in evidence["traceback"])
+    assert str(tmp_path) not in json.dumps(evidence) and str(au.REPO) not in json.dumps(evidence)
     assert not events_of(ctx, "healthy", 1)
     assert pg.journal_events(ctx)[-1]["event"] == "generate_end"                # the invocation still closed its log
     out = pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
@@ -214,6 +228,12 @@ def test_the_runs_own_failure_is_evidence_and_is_never_retried(tmp_path):
     chained = RuntimeError("outer")
     chained.__context__ = MemoryError()
     assert isinstance(pg.infrastructure_cause(chained), MemoryError)
+    # Error text is kept as raised, except that the output root and the repository root are named, not spelled out.
+    full = pg.interruption_reason(OSError(28, "No space left on device", str(tmp_path / "traces/healthy/00000.npz")), tmp_path)
+    assert full["detail"] == "OSError: [Errno 28] No space left on device: '<root>/traces/healthy/00000.npz'"
+    assert full["kind"] == "operating_system_error" and full["traceback"] == [] and "<root>" in full["paths"]
+    inside = pg.interruption_reason(OSError(5, "Input/output error", str(au.REPO / "research/x")), tmp_path)
+    assert inside["exception_chain"] == [{"class": "OSError", "message": "[Errno 5] Input/output error: '<repo>/research/x'"}]
     assert isinstance(pg.infrastructure_cause(FileNotFoundError("gone")), OSError)
 
 
@@ -251,6 +271,16 @@ def test_three_retries_then_the_run_is_unresolved_and_never_run_again(tmp_path):
     assert record["status"] == "FAILED" and record["trace_path"] is None and record["seeds"] == ctx.dlib.seeds_for(fx.NAMESPACE, "fault/LAG1", 1)
     assert failure["phase"] == "infrastructure" and failure["infrastructure_status"] == "UNRESOLVED_INFRASTRUCTURE"
     assert failure["exception"] is None and failure["attempts"] == 4 and failure["max_infrastructure_retries"] == 3
+    # The status is about execution, not about a proven cause; the record keeps the whole history and the errors as raised.
+    assert failure["infrastructure_status_meaning"] == pg.INTERRUPTED_RUN_RULES["unresolved_status"]
+    assert [a["attempt"] for a in failure["attempts_started"]] == [1, 2, 3, 4]
+    assert all(a["pid"] == os.getpid() and a["time"] and a["environment_sha256"] == pg.environment_sha256() for a in failure["attempts_started"])
+    starts = [e for e in events_of(ctx, "fault/LAG1", 1) if e["event"] == "start"]
+    assert [a["journal_seq"] for a in failure["attempts_started"]] == [e["seq"] for e in starts]
+    assert [i["reason"]["exception_chain"][0]["class"] for i in failure["interruptions"]] == ["OSError", "MemoryError", "OSError", "OSError"]
+    assert all(i["reason"]["traceback"] and i["time"] and i["journal_seq"] for i in failure["interruptions"])
+    logged = [e["reason"] for e in events_of(ctx, "fault/LAG1", 1) if e["event"] == "interrupted"]
+    assert [i["reason"] for i in failure["interruptions"]] == logged          # the record carries what the log carries
     assert [(i["attempt"], i["reason"]["kind"], i["detected_by"]) for i in failure["interruptions"]] == [
         (1, "operating_system_error", "attempt"), (2, "memory_error", "attempt"), (3, "operating_system_error", "attempt"),
         (4, "operating_system_error", "attempt")]
@@ -264,7 +294,8 @@ def test_three_retries_then_the_run_is_unresolved_and_never_run_again(tmp_path):
     assert pc.read_json(ctx.result("run_manifest.json"))["infrastructure"]["unresolved"] == ["fault/LAG1/00001"]
     failures = [json.loads(line) for line in ctx.result("failures.jsonl").read_text().splitlines()]
     mine = [f for f in failures if (f["condition"], f["replica"]) == ("fault/LAG1", 1)]
-    assert [f["disposition"] for f in mine] == ["infrastructure unresolved, not an experimental failure"]
+    assert [f["disposition"] for f in mine] == ["unresolved: no result after the allowed attempts; the cause is not established"]
+    assert len(mine[0]["interruptions"]) == 4 and mine[0]["infrastructure_status"] == "UNRESOLVED_INFRASTRUCTURE"
     assert sum(f["disposition"] == "recorded, not replaced" for f in failures) == 9
     assert pg.require_complete(ctx) == {"complete": 0, "failed_records": 10}       # every planned ID has its record
     unresolved = fx.pa.unresolved_infrastructure(ctx)
