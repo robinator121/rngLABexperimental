@@ -1,0 +1,329 @@
+{
+  "approved_amendments": {},
+  "code_sha256": {
+    "research/v018-h1-detection/analyze.py": "7d36f0999f0ef8b23c299f0440f4f3b589b9458aad7ad0e1770b631b251930e5",
+    "research/v018-h1-detection/h1lib.py": "cf03ee8848716fa59ba9fce12cf0bd0d01061d9201fa92dfaefa48945e406c38",
+    "research/v018-h1-detection/run_campaign.py": "75d54387da88734f394350559dd7e874c52e1fe1aef73abcc6672605c76e0053",
+    "research/v019-d-pilot/design.json": "40e84948d9de3bbd7c516352b377e8e5d68de1f46f34c1b985e8eb109d4f05d4",
+    "research/v019-d-pilot/design.py": "89aa3ae8db707dea7be9164f4d29e16f8b7cd4f48ed00b4a28871ab8a0bf2f02",
+    "research/v019-d-pilot/dlib.py": "37d46671d54eb69da6e6d5852d8dc035ff710f208781a901e08f8d39e51cec2e",
+    "research/v019-d-pilot/measure.py": "f8d5ac52ecef7f0366dbd6fdccedfb9aec3b8a9d24e8f2127e9d29b11e21b9be",
+    "research/v019-d-pilot/pilot_analysis.py": "aaa1db31cf22c4b88f2b9dff11a833b83e28a44e69b8b6008ed1da483ace970d",
+    "research/v019-d-pilot/pilot_common.py": "8937998953043a763e48453ddc3277eb44133b6ac4bbfa278a089407aae81881",
+    "research/v019-d-pilot/pilot_forecast.py": "8359a5abd9ec9a6aced0c941a78215faf8873cac697d50bf41723d8c3b92ba14",
+    "research/v019-d-pilot/pilot_generate.py": "094df13ee1d885903a3f48de17cbb9efc1781509deb47e10d30dd93ec1516cc0",
+    "research/v019-d-pilot/protocol.json": "5329464210019e968116e8c3c3a13a09f33b12e0368ecfaa69752a1eb43c5e97",
+    "research/v019-d-pilot/run_pilot.py": "8df5b142a81cef32b41a24fa276b2f8c7c58f2b5d055d37149eeb4cf5d810654",
+    "src/rnglab/__init__.py": "4b5e47e6e8c593f4e5e1dc7be222338dadbd4c403cffda4a6c7a27571010dec4",
+    "src/rnglab/seeds.py": "ec167cf4b5e5b5a44136ca3f5e1b6b2fed6f5e8916cbf2fbaac194df22593d31",
+    "src/rnglab11/__init__.py": "1650620b9e6468cf49c65d607d83ec1078a54e9fbe947c60d558dd14028aacf9",
+    "src/rnglab11/statistics.py": "2102477b43e674a1a5ecb7f9a4970768808255c956417ed26da6201c3a05cfab",
+    "src/rnglab12/__init__.py": "9b30aaf5aa3bc1dfe3737942c3489533cc47fcf4a81fa97dffff8baf7a7170a0",
+    "src/rnglab12/uncertainty.py": "aac6e9c80f2bc1398b4a3265e522cbdff9e8d1ff6e3eb94fe7a0394802e4932c",
+    "src/rnglab14/__init__.py": "3e3fd1cd3bf7cb3c66ec62590a267cb68f1d4ea1372aac099ec06dc006eb9b89",
+    "src/rnglab14/models/__init__.py": "83d2ff385b185f1c0c0599502bad70333ce046318a69441be00a25cadf38687b",
+    "src/rnglab14/models/decision_support.py": "b0c48fa0b96fde9d056ef66d8eb76a7b510686701a6dbb2eadf7fdaa5e108000",
+    "src/rnglab14/models/ising_2d.py": "9608e644c8187514f951840f312cde7a44519060db449d924b6e965004412e7e",
+    "src/rnglab14/models/pi_mc.py": "a1c675ab3f0f5ee6a144448d5abe171b58b051a80f92c67b2c2879fb91434694",
+    "src/rnglab14/models/pimc_harmonic.py": "5aae9bcd425295e47871b2bfe5758f6b8f3c38fe7bf51f03f37908645eb74a98",
+    "src/rnglab14/models/vmc_harmonic.py": "fef8ce2a8e7360a85f8c128c04b1ff123c421ddd7889fd209c4d4bcca38b0672",
+    "src/rnglab14/monitoring/__init__.py": "ed9596fe40b0f355d57226eb206543ae72317650687fe10080c445a4fbf81cfd",
+    "src/rnglab14/monitoring/calibration.py": "a5d71fdae9cbed77cb7697eee8a33abedf206120f85500ae969c67b32cbd24cf",
+    "src/rnglab14/monitoring/dual_monitor.py": "3f62fd0af84f6750aa45715e2d4690f4e5d11a1e1c6873284eb73aa2ee3e67e1",
+    "src/rnglab14/sources/__init__.py": "34f232a6f37442bc4bdbd22909847974f717a382b75dadf1ce30a2367a3b5df3",
+    "src/rnglab14/sources/base.py": "1d01e7d28219eeccbcffa329b1dba25ac8e8c85e4ed98354f9994e0093d39e87",
+    "src/rnglab14/sources/conditioning.py": "f5edd8b515b869f477dcb74229792fea9de5688db0b9577436446efb0fe2917a",
+    "src/rnglab14/sources/faults.py": "3605eb6281dfab9801a05efbd5a28323ff13a2d7375cd2d9d782cc0444f3afae",
+    "src/rnglab14/sources/physical.py": "c368c41a2fc549cf277c7df64b75e2dbccc3898bed12d936b9b01e9dc59e0eba",
+    "src/rnglab14/sources/reference.py": "8dcf57cd45c05935222aa53b76d0f6a4e9c0e132704f30fc61d5f71241bac875"
+  },
+  "design_sha256": "40e84948d9de3bbd7c516352b377e8e5d68de1f46f34c1b985e8eb109d4f05d4",
+  "environment_lock": {
+    "path": "research/phase2-20261030/environment/requirements-lock.txt",
+    "sha256": "2daa617ad078690e8e204da503bdb137381f534f8f33d000192d6f7df4c9f6c2"
+  },
+  "environment_sha256": "da2fe930b4d249626f3ac384f8a7871e454ba75768947910c7f2786f81a7983a",
+  "git": {
+    "branch": "feature/v020-stage-d-readiness",
+    "commit": "a1f41f3c2245b3a64e9c56a7235b7470c85a4bb8",
+    "working_tree_clean": true
+  },
+  "i4_replay_selection": {
+    "calibration": [
+      0,
+      1
+    ],
+    "fault/DUP": [
+      0,
+      1
+    ],
+    "fault/LAG1": [
+      0,
+      1
+    ],
+    "fault/SHIFT": [
+      0,
+      1
+    ],
+    "healthy": [
+      0,
+      1
+    ]
+  },
+  "interrupted_run_policy": "regenerate_same_id",
+  "interrupted_run_rules": {
+    "confirmed_on": "2026-11-14",
+    "decided_by": "author",
+    "decided_on": "2026-11-13",
+    "exhaustion": "failure record with phase 'infrastructure' and infrastructure_status UNRESOLVED_INFRASTRUCTURE; the stop criteria that use the run cannot be PASS",
+    "experimental_failures": "an exception of the sampler, a check, the measurement or the encoding gets a failure record (protocol.json failed_runs) and is never retried",
+    "floating_point": "no bit-identical floating-point output is assumed across execution environments; every attempt records the hash of its software versions",
+    "infrastructure_interruptions": [
+      "process_ended_without_record",
+      "operating_system_error",
+      "memory_error"
+    ],
+    "max_infrastructure_retries": 3,
+    "policy": "regenerate_same_id",
+    "retry_identity": "same run ID, seed labels, seeds, generator configuration and protocol parameters",
+    "rng_input": "per role, SHA-256 of the first 128 64-bit outputs, big-endian: the repository's PCG64 source for local, centroid and start; numpy.random.default_rng(seed).bit_generator for fault and profile. rng_input_sha256 is the SHA-256 of the compact sorted JSON of the five hashes",
+    "rng_input_use": "identity verification only, computed when the manifest is written and before every attempt, authorised by the author on 2026-11-14. It is not experimental sampling. No generated value may influence parameters, selection, measurements or scientific decisions",
+    "unresolved_status": "UNRESOLVED_INFRASTRUCTURE is an execution status: the run has no result after 4 attempts. It does not establish that the infrastructure was the cause. The record and the audit log keep every attempt and the error evidence of each"
+  },
+  "namespace": "rnglab-v019-d-pilot-smoke",
+  "plan_kind": "smoke",
+  "planned_runs": [
+    {
+      "condition": "calibration",
+      "family": "healthy",
+      "replica": 0,
+      "rng_input_sha256": "eff866996df08e6df5b606d550cd915374da3fab58fefa28f5fd0654eb255f6a",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/calibration/centroid/00000",
+        "fault": "rnglab-v019-d-pilot-smoke/calibration/fault/00000",
+        "local": "rnglab-v019-d-pilot-smoke/calibration/local/00000",
+        "profile": "rnglab-v019-d-pilot-smoke/calibration/profile/00000",
+        "start": "rnglab-v019-d-pilot-smoke/calibration/start/00000"
+      },
+      "seeds": {
+        "centroid": 14109976489639225153,
+        "fault": 1662694500100659658,
+        "local": 7209426858805865900,
+        "profile": 8122632401932649689,
+        "start": 16030071128003165329
+      },
+      "split": "calibration"
+    },
+    {
+      "condition": "calibration",
+      "family": "healthy",
+      "replica": 1,
+      "rng_input_sha256": "c16f611ec058b720c4115ad52717dccd116106aa27b387f1472ee9e4d7b57594",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/calibration/centroid/00001",
+        "fault": "rnglab-v019-d-pilot-smoke/calibration/fault/00001",
+        "local": "rnglab-v019-d-pilot-smoke/calibration/local/00001",
+        "profile": "rnglab-v019-d-pilot-smoke/calibration/profile/00001",
+        "start": "rnglab-v019-d-pilot-smoke/calibration/start/00001"
+      },
+      "seeds": {
+        "centroid": 9303070376867367937,
+        "fault": 8616154912596268029,
+        "local": 8378019260581435409,
+        "profile": 2297373126083814262,
+        "start": 8145918713414075131
+      },
+      "split": "calibration"
+    },
+    {
+      "condition": "healthy",
+      "family": "healthy",
+      "replica": 0,
+      "rng_input_sha256": "5ed4b0f1b840707de8fea82b72c0fa16d55b6a15f3ccf187017a71d242a510d7",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/healthy/centroid/00000",
+        "fault": "rnglab-v019-d-pilot-smoke/healthy/fault/00000",
+        "local": "rnglab-v019-d-pilot-smoke/healthy/local/00000",
+        "profile": "rnglab-v019-d-pilot-smoke/healthy/profile/00000",
+        "start": "rnglab-v019-d-pilot-smoke/healthy/start/00000"
+      },
+      "seeds": {
+        "centroid": 5938446376138173121,
+        "fault": 15175996711378902366,
+        "local": 11871922687658831339,
+        "profile": 17678376858462900614,
+        "start": 17921688913136362887
+      },
+      "split": "validation"
+    },
+    {
+      "condition": "healthy",
+      "family": "healthy",
+      "replica": 1,
+      "rng_input_sha256": "e5a2ab4f2e0c8791e8c0508d257a5c58f3703a4b59012c79de367669fe75a39c",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/healthy/centroid/00001",
+        "fault": "rnglab-v019-d-pilot-smoke/healthy/fault/00001",
+        "local": "rnglab-v019-d-pilot-smoke/healthy/local/00001",
+        "profile": "rnglab-v019-d-pilot-smoke/healthy/profile/00001",
+        "start": "rnglab-v019-d-pilot-smoke/healthy/start/00001"
+      },
+      "seeds": {
+        "centroid": 7217248318507584591,
+        "fault": 773082187246789549,
+        "local": 3209705339025627696,
+        "profile": 336254768152818478,
+        "start": 12243942303913593776
+      },
+      "split": "validation"
+    },
+    {
+      "condition": "fault/SHIFT",
+      "family": "SHIFT",
+      "replica": 0,
+      "rng_input_sha256": "2e43b075f5ebf35865cc58569c2be0cb1f3d49645bdfe49bf825c43444423b3b",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/fault/SHIFT/centroid/00000",
+        "fault": "rnglab-v019-d-pilot-smoke/fault/SHIFT/fault/00000",
+        "local": "rnglab-v019-d-pilot-smoke/fault/SHIFT/local/00000",
+        "profile": "rnglab-v019-d-pilot-smoke/fault/SHIFT/profile/00000",
+        "start": "rnglab-v019-d-pilot-smoke/fault/SHIFT/start/00000"
+      },
+      "seeds": {
+        "centroid": 11894168184745367623,
+        "fault": 1479769393508938842,
+        "local": 4948938400758024663,
+        "profile": 8924472775963857065,
+        "start": 4316211849451532941
+      },
+      "split": "fitting"
+    },
+    {
+      "condition": "fault/SHIFT",
+      "family": "SHIFT",
+      "replica": 1,
+      "rng_input_sha256": "df5c3444cbcade590048d9f33d21f648c4169a22376e6cf961ca5328299b5580",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/fault/SHIFT/centroid/00001",
+        "fault": "rnglab-v019-d-pilot-smoke/fault/SHIFT/fault/00001",
+        "local": "rnglab-v019-d-pilot-smoke/fault/SHIFT/local/00001",
+        "profile": "rnglab-v019-d-pilot-smoke/fault/SHIFT/profile/00001",
+        "start": "rnglab-v019-d-pilot-smoke/fault/SHIFT/start/00001"
+      },
+      "seeds": {
+        "centroid": 769496693431916071,
+        "fault": 7458904529733183100,
+        "local": 11980403485151792115,
+        "profile": 5369733088193304146,
+        "start": 8430004412941646642
+      },
+      "split": "evaluation"
+    },
+    {
+      "condition": "fault/LAG1",
+      "family": "LAG1",
+      "replica": 0,
+      "rng_input_sha256": "39b17ff7e4bcfafdcf525ae4c909c0c5718c5355ae45b1937992948f75e10c4c",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/fault/LAG1/centroid/00000",
+        "fault": "rnglab-v019-d-pilot-smoke/fault/LAG1/fault/00000",
+        "local": "rnglab-v019-d-pilot-smoke/fault/LAG1/local/00000",
+        "profile": "rnglab-v019-d-pilot-smoke/fault/LAG1/profile/00000",
+        "start": "rnglab-v019-d-pilot-smoke/fault/LAG1/start/00000"
+      },
+      "seeds": {
+        "centroid": 10491634772606312941,
+        "fault": 9669107144186251164,
+        "local": 4182294519693052780,
+        "profile": 1701708784463213211,
+        "start": 17505913209477246840
+      },
+      "split": "fitting"
+    },
+    {
+      "condition": "fault/LAG1",
+      "family": "LAG1",
+      "replica": 1,
+      "rng_input_sha256": "bf0aa5b9884ca83b3cebb61c4f1ccc302c4393d6015d133183a8d25de1624f2c",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/fault/LAG1/centroid/00001",
+        "fault": "rnglab-v019-d-pilot-smoke/fault/LAG1/fault/00001",
+        "local": "rnglab-v019-d-pilot-smoke/fault/LAG1/local/00001",
+        "profile": "rnglab-v019-d-pilot-smoke/fault/LAG1/profile/00001",
+        "start": "rnglab-v019-d-pilot-smoke/fault/LAG1/start/00001"
+      },
+      "seeds": {
+        "centroid": 3185966911774990731,
+        "fault": 14871775828601809662,
+        "local": 4981733406214124640,
+        "profile": 13976541406082806992,
+        "start": 1424303548225410597
+      },
+      "split": "evaluation"
+    },
+    {
+      "condition": "fault/DUP",
+      "family": "DUP",
+      "replica": 0,
+      "rng_input_sha256": "814f0b901ee0d6ddd34e00170bf17f1fcbade55e50905c3c5c62e64f70012c2a",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/fault/DUP/centroid/00000",
+        "fault": "rnglab-v019-d-pilot-smoke/fault/DUP/fault/00000",
+        "local": "rnglab-v019-d-pilot-smoke/fault/DUP/local/00000",
+        "profile": "rnglab-v019-d-pilot-smoke/fault/DUP/profile/00000",
+        "start": "rnglab-v019-d-pilot-smoke/fault/DUP/start/00000"
+      },
+      "seeds": {
+        "centroid": 3194791060781992300,
+        "fault": 15921157479377203671,
+        "local": 1363562172035241640,
+        "profile": 7632125596909880711,
+        "start": 464506762559230605
+      },
+      "split": "fitting"
+    },
+    {
+      "condition": "fault/DUP",
+      "family": "DUP",
+      "replica": 1,
+      "rng_input_sha256": "ee54c9bb36290cf4347412962f21a7dc0081ce6a28b2cd6d92aab9f8d8c93742",
+      "seed_labels": {
+        "centroid": "rnglab-v019-d-pilot-smoke/fault/DUP/centroid/00001",
+        "fault": "rnglab-v019-d-pilot-smoke/fault/DUP/fault/00001",
+        "local": "rnglab-v019-d-pilot-smoke/fault/DUP/local/00001",
+        "profile": "rnglab-v019-d-pilot-smoke/fault/DUP/profile/00001",
+        "start": "rnglab-v019-d-pilot-smoke/fault/DUP/start/00001"
+      },
+      "seeds": {
+        "centroid": 5908413375736690951,
+        "fault": 6077839687533583326,
+        "local": 9353200258822579550,
+        "profile": 13746846434839925919,
+        "start": 13075479542468921631
+      },
+      "split": "evaluation"
+    }
+  ],
+  "protocol_sha256": "5329464210019e968116e8c3c3a13a09f33b12e0368ecfaa69752a1eb43c5e97",
+  "protocol_workers": 8,
+  "schema": "rnglab-v019-d-pilot-pre-generation-manifest-v1",
+  "software": {
+    "libc": "glibc 2.44",
+    "machine": "x86_64",
+    "numpy": "2.5.3",
+    "python": "3.14.9",
+    "scipy": "1.18.1"
+  },
+  "tdk_deadline": null,
+  "thread_variables": {
+    "BLIS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "workers": 8,
+  "workers_deviate_from_protocol": false,
+  "written_at": "2026-11-14T18:37:36+0100"
+}
