@@ -10,7 +10,10 @@ The engine is loaded by the driver through the specification "<this file>:synthe
 from __future__ import annotations
 
 import importlib.util
+import json
 import math
+import os
+import signal
 import sys
 import zlib
 from pathlib import Path
@@ -39,6 +42,8 @@ ENGINE_SPEC = f"{Path(__file__).resolve()}:synthetic_engine"
 FAILING_SPEC = f"{Path(__file__).resolve()}:failing_engine"
 PARTLY_FAILING_SPEC = f"{Path(__file__).resolve()}:partly_failing_engine"
 NON_FINITE_SPEC = f"{Path(__file__).resolve()}:non_finite_engine"
+INTERRUPTED_FAILING_SPEC = f"{Path(__file__).resolve()}:interrupted_failing_engine"
+INTERRUPTED_SPEC = f"{Path(__file__).resolve()}:interrupted_engine"
 
 
 def context(plan, root, *, need_measure: bool = True):
@@ -133,6 +138,81 @@ class NonFiniteEngine(SyntheticEngine):
         if condition == "healthy" and replica == 0:
             arrays["CV"][17] = np.nan
         return record, arrays
+
+
+CONTROL_FILE = ".test_interruptions.json"
+
+
+def set_interruptions(root, plan):
+    """Tell the interrupted engines what to do: {"healthy/1": ["OSError", "MemoryError"]}, one entry per attempt."""
+    Path(root).mkdir(parents=True, exist_ok=True)
+    (Path(root) / CONTROL_FILE).write_text(json.dumps(plan))
+
+
+def _interrupt(ctx, condition, replica):
+    """Consume the next instruction for this run, if there is one, and act on it."""
+    path = ctx.root / CONTROL_FILE
+    if not path.exists():
+        return None
+    plan = json.loads(path.read_text())
+    queue = plan.get(f"{condition}/{replica}")
+    if not queue:
+        return None
+    kind = queue.pop(0)
+    path.write_text(json.dumps(plan))
+    if kind == "OSError":
+        raise OSError(28, "No space left on device")
+    if kind == "MemoryError":
+        raise MemoryError("synthetic")
+    if kind == "wrapped":            # how the measurement layer reports a write that the medium refused
+        try:
+            raise OSError(5, "Input/output error")
+        except OSError as error:
+            raise RuntimeError("serialization: could not write the trace") from error
+    if kind == "ValueError":         # the run's own failure, escaping the engine
+        raise ValueError("a numerical failure")
+    if kind == "SIGINT":             # Ctrl-C while the run is in progress
+        os.kill(os.getpid(), signal.SIGINT)
+        return None
+    if kind == "absorbed":           # a memory error that the measurement layer wrote into a checkpoint
+        return {"phase": "battery", "end": 512, "tests": ["serial"],
+                "exception": {"class": "MemoryError", "message": "Unable to allocate 1.00 GiB"}}
+    raise AssertionError(kind)
+
+
+class InterruptedFailingEngine(FailingEngine):
+    """The failing engine, interrupted as the control file says. Needs no measurement layer."""
+
+    def execute(self, condition, family, replica):
+        absorbed = _interrupt(self.context, condition, replica)
+        record, arrays = super().execute(condition, family, replica)
+        if absorbed:
+            record["failures"] = record["failures"] + [absorbed]
+        return record, arrays
+
+
+class InterruptedEngine(SyntheticEngine):
+    """The synthetic engine, interrupted as the control file says."""
+
+    def execute(self, condition, family, replica):
+        absorbed = _interrupt(self.context, condition, replica)
+        record, arrays = super().execute(condition, family, replica)
+        if absorbed:
+            record["conventional"][0]["failures"] = [absorbed]
+        return record, arrays
+
+
+def interrupted_failing_engine(ctx):
+    return InterruptedFailingEngine(ctx)
+
+
+def interrupted_engine(ctx):
+    return InterruptedEngine(ctx)
+
+
+def audit_plan(plan):
+    """The run plan in the form the independent verification takes."""
+    return {condition: (family, count) for condition, family, count in plan.conditions}
 
 
 def synthetic_engine(ctx):

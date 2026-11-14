@@ -1,0 +1,6 @@
+# Working files of the generation driver (pilot_generate.py), here and under smoke/.
+# None of them is a result: the staging directory holds runs that are not committed yet,
+# the pending list is rewritten by every `generate`, the lock file is empty.
+.staging/
+.pending.json
+.generate.lock

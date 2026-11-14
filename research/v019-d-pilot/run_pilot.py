@@ -5,9 +5,11 @@
 Order of a pilot (freeze procedure, steps 5 to 7):
 
     status                 state of the output tree; changes nothing
-    manifest               write pre_generation_manifest.json (needs --interrupted-run-policy)
+    manifest               write pre_generation_manifest.json (--preview shows it and writes nothing)
                            -> the author reviews it, pushes it and writes authorization.json
-    generate               run every planned run that has no record; resumable
+    generate               run every planned run that has no record; resumable. An interrupted run is
+                           run again with the same identity, at most three times (pilot_generate.py).
+                           Ctrl-C once lets every process finish its run in progress and stops
     replay                 I-4: regenerate the 25 selected runs and compare
     calibrate              thresholds, application constants, sigma_eff
     fit                    forecasters and oracle parameters, from fitting runs only
@@ -77,8 +79,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("command", choices=("status", "manifest", "generate", "_worker", "replay", "smoke-timing", "calibrate",
                                             "fit", "issue", "evaluate", "summaries", "checks", "criteria"))
     parser.add_argument("--smoke", action="store_true")
-    parser.add_argument("--interrupted-run-policy", choices=("regenerate_same_id", "record_failure"), default=None,
-                        help="manifest: what a restart does with a run that was started and left no record (no default)")
+    parser.add_argument("--preview", action="store_true", help="manifest: print what would be written; write nothing")
     parser.add_argument("--tdk-deadline", default=None, help="manifest: TDK submission deadline, YYYY-MM-DD")
     parser.add_argument("--workers", type=int, default=pc.PROTOCOL_WORKERS, help="manifest: worker processes (protocol: 8)")
     parser.add_argument("--shard", default=None, help=argparse.SUPPRESS)
@@ -100,13 +101,19 @@ def main(argv: list[str] | None = None) -> int:
                               "pre_generation_manifest": (context.root / "pre_generation_manifest.json").is_file(),
                               "authorization": (context.root / "authorization.json").is_file()}, indent=2))
         elif args.command == "manifest":
-            if args.interrupted_run_policy is None:
-                parser.error("--interrupted-run-policy is required: it is the author's decision and has no default")
-            manifest = pg.build_pre_generation_manifest(context, interrupted_run_policy=args.interrupted_run_policy,
-                                                        tdk_deadline=args.tdk_deadline, workers=args.workers)
-            digest = pc.atomic_write(context.root / "pre_generation_manifest.json", pc.canonical_json(manifest))
-            print(f"wrote pre_generation_manifest.json, sha256 {digest}")
-            print("No draw is permitted until the author has reviewed and pushed it and written authorization.json.")
+            manifest = pg.build_pre_generation_manifest(context, tdk_deadline=args.tdk_deadline, workers=args.workers)
+            if args.preview:
+                shown = {key: value for key, value in manifest.items() if key not in ("planned_runs", "code_sha256")}
+                shown["planned_runs"] = f"{len(manifest['planned_runs'])} runs, each with seed labels, seeds and rng_input_sha256"
+                shown["code_sha256"] = f"{len(manifest['code_sha256'])} files"
+                print(json.dumps(shown, indent=2, sort_keys=True))
+                print("PREVIEW: nothing was written.")
+            else:
+                digest = pc.atomic_write(context.root / "pre_generation_manifest.json", pc.canonical_json(manifest))
+                print(f"wrote pre_generation_manifest.json, sha256 {digest}")
+                print("No draw is permitted until the author has reviewed and pushed it and written authorization.json.")
+            if manifest["git"]["working_tree_clean"] is not True:
+                print("WARNING: the working tree is not clean; the manifest names a commit that does not contain it.")
             if manifest["tdk_deadline"] is None:
                 print("TDK deadline not recorded: stop criterion 5 will be INSUFFICIENT_INFORMATION.")
             if manifest["workers_deviate_from_protocol"]:
@@ -116,10 +123,10 @@ def main(argv: list[str] | None = None) -> int:
             command = [sys.executable, str(HERE / "run_pilot.py"), "_worker"] + (["--smoke"] if args.smoke else [])
             print(json.dumps(pg.generate(context, workers=manifest["workers"], worker_command=command), indent=2))
         elif args.command == "_worker":
-            pg.require_generation_allowed(context)
+            manifest = pg.require_generation_allowed(context)
             pending = [tuple(p) for p in pc.read_json(context.root / ".pending.json")]
             pending = [p for p in pending if pg.classify(context, p[0], p[2], verify_hash=False)["state"] == "MISSING"]
-            pg.work(context, "production", pg.shard(pending, args.shard))
+            pg.work(context, "production", pg.shard(pending, args.shard), pg.planned_inputs(manifest))
         elif args.command == "replay":
             pg.require_complete(context)
             result = pg.replay_check(context, pg.PilotEngine(context))

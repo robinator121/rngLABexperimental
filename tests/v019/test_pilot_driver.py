@@ -24,6 +24,11 @@ if "_pilot_fixture" not in _sys.modules:
 
 au, pc, pg = fx.au, fx.pc, fx.pg
 PROTOCOL = json.loads((au.REPO / "research/v019-d-pilot/protocol.json").read_text())
+# The independent side: it never imports the pilot's modules.
+RC = au.recount()
+IG = au.load("v019_audit_integrity", au.REPO / "research/v019-audit/integrity.py")
+VERIFY = au.load("v019_audit_verify", au.REPO / "research/v019-audit/verify.py")
+PF = au.load("v019_audit_preflight", au.REPO / "research/v019-audit/preflight.py")
 
 
 def light(root, plan=fx.SMALL_PLAN):
@@ -110,26 +115,355 @@ def test_failure_records_are_complete_and_never_rerun(tmp_path):
     assert pg.require_complete(ctx) == {"complete": 0, "failed_records": 10}
 
 
-@pytest.mark.parametrize("policy", [None, "record_failure", "regenerate_same_id"])
-def test_a_run_that_was_started_and_left_no_record_needs_the_authors_policy(tmp_path, policy):
+# --------------------------------------------------------------------------- interrupted runs: regenerate_same_id
+def events_of(ctx, condition, replica):
+    return [e for e in pg.journal_events(ctx) if e.get("condition") == condition and e.get("replica") == replica]
+
+
+def manifest_entry(ctx, condition, replica):
+    return next(e for e in pc.read_json(ctx.result("run_manifest.json"))["runs"]
+                if (e["condition"], e["replica"]) == (condition, replica))
+
+
+def attempt_log(ctx):
+    """The independent check of the audit log, on the same tree."""
+    return VERIFY.check_attempt_log(ctx.root, ctx.plan.namespace, fx.audit_plan(ctx.plan))
+
+
+def log_start(ctx, condition, replica, attempt=1):
+    """What the driver writes before it draws; the test then behaves as if the process had died."""
+    seeds = ctx.dlib.seeds_for(ctx.plan.namespace, condition, replica)
+    return pg.journal(ctx, "start", condition=condition, replica=replica, attempt=attempt, seeds=seeds,
+                      rng_input_sha256=pg.rng_input(ctx.dlib, seeds)["sha256"], environment_sha256=pg.environment_sha256())
+
+
+def test_the_decided_policy_is_the_only_one():
+    rules = pg.INTERRUPTED_RUN_RULES
+    assert pg.POLICY == rules["policy"] == "regenerate_same_id" == RC.INTERRUPTED_RUN_POLICY
+    assert pg.MAX_INFRASTRUCTURE_RETRIES == rules["max_infrastructure_retries"] == 3 == RC.MAX_INFRASTRUCTURE_RETRIES
+    assert pg.MAX_ATTEMPTS == 4 == VERIFY.MAX_ATTEMPTS and rules["decided_by"] == "author"
+    assert tuple(rules["infrastructure_interruptions"]) == RC.INFRASTRUCTURE_REASONS
+    assert pg.INFRASTRUCTURE_PHASE == RC.INFRASTRUCTURE_PHASE and pg.UNRESOLVED == RC.UNRESOLVED_INFRASTRUCTURE
+    assert not hasattr(pg, "POLICIES")
+    assert PROTOCOL["failed_runs"]["recording"].startswith("Every planned ID gets a success or failure record")
+
+
+def test_a_run_that_was_started_and_left_no_record_is_run_again_with_the_same_identity(tmp_path):
     ctx = light(tmp_path)
-    pg.journal(ctx, "start", condition="healthy", replica=1)       # the process died before any record
-    if policy is None:
-        with pytest.raises(pc.PilotError, match="interrupted-run policy"):
+    first = log_start(ctx, "healthy", 1)                           # the process died before any record
+    out = pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)
+    assert out["counts"]["FAILED_RECORD"] == 10 and out["unresolved_infrastructure"] == [] and not out["stopped_on_request"]
+    events = events_of(ctx, "healthy", 1)
+    assert [e["event"] for e in events] == ["start", "interrupted", "restart", "start", "commit"]
+    assert events[1]["attempt"] == 1 and events[1]["detected_by"] == "resume"
+    assert events[1]["reason"] == {"kind": "process_ended_without_record", "detail": "no record and no trace"}
+    assert events[3]["attempt"] == 2 and events[3]["seeds"] == first["seeds"] == ctx.dlib.seeds_for(fx.NAMESPACE, "healthy", 1)
+    assert events[3]["rng_input_sha256"] == first["rng_input_sha256"] and events[3]["environment_sha256"] == pg.environment_sha256()
+    assert events[4]["record_sha256"] == pc.sha256_file(ctx.record_path("healthy", 1)) and events[4]["status"] == "FAILED"
+    entry = manifest_entry(ctx, "healthy", 1)
+    assert entry["attempts"] == 2 and entry["infrastructure_status"] is None and len(entry["interruptions"]) == 1
+    assert entry["attempt_environments"] == [pg.environment_sha256()]
+    assert manifest_entry(ctx, "healthy", 0)["attempts"] == 1 and manifest_entry(ctx, "healthy", 0)["interruptions"] == []
+    record = pc.read_json(ctx.record_path("healthy", 1))
+    assert record["failure"]["phase"] == "generation" and record["seeds"] == first["seeds"]    # the run's own failure stands
+    infrastructure = pc.read_json(ctx.result("run_manifest.json"))["infrastructure"]
+    assert infrastructure == {"policy": "regenerate_same_id", "max_infrastructure_retries": 3, "runs_with_more_than_one_attempt": 1,
+                              "interruptions": 1, "unresolved": [], "environments": [pg.environment_sha256()]}
+    check = attempt_log(ctx)
+    assert check["agrees"] and check["runs_with_more_than_one_attempt"] == 1 and check["interruptions"] == 1
+    assert check["unresolved"] == [] and check["status"] == "CHECKED"
+
+
+@pytest.mark.parametrize("kind,reason", [("OSError", "operating_system_error"), ("MemoryError", "memory_error"),
+                                         ("wrapped", "operating_system_error")])
+def test_an_error_of_the_system_leaves_no_record_and_is_retried(tmp_path, kind, reason):
+    ctx = light(tmp_path)
+    fx.set_interruptions(tmp_path, {"healthy/0": [kind]})
+    with pytest.raises(pg.InfrastructureInterruption, match="no record was written") as caught:
+        pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert caught.value.reason["kind"] == reason
+    assert pg.classify(ctx, "healthy", 0)["state"] == "MISSING"                 # no failure record for an interruption
+    assert pg.classify(ctx, "calibration", 1)["state"] == "FAILED_RECORD"       # what came before is stored
+    assert pg.classify(ctx, "healthy", 1)["state"] == "MISSING"                 # the process stopped: nothing after it was started
+    events = events_of(ctx, "healthy", 0)
+    assert [e["event"] for e in events] == ["start", "interrupted"]
+    assert events[1]["reason"]["kind"] == reason and events[1]["detected_by"] == "attempt" and events[1]["attempt"] == 1
+    assert not events_of(ctx, "healthy", 1)
+    assert pg.journal_events(ctx)[-1]["event"] == "generate_end"                # the invocation still closed its log
+    out = pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert out["counts"]["FAILED_RECORD"] == 10
+    assert [e["event"] for e in events_of(ctx, "healthy", 0)] == ["start", "interrupted", "restart", "start", "commit"]
+    assert manifest_entry(ctx, "healthy", 0)["attempts"] == 2
+    assert manifest_entry(ctx, "healthy", 0)["interruptions"][0]["reason"]["kind"] == reason
+    assert attempt_log(ctx)["agrees"]
+
+
+def test_the_runs_own_failure_is_evidence_and_is_never_retried(tmp_path):
+    ctx = light(tmp_path)
+    fx.set_interruptions(tmp_path, {"fault/DUP/0": ["ValueError"]})             # an exception the engine did not classify
+    out = pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert out["counts"]["FAILED_RECORD"] == 10 and out["unresolved_infrastructure"] == []
+    record = pc.read_json(ctx.record_path("fault/DUP", 0))
+    assert record["failure"] == {"phase": "execution", "exception": {"class": "ValueError", "message": "a numerical failure"}}
+    assert [e["event"] for e in events_of(ctx, "fault/DUP", 0)] == ["start", "commit"]
+    pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert [e["event"] for e in events_of(ctx, "fault/DUP", 0)] == ["start", "commit"]     # not run again
+    assert all(e["attempts"] == 1 for e in pc.read_json(ctx.result("run_manifest.json"))["runs"])
+    for error in (ValueError("x"), ArithmeticError("x"), FloatingPointError("x"), RuntimeError("serialization: nonfinite array")):
+        assert pg.infrastructure_cause(error) is None
+    chained = RuntimeError("outer")
+    chained.__context__ = MemoryError()
+    assert isinstance(pg.infrastructure_cause(chained), MemoryError)
+    assert isinstance(pg.infrastructure_cause(FileNotFoundError("gone")), OSError)
+
+
+def test_a_memory_error_recorded_inside_the_measurement_is_an_interruption(tmp_path):
+    ctx = light(tmp_path)
+    fx.set_interruptions(tmp_path, {"calibration/1": ["absorbed"]})
+    with pytest.raises(pg.InfrastructureInterruption, match="memory_error"):
+        pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert pg.classify(ctx, "calibration", 1)["state"] == "MISSING"            # the record that held it was not stored
+    events = events_of(ctx, "calibration", 1)
+    assert [e["event"] for e in events] == ["start", "interrupted"] and events[1]["reason"]["kind"] == "memory_error"
+    assert "Unable to allocate" in events[1]["reason"]["detail"]
+    pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert pg.classify(ctx, "calibration", 1)["state"] == "FAILED_RECORD" and manifest_entry(ctx, "calibration", 1)["attempts"] == 2
+    assert pg.recorded_memory_error(pc.read_json(ctx.record_path("calibration", 1))) is None
+    assert pg.recorded_memory_error({"conventional": [{"failures": [{"exception": {"class": "MemoryError", "message": "m"}}]}]}) == {
+        "class": "MemoryError", "message": "m"}
+    for harmless in ({"exception": {"class": "ValueError", "message": "MemoryError"}}, {"class": "ZeroDivisionError"}, [], None, "MemoryError"):
+        assert pg.recorded_memory_error(harmless) is None
+    assert attempt_log(ctx)["agrees"]
+
+
+def test_three_retries_then_the_run_is_unresolved_and_never_run_again(tmp_path):
+    ctx = light(tmp_path)
+    fx.set_interruptions(tmp_path, {"fault/LAG1/1": ["OSError", "MemoryError", "OSError", "OSError", "OSError"]})
+    for attempt in range(1, 5):
+        with pytest.raises(pg.InfrastructureInterruption, match=f"attempt {attempt}"):
+            pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+        assert pg.classify(ctx, "fault/LAG1", 1)["state"] == "MISSING"
+        assert pg.classify(ctx, "fault/DUP", 0)["state"] == "MISSING"          # never reached while the cause persists
+    out = pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)   # the fifth invocation does not try again
+    assert out["unresolved_infrastructure"] == ["fault/LAG1/00001"] and out["counts"]["FAILED_RECORD"] == 10
+    record = pc.read_json(ctx.record_path("fault/LAG1", 1))
+    failure = record["failure"]
+    assert record["status"] == "FAILED" and record["trace_path"] is None and record["seeds"] == ctx.dlib.seeds_for(fx.NAMESPACE, "fault/LAG1", 1)
+    assert failure["phase"] == "infrastructure" and failure["infrastructure_status"] == "UNRESOLVED_INFRASTRUCTURE"
+    assert failure["exception"] is None and failure["attempts"] == 4 and failure["max_infrastructure_retries"] == 3
+    assert [(i["attempt"], i["reason"]["kind"], i["detected_by"]) for i in failure["interruptions"]] == [
+        (1, "operating_system_error", "attempt"), (2, "memory_error", "attempt"), (3, "operating_system_error", "attempt"),
+        (4, "operating_system_error", "attempt")]
+    kinds = [e["event"] for e in events_of(ctx, "fault/LAG1", 1)]
+    assert kinds == ["start", "interrupted", "restart"] * 3 + ["start", "interrupted", "unresolved"]
+    pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert [e["event"] for e in events_of(ctx, "fault/LAG1", 1)] == kinds        # final: no fifth attempt, ever
+    assert json.loads((tmp_path / fx.CONTROL_FILE).read_text())["fault/LAG1/1"] == ["OSError"]   # the fifth instruction was never used
+    entry = manifest_entry(ctx, "fault/LAG1", 1)
+    assert entry["state"] == "FAILED_RECORD" and entry["attempts"] == 4 and entry["infrastructure_status"] == "UNRESOLVED_INFRASTRUCTURE"
+    assert pc.read_json(ctx.result("run_manifest.json"))["infrastructure"]["unresolved"] == ["fault/LAG1/00001"]
+    failures = [json.loads(line) for line in ctx.result("failures.jsonl").read_text().splitlines()]
+    mine = [f for f in failures if (f["condition"], f["replica"]) == ("fault/LAG1", 1)]
+    assert [f["disposition"] for f in mine] == ["infrastructure unresolved, not an experimental failure"]
+    assert sum(f["disposition"] == "recorded, not replaced" for f in failures) == 9
+    assert pg.require_complete(ctx) == {"complete": 0, "failed_records": 10}       # every planned ID has its record
+    unresolved = fx.pa.unresolved_infrastructure(ctx)
+    assert unresolved["status"] == "UNRESOLVED_INFRASTRUCTURE" and unresolved["runs"] == [{"condition": "fault/LAG1", "replica": 1}]
+    assert unresolved["criteria_that_cannot_pass"] == ["2", "3", "4"] and unresolved["per_condition"]["fault/LAG1"] == 1
+    check = attempt_log(ctx)
+    assert check["agrees"], check["discrepancies"]
+    assert check["unresolved"] == [{"condition": "fault/LAG1", "replica": 1}] and check["criteria_that_cannot_pass"] == [2, 3, 4]
+    assert check["interruptions"] == 4 and check["runs_with_more_than_one_attempt"] == 1
+
+
+def test_seeds_and_random_input_are_checked_against_the_manifest_before_anything_is_drawn(tmp_path):
+    ctx = light(tmp_path)
+    engine = fx.FailingEngine(ctx)
+    seeds = ctx.dlib.seeds_for(fx.NAMESPACE, "healthy", 0)
+    fingerprint = pg.rng_input(ctx.dlib, seeds)
+    assert set(fingerprint["roles"]) == set(pg.RNG_ROLES) == set(seeds) and len(set(fingerprint["roles"].values())) == 5
+    good = {("healthy", 0): {"seeds": seeds, "rng_input_sha256": fingerprint["sha256"]}}
+    for planned in ({("healthy", 0): {"seeds": {**seeds, "fault": seeds["fault"] + 1}, "rng_input_sha256": fingerprint["sha256"]}},
+                    {("healthy", 0): {"seeds": seeds, "rng_input_sha256": "0" * 64}}, {}):
+        with pytest.raises(pc.PilotError, match="nothing was drawn"):
+            pg.run_one(ctx, engine, "healthy", "healthy", 0, 1, planned)
+    assert not ctx.result("journal.jsonl").exists() and pg.classify(ctx, "healthy", 0)["state"] == "MISSING"
+    pg.run_one(ctx, engine, "healthy", "healthy", 0, 1, good)
+    start = events_of(ctx, "healthy", 0)[0]
+    assert start["seeds"] == seeds and start["rng_input_sha256"] == fingerprint["sha256"]
+    manifest = {"planned_runs": [{"condition": "healthy", "replica": 0, "seeds": seeds, "rng_input_sha256": fingerprint["sha256"]}]}
+    assert pg.planned_inputs(manifest) == good and pg.planned_inputs(None) is None
+
+
+def test_the_random_input_hash_is_reproduced_by_the_independent_generators():
+    dlib = au.dlib()
+    for condition, replica in (("calibration", 0), ("healthy", 7), ("fault/SHIFT", 3), ("fault/LAG1", 15), ("fault/DUP", 1)):
+        seeds = dlib.seeds_for(fx.NAMESPACE, condition, replica)
+        assert seeds == RC.run_seeds(fx.NAMESPACE, condition, replica)
+        mine = pg.rng_input(dlib, seeds)["sha256"]
+        assert mine == RC.rng_input_sha256(seeds) and len(mine) == 64
+        for role in pg.RNG_ROLES:                                   # every one of the five generators is in the hash
+            assert RC.rng_input_sha256({**seeds, role: seeds[role] + 1}) != mine
+            assert pg.rng_input(dlib, {**seeds, role: seeds[role] + 1})["sha256"] != mine
+    # A fixed value of the audit namespace: the definition does not change unnoticed.
+    seeds = dlib.seeds_for(fx.NAMESPACE, "fault/LAG1", 15)
+    words = dlib.PCG64Source(seeds["local"]).read_bytes(8 * 128)
+    assert pg.rng_input(dlib, seeds)["roles"]["local"] == __import__("hashlib").sha256(words).hexdigest()
+    assert words == RC.words_to_bytes(RC.pcg64_words(seeds["local"], 128))
+    assert pg.environment_sha256() == pg.environment_sha256() and len(pg.environment_sha256()) == 64
+
+
+def test_a_record_stored_before_the_log_said_so_is_reconciled_not_rerun(tmp_path):
+    ctx = light(tmp_path)
+    log_start(ctx, "fault/SHIFT", 1)
+    record, _ = fx.FailingEngine(ctx).execute("fault/SHIFT", "SHIFT", 1)
+    pg.commit_run(ctx, record, None)                                # stored; the process ended before the commit entry
+    pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)
+    events = events_of(ctx, "fault/SHIFT", 1)
+    assert [e["event"] for e in events] == ["start", "commit"] and events[1]["detected_by"] == "resume"
+    assert events[1]["record_sha256"] == pc.sha256_file(ctx.record_path("fault/SHIFT", 1)) and events[1]["attempt"] == 1
+    assert manifest_entry(ctx, "fault/SHIFT", 1)["attempts"] == 1 and attempt_log(ctx)["agrees"]
+
+
+def test_the_audit_log_is_append_only_and_chained(tmp_path):
+    ctx = light(tmp_path)
+    pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)
+    path = ctx.result("journal.jsonl")
+    original = path.read_bytes()
+    events = pg.journal_events(ctx)
+    assert [e["seq"] for e in events] == list(range(1, len(events) + 1)) and events[0]["previous_sha256"] is None
+    lines = original.splitlines()
+    assert all(e["previous_sha256"] == pc.sha256_bytes(line) for e, line in zip(events[1:], lines))
+    assert events[0]["event"] == "generate_begin" and events[0]["policy"] == "regenerate_same_id" and events[-1]["event"] == "generate_end"
+    assert IG.read_journal(tmp_path)["problems"] == [] and IG.read_journal(tmp_path)["events"] == events
+    edited = json.loads(lines[4])
+    edited["attempt"] = 3
+    tampered = {"an edited entry": lines[:4] + [json.dumps(edited, sort_keys=True).encode()] + lines[5:],
+                "a removed entry": lines[:4] + lines[5:], "two entries exchanged": lines[:4] + [lines[5], lines[4]] + lines[6:],
+                "a removed first entry": lines[1:]}
+    for name, changed in tampered.items():
+        path.write_bytes(b"\n".join(changed) + b"\n")
+        with pytest.raises(pc.PilotError, match="does not verify"):
+            pg.journal_events(ctx)
+        with pytest.raises(pc.PilotError, match="does not verify"):
+            pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)       # nothing is run on a log that does not verify
+        assert IG.read_journal(tmp_path)["problems"], name
+        check = attempt_log(ctx)
+        assert not check["agrees"] and any(d["field"] == "chain" for d in check["discrepancies"]), name
+    path.write_bytes(original + b"not an entry\n")
+    with pytest.raises(pc.PilotError, match="is not a journal entry"):
+        pg.journal(ctx, "start", condition="healthy", replica=0)
+    assert IG.read_journal(tmp_path)["problems"] == ["the journal ends with a line that is not an entry"]
+    path.write_bytes(original)
+    assert attempt_log(ctx)["agrees"]
+
+
+def test_a_write_cut_short_is_left_in_place_and_declared(tmp_path):
+    ctx = light(tmp_path)
+    pg.journal(ctx, "generate_begin", workers=0)
+    path = ctx.result("journal.jsonl")
+    with open(path, "ab") as handle:
+        handle.write(b'{"seq": 2, "event": "sta')                    # power was lost in the middle of a line
+    entry = pg.journal(ctx, "generate_begin", workers=0)
+    assert entry["seq"] == 2 and entry["after_incomplete_line"] is True
+    assert b'{"seq": 2, "event": "sta\n' in path.read_bytes()        # the fragment is kept
+    assert [e["seq"] for e in pg.journal_events(ctx)] == [1, 2]
+    read = IG.read_journal(tmp_path)
+    assert read["problems"] == [] and read["incomplete_lines"] == 1 and len(read["events"]) == 2
+    third = pg.journal(ctx, "generate_begin", workers=0)
+    assert third["seq"] == 3 and "after_incomplete_line" not in third and len(pg.journal_events(ctx)) == 3
+    big = pg.journal(ctx, "generate_end", unresolved=["x" * 40] * 5000)   # one line longer than the block read from the end
+    after = pg.journal(ctx, "generate_begin", workers=0)
+    assert after["seq"] == big["seq"] + 1 and len(pg.journal_events(ctx)) == 5 and IG.read_journal(tmp_path)["problems"] == []
+
+
+def test_only_one_generate_works_on_an_output_tree(tmp_path):
+    import fcntl
+    ctx = light(tmp_path)
+    tmp_path.mkdir(exist_ok=True)
+    holder = os.open(tmp_path / ".generate.lock", os.O_RDWR | os.O_CREAT, 0o644)
+    try:
+        fcntl.flock(holder, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        with pytest.raises(pc.PilotError, match="another generate"):
             pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)
-        assert not list((tmp_path / "results" / "runs").rglob("*.json")) if (tmp_path / "results" / "runs").exists() else True
-        return
-    pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0, test_policy=policy)
-    phase = pc.read_json(ctx.record_path("healthy", 1))["failure"]["phase"]
-    events = [e["event"] for e in pg.journal_events(ctx) if e.get("condition") == "healthy" and e.get("replica") == 1]
-    if policy == "record_failure":
-        assert phase == "interrupted" and events == ["start", "interrupted"]     # never executed again
-    else:
-        assert phase == "generation" and events == ["start", "interrupted", "restart", "start", "commit"]
-        entry = next(e for e in pc.read_json(ctx.result("run_manifest.json"))["runs"]
-                     if (e["condition"], e["replica"]) == ("healthy", 1))
-        assert entry["attempts"] == 2
-    assert pc.read_json(ctx.record_path("healthy", 0))["failure"]["phase"] == "generation"   # others are unaffected
+        assert not ctx.result("journal.jsonl").exists()
+    finally:
+        os.close(holder)
+    assert pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)["counts"]["FAILED_RECORD"] == 10
+
+
+def test_a_stop_request_finishes_the_run_in_progress_and_costs_no_attempt(tmp_path):
+    ctx = light(tmp_path)
+    fx.set_interruptions(tmp_path, {"healthy/1": ["SIGINT"]})
+    before = signal.getsignal(signal.SIGINT)
+    out = pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert signal.getsignal(signal.SIGINT) is before                  # the usual handler is back
+    assert out["stopped_on_request"] is True and out["counts"] == {"COMPLETE": 0, "FAILED_RECORD": 4, "MISSING": 6,
+                                                                   "PARTIAL": 0, "CORRUPT": 0}
+    assert [e["event"] for e in events_of(ctx, "healthy", 1)] == ["start", "commit"]      # the run in progress was finished
+    events = pg.journal_events(ctx)
+    stop = next(e for e in events if e["event"] == "stop_requested")
+    assert stop["signal"] == int(signal.SIGINT) and stop["runs_not_started"] == 6
+    assert not any(e["event"] == "interrupted" for e in events)
+    out = pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert out["stopped_on_request"] is False and out["counts"]["FAILED_RECORD"] == 10
+    assert all(e["attempts"] == 1 for e in pc.read_json(ctx.result("run_manifest.json"))["runs"])
+    assert attempt_log(ctx)["agrees"]
+
+
+def test_the_independent_check_of_the_attempt_log_finds_what_was_changed(tmp_path):
+    ctx = light(tmp_path)
+    fx.set_interruptions(tmp_path, {"healthy/0": ["OSError"]})
+    with pytest.raises(pg.InfrastructureInterruption):
+        pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    pg.generate(ctx, engine_spec=fx.INTERRUPTED_FAILING_SPEC, workers=0)
+    assert attempt_log(ctx)["agrees"]
+
+    def fields(mutate):
+        """Discrepancy fields after a change to a copy of the tree."""
+        import shutil
+        copy = tmp_path.parent / (tmp_path.name + "-copy")
+        shutil.rmtree(copy, ignore_errors=True)
+        shutil.copytree(tmp_path, copy)
+        mutate(fx.context(ctx.plan, copy, need_measure=False))
+        out = VERIFY.check_attempt_log(copy, fx.NAMESPACE, fx.audit_plan(ctx.plan))
+        return {(d["id"], d["field"]) for d in out["discrepancies"]}
+
+    def rewrite_record(c, condition, replica, change):
+        record = pc.read_json(c.record_path(condition, replica))
+        change(record)
+        c.record_path(condition, replica).write_bytes(pc.canonical_json(record))
+
+    def other_seed(record):
+        record["seeds"]["local"] += 1
+
+    assert ("fault/DUP/00001", "commit record_sha256") in fields(lambda c: rewrite_record(c, "fault/DUP", 1, lambda r: r["failure"].update(local_bytes=8)))
+    found = fields(lambda c: rewrite_record(c, "fault/DUP", 1, other_seed))
+    assert ("fault/DUP/00001", "record seeds") in found and ("fault/DUP/00001", "commit record_sha256") in found
+    found = fields(lambda c: c.record_path("fault/DUP", 1).unlink())
+    assert ("fault/DUP/00001", "commit entries of a run without a record") in found
+    # A run started again although it had its record: a result replaced by another draw.
+    found = fields(lambda c: log_start(c, "fault/SHIFT", 0, 2))
+    assert ("fault/SHIFT/00000", "order") in found and ("fault/SHIFT/00000", "run manifest attempts") in found
+    # An attempt under other seeds, and one whose random input is not the planned one.
+    found = fields(lambda c: pg.journal(c, "start", condition="fault/SHIFT", replica=0, attempt=2,
+                                        seeds={**c.dlib.seeds_for(fx.NAMESPACE, "fault/SHIFT", 0), "profile": 5}, rng_input_sha256="0" * 64))
+    assert {("fault/SHIFT/00000", "attempt 2 seeds"), ("fault/SHIFT/00000", "attempt 2 rng_input_sha256")} <= found
+    # An interruption for a reason that is not of the infrastructure, and one that names no started attempt.
+    found = fields(lambda c: pg.journal(c, "interrupted", condition="healthy", replica=1, attempt=1, reason={"kind": "bad statistic"}))
+    assert ("healthy/00001", "interruption reason") in found and ("healthy/00001", "order") in found
+    found = fields(lambda c: pg.journal(c, "start", condition="healthy", replica=9, attempt=1))
+    assert ("healthy/9", "planned") in found
+    # The run manifest must tell the same history.
+    def fewer_attempts(c):
+        manifest = pc.read_json(c.result("run_manifest.json"))
+        next(e for e in manifest["runs"] if (e["condition"], e["replica"]) == ("healthy", 0))["attempts"] = 1
+        c.result("run_manifest.json").write_bytes(pc.canonical_json(manifest))
+
+    assert fields(fewer_attempts) == {("healthy/00000", "run manifest attempts")}
+    assert fields(lambda c: c.result("journal.jsonl").unlink()) == set()        # a test namespace needs no log
+    absent = VERIFY.check_attempt_log(tmp_path / "nowhere", pc.SMOKE_NAMESPACE, fx.audit_plan(pc.SMOKE_PLAN))
+    assert absent["status"] == "ABSENT" and not absent["agrees"] and absent["discrepancies"][0]["field"] == "present"
 
 
 def damage(ctx, kind):
@@ -165,7 +499,7 @@ def test_a_store_that_does_not_verify_stops_everything_and_is_left_as_found(tmp_
     state = pg.classify(ctx, "fault/SHIFT", 0)
     assert state["state"] == "CORRUPT" and state["reason"]
     with pytest.raises(pc.PilotError, match="do not verify and are not repaired"):
-        pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0, test_policy="regenerate_same_id")
+        pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)
     with pytest.raises(pc.PilotError, match="no valid record"):
         pg.require_complete(ctx)
     assert (record_path.read_bytes(), trace_path.read_bytes() if trace_path.exists() else None) == before
@@ -193,15 +527,20 @@ def test_a_trace_without_a_record_is_set_aside_not_deleted(tmp_path):
     orphan.parent.mkdir(parents=True)
     orphan.write_bytes(b"half a trace")
     assert pg.classify(ctx, "fault/DUP", 0)["state"] == "PARTIAL"
-    with pytest.raises(pc.PilotError, match="interrupted-run policy"):
+    with pytest.raises(pc.PilotError, match="origin is unknown"):     # no attempt was ever logged for it
         pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)
-    assert orphan.read_bytes() == b"half a trace"
-    pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0, test_policy="record_failure")
+    assert orphan.read_bytes() == b"half a trace" and not (tmp_path / "interrupted").exists()
+    assert not list((tmp_path / "results" / "runs").rglob("*.json"))
+    log_start(ctx, "fault/DUP", 0)                                    # an attempt that died after writing its trace
+    pg.generate(ctx, engine_spec=fx.FAILING_SPEC, workers=0)
     kept = list((tmp_path / "interrupted").rglob("00000.npz.*"))
     assert len(kept) == 1 and kept[0].read_bytes() == b"half a trace" and not orphan.exists()
-    record = pc.read_json(ctx.record_path("fault/DUP", 0))
-    assert record["failure"]["phase"] == "interrupted" and record["failure"]["trace_set_aside"].startswith("interrupted/traces/fault/DUP/")
-    assert (tmp_path / ".staging").exists() is False
+    events = events_of(ctx, "fault/DUP", 0)
+    assert [e["event"] for e in events] == ["start", "interrupted", "restart", "start", "commit"]
+    assert events[1]["reason"] == {"kind": "process_ended_without_record", "detail": "a trace without a record"}
+    assert events[1]["trace_set_aside"].startswith("interrupted/traces/fault/DUP/")
+    assert pc.read_json(ctx.record_path("fault/DUP", 0))["failure"]["phase"] == "generation"     # the second attempt's own result
+    assert (tmp_path / ".staging").exists() is False and attempt_log(ctx)["agrees"]
 
 
 def test_shards_partition_the_pending_runs():
@@ -227,11 +566,18 @@ def test_reserved_namespaces_and_engines_are_refused(tmp_path):
 # --------------------------------------------------------------------------- manifest and authorization
 def test_pre_generation_manifest_contents():
     ctx = pc.Context(pc.FROZEN_PLAN, _Path("/nonexistent"), None, au.dlib(), None)
-    with pytest.raises(pc.PilotError, match="no default"):
-        pg.build_pre_generation_manifest(ctx, interrupted_run_policy=None, tdk_deadline=None)
-    with pytest.raises(pc.PilotError, match="no default"):
-        pg.build_pre_generation_manifest(ctx, interrupted_run_policy="retry", tdk_deadline=None)
-    manifest = pg.build_pre_generation_manifest(ctx, interrupted_run_policy="record_failure", tdk_deadline=None, workers=6)
+    for other in (None, "retry", "record_failure"):
+        with pytest.raises(pc.PilotError, match="is not implemented"):
+            pg.build_pre_generation_manifest(ctx, interrupted_run_policy=other, tdk_deadline=None)
+    manifest = pg.build_pre_generation_manifest(ctx, tdk_deadline=None, workers=6)
+    assert manifest["interrupted_run_policy"] == "regenerate_same_id" and manifest["interrupted_run_rules"] == pg.INTERRUPTED_RUN_RULES
+    assert manifest["interrupted_run_rules"]["max_infrastructure_retries"] == 3
+    assert manifest["environment_sha256"] == pg.environment_sha256()
+    for index in (0, 998, 999, 2999, 4006, 5998):        # the hash of every run's random input, as the independent code has it
+        run = manifest["planned_runs"][index]
+        assert run["rng_input_sha256"] == RC.rng_input_sha256(RC.run_seeds(pc.PILOT_NAMESPACE, run["condition"], run["replica"]))
+    assert len({run["rng_input_sha256"] for run in manifest["planned_runs"]}) == 5999
+    assert PF.planned_run_problems(manifest, pc.PILOT_NAMESPACE, PF.PLAN) == []
     assert manifest["protocol_sha256"] == (au.REPO / "research/v019-d-pilot/protocol.sha256").read_text().split()[0]
     assert len(manifest["planned_runs"]) == 5999 and manifest["tdk_deadline"] is None
     run = manifest["planned_runs"][999 + 2000 + 1000 + 7]
@@ -250,7 +596,7 @@ def test_pre_generation_manifest_contents():
     assert manifest["workers"] == 6 and manifest["workers_deviate_from_protocol"] is True
     assert set(manifest["thread_variables"]) == set(pc.THREAD_VARIABLES)
     with pytest.raises(pc.PilotError, match="test plan"):
-        pg.build_pre_generation_manifest(light(_Path("/nonexistent")), interrupted_run_policy="record_failure", tdk_deadline=None)
+        pg.build_pre_generation_manifest(light(_Path("/nonexistent")), tdk_deadline=None)
 
 
 def test_generation_is_refused_without_the_authors_authorization(tmp_path, monkeypatch):
@@ -259,7 +605,8 @@ def test_generation_is_refused_without_the_authors_authorization(tmp_path, monke
     ctx = pc.Context(pc.SMOKE_PLAN, tmp_path, None, au.dlib(), None)
     with pytest.raises(pc.PilotError, match="manifest.json is missing"):
         pg.require_generation_allowed(ctx)
-    manifest = pg.build_pre_generation_manifest(ctx, interrupted_run_policy="record_failure", tdk_deadline="2027-04-30")
+    manifest = pg.build_pre_generation_manifest(ctx, tdk_deadline="2027-04-30")
+    assert len(manifest["planned_runs"]) == 10 and PF.planned_run_problems(manifest, pc.SMOKE_NAMESPACE, PF.NAMESPACES[pc.SMOKE_NAMESPACE][0]) == []
     manifest_path, authorization_path = tmp_path / "pre_generation_manifest.json", tmp_path / "authorization.json"
     manifest_path.write_bytes(pc.canonical_json(manifest))
     with pytest.raises(pc.PilotError, match="authorization.json is missing"):
@@ -272,7 +619,9 @@ def test_generation_is_refused_without_the_authors_authorization(tmp_path, monke
         with pytest.raises(pc.PilotError, match="does not authorise"):
             pg.require_generation_allowed(ctx)
     authorization_path.write_bytes(pc.canonical_json(good))
-    assert pg.require_generation_allowed(ctx)["interrupted_run_policy"] == "record_failure"
+    assert pg.require_generation_allowed(ctx)["interrupted_run_policy"] == "regenerate_same_id"
+    assert pg.planned_inputs(pg.require_generation_allowed(ctx))[("fault/DUP", 1)]["rng_input_sha256"] == RC.rng_input_sha256(
+        RC.run_seeds(pc.SMOKE_NAMESPACE, "fault/DUP", 1))
     monkeypatch.setenv("OMP_NUM_THREADS", "4")
     with pytest.raises(pc.PilotError, match="OMP_NUM_THREADS must be 1"):
         pg.require_generation_allowed(ctx)
@@ -291,9 +640,12 @@ def test_generation_is_refused_without_the_authors_authorization(tmp_path, monke
     reauthorised({**manifest, "namespace": pc.PILOT_NAMESPACE})
     with pytest.raises(pc.PilotError, match="another namespace or protocol"):
         pg.require_generation_allowed(ctx)
-    reauthorised({**manifest, "interrupted_run_policy": None})
-    with pytest.raises(pc.PilotError, match="no interrupted-run policy"):
-        pg.require_generation_allowed(ctx)
+    for changed in ({"interrupted_run_policy": None}, {"interrupted_run_policy": "record_failure"},
+                    {"interrupted_run_rules": {**manifest["interrupted_run_rules"], "max_infrastructure_retries": 10}},
+                    {"interrupted_run_rules": None}):
+        reauthorised({**manifest, **changed})
+        with pytest.raises(pc.PilotError, match="does not carry the interrupted-run policy the author decided"):
+            pg.require_generation_allowed(ctx)
     assert sorted(p.name for p in tmp_path.iterdir()) == ["authorization.json", "pre_generation_manifest.json"]  # no draw happened
 
 
@@ -353,14 +705,29 @@ def test_a_sampler_exception_becomes_a_failure_record_with_the_progress_made(tmp
     assert pg.classify(ctx, "fault/SHIFT", 1)["state"] == "FAILED_RECORD"
 
 
-def test_command_line_stops_without_the_measurement_layer(capsys):
-    if au.measure_path() is not None and au.measure_path().parent == au.REPO / "research/v019-d-pilot":
-        pytest.skip("the measurement layer is in the tree")
+def test_command_line_stops_without_the_measurement_layer(capsys, tmp_path, monkeypatch):
     run_pilot = au.load("d_pilot_run_pilot_test", au.REPO / "research/v019-d-pilot/run_pilot.py")
-    assert run_pilot.main(["status"]) == 2
-    assert "measure.py is not in this tree" in capsys.readouterr().err
     with pytest.raises(SystemExit):
         run_pilot.main(["calibrate", "--smoke"])     # no analysis of a smoke
+    monkeypatch.setattr(run_pilot.pc, "HERE", tmp_path)          # a directory that does not hold the file
+    assert run_pilot.main(["status"]) == 2
+    assert "measure.py is not in this tree" in capsys.readouterr().err
+
+
+def test_manifest_preview_shows_the_decision_and_writes_nothing(capsys):
+    if au.measure_path() != au.REPO / "research/v019-d-pilot/measure.py":
+        pytest.skip("the command line needs the measurement layer in the tree")
+    run_pilot = au.load("d_pilot_run_pilot_test", au.REPO / "research/v019-d-pilot/run_pilot.py")
+    directory = au.REPO / "research/v019-d-pilot"
+    before = sorted(p.relative_to(directory).as_posix() for p in directory.rglob("*") if "__pycache__" not in p.parts)
+    assert run_pilot.main(["manifest", "--smoke", "--preview", "--tdk-deadline", "2027-04-30"]) == 0
+    out = capsys.readouterr().out
+    assert "PREVIEW: nothing was written." in out and '"interrupted_run_policy": "regenerate_same_id"' in out
+    assert '"max_infrastructure_retries": 3' in out and "10 runs, each with seed labels, seeds and rng_input_sha256" in out
+    assert '"namespace": "rnglab-v019-d-pilot-smoke"' in out and '"tdk_deadline": "2027-04-30"' in out
+    assert sorted(p.relative_to(directory).as_posix() for p in directory.rglob("*") if "__pycache__" not in p.parts) == before
+    with pytest.raises(SystemExit):
+        run_pilot.main(["manifest", "--interrupted-run-policy", "record_failure"])      # the choice is no longer offered
 
 
 # --------------------------------------------------------------------------- with the measurement layer
@@ -424,7 +791,7 @@ import _pilot_fixture as fx
 plan = fx.pc.Plan(fx.NAMESPACE, (("calibration", "healthy", 2), ("healthy", "healthy", 2), ("fault/SHIFT", "SHIFT", 8),
                                  ("fault/LAG1", "LAG1", 8), ("fault/DUP", "DUP", 8)), range(0, 4), range(4, 8), 2, 2, "test")
 ctx = fx.context(plan, sys.argv[2])
-fx.pg.generate(ctx, engine_spec=fx.ENGINE_SPEC, workers=0, test_policy="regenerate_same_id")
+fx.pg.generate(ctx, engine_spec=fx.ENGINE_SPEC, workers=0)
 print("done")
 """
 
@@ -463,3 +830,12 @@ def test_killed_generation_resumes_to_the_same_store(tmp_path):
     assert len(commits) == len(set(commits)) == plan.total()               # every run committed exactly once
     assert sum(e["event"] == "restart" for e in events) >= 1
     assert pg.require_complete(ctx)["complete"] == plan.total()
+    # Every restart ran the same identity again, and the independent check reads the same history.
+    starts = [e for e in events if e["event"] == "start"]
+    assert len(starts) > plan.total() and max(e["attempt"] for e in starts) <= pg.MAX_ATTEMPTS
+    for entry in starts:
+        seeds = RC.run_seeds(fx.NAMESPACE, entry["condition"], entry["replica"])
+        assert entry["seeds"] == seeds and entry["rng_input_sha256"] == RC.rng_input_sha256(seeds)
+    check = VERIFY.check_attempt_log(ctx.root, fx.NAMESPACE, fx.audit_plan(plan))
+    assert check["agrees"], check["discrepancies"][:5]
+    assert check["interruptions"] == len(starts) - plan.total() and check["unresolved"] == []

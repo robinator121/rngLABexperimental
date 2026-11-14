@@ -698,3 +698,88 @@ def test_criterion_5_check_reports_a_changed_or_inconsistent_date(campaign, tmp_
     (tmp_path / "results/criteria.json").write_bytes(pc.canonical_json(criteria))
     out = vf.check_criterion_5(tmp_path)
     assert expected in {d["field"] for d in out["discrepancies"]} and not out["agrees"]
+
+
+# --------------------------------------------------------------------------- interrupted runs: the audit log and unresolved runs
+def test_the_attempt_log_of_the_campaign_is_checked_independently(campaign, recounted):
+    ctx, _ = campaign
+    check = vf.check_attempt_log(ctx.root, ctx.plan.namespace, fx.audit_plan(ctx.plan))
+    assert check["agrees"] and check["status"] == "CHECKED" and check["journal_entries"] == 2 * 207 + 2
+    assert check["compared"] == 16 * 207 + 2 and check["interruptions"] == 0 and check["unresolved"] == []
+    assert check["run_manifest_present"] and not check["pre_generation_manifest_present"] and len(check["environments"]) == 1
+    criteria = pc.read_json(ctx.result("criteria.json"))
+    assert criteria["unresolved_infrastructure"] == {
+        "status": None, "runs": [], "per_condition": {c: 0 for c, _, _ in ctx.plan.conditions},
+        "criteria_that_cannot_pass": [], "max_infrastructure_retries": 3}
+    assert recounted[0]["unresolved_infrastructure"] == {
+        "runs": [], "per_condition": {c: 0 for c, _, _ in ctx.plan.conditions}, "criteria_that_cannot_pass": []}
+
+
+def test_criteria_that_use_a_condition_are_the_same_on_both_sides():
+    assert rc.criteria_blocked_by([]) == [] and rc.criteria_blocked_by(["calibration"]) == [2, 3, 4]
+    assert rc.criteria_blocked_by(["healthy"]) == [1, 2, 3, 4] and rc.criteria_blocked_by(["fault/DUP", "fault/SHIFT"]) == [2, 3, 4]
+    assert rc.criteria_blocked_by(["fault/LAG1", "healthy"]) == [1, 2, 3, 4]
+    assert {k: tuple(map(int, v)) for k, v in pa.CRITERIA_USING.items()} == rc.CRITERIA_USING
+    assert all("5" not in keys for keys in pa.CRITERIA_USING.values())         # the dates do not depend on any run
+
+
+def test_an_unresolved_run_keeps_the_criteria_that_use_it_from_passing(tmp_path, monkeypatch):
+    plan = pc.Plan(fx.NAMESPACE, (("calibration", "healthy", 39), ("healthy", "healthy", 3), ("fault/SHIFT", "SHIFT", 4),
+                                  ("fault/LAG1", "LAG1", 4), ("fault/DUP", "DUP", 4)), range(0, 2), range(2, 4), 39, 38, "test")
+    root = tmp_path / "store"
+    ctx = fx.context(plan, root)
+    fx.set_interruptions(root, {"healthy/1": ["OSError"] * 4})
+    for _ in range(4):
+        with pytest.raises(pg.InfrastructureInterruption):
+            pg.generate(ctx, engine_spec=fx.INTERRUPTED_SPEC, workers=0)
+    out = pg.generate(ctx, engine_spec=fx.INTERRUPTED_SPEC, workers=0)
+    assert out["unresolved_infrastructure"] == ["healthy/00001"]
+    assert out["counts"]["COMPLETE"] == 53 and out["counts"]["FAILED_RECORD"] == 1
+    pa.calibrate(ctx)
+    pf.fit(ctx)
+    pa.issue(ctx)
+    pf.evaluate(ctx)
+    healthy = pa.healthy_summary(ctx)
+    assert healthy["V2_D"]["unknown"] == 1                              # counted as a failed run, not left out
+    pa.fault_summary(ctx)
+    pa.implementation_checks(ctx, None)
+    primary_rule, independent_rule = pa.criterion_1, rc.criterion_1
+    # The plan is too small for any criterion to pass by itself: let criterion 1 pass, on both sides.
+    monkeypatch.setattr(pa, "criterion_1", lambda summary: {**primary_rule(summary), "result": "PASS"})
+    monkeypatch.setattr(rc, "criterion_1", lambda covered, runs: {**independent_rule(covered, runs), "result": "PASS"})
+    criteria = pa.criteria(ctx)
+    assert criteria["results_before_precedence"]["1"] == "PASS" and criteria["results"]["1"] == "INSUFFICIENT_INFORMATION"
+    assert criteria["counts_as_failed_for_the_stop_rule"]["1"] is True
+    assert "PASS" not in [criteria["results"][key] for key in "1234"]
+    assert criteria["unresolved_infrastructure"] == {
+        "status": "UNRESOLVED_INFRASTRUCTURE", "runs": [{"condition": "healthy", "replica": 1}],
+        "per_condition": {"calibration": 0, "healthy": 1, "fault/SHIFT": 0, "fault/LAG1": 0, "fault/DUP": 0},
+        "criteria_that_cannot_pass": ["1", "2", "3", "4"], "max_infrastructure_retries": 3}
+    independent, comparison = recount(ctx)
+    assert independent["criterion_1"]["result"] == "PASS" and independent["verdicts"]["criterion_1"] == "INSUFFICIENT_INFORMATION"
+    assert independent["unresolved_infrastructure"] == {
+        "runs": [{"condition": "healthy", "replica": 1}],
+        "per_condition": {"calibration": 0, "healthy": 1, "fault/SHIFT": 0, "fault/LAG1": 0, "fault/DUP": 0},
+        "criteria_that_cannot_pass": [1, 2, 3, 4]}
+    assert [d for d in comparison["discrepancies"] if d["field"] not in ORACLE_FIELDS] == []
+    check = vf.check_attempt_log(root, fx.NAMESPACE, fx.audit_plan(plan))
+    assert check["agrees"], check["discrepancies"]
+    assert check["unresolved"] == [{"condition": "healthy", "replica": 1}] and check["criteria_that_cannot_pass"] == [1, 2, 3, 4]
+    # A criteria file that lets the criterion pass, or does not name the run, is reported by both checks.
+    copy_root = tmp_path / "copy"
+    shutil.copytree(root, copy_root)
+    changed = copy.deepcopy(criteria)
+    changed["results"]["1"] = "PASS"
+    changed["unresolved_infrastructure"]["runs"] = []
+    changed["unresolved_infrastructure"]["criteria_that_cannot_pass"] = []
+    (copy_root / "results/criteria.json").write_bytes(pc.canonical_json(changed))
+    found = {(d["id"], d["field"]) for d in vf.check_attempt_log(copy_root, fx.NAMESPACE, fx.audit_plan(plan))["discrepancies"]}
+    assert found == {("criteria", "unresolved runs"), ("criteria", "criteria that cannot pass"), ("criteria", "final 1")}
+    assert "final 1" in {d["field"] for d in vf.compare_with_primary(copy_root, independent)["discrepancies"]}
+    # Without the unresolved run nothing is blocked: the same patched rule passes.
+    views = {c: [vf.load_view(root, c, i) for i in range(n)] for c, (_, n) in fx.audit_plan(plan).items()}
+    for view in views["healthy"]:
+        view.failure_phase = None
+    free = vf.recount_campaign(views, fx.NAMESPACE, plan=fx.audit_plan(plan), fitting=plan.fitting, evaluation=plan.evaluation,
+                               saved_models=vf.saved_models_from_primary(pc.read_json(ctx.result("models.json"))))
+    assert free["verdicts"]["criterion_1"] == "PASS" and free["unresolved_infrastructure"]["criteria_that_cannot_pass"] == []

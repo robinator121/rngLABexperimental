@@ -1,13 +1,25 @@
 """Stage D pilot: generation driver, atomic storage, resume, manifests, I-4 replay. protocol.json governs.
 
-What this module does not decide. The protocol does not say what happens to a run that
-was started and left no record because its process died. `generate` therefore refuses to
-continue past such a run unless the pre-generation manifest names a policy
-(`interrupted_run_policy`), which only the author can choose:
+Interrupted runs. The protocol does not say what happens to a run that was started and left
+no record because its process died. The author decided it on 2026-11-13 (`INTERRUPTED_RUN_RULES`,
+copied into the pre-generation manifest):
 
-    regenerate_same_id   run the same identity again; the draw is the same function of its
-                         seed labels, so the result is the one the first attempt would have given
-    record_failure       write a failure record with phase 'interrupted' and never run it again
+    regenerate_same_id   the same identity is run again: same run ID, seed labels, seeds,
+                         generator configuration and protocol parameters. Before every attempt
+                         the first outputs of the run's five generators are hashed and compared
+                         with the manifest (`rng_input_sha256`). Nothing is assumed about
+                         floating-point output being identical in another environment.
+    three retries        a run may be attempted four times. After the fourth interruption it
+                         gets a failure record with phase 'infrastructure' and the status
+                         UNRESOLVED_INFRASTRUCTURE, is never run again, and the stop criteria
+                         it touches cannot be PASS (pilot_analysis.criteria).
+    two kinds of failure an interruption of the infrastructure (the process ended without a
+                         record, an error of the operating system or of memory) is retried.
+                         An exception of the sampler, a check, the measurement or the encoding
+                         is experimental evidence: it gets a failure record and is never retried.
+
+Every attempt, interruption and commit is one line of results/journal.jsonl. The file is only
+appended to; every line carries the SHA-256 of the line before it.
 
 A run with a record is never run again, whatever the record says (protocol.json failed_runs).
 A record or trace that does not verify is reported and stops the driver; nothing is repaired.
@@ -17,11 +29,15 @@ author's authorization record that names that manifest's hash (`require_generati
 """
 from __future__ import annotations
 
+import fcntl
+import hashlib
 import json
 import os
 import shutil
+import signal
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 from typing import Any, Mapping
@@ -34,7 +50,30 @@ if str(HERE) not in sys.path:
 import pilot_common as pc  # noqa: E402
 
 STATES = ("COMPLETE", "FAILED_RECORD", "MISSING", "PARTIAL", "CORRUPT")
-POLICIES = ("regenerate_same_id", "record_failure")
+POLICY = "regenerate_same_id"
+MAX_INFRASTRUCTURE_RETRIES = 3
+MAX_ATTEMPTS = 1 + MAX_INFRASTRUCTURE_RETRIES
+INFRASTRUCTURE_PHASE = "infrastructure"
+UNRESOLVED = "UNRESOLVED_INFRASTRUCTURE"
+RNG_ROLES = ("local", "centroid", "start", "fault", "profile")
+RNG_INPUT_WORDS = 128
+# The author's decision of 2026-11-13 on a question the frozen protocol leaves open. It changes no
+# seed, sample size, threshold or criterion. The pre-generation manifest carries a copy.
+INTERRUPTED_RUN_RULES = {
+    "policy": POLICY, "decided_by": "author", "decided_on": "2026-11-13",
+    "max_infrastructure_retries": MAX_INFRASTRUCTURE_RETRIES,
+    "retry_identity": "same run ID, seed labels, seeds, generator configuration and protocol parameters",
+    "infrastructure_interruptions": ["process_ended_without_record", "operating_system_error", "memory_error"],
+    "experimental_failures": "an exception of the sampler, a check, the measurement or the encoding gets a failure "
+                             "record (protocol.json failed_runs) and is never retried",
+    "exhaustion": f"failure record with phase '{INFRASTRUCTURE_PHASE}' and infrastructure_status {UNRESOLVED}; "
+                  "the stop criteria that use the run cannot be PASS",
+    "rng_input": f"per role, SHA-256 of the first {RNG_INPUT_WORDS} 64-bit outputs, big-endian: the repository's PCG64 "
+                 "source for local, centroid and start; numpy.random.default_rng(seed).bit_generator for fault and "
+                 "profile. rng_input_sha256 is the SHA-256 of the compact sorted JSON of the five hashes",
+    "floating_point": "no bit-identical floating-point output is assumed across execution environments; every "
+                      "attempt records the hash of its software versions",
+}
 # Fields that differ between two executions of the same run for reasons of timing only (I-4 ignores them).
 TIMING_FIELDS = ("measurement_seconds", "generation_seconds", "check_seconds")
 # Fields the storage layer adds to a record; a regenerated record has them only after it is written.
@@ -94,6 +133,80 @@ def failure_record(plan: pc.Plan, condition: str, family: str, replica: int, pha
             "trace_path": None, "trace_sha256": None, "array_hashes": None}
 
 
+class InfrastructureInterruption(pc.PilotError):
+    """An attempt ended for a reason of the infrastructure. It left no record and may be retried."""
+
+    def __init__(self, condition: str, replica: int, attempt: int, reason: Mapping[str, Any]):
+        super().__init__(f"run {condition}/{replica:05d}, attempt {attempt}: interrupted by the infrastructure "
+                         f"({reason['kind']}: {reason['detail']}); no record was written")
+        self.reason = dict(reason)
+
+
+def infrastructure_cause(error: BaseException) -> BaseException | None:
+    """The operating-system or memory error behind an exception, if there is one.
+
+    OSError covers a full or failing storage medium, a quota, a lost mount. MemoryError is the
+    interpreter running out of memory. Neither is a property of the draw. Everything else
+    (ArithmeticError, ValueError, a failed check, an encoding error) is the run's own failure.
+    """
+    seen: set[int] = set()
+    while error is not None and id(error) not in seen:
+        if isinstance(error, (OSError, MemoryError)):
+            return error
+        seen.add(id(error))
+        error = error.__cause__ or error.__context__
+    return None
+
+
+def recorded_memory_error(value: Any) -> dict | None:
+    """The first exception entry {"class": "MemoryError", ...} anywhere in a run record, if there is one.
+
+    The measurement layer turns an exception inside a battery test or an endpoint into a recorded
+    failure of that checkpoint. For a numerical or statistical failure that is the evidence. Running
+    out of memory there says nothing about the draw, so such a record is not stored and the attempt
+    counts as interrupted.
+    """
+    if isinstance(value, Mapping):
+        if value.get("class") == "MemoryError":
+            return dict(value)
+        value = list(value.values())
+    if isinstance(value, (list, tuple)):
+        for item in value:
+            found = recorded_memory_error(item)
+            if found is not None:
+                return found
+    return None
+
+
+def interruption_reason(error: BaseException) -> dict:
+    cause = infrastructure_cause(error)
+    return {"kind": "memory_error" if isinstance(cause, MemoryError) else "operating_system_error",
+            "detail": f"{type(cause).__name__}: {cause}"[:300]}
+
+
+def rng_input(dlib: Any, seeds: Mapping[str, int]) -> dict:
+    """INTERRUPTED_RUN_RULES['rng_input']: what the run's five generators emit first, hashed per role.
+
+    Integer arithmetic only, so the value is the same in every environment. It identifies the
+    random input of an attempt without reference to any floating-point result.
+    """
+    def digest(role: str) -> str:
+        if role in ("local", "centroid", "start"):
+            data = dlib.PCG64Source(seeds[role]).read_bytes(8 * RNG_INPUT_WORDS)
+        else:
+            data = np.random.default_rng(seeds[role]).bit_generator.random_raw(RNG_INPUT_WORDS).astype(">u8").tobytes()
+        return hashlib.sha256(data).hexdigest()
+
+    roles = {role: digest(role) for role in RNG_ROLES}
+    compact = json.dumps(roles, sort_keys=True, separators=(",", ":")).encode("ascii")
+    return {"roles": roles, "sha256": hashlib.sha256(compact).hexdigest()}
+
+
+def environment_sha256() -> str:
+    """Hash of the software versions and machine type of this process."""
+    return pc.sha256_bytes(json.dumps(pc.software_versions(), sort_keys=True, separators=(",", ":")).encode("utf-8"))
+
+
 class PilotEngine:
     """The pilot's own generation and measurement, with implementation checks I-1 to I-3."""
 
@@ -109,6 +222,8 @@ class PilotEngine:
         try:
             run = dlib.generate_run(plan.namespace, condition, family, replica)
         except Exception as error:  # a sampler or adapter exception is a recorded run failure
+            if infrastructure_cause(error) is not None:
+                raise                   # not the run's failure: run_one logs the interruption
             return failure_record(plan, condition, family, replica, "generation", error, seeds, _partial_state(error)), None
         generated = time.perf_counter() - started
         try:
@@ -122,6 +237,8 @@ class PilotEngine:
             checked = time.perf_counter() - started - generated
             record, arrays = measure.measure_run(run)
         except Exception as error:
+            if infrastructure_cause(error) is not None:
+                raise
             hashes = {key: run.get(key) for key in ("emitted_sha256", "base_sha256", "prefix_sha256", "start_sha256")}
             return failure_record(plan, condition, family, replica, "measurement", error, seeds,
                                   {"completed_sweeps": int(len(run["marks"])), "local_bytes": int(run["local_bytes"]),
@@ -223,23 +340,103 @@ def scan(context: pc.Context, *, verify_hash: bool = True) -> list[dict]:
     return [classify(context, condition, replica, verify_hash=verify_hash) for condition, _, replica in context.plan.runs()]
 
 
-def journal(context: pc.Context, event: str, **fields: Any) -> None:
-    """Append one event (start, commit, interrupted, restart, worker_error) as a single write."""
+def _journal_tail(descriptor: int) -> tuple[bytes | None, bool]:
+    """(last complete line, whether an incomplete line follows it) of the open journal."""
+    size = os.fstat(descriptor).st_size
+    if size == 0:
+        return None, False
+    length = 1 << 16
+    while True:                              # read backwards until the last complete line is whole
+        block = os.pread(descriptor, min(size, length), max(0, size - length))
+        if length >= size or block.count(b"\n") >= 2:
+            break
+        length *= 2
+    torn = not block.endswith(b"\n")
+    lines = block.split(b"\n")[:-1]          # what follows the last newline is not a line
+    return (lines[-1] if lines else None), torn
+
+
+def journal(context: pc.Context, event: str, **fields: Any) -> dict:
+    """Append one event to results/journal.jsonl: the audit log of attempts, interruptions and commits.
+
+    Events: generate_begin, start, commit, interrupted, restart, unresolved, trace_set_aside,
+    stop_requested, worker_exit, generate_end. The file is opened for appending and locked for the duration of
+    one write. Each entry has a sequence number and the SHA-256 of the previous line, so a
+    removed, reordered or edited line is detectable. Nothing in this module rewrites the file.
+    """
     path = context.result("journal.jsonl")
     path.parent.mkdir(parents=True, exist_ok=True)
-    line = json.dumps({"time": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "pid": os.getpid(), "event": event, **fields},
-                      sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n"
-    descriptor = os.open(path, os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o644)
+    descriptor = os.open(path, os.O_RDWR | os.O_APPEND | os.O_CREAT, 0o644)
     try:
-        os.write(descriptor, line.encode("utf-8"))
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
+        last, torn = _journal_tail(descriptor)
+        try:
+            previous = json.loads(last) if last is not None else None
+            if previous is not None and not isinstance(previous.get("seq"), int):
+                raise ValueError("no sequence number")
+        except (ValueError, AttributeError) as error:
+            raise pc.PilotError(f"the last line of results/journal.jsonl is not a journal entry ({error}); "
+                                "nothing is appended to a journal that does not verify") from None
+        entry = {"seq": previous["seq"] + 1 if previous else 1,
+                 "previous_sha256": pc.sha256_bytes(last) if last is not None else None,
+                 "time": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "pid": os.getpid(), "event": event, **fields}
+        if torn:    # a write that a power loss cut short: left in place, closed with a newline, and said so
+            entry["after_incomplete_line"] = True
+        line = json.dumps(entry, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n"
+        os.write(descriptor, (b"\n" if torn else b"") + line.encode("utf-8"))
         os.fsync(descriptor)
     finally:
-        os.close(descriptor)
+        os.close(descriptor)                 # closing releases the lock
+    return entry
 
 
 def journal_events(context: pc.Context) -> list[dict]:
+    """Every entry of the journal, after checking its chain. A journal that does not verify stops the caller."""
     path = context.result("journal.jsonl")
-    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()] if path.exists() else []
+    if not path.exists():
+        return []
+    events: list[dict] = []
+    previous: bytes | None = None
+    skipped = False
+    for number, line in enumerate(path.read_bytes().split(b"\n"), 1):
+        if not line:
+            continue
+        try:
+            entry = json.loads(line)
+            if not isinstance(entry, dict) or "seq" not in entry:
+                raise ValueError("not a journal entry")
+        except ValueError:
+            skipped = True                   # acceptable only if the next entry declares it
+            continue
+        expected = pc.sha256_bytes(previous) if previous is not None else None
+        if (entry["seq"] != len(events) + 1 or entry.get("previous_sha256") != expected
+                or bool(entry.get("after_incomplete_line")) != skipped):
+            raise pc.PilotError(f"results/journal.jsonl does not verify at line {number}: an entry was removed, "
+                                "reordered or changed. It is not repaired")
+        events.append(entry)
+        previous, skipped = line, False
+    return events
+
+
+def attempt_history(events: list[dict]) -> dict[tuple[str, int], dict]:
+    """Per run: number of starts, interruptions by attempt number, commits and the unresolved mark."""
+    history: dict[tuple[str, int], dict] = {}
+    for entry in events:
+        if "condition" not in entry or "replica" not in entry:
+            continue
+        run = history.setdefault((entry["condition"], entry["replica"]),
+                                 {"starts": 0, "interrupted": {}, "commits": 0, "unresolved": False, "environments": []})
+        if entry["event"] == "start":
+            run["starts"] += 1
+            if entry.get("environment_sha256") and entry["environment_sha256"] not in run["environments"]:
+                run["environments"].append(entry["environment_sha256"])
+        elif entry["event"] == "interrupted":
+            run["interrupted"][entry.get("attempt")] = {"reason": entry.get("reason"), "detected_by": entry.get("detected_by")}
+        elif entry["event"] == "commit":
+            run["commits"] += 1
+        elif entry["event"] == "unresolved":
+            run["unresolved"] = True
+    return history
 
 
 # ---------------------------------------------------------------------------
@@ -268,15 +465,17 @@ def i4_selection(context: pc.Context) -> dict[str, list[int]]:
     return chosen
 
 
-def build_pre_generation_manifest(context: pc.Context, *, interrupted_run_policy: str, tdk_deadline: str | None,
-                                  workers: int = pc.PROTOCOL_WORKERS) -> dict:
+def build_pre_generation_manifest(context: pc.Context, *, tdk_deadline: str | None,
+                                  workers: int = pc.PROTOCOL_WORKERS, interrupted_run_policy: str = POLICY) -> dict:
     """The record that must exist, and be pushed by the author, before the first draw.
 
-    interrupted_run_policy has no default: it is the author's decision (see the module text).
+    The interrupted-run policy is the author's decision of 2026-11-13 (INTERRUPTED_RUN_RULES); no
+    other policy is implemented. Every planned run carries the hash of its random input.
     tdk_deadline may be None; stop criterion 5 is then INSUFFICIENT_INFORMATION, as the protocol says.
     """
-    if interrupted_run_policy not in POLICIES:
-        raise pc.PilotError(f"interrupted_run_policy must be one of {POLICIES}; it has no default")
+    if interrupted_run_policy != POLICY:
+        raise pc.PilotError(f"the author decided the interrupted-run policy {POLICY!r} on "
+                            f"{INTERRUPTED_RUN_RULES['decided_on']}; {interrupted_run_policy!r} is not implemented")
     if context.plan.kind == "test":
         raise pc.PilotError("a test plan has no pre-generation manifest")
     plan = context.plan
@@ -289,6 +488,12 @@ def build_pre_generation_manifest(context: pc.Context, *, interrupted_run_policy
             return None
 
     dirty = git("status", "--porcelain")
+    planned = []
+    for condition, family, replica in plan.runs():
+        seeds = context.dlib.seeds_for(plan.namespace, condition, replica)
+        planned.append({"condition": condition, "family": family, "replica": replica, "split": plan.split(condition, replica),
+                        "seed_labels": {role: f"{plan.namespace}/{condition}/{role}/{replica:05d}" for role in RNG_ROLES},
+                        "seeds": seeds, "rng_input_sha256": rng_input(context.dlib, seeds)["sha256"]})
     return {"schema": "rnglab-v019-d-pilot-pre-generation-manifest-v1", "namespace": plan.namespace, "plan_kind": plan.kind,
             "protocol_sha256": pc.protocol_sha256(), "design_sha256": pc.sha256_file(HERE / "design.json"),
             "code_sha256": code_hashes(), "environment_lock": {"path": lock.relative_to(pc.REPO).as_posix(),
@@ -296,17 +501,13 @@ def build_pre_generation_manifest(context: pc.Context, *, interrupted_run_policy
             "software": pc.software_versions(), "git": {"branch": git("rev-parse", "--abbrev-ref", "HEAD"),
                                                         "commit": git("rev-parse", "HEAD"),
                                                         "working_tree_clean": None if dirty is None else dirty == ""},
-            "planned_runs": [{"condition": condition, "family": family, "replica": replica,
-                              "split": plan.split(condition, replica),
-                              "seed_labels": {role: f"{plan.namespace}/{condition}/{role}/{replica:05d}"
-                                              for role in ("local", "centroid", "start", "fault", "profile")},
-                              "seeds": context.dlib.seeds_for(plan.namespace, condition, replica)}
-                             for condition, family, replica in plan.runs()],
+            "planned_runs": planned,
             "i4_replay_selection": i4_selection(context),
             "workers": workers, "protocol_workers": pc.PROTOCOL_WORKERS,
             "workers_deviate_from_protocol": workers != pc.PROTOCOL_WORKERS,
             "thread_variables": {name: "1" for name in pc.THREAD_VARIABLES},
-            "interrupted_run_policy": interrupted_run_policy, "tdk_deadline": tdk_deadline,
+            "interrupted_run_policy": interrupted_run_policy, "interrupted_run_rules": dict(INTERRUPTED_RUN_RULES),
+            "environment_sha256": environment_sha256(), "tdk_deadline": tdk_deadline,
             "approved_amendments": pc.approved_amendments(),
             "written_at": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
 
@@ -329,8 +530,8 @@ def require_generation_allowed(context: pc.Context) -> dict | None:
     added = sorted(p for p in current if p not in manifest["code_sha256"])
     if changed or added:
         raise pc.PilotError(f"code differs from the pre-generation manifest: changed {changed}, not listed {added}")
-    if manifest.get("interrupted_run_policy") not in POLICIES:
-        raise pc.PilotError("the pre-generation manifest names no interrupted-run policy")
+    if manifest.get("interrupted_run_policy") != POLICY or manifest.get("interrupted_run_rules") != INTERRUPTED_RUN_RULES:
+        raise pc.PilotError("the pre-generation manifest does not carry the interrupted-run policy the author decided")
     if not authorization_path.is_file():
         raise pc.PilotError("authorization.json is missing: the author has not authorised generation")
     authorization = pc.read_json(authorization_path)
@@ -347,22 +548,70 @@ def require_generation_allowed(context: pc.Context) -> dict | None:
 # ---------------------------------------------------------------------------
 # Driver
 # ---------------------------------------------------------------------------
-def run_one(context: pc.Context, engine: Any, condition: str, family: str, replica: int) -> dict:
-    """Execute and store one planned run; every outcome becomes a record."""
-    journal(context, "start", condition=condition, replica=replica)
-    record, arrays = engine.execute(condition, family, replica)
+def planned_inputs(manifest: Mapping | None) -> dict[tuple[str, int], dict] | None:
+    """Seeds and random-input hash of every planned run, from the pre-generation manifest."""
+    if manifest is None:
+        return None
+    return {(run["condition"], run["replica"]): {"seeds": run["seeds"], "rng_input_sha256": run["rng_input_sha256"]}
+            for run in manifest["planned_runs"]}
+
+
+def run_one(context: pc.Context, engine: Any, condition: str, family: str, replica: int, attempt: int = 1,
+            planned: Mapping[tuple[str, int], Mapping] | None = None) -> dict:
+    """One attempt at one planned run.
+
+    It ends in a stored record (a result, or the run's own failure), or in an
+    InfrastructureInterruption that left no record. Before anything is drawn, the seeds and
+    the first outputs of the run's generators are compared with the pre-generation manifest.
+    """
+    seeds = context.dlib.seeds_for(context.plan.namespace, condition, replica)
+    fingerprint = rng_input(context.dlib, seeds)["sha256"]
+    expected = planned.get((condition, replica)) if planned is not None else None
+    if planned is not None and (expected is None or dict(expected["seeds"]) != dict(seeds)
+                                or expected["rng_input_sha256"] != fingerprint):
+        raise pc.PilotError(f"run {condition}/{replica:05d}: seeds or random input differ from the pre-generation "
+                            "manifest; nothing was drawn")
+    journal(context, "start", condition=condition, replica=replica, attempt=attempt, seeds=dict(seeds),
+            rng_input_sha256=fingerprint, environment_sha256=environment_sha256())
     try:
-        entry = commit_run(context, record, arrays)
+        try:
+            record, arrays = engine.execute(condition, family, replica)
+        except pc.PilotError:
+            raise
+        except Exception as error:  # an exception the engine did not classify is still the run's own failure
+            if infrastructure_cause(error) is not None:
+                raise
+            record, arrays = failure_record(context.plan, condition, family, replica, "execution", error, seeds), None
+        absorbed = recorded_memory_error(record)
+        if absorbed is not None:    # not a property of the draw: the record is not stored
+            raise MemoryError(f"recorded inside the run: {absorbed.get('message')}")
+        try:
+            entry = commit_run(context, record, arrays)
+        except pc.PilotError:
+            raise
+        except Exception as error:  # the measurement layer reports serialization errors as RuntimeError
+            if infrastructure_cause(error) is not None:
+                raise               # the storage medium, not the encoding: no failure record
+            moved = None
+            if context.trace_path(condition, replica).exists() and not context.record_path(condition, replica).exists():
+                moved = _set_aside(context, condition, replica)
+            record = failure_record(context.plan, condition, family, replica, "serialization", error, record.get("seeds"),
+                                    {"trace_set_aside": moved})
+            entry = commit_run(context, record, None)
     except pc.PilotError:
         raise
-    except Exception as error:  # the measurement layer reports serialization errors as RuntimeError
-        moved = None
-        if context.trace_path(condition, replica).exists() and not context.record_path(condition, replica).exists():
-            moved = _set_aside(context, condition, replica)
-        record = failure_record(context.plan, condition, family, replica, "serialization", error, record.get("seeds"),
-                                {"trace_set_aside": moved})
-        entry = commit_run(context, record, None)
-    journal(context, "commit", condition=condition, replica=replica, status=record.get("status"))
+    except Exception as error:
+        if infrastructure_cause(error) is None:
+            raise
+        reason = interruption_reason(error)
+        try:
+            journal(context, "interrupted", condition=condition, replica=replica, attempt=attempt, reason=reason,
+                    detected_by="attempt")
+        except OSError:
+            pass    # the medium that failed may hold the journal too; the next `generate` records the interruption
+        raise InfrastructureInterruption(condition, replica, attempt, reason) from error
+    journal(context, "commit", condition=condition, replica=replica, attempt=attempt, status=record.get("status"),
+            record_sha256=pc.sha256_file(context.record_path(condition, replica)), detected_by="attempt")
     return entry
 
 
@@ -376,73 +625,174 @@ def _set_aside(context: pc.Context, condition: str, replica: int) -> str:
     return target.relative_to(context.root).as_posix()
 
 
-def prepare(context: pc.Context, policy: str | None) -> list[tuple[str, str, int]]:
-    """Decide what remains to be run. Raises on anything that does not verify."""
+def prepare(context: pc.Context) -> list[tuple[str, str, int, int]]:
+    """Decide what remains to be run: (condition, family, replica, attempt number). Raises on anything
+    that does not verify.
+
+    A run that was started and has no record was interrupted. It is logged, and run again with the
+    same identity, at most MAX_INFRASTRUCTURE_RETRIES times; after that it gets its failure record
+    with the status UNRESOLVED_INFRASTRUCTURE and is not run again.
+    """
     shutil.rmtree(context.root / ".staging", ignore_errors=True)  # staging holds no results
     states = {(s["condition"], s["replica"]): s for s in scan(context)}
     corrupt = [s for s in states.values() if s["state"] == "CORRUPT"]
     if corrupt:
         listing = "; ".join(f"{s['condition']}/{s['replica']:05d}: {s['reason']}" for s in corrupt[:10])
         raise pc.PilotError(f"{len(corrupt)} stored runs do not verify and are not repaired: {listing}")
-    events = journal_events(context)
-    started = {(e["condition"], e["replica"]) for e in events if e["event"] == "start"}
+    history = attempt_history(journal_events(context))
+    blank = {"starts": 0, "interrupted": {}, "commits": 0, "unresolved": False}
+    # Every attempt is logged, and the log is flushed to disk, before anything is drawn. A trace
+    # without a record and without a logged attempt was therefore not left by this driver.
+    unknown = [s for s in states.values() if s["state"] == "PARTIAL"
+               and not history.get((s["condition"], s["replica"]), blank)["starts"]]
+    if unknown:
+        listing = "; ".join(f"{s['condition']}/{s['replica']:05d}" for s in unknown[:10])
+        raise pc.PilotError(f"{len(unknown)} traces have no record and no logged attempt; their origin is unknown "
+                            f"and they are left as found: {listing}")
     pending = []
     for condition, family, replica in context.plan.runs():
-        state = states[(condition, replica)]["state"]
-        if state in ("COMPLETE", "FAILED_RECORD"):
+        state, past = states[(condition, replica)], history.get((condition, replica), blank)
+        if state["state"] in ("COMPLETE", "FAILED_RECORD"):
+            if not past["commits"] and not past["unresolved"]:
+                # The record was stored and the process ended before the journal said so.
+                if state.get("failure_phase") == INFRASTRUCTURE_PHASE:
+                    journal(context, "unresolved", condition=condition, replica=replica, attempts=past["starts"],
+                            infrastructure_status=UNRESOLVED, record_sha256=state["record_sha256"], detected_by="resume")
+                else:
+                    journal(context, "commit", condition=condition, replica=replica, attempt=past["starts"] or None,
+                            status=state.get("status"), record_sha256=state["record_sha256"], detected_by="resume")
             continue
-        interrupted = state == "PARTIAL" or (condition, replica) in started
-        if interrupted:
-            if policy not in POLICIES:
-                raise pc.PilotError(f"run {condition}/{replica:05d} was started and left no record; an "
-                                    "interrupted-run policy chosen by the author is required to continue")
-            moved = _set_aside(context, condition, replica) if state == "PARTIAL" else None
-            journal(context, "interrupted", condition=condition, replica=replica, trace_set_aside=moved, policy=policy)
-            if policy == "record_failure":
+        if state["state"] == "PARTIAL" or past["starts"]:
+            moved = _set_aside(context, condition, replica) if state["state"] == "PARTIAL" else None
+            if past["starts"] not in past["interrupted"]:
+                journal(context, "interrupted", condition=condition, replica=replica, attempt=past["starts"],
+                        reason={"kind": "process_ended_without_record",
+                                "detail": "a trace without a record" if moved else "no record and no trace"},
+                        detected_by="resume", trace_set_aside=moved)
+                past = attempt_history(journal_events(context))[(condition, replica)]
+            elif moved:
+                journal(context, "trace_set_aside", condition=condition, replica=replica, attempt=past["starts"],
+                        trace_set_aside=moved)
+            if past["starts"] >= MAX_ATTEMPTS:
                 seeds = context.dlib.seeds_for(context.plan.namespace, condition, replica)
-                commit_run(context, failure_record(context.plan, condition, family, replica, "interrupted", None, seeds,
-                                                   {"trace_set_aside": moved}), None)
+                record = failure_record(
+                    context.plan, condition, family, replica, INFRASTRUCTURE_PHASE, None, seeds,
+                    {"infrastructure_status": UNRESOLVED, "attempts": past["starts"],
+                     "max_infrastructure_retries": MAX_INFRASTRUCTURE_RETRIES,
+                     "interruptions": [{"attempt": number, **past["interrupted"][number]}
+                                       for number in sorted(past["interrupted"], key=lambda n: (n is None, n))]})
+                commit_run(context, record, None)
+                journal(context, "unresolved", condition=condition, replica=replica, attempts=past["starts"],
+                        infrastructure_status=UNRESOLVED, detected_by="prepare",
+                        record_sha256=pc.sha256_file(context.record_path(condition, replica)))
                 continue
-            journal(context, "restart", condition=condition, replica=replica)
-        pending.append((condition, family, replica))
+            journal(context, "restart", condition=condition, replica=replica, attempt=past["starts"] + 1)
+        pending.append((condition, family, replica, past["starts"] + 1))
     return pending
 
 
-def work(context: pc.Context, engine_spec: str, jobs: list[tuple[str, str, int]]) -> int:
-    """Run the given planned runs in this process, in order."""
+class _StopRequest:
+    """SIGINT or SIGTERM once: finish the run in progress, then stop. A second signal acts as usual.
+
+    A deliberate stop then costs no attempt: a run is either stored or was never started.
+    """
+
+    def __init__(self) -> None:
+        self.requested: int | None = None
+        self._previous: dict[int, Any] = {}
+
+    def __enter__(self) -> "_StopRequest":
+        if threading.current_thread() is threading.main_thread():
+            for number in (signal.SIGINT, signal.SIGTERM):
+                self._previous[number] = signal.signal(number, self._handle)
+        return self
+
+    def _handle(self, number: int, _frame: Any) -> None:
+        self.requested = number
+        for which, handler in self._previous.items():
+            signal.signal(which, handler)
+        self._previous = {}
+
+    def __exit__(self, *_: Any) -> None:
+        for which, handler in self._previous.items():
+            signal.signal(which, handler)
+        self._previous = {}
+
+
+def work(context: pc.Context, engine_spec: str, jobs: list[tuple], planned: Mapping | None = None) -> int:
+    """Run the given planned runs in this process, in order. Returns the number of runs attempted.
+
+    An infrastructure interruption ends the work of this process: the cause (a full disk, no
+    memory) would meet the next run too, and every start counts as an attempt.
+    """
     engine = load_engine(engine_spec, context)
-    for condition, family, replica in jobs:
-        run_one(context, engine, condition, family, replica)
-    return len(jobs)
+    done = 0
+    with _StopRequest() as stop:
+        for job in jobs:
+            if stop.requested is not None:
+                journal(context, "stop_requested", signal=int(stop.requested), runs_not_started=len(jobs) - done)
+                break
+            condition, family, replica = job[:3]
+            run_one(context, engine, condition, family, replica, job[3] if len(job) > 3 else 1, planned)
+            done += 1
+    return done
 
 
 def generate(context: pc.Context, *, engine_spec: str = "production", workers: int | None = None,
-             worker_command: list[str] | None = None, test_policy: str | None = None) -> dict:
+             worker_command: list[str] | None = None) -> dict:
     """Run every planned run that has no record yet, then write the run manifest and the failure list.
 
     workers = 0 runs in this process. Otherwise `workers` operating-system processes are started
     with `worker_command` plus a shard argument; shard k takes every workers-th pending run, so
     the shards have the same mix of conditions. Results do not depend on the number of workers.
+    Only one `generate` may work on an output tree at a time.
     """
     manifest = require_generation_allowed(context)
-    policy = manifest["interrupted_run_policy"] if manifest else test_policy  # test_policy: test plans only
     if workers is None:
         workers = manifest["workers"] if manifest else 0
     context.root.mkdir(parents=True, exist_ok=True)
-    pending = prepare(context, policy)
-    started = time.time()
-    if workers == 0 or not pending:
-        work(context, engine_spec, pending)
-        codes = []
-    else:
-        if not worker_command:
-            raise pc.PilotError("a worker command is required to start worker processes")
-        pc.atomic_write(context.root / ".pending.json", pc.canonical_json([list(p) for p in pending]), overwrite=True)
-        environment = {**os.environ, **{name: "1" for name in pc.THREAD_VARIABLES}}
-        processes = [subprocess.Popen([*worker_command, "--shard", f"{k}/{workers}"], env=environment)
-                     for k in range(workers)]
-        codes = [process.wait() for process in processes]
-    summary = finalize(context, workers=workers, seconds=time.time() - started, manifest=manifest)
+    lock = os.open(context.root / ".generate.lock", os.O_RDWR | os.O_CREAT, 0o644)
+    try:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise pc.PilotError("another generate is working on this output tree") from None
+        journal(context, "generate_begin", workers=workers, policy=POLICY, environment_sha256=environment_sha256(),
+                software=pc.software_versions(),
+                pre_generation_manifest_sha256=(pc.sha256_file(context.root / "pre_generation_manifest.json")
+                                                if manifest is not None else None))
+        pending = prepare(context)
+        started = time.time()
+        interruption: InfrastructureInterruption | None = None
+        codes: list[int] = []
+        stopped = False
+        if workers == 0 or not pending:
+            try:
+                stopped = work(context, engine_spec, pending, planned_inputs(manifest)) < len(pending)
+            except InfrastructureInterruption as error:
+                interruption = error
+        else:
+            if not worker_command:
+                raise pc.PilotError("a worker command is required to start worker processes")
+            pc.atomic_write(context.root / ".pending.json", pc.canonical_json([list(p) for p in pending]), overwrite=True)
+            environment = {**os.environ, **{name: "1" for name in pc.THREAD_VARIABLES}}
+            with _StopRequest() as stop:    # the workers get the signal too and finish their run in progress
+                # The workers inherit the lock: the tree stays locked until the last of them has ended.
+                processes = [subprocess.Popen([*worker_command, "--shard", f"{k}/{workers}"], env=environment,
+                                              pass_fds=(lock,)) for k in range(workers)]
+                codes = [process.wait() for process in processes]
+                stopped = stop.requested is not None
+            for k, code in enumerate(codes):
+                if code:
+                    journal(context, "worker_exit", shard=f"{k}/{workers}", code=code)
+        summary = finalize(context, workers=workers, seconds=time.time() - started, manifest=manifest)
+        summary["stopped_on_request"] = stopped
+        journal(context, "generate_end", counts=summary["counts"], unresolved=summary["unresolved_infrastructure"],
+                stopped_on_request=stopped)
+    finally:
+        os.close(lock)
+    if interruption is not None:
+        raise interruption
     if any(codes):
         raise pc.PilotError(f"worker processes ended with errors {codes}; stored runs are intact, see the journal")
     return summary
@@ -456,14 +806,19 @@ def shard(pending: list[tuple[str, str, int]], specification: str) -> list[tuple
 def finalize(context: pc.Context, *, workers: int, seconds: float | None, manifest: Mapping | None) -> dict:
     """results/run_manifest.json and results/failures.jsonl from what is stored (protocol.json storage.manifest)."""
     entries, failures = [], []
-    events = journal_events(context)
+    history = attempt_history(journal_events(context))
+    blank = {"starts": 0, "interrupted": {}, "environments": []}
     for condition, family, replica in context.plan.runs():
         state = classify(context, condition, replica)
+        past = history.get((condition, replica), blank)
         trace_rel, record_rel = pc.run_paths(condition, replica)
         entry = {"condition": condition, "family": family, "replica": replica, "split": context.plan.split(condition, replica),
                  "seeds": context.dlib.seeds_for(context.plan.namespace, condition, replica), "state": state["state"],
                  "reason": state["reason"], "status": state.get("status"),
-                 "attempts": sum(1 for e in events if e["event"] == "start" and e["condition"] == condition and e["replica"] == replica),
+                 "attempts": past["starts"],
+                 "interruptions": [{"attempt": number, **past["interrupted"][number]}
+                                   for number in sorted(past["interrupted"], key=lambda n: (n is None, n))],
+                 "attempt_environments": list(past["environments"]), "infrastructure_status": None,
                  "record": {"path": record_rel.as_posix(), "sha256": state.get("record_sha256")},
                  "trace": {"path": trace_rel.as_posix(), "sha256": state.get("trace_sha256")}}
         if state["state"] in ("COMPLETE", "FAILED_RECORD"):
@@ -472,14 +827,25 @@ def finalize(context: pc.Context, *, workers: int, seconds: float | None, manife
                          completed_sweeps=record.get("completed_sweeps"),
                          completed_battery_checkpoints=record.get("completed_battery_checkpoints"),
                          completed_application_checkpoints=record.get("completed_application_checkpoints"))
+            unresolved = (record.get("failure") or {}).get("phase") == INFRASTRUCTURE_PHASE
+            if unresolved:
+                entry["infrastructure_status"] = UNRESOLVED
             for item in record.get("failures") or []:
-                failures.append({"condition": condition, "replica": replica, "disposition": "recorded, not replaced", **item})
+                failures.append({"condition": condition, "replica": replica,
+                                 "disposition": ("infrastructure unresolved, not an experimental failure" if unresolved
+                                                 else "recorded, not replaced"), **item})
         else:
             failures.append({"condition": condition, "replica": replica, "phase": "storage", "state": state["state"],
                              "reason": state["reason"], "disposition": "no valid record"})
         entries.append(entry)
     counts = {name: sum(1 for e in entries if e["state"] == name) for name in STATES}
+    unresolved_runs = [f"{e['condition']}/{e['replica']:05d}" for e in entries if e["infrastructure_status"] == UNRESOLVED]
+    infrastructure = {"policy": POLICY, "max_infrastructure_retries": MAX_INFRASTRUCTURE_RETRIES,
+                      "runs_with_more_than_one_attempt": sum(1 for e in entries if e["attempts"] > 1),
+                      "interruptions": sum(len(e["interruptions"]) for e in entries), "unresolved": unresolved_runs,
+                      "environments": sorted({h for e in entries for h in e["attempt_environments"]})}
     body = {"schema": "rnglab-v019-d-pilot-run-manifest-v1", "namespace": context.plan.namespace, "plan_kind": context.plan.kind,
+            "infrastructure": infrastructure,
             "protocol_sha256": pc.protocol_sha256(), "design_sha256": pc.sha256_file(HERE / "design.json"),
             "pre_generation_manifest_sha256": (pc.sha256_file(context.root / "pre_generation_manifest.json")
                                                if manifest is not None else None),
@@ -488,7 +854,8 @@ def finalize(context: pc.Context, *, workers: int, seconds: float | None, manife
             "generation_wall_seconds_this_invocation": seconds, "counts": counts, "planned": len(entries), "runs": entries}
     digest = pc.atomic_write(context.result("run_manifest.json"), pc.canonical_json(body), overwrite=True)
     pc.atomic_write(context.result("failures.jsonl"), pc.canonical_jsonl(failures), overwrite=True)
-    return {"counts": counts, "planned": len(entries), "failures": len(failures), "run_manifest_sha256": digest}
+    return {"counts": counts, "planned": len(entries), "failures": len(failures), "run_manifest_sha256": digest,
+            "unresolved_infrastructure": unresolved_runs}
 
 
 def require_complete(context: pc.Context) -> dict:

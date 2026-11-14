@@ -419,6 +419,30 @@ def criterion_5(tdk_deadline: str | None, engineering_complete_on: str | None, r
     return {**out, "result": "PASS" if on_time else "FAIL"}
 
 
+# Which stop criteria use the runs of a condition. Calibration runs give the thresholds of criteria 2 to 4;
+# healthy runs give criterion 1 and the gate V2-D, on which criteria 2 to 4 depend; fault runs give criteria 2 to 4.
+CRITERIA_USING = {"calibration": ("2", "3", "4"), "healthy": ("1", "2", "3", "4"), "fault": ("2", "3", "4")}
+
+
+def unresolved_infrastructure(context: pc.Context) -> dict:
+    """Runs whose infrastructure retries were exhausted, and the criteria they keep from passing.
+
+    Such a run has a failure record with phase 'infrastructure'. It is counted like any failed run
+    in the analysis (protocol.json failed_runs), but it is no experimental evidence: a criterion
+    that uses it cannot be PASS (the author's decision of 2026-11-13).
+    """
+    runs = []
+    for condition, family, replica in context.plan.runs():
+        if pg.classify(context, condition, replica, verify_hash=False).get("failure_phase") == pg.INFRASTRUCTURE_PHASE:
+            runs.append({"condition": condition, "replica": replica})
+    blocked = sorted({key for run in runs for key in CRITERIA_USING["fault" if run["condition"].startswith("fault/")
+                                                                    else run["condition"]]})
+    return {"status": pg.UNRESOLVED if runs else None, "runs": runs,
+            "per_condition": {condition: sum(1 for run in runs if run["condition"] == condition)
+                              for condition, _, _ in context.plan.conditions},
+            "criteria_that_cannot_pass": blocked, "max_infrastructure_retries": pg.MAX_INFRASTRUCTURE_RETRIES}
+
+
 def criteria(context: pc.Context, *, engineering_complete_on: str | None = None,
              results_available_on: str | None = None) -> dict:
     """results/criteria.json with the precedence rules: a failed I-check blocks interpretation, and a
@@ -439,7 +463,12 @@ def criteria(context: pc.Context, *, engineering_complete_on: str | None = None,
     if gate != "PASS":
         for key in ("2", "3", "4"):
             final[key] = "UNINTERPRETABLE"
+    unresolved = unresolved_infrastructure(context)
+    for key in unresolved["criteria_that_cannot_pass"]:
+        if final[key] == "PASS":
+            final[key] = "INSUFFICIENT_INFORMATION"
     out = {"schema": "rnglab-v019-d-pilot-criteria-v1", "implementation_checks_passed": checks["passed"],
+           "unresolved_infrastructure": unresolved,
            "interpretation_blocked": not checks["passed"], "V2_D": healthy["V2_D"],
            "criterion_1": one, "criteria_2_3": two_three, "criterion_4": four, "criterion_5": five,
            "results_before_precedence": raw, "results": final,
