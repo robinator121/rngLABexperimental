@@ -16,7 +16,10 @@ Two levels:
 - campaign: alarm thresholds, gate V2-D, issuance, eligibility, stop criteria
   1 to 3, the forecaster features, a reference fit, scores and criterion 4;
 - with --compare-primary: every recounted quantity against the pilot's result
-  files, and the dates of criterion 5 against the pre-generation manifest.
+  files, and the dates of criterion 5 against the pre-generation manifest;
+- attempts: the audit log results/journal.jsonl (run identity, completion status,
+  retry history) against the stored records, the pre-generation manifest and the
+  run manifest (`check_attempt_log`).
 
 Every disagreement is a record {scope, id, field, stored, independent}. The
 field names of the stored run record are read in `view_from_record` and
@@ -53,10 +56,14 @@ def _load(name: str, path: Path):
 
 rc = _load("v019_audit_recount", _HERE / "recount.py")
 rp = _load("v019_audit_replay", _HERE / "replay.py")
+ig = _load("v019_audit_integrity", _HERE / "integrity.py")
 
 PLAN = {"calibration": ("healthy", 999), "healthy": ("healthy", 2000), "fault/SHIFT": ("SHIFT", 1000),
         "fault/LAG1": ("LAG1", 1000), "fault/DUP": ("DUP", 1000)}
 FITTING, EVALUATION = range(0, 600), range(600, 1000)
+# Namespaces whose output tree must hold the audit log of attempts (results/journal.jsonl).
+JOURNAL_REQUIRED = ("rnglab-v019-d-pilot", "rnglab-v019-d-pilot-smoke")
+MAX_ATTEMPTS = 1 + rc.MAX_INFRASTRUCTURE_RETRIES
 ARRAYS = {"CV": "<f8", "TD": "<f8", "marks": "<i8", "severity": "<f8"}
 BATTERY_FIELDS = ("frequency_signed_z", "block_frequency_chi2", "runs_residual", "runs_signed_z", "serial_delta1",
                   "serial_delta2", "approximate_entropy_chi2", "cumulative_sums_max_abs", "longest_run_chi2",
@@ -81,6 +88,7 @@ class RunView:
     cv: np.ndarray
     complete: bool = True
     notes: list[str] = field(default_factory=list)
+    failure_phase: str | None = None  # of a failure record; 'infrastructure' marks an unresolved run
 
 
 def file_sha256(path: Path) -> str:
@@ -135,7 +143,7 @@ def view_from_failure_record(record: Mapping[str, Any]) -> RunView:
     return RunView(condition=record["condition"], family=record["family"], replica=int(record["replica"]),
                    t0=profile.get("t0"), t_cap=profile.get("T_cap"), s_max=profile.get("s_max"), statistic=empty,
                    statistic_prime=empty, target=None, mean_d=empty, uphill_fraction=empty, cv=empty, complete=False,
-                   notes=["failure record"])
+                   notes=["failure record"], failure_phase=(record.get("failure") or {}).get("phase"))
 
 
 def load_view(root: Path, condition: str, replica: int) -> RunView:
@@ -390,6 +398,15 @@ def recount_campaign(views: Mapping[str, list[RunView]], namespace: str, *, plan
     for condition, (_, count) in plan.items():
         present = {v.replica for v in views.get(condition, [])}
         out["missing"][condition] = sorted(set(range(count)) - present)
+    # Runs whose infrastructure retries were exhausted (the author's decision of 2026-11-13). They are
+    # failed runs in every count below, and a stop criterion that uses them cannot be PASS.
+    unresolved = {condition: sorted(v.replica for v in views.get(condition, []) if v.failure_phase == rc.INFRASTRUCTURE_PHASE)
+                  for condition in plan}
+    blocked = rc.criteria_blocked_by(condition for condition, replicas in unresolved.items() if replicas)
+    out["unresolved_infrastructure"] = {
+        "runs": [{"condition": condition, "replica": replica} for condition, replicas in unresolved.items() for replica in replicas],
+        "per_condition": {condition: len(replicas) for condition, replicas in unresolved.items()},
+        "criteria_that_cannot_pass": blocked}
     calibration = sorted(views.get("calibration", []), key=lambda v: v.replica)
     required = plan["calibration"][1]
     order = 950 if required == 999 else math.ceil(0.95 * (required + 1))
@@ -508,6 +525,9 @@ def recount_campaign(views: Mapping[str, list[RunView]], namespace: str, *, plan
                        "criterion_3": c23["criterion_3"] if interpretable else "UNINTERPRETABLE",
                        "criterion_4": c4["result"] if interpretable else "UNINTERPRETABLE",
                        "criterion_5": "INSUFFICIENT_INFORMATION"}
+    for key in blocked:
+        if out["verdicts"][f"criterion_{key}"] == "PASS":
+            out["verdicts"][f"criterion_{key}"] = "INSUFFICIENT_INFORMATION"
     out["status"] = "RECOUNTED"
     return out
 
@@ -705,6 +725,210 @@ def check_criterion_5(root: Path) -> dict[str, Any]:
             "independent": mine, "discrepancies": issues, "agrees": not issues}
 
 
+def check_attempt_log(root: Path, namespace: str, plan: Mapping[str, tuple[str, int]] = PLAN) -> dict[str, Any]:
+    """Run identity, completion status and retry history of every planned run, from the audit log.
+
+    The rules are the author's decision of 2026-11-13 on interrupted runs: an interrupted run is
+    run again with the same identity, at most three times; after that it is unresolved. Checked:
+
+    - the log itself: sequence numbers and the hash chain (integrity.read_journal);
+    - identity: the seeds and the hash of the random input, recomputed here, against the
+      pre-generation manifest, against every logged attempt and against the stored record;
+    - retry history: attempt numbers 1, 2, ... without gaps, at most four; every attempt but the
+      one that stored the record is logged as interrupted, with an infrastructure reason, before
+      the next one starts; nothing is started after a record exists;
+    - completion: a stored record has exactly one commit entry that names the hash of the record
+      file; a run without a record has none; an unresolved run has four interrupted attempts, its
+      failure record and the entry that says so;
+    - the pilot's own summaries: results/run_manifest.json and, when it exists, the
+      unresolved runs and blocked criteria of results/criteria.json.
+
+    A missing log is a discrepancy for the pilot and smoke namespaces only.
+    """
+    root = Path(root)
+    log = ig.read_journal(root)
+    issues: list[dict[str, Any]] = []
+    compared = 0
+
+    def check(where: str, name: str, stored: Any, mine: Any) -> None:
+        nonlocal compared
+        compared += 1
+        if not rc.compare(stored, mine):
+            issues.append({"scope": "attempts", "id": where, "field": name, "stored": _brief(stored), "independent": _brief(mine)})
+
+    def problem(where: str, name: str, detail: Any) -> None:
+        issues.append({"scope": "attempts", "id": where, "field": name, "stored": _brief(detail), "independent": None})
+
+    if not log["present"]:
+        required = namespace in JOURNAL_REQUIRED
+        if required:
+            problem("journal", "present", "results/journal.jsonl is absent")
+        return {"status": "ABSENT", "required": required, "compared": 0, "discrepancies": issues, "agrees": not issues}
+    for text in log["problems"]:
+        problem("journal", "chain", text)
+
+    manifest_path, planned = root / "pre_generation_manifest.json", None
+    if manifest_path.is_file():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        planned = {(run["condition"], run["replica"]): run for run in manifest.get("planned_runs", [])}
+        check("manifest", "interrupted_run_policy", manifest.get("interrupted_run_policy"), rc.INTERRUPTED_RUN_POLICY)
+        check("manifest", "max_infrastructure_retries",
+              (manifest.get("interrupted_run_rules") or {}).get("max_infrastructure_retries"), rc.MAX_INFRASTRUCTURE_RETRIES)
+        manifest_sha256 = file_sha256(manifest_path)
+        for entry in log["events"]:
+            if entry["event"] == "generate_begin":
+                check(f"journal entry {entry['seq']}", "pre_generation_manifest_sha256",
+                      entry.get("pre_generation_manifest_sha256"), manifest_sha256)
+    elif namespace in JOURNAL_REQUIRED:
+        problem("manifest", "present", "pre_generation_manifest.json is absent")
+    run_manifest_path, listed = root / "results/run_manifest.json", None
+    if run_manifest_path.is_file():
+        listed = {(run["condition"], run["replica"]): run
+                  for run in json.loads(run_manifest_path.read_text(encoding="utf-8"))["runs"]}
+
+    by_run: dict[tuple[str, int], list[dict[str, Any]]] = {}
+    for entry in log["events"]:
+        if "condition" in entry and "replica" in entry:
+            by_run.setdefault((entry["condition"], entry["replica"]), []).append(entry)
+    known = set(planned) if planned is not None else {(c, r) for c, (_, n) in plan.items() for r in range(n)}
+    for condition, replica in sorted(set(by_run) - known, key=repr):
+        problem(f"{condition}/{replica}", "planned", "the journal has entries for a run that is not planned")
+
+    retried, interruptions, unresolved_runs, environments = 0, 0, [], set()
+    for condition, (family, count) in plan.items():
+        for replica in range(count):
+            where = f"{condition}/{replica:05d}"
+            seeds = rc.run_seeds(namespace, condition, replica)
+            fingerprint = rc.rng_input_sha256(seeds)
+            if planned is not None:
+                entry = planned.get((condition, replica))
+                if entry is None:
+                    problem(where, "manifest entry", "the pre-generation manifest does not plan this run")
+                else:
+                    check(where, "manifest family", entry.get("family"), family)
+                    check(where, "manifest seeds", entry.get("seeds"), seeds)
+                    check(where, "manifest rng_input_sha256", entry.get("rng_input_sha256"), fingerprint)
+            events = by_run.get((condition, replica), [])
+            starts = [e for e in events if e["event"] == "start"]
+            check(where, "attempt numbers", [e.get("attempt") for e in starts], list(range(1, len(starts) + 1)))
+            if len(starts) > MAX_ATTEMPTS:
+                problem(where, "attempts", f"{len(starts)} attempts were started; at most {MAX_ATTEMPTS} are allowed")
+            for entry in starts:
+                check(where, f"attempt {entry.get('attempt')} seeds", entry.get("seeds"), seeds)
+                check(where, f"attempt {entry.get('attempt')} rng_input_sha256", entry.get("rng_input_sha256"), fingerprint)
+                if entry.get("environment_sha256"):
+                    environments.add(entry["environment_sha256"])
+            interrupted: dict[Any, Any] = {}
+            commits, unresolved_events, current, final = [], [], None, False
+            for entry in events:
+                kind = entry["event"]
+                if kind == "start":
+                    if final:
+                        problem(where, "order", f"attempt {entry.get('attempt')} was started after the run had its record")
+                    if current is not None and current not in interrupted:
+                        problem(where, "order", f"attempt {entry.get('attempt')} was started before attempt {current} "
+                                                "was logged as interrupted")
+                    current = entry.get("attempt")
+                elif kind == "interrupted":
+                    reason = (entry.get("reason") or {}).get("kind")
+                    if reason not in rc.INFRASTRUCTURE_REASONS:
+                        problem(where, "interruption reason", reason)
+                    if entry.get("attempt") != current or current is None:
+                        problem(where, "order", f"an interruption of attempt {entry.get('attempt')} is logged while the "
+                                                f"last attempt started is {current}")
+                    interrupted[entry.get("attempt")] = reason
+                elif kind == "commit":
+                    commits.append(entry)
+                    final = True
+                elif kind == "unresolved":
+                    unresolved_events.append(entry)
+                    final = True
+            history = [[a, interrupted[a]] for a in sorted(interrupted, key=repr)]
+            retried += len(starts) > 1
+            interruptions += len(interrupted)
+            record_path = stored_paths(root, condition, replica)[0]
+            record, digest, is_unresolved = None, None, False
+            if record_path.is_file():
+                digest = file_sha256(record_path)
+                try:
+                    record = json.loads(record_path.read_text(encoding="utf-8"))
+                    if not isinstance(record, dict):
+                        raise ValueError("not a JSON object")
+                except ValueError as error:
+                    problem(where, "record", f"unreadable: {error}")
+            else:
+                check(where, "commit entries of a run without a record", len(commits) + len(unresolved_events), 0)
+            if record is not None:
+                check(where, "record identity", [record.get("namespace"), record.get("condition"), record.get("replica"),
+                                                 record.get("family")], [namespace, condition, replica, family])
+                check(where, "record seeds", record.get("seeds"), seeds)
+                failure = record.get("failure") or {}
+                is_unresolved = record.get("status") == "FAILED" and failure.get("phase") == rc.INFRASTRUCTURE_PHASE
+                if is_unresolved:
+                    unresolved_runs.append({"condition": condition, "replica": replica})
+                    check(where, "unresolved entries", len(unresolved_events), 1)
+                    check(where, "commit entries", len(commits), 0)
+                    check(where, "unresolved trace", record.get("trace_path"), None)
+                    check(where, "unresolved attempts", len(starts), MAX_ATTEMPTS)
+                    check(where, "unresolved interrupted attempts", sorted(interrupted, key=repr),
+                          list(range(1, MAX_ATTEMPTS + 1)))
+                    check(where, "unresolved record attempts", failure.get("attempts"), len(starts))
+                    check(where, "unresolved record status", failure.get("infrastructure_status"), rc.UNRESOLVED_INFRASTRUCTURE)
+                    check(where, "unresolved record interruptions",
+                          [[i.get("attempt"), (i.get("reason") or {}).get("kind")] for i in failure.get("interruptions") or []],
+                          history)
+                    if unresolved_events:
+                        check(where, "unresolved record_sha256", unresolved_events[-1].get("record_sha256"), digest)
+                else:
+                    check(where, "commit entries", len(commits), 1)
+                    check(where, "unresolved entries", len(unresolved_events), 0)
+                    if not starts:
+                        problem(where, "attempts", "the run has a record and no logged attempt")
+                    check(where, "interrupted attempts before the record",
+                          sorted((a for a in interrupted if a != current), key=repr), list(range(1, len(starts))))
+                    if commits:
+                        commit = commits[-1]
+                        check(where, "commit record_sha256", commit.get("record_sha256"), digest)
+                        check(where, "commit status", commit.get("status"), record.get("status"))
+                        if starts:
+                            check(where, "commit attempt", commit.get("attempt"), starts[-1].get("attempt"))
+                        if current in interrupted and commit.get("detected_by") != "resume":
+                            problem(where, "order", f"attempt {current} stored the record and is also logged as interrupted")
+            if listed is not None:
+                entry = listed.get((condition, replica))
+                if entry is None:
+                    problem(where, "run manifest entry", "results/run_manifest.json does not list this run")
+                else:
+                    check(where, "run manifest seeds", entry.get("seeds"), seeds)
+                    check(where, "run manifest attempts", entry.get("attempts"), len(starts))
+                    check(where, "run manifest interruptions",
+                          [[i.get("attempt"), (i.get("reason") or {}).get("kind")] for i in entry.get("interruptions") or []],
+                          history)
+                    check(where, "run manifest infrastructure_status", entry.get("infrastructure_status"),
+                          rc.UNRESOLVED_INFRASTRUCTURE if is_unresolved else None)
+                    check(where, "run manifest record sha256", (entry.get("record") or {}).get("sha256"), digest)
+
+    blocked = rc.criteria_blocked_by(run["condition"] for run in unresolved_runs)
+    criteria_path = root / "results/criteria.json"
+    if criteria_path.is_file():
+        criteria = json.loads(criteria_path.read_text(encoding="utf-8"))
+        stored = criteria.get("unresolved_infrastructure") or {}
+
+        def order(run: Mapping[str, Any]) -> tuple[str, int]:
+            return run["condition"], run["replica"]
+
+        check("criteria", "unresolved runs", sorted(stored.get("runs") or [], key=order), sorted(unresolved_runs, key=order))
+        check("criteria", "criteria that cannot pass", stored.get("criteria_that_cannot_pass"), [str(key) for key in blocked])
+        for key in blocked:
+            if criteria["results"].get(str(key)) == "PASS":
+                problem("criteria", f"final {key}", "PASS although a run the criterion uses is unresolved")
+    return {"status": "CHECKED", "journal_entries": len(log["events"]), "incomplete_lines": log["incomplete_lines"],
+            "compared": compared, "runs_with_more_than_one_attempt": retried, "interruptions": interruptions,
+            "unresolved": unresolved_runs, "criteria_that_cannot_pass": blocked, "environments": sorted(environments),
+            "pre_generation_manifest_present": planned is not None, "run_manifest_present": listed is not None,
+            "discrepancies": issues, "agrees": not issues}
+
+
 # ---------------------------------------------------------------------------
 # Command line
 # ---------------------------------------------------------------------------
@@ -758,7 +982,8 @@ def main(argv: list[str] | None = None) -> int:
     report: dict[str, Any] = {
         "schema": "rnglab-v019-audit-verification-v1", "root": str(args.root), "namespace": args.namespace,
         "protocol_sha256": file_sha256(rc.PROTOCOL_PATH),
-        "code_sha256": {name: file_sha256(_HERE / name) for name in ("recount.py", "replay.py", "verify.py")},
+        "code_sha256": {name: file_sha256(_HERE / name)
+                        for name in ("recount.py", "replay.py", "verify.py", "integrity.py")},
         "environment": {"python": platform.python_version(), "numpy": np.__version__,
                         "scipy": __import__("scipy").__version__, "platform": platform.platform(),
                         "libc": " ".join(platform.libc_ver())},
@@ -766,6 +991,10 @@ def main(argv: list[str] | None = None) -> int:
         "runs_deep": sum(1 for r in runs if r["deep"]), "deep_sample": sample, "comparisons": sum(r["compared"] for r in runs),
         "near_boundary_endpoints": {r["id"]: r["near_boundary_endpoints"] for r in runs if r.get("near_boundary_endpoints")},
         "discrepancies": issues, "discrepancy_count": len(issues)}
+    attempts = check_attempt_log(args.root, args.namespace, plan)
+    report["attempt_log_check"] = attempts
+    issues = issues + attempts["discrepancies"]
+    report["discrepancies"], report["discrepancy_count"] = issues, len(issues)
     if not args.no_campaign and not report["runs_missing"]:
         views: dict[str, list[RunView]] = {}
         for condition, (_, count) in plan.items():

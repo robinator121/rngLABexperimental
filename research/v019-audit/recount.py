@@ -103,6 +103,42 @@ def run_seeds(namespace: str, condition: str, replica: int) -> dict[str, int]:
             for role in ("local", "centroid", "start", "fault", "profile")}
 
 
+# The author's decision of 2026-11-13 on interrupted runs (not part of the frozen protocol, which is
+# silent): the same identity is run again, at most three times; after that the run is unresolved.
+INTERRUPTED_RUN_POLICY = "regenerate_same_id"
+MAX_INFRASTRUCTURE_RETRIES = 3
+INFRASTRUCTURE_REASONS = ("process_ended_without_record", "operating_system_error", "memory_error")
+INFRASTRUCTURE_PHASE = "infrastructure"
+UNRESOLVED_INFRASTRUCTURE = "UNRESOLVED_INFRASTRUCTURE"
+RNG_INPUT_WORDS = 128
+# Stop criteria that use the runs of a condition; an unresolved run keeps them from PASS.
+CRITERIA_USING = {"calibration": (2, 3, 4), "healthy": (1, 2, 3, 4), "fault": (2, 3, 4)}
+
+
+def rng_input_sha256(seeds: Mapping[str, int]) -> str:
+    """Hash of what a run's five generators emit first, from generators built here.
+
+    Per role the SHA-256 of the first 128 outputs as big-endian 64-bit words: the repository's
+    PCG64 source (reproduced by `pcg64_words`) for local, centroid and start, and the bit
+    generator of numpy.random.default_rng(seed) for fault and profile. The result is the
+    SHA-256 of the compact, key-sorted JSON of the five hashes. Integer arithmetic only.
+    """
+    roles = {}
+    for role in ("local", "centroid", "start", "fault", "profile"):
+        if role in ("local", "centroid", "start"):
+            words = pcg64_words(seeds[role], RNG_INPUT_WORDS)
+        else:
+            words = np.random.default_rng(seeds[role]).bit_generator.random_raw(RNG_INPUT_WORDS)
+        roles[role] = hashlib.sha256(np.asarray(words, dtype=np.uint64).astype(">u8").tobytes()).hexdigest()
+    return hashlib.sha256(json.dumps(roles, sort_keys=True, separators=(",", ":")).encode("ascii")).hexdigest()
+
+
+def criteria_blocked_by(conditions: Iterable[str]) -> list[int]:
+    """Stop criteria that cannot be PASS when runs of these conditions are unresolved."""
+    return sorted({key for condition in conditions
+                   for key in CRITERIA_USING["fault" if condition.startswith("fault/") else condition]})
+
+
 def draw_profile(profile_seed: int, s_max: float) -> dict[str, Any]:
     """P profile.draw_order. These generator calls are the definition of the draw."""
     rng = np.random.default_rng(profile_seed)

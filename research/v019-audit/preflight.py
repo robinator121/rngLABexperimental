@@ -14,8 +14,13 @@ Checks, each PASS, WARN or FAIL with the evidence behind it:
     seeds         pilot, smoke and audit namespaces share no seed
     resources     free disk and memory against measured per-run needs
     store         state of the output tree: nothing partial or corrupt, nothing unplanned
-    manifest      the pre-generation manifest exists, lists the same code hashes, and records the
-                  TDK deadline (without it stop criterion 5 is INSUFFICIENT_INFORMATION)
+    manifest      the pre-generation manifest exists, lists the same code hashes, records the
+                  interrupted-run policy (regenerate_same_id, three retries) and the TDK deadline
+                  (without it stop criterion 5 is INSUFFICIENT_INFORMATION); every planned run's
+                  seeds and random-input hash are recomputed by the independent code
+
+--namespace rnglab-v019-d-pilot-smoke checks the smoke (ten runs, root smoke/), which the freeze
+procedure puts before the pilot's own manifest.
 
 The engineering runs use the audit-only namespace and are 96 sweeps long. The
 command refuses to use a pilot or smoke namespace for them. Exit status 0 means
@@ -56,8 +61,12 @@ HASHED = ("research/v019-d-pilot/protocol.json", "research/v019-d-pilot/design.j
 BYTES_PER_RUN = 4_400_000        # compressed trace plus the indented run record
 RSS_BYTES_PER_WORKER = 300 * 2**20
 LOCK_FILE = "research/phase2-20261030/environment/requirements-lock.txt"
-INTERRUPTED_RUN_POLICIES = ("regenerate_same_id", "record_failure")
+INTERRUPTED_RUN_POLICY = "regenerate_same_id"   # the author's decision of 2026-11-13
+MAX_INFRASTRUCTURE_RETRIES = 3
 PROTOCOL_WORKERS = 8                # protocol.json storage.parallelism
+# Namespace -> (run plan, output root). The smoke comes first in the freeze procedure (step 5).
+NAMESPACES = {"rnglab-v019-d-pilot": (PLAN, "research/v019-d-pilot"),
+              "rnglab-v019-d-pilot-smoke": ({condition: 2 for condition in PLAN}, "research/v019-d-pilot/smoke")}
 
 
 def _load(name: str, path: Path):
@@ -201,9 +210,9 @@ def check_resources(root: Path, workers: int, runs: int) -> dict[str, Any]:
                   cpu_count=os.cpu_count(), basis={"bytes_per_run": BYTES_PER_RUN, "rss_per_worker": RSS_BYTES_PER_WORKER})
 
 
-def check_store(root: Path) -> dict[str, Any]:
+def check_store(root: Path, plan: dict[str, int] = PLAN) -> dict[str, Any]:
     integrity = _load("v019_audit_integrity", _HERE / "integrity.py")
-    scan = integrity.scan_store(root, PLAN, verify_hash=False)
+    scan = integrity.scan_store(root, plan, verify_hash=False)
     counts = scan["counts"]
     bad = counts["PARTIAL"] + counts["CORRUPT"] + len(scan["unplanned_files"])
     status = "FAIL" if bad else "WARN" if counts["COMPLETE"] else "PASS"
@@ -213,7 +222,35 @@ def check_store(root: Path) -> dict[str, Any]:
                   note="COMPLETE runs before authorisation mean generation has already started")
 
 
-def check_manifest(root: Path, code: dict[str, Any]) -> dict[str, Any]:
+def planned_run_problems(manifest: dict[str, Any], namespace: str, plan: dict[str, int]) -> list[str]:
+    """The manifest's planned runs against the plan of the namespace, with every run's seeds and
+    random-input hash recomputed by the independent code. At most ten problems are listed."""
+    recount = _load("v019_audit_recount", _HERE / "recount.py")
+    problems: list[str] = []
+    if manifest.get("namespace") != namespace:
+        problems.append(f"the manifest is for the namespace {manifest.get('namespace')!r}")
+    if manifest.get("protocol_sha256") != sha256_file(REPO / "research/v019-d-pilot/protocol.json"):
+        problems.append("the manifest names another protocol hash")
+    listed = {(run.get("condition"), run.get("replica")): run for run in manifest.get("planned_runs") or []}
+    expected = {(condition, replica) for condition, count in plan.items() for replica in range(count)}
+    if set(listed) != expected:
+        problems.append(f"planned runs differ from the plan: {len(set(listed) - expected)} not in the plan, "
+                        f"{len(expected - set(listed))} of the plan absent")
+    for condition, replica in sorted(expected & set(listed)):
+        if len(problems) >= 10:
+            break
+        seeds = recount.run_seeds(namespace, condition, replica)
+        entry = listed[(condition, replica)]
+        if entry.get("seeds") != seeds:
+            problems.append(f"{condition}/{replica:05d}: seeds differ from the independent derivation")
+        elif entry.get("rng_input_sha256") != recount.rng_input_sha256(seeds):
+            problems.append(f"{condition}/{replica:05d}: rng_input_sha256 differs from the independent generators")
+    return problems
+
+
+def check_manifest(root: Path, code: dict[str, Any], namespace: str | None = None,
+                   plan: dict[str, int] | None = None) -> dict[str, Any]:
+    """With a namespace and plan, the planned runs are checked too (`planned_run_problems`)."""
     path = root / "pre_generation_manifest.json"
     if not path.is_file():
         return result("manifest", "FAIL", reason="pre_generation_manifest.json does not exist; the protocol requires "
@@ -227,10 +264,19 @@ def check_manifest(root: Path, code: dict[str, Any]) -> dict[str, Any]:
     listed = manifest.get("code_sha256") or manifest.get("sha256") or {}
     differing = sorted(p for p, h in code["sha256"].items() if p in listed and listed[p] != h)
     unlisted = sorted(p for p in code["sha256"] if p not in listed)
-    # What happens to a run that was interrupted is the author's decision; the pipeline refuses to
-    # generate from a manifest that does not record it.
+    # What happens to a run that was interrupted is the author's decision of 2026-11-13: the same
+    # identity is run again, at most three times. The pipeline refuses to generate from a manifest
+    # that does not record it.
     policy = manifest.get("interrupted_run_policy")
-    policy_recorded = policy in INTERRUPTED_RUN_POLICIES
+    rules = manifest.get("interrupted_run_rules") or {}
+    policy_recorded = (policy == INTERRUPTED_RUN_POLICY and rules.get("policy") == INTERRUPTED_RUN_POLICY
+                       and rules.get("max_infrastructure_retries") == MAX_INFRASTRUCTURE_RETRIES)
+    identity = planned_run_problems(manifest, namespace, plan) if namespace is not None and plan is not None else []
+    # The manifest is committed after it is written, so its commit is an ancestor of HEAD, not HEAD;
+    # the code hashes above are the comparison that counts. A manifest written from a tree with
+    # uncommitted changes names a commit that does not contain what it hashed.
+    recorded_git = manifest.get("git") or {}
+    unclean = bool(recorded_git) and recorded_git.get("working_tree_clean") is not True
     authorised, authorisation = False, root / "authorization.json"
     if authorisation.is_file():
         try:
@@ -240,23 +286,28 @@ def check_manifest(root: Path, code: dict[str, Any]) -> dict[str, Any]:
         except ValueError:
             authorised = False
     deviates = manifest.get("workers") not in (None, PROTOCOL_WORKERS)
-    status = ("FAIL" if differing or not policy_recorded
-              else "WARN" if deadline is None or unlisted or deviates or not authorised else "PASS")
+    status = ("FAIL" if differing or not policy_recorded or identity
+              else "WARN" if deadline is None or unlisted or deviates or not authorised or unclean else "PASS")
     return result("manifest", status, tdk_deadline=deadline,
                   criterion_5=None if deadline else "INSUFFICIENT_INFORMATION",
                   code_hashes_differing=differing, code_hashes_not_listed=unlisted,
                   interrupted_run_policy=policy if policy_recorded else None,
+                  max_infrastructure_retries=rules.get("max_infrastructure_retries") if policy_recorded else None,
+                  planned_run_problems=identity, planned_runs_checked=namespace is not None and plan is not None,
+                  manifest_commit=recorded_git.get("commit"), manifest_written_from_unclean_tree=unclean,
                   workers=manifest.get("workers"), workers_deviate_from_protocol=deviates,
                   authorised_for_this_manifest=authorised)
 
 
-def run(root: Path, namespace: str, workers: int) -> dict[str, Any]:
-    if namespace != "rnglab-v019-d-pilot":
-        raise SystemExit("preflight checks the frozen pilot namespace rnglab-v019-d-pilot only")
+def run(root: Path | None, namespace: str, workers: int) -> dict[str, Any]:
+    if namespace not in NAMESPACES:
+        raise SystemExit("preflight checks the pilot namespace rnglab-v019-d-pilot or its smoke namespace only")
+    plan, default_root = NAMESPACES[namespace]
+    root = REPO / default_root if root is None else root
     code = check_code()
     checks = [check_protocol(), code, check_git([p for p, h in code["sha256"].items()]), check_environment(),
-              check_golden(), check_seeds(), check_resources(root, workers, sum(PLAN.values())), check_store(root),
-              check_manifest(root, code)]
+              check_golden(), check_seeds(), check_resources(root, workers, sum(plan.values())), check_store(root, plan),
+              check_manifest(root, code, namespace, plan)]
     failed = [c["check"] for c in checks if c["status"] == "FAIL"]
     warned = [c["check"] for c in checks if c["status"] == "WARN"]
     return {"schema": "rnglab-v019-audit-preflight-v1", "root": str(root), "namespace": namespace,
@@ -268,8 +319,8 @@ def run(root: Path, namespace: str, workers: int) -> dict[str, Any]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--root", type=Path, default=REPO / "research/v019-d-pilot")
-    parser.add_argument("--namespace", default="rnglab-v019-d-pilot")
+    parser.add_argument("--root", type=Path, default=None, help="default: the output root of the namespace")
+    parser.add_argument("--namespace", default="rnglab-v019-d-pilot", choices=sorted(NAMESPACES))
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--write-golden", action="store_true",

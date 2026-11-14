@@ -218,6 +218,46 @@ def append_journal(root: Path, event: str, **fields: Any) -> None:
         os.fsync(handle.fileno())
 
 
+def read_journal(root: Path) -> dict[str, Any]:
+    """The pilot's audit log (results/journal.jsonl) with a check that it was only appended to.
+
+    Every entry must carry the next sequence number and the SHA-256 of the line before it. A
+    line that is not an entry is tolerated only where the next entry says that it follows an
+    incomplete line (a write cut short by a power loss). Everything else is listed in
+    `problems`. Nothing is modified.
+    """
+    path = Path(root) / "results" / "journal.jsonl"
+    if not path.is_file():
+        return {"present": False, "events": [], "problems": [], "incomplete_lines": 0}
+    events: list[dict[str, Any]] = []
+    problems: list[str] = []
+    previous: bytes | None = None
+    pending_fragment, fragments = False, 0
+    for number, line in enumerate(path.read_bytes().split(b"\n"), 1):
+        if not line:
+            continue
+        try:
+            entry = json.loads(line.decode("utf-8"))
+            if not isinstance(entry, dict) or not isinstance(entry.get("seq"), int) or "event" not in entry:
+                raise ValueError("not an entry")
+        except ValueError:
+            if pending_fragment:
+                problems.append(f"line {number}: two lines in a row are not entries")
+            pending_fragment, fragments = True, fragments + 1
+            continue
+        if entry["seq"] != len(events) + 1:
+            problems.append(f"line {number}: sequence number {entry['seq']}, expected {len(events) + 1}")
+        if entry.get("previous_sha256") != (sha256_bytes(previous) if previous is not None else None):
+            problems.append(f"line {number}: does not carry the hash of the entry before it")
+        if bool(entry.get("after_incomplete_line")) != pending_fragment:
+            problems.append(f"line {number}: an incomplete line before it is {'not declared' if pending_fragment else 'declared but absent'}")
+        events.append(entry)
+        previous, pending_fragment = line, False
+    if pending_fragment:
+        problems.append("the journal ends with a line that is not an entry")
+    return {"present": True, "events": events, "problems": problems, "incomplete_lines": fragments}
+
+
 def pending(root: Path, plan: Mapping[str, int]) -> list[tuple[str, int, str]]:
     """Planned runs in no final state, with their state: the work list a restart must look at.
     A recorded failure is final and is not listed."""

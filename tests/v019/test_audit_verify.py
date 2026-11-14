@@ -269,7 +269,9 @@ def test_command_line_report(stored, tmp_path, capsys):
     assert code == 0 and report["agrees"] and report["discrepancy_count"] == 0
     assert report["runs_planned"] == 5 and report["runs_deep"] == 5 and report["runs_missing"] == []
     assert report["protocol_sha256"] == (au.REPO / "research/v019-d-pilot/protocol.sha256").read_text().split()[0]
-    assert set(report["code_sha256"]) == {"recount.py", "replay.py", "verify.py"}
+    assert set(report["code_sha256"]) == {"recount.py", "replay.py", "verify.py", "integrity.py"}
+    # The audit's own engineering store has no attempt log, and an audit namespace does not need one.
+    assert report["attempt_log_check"] == {"status": "ABSENT", "required": False, "compared": 0, "discrepancies": [], "agrees": True}
     assert "5 planned runs, 0 missing, 5 regenerated" in capsys.readouterr().out
     vf.stored_paths(stored, "healthy", 0)[1].rename(tmp_path / "moved.npz")
     try:

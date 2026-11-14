@@ -220,20 +220,51 @@ def test_preflight_checks_on_the_current_tree(tmp_path):
 def test_preflight_manifest_and_store_rules(tmp_path):
     code = {"sha256": {"a.py": "1" * 64, "b.py": "2" * 64}}
     path = tmp_path / "pre_generation_manifest.json"
-    full = {"code_sha256": code["sha256"], "tdk_deadline": "2027-04-30", "interrupted_run_policy": "record_failure", "workers": 8}
+    rules = {"policy": "regenerate_same_id", "max_infrastructure_retries": 3}
+    full = {"code_sha256": code["sha256"], "tdk_deadline": "2027-04-30", "interrupted_run_policy": "regenerate_same_id",
+            "interrupted_run_rules": rules, "workers": 8}
     path.write_text(json.dumps(full))
     out = pf.check_manifest(tmp_path, code)
     assert out["status"] == "WARN" and out["authorised_for_this_manifest"] is False     # written, not yet authorised
+    assert out["interrupted_run_policy"] == "regenerate_same_id" and out["max_infrastructure_retries"] == 3
     (tmp_path / "authorization.json").write_text(json.dumps({
         "pre_generation_manifest_sha256": pf.sha256_file(path), "authorized_by": "author", "authorized_on": "2026-12-01"}))
     assert pf.check_manifest(tmp_path, code)["status"] == "PASS"
     path.write_text(json.dumps({**full, "workers": 6}))
     out = pf.check_manifest(tmp_path, code)                   # another manifest: the authorisation no longer names it
     assert out["status"] == "WARN" and out["workers_deviate_from_protocol"] and not out["authorised_for_this_manifest"]
-    for policy in (None, "rerun", ""):
-        path.write_text(json.dumps({**full, "interrupted_run_policy": policy}))
+    for changed in ({"interrupted_run_policy": None}, {"interrupted_run_policy": "rerun"}, {"interrupted_run_policy": ""},
+                    {"interrupted_run_policy": "record_failure"}, {"interrupted_run_rules": None},
+                    {"interrupted_run_rules": {**rules, "max_infrastructure_retries": 4}},
+                    {"interrupted_run_rules": {**rules, "policy": "record_failure"}}):
+        path.write_text(json.dumps({**full, **changed}))
         out = pf.check_manifest(tmp_path, code)
-        assert out["status"] == "FAIL" and out["interrupted_run_policy"] is None       # the decision is not recorded
+        assert out["status"] == "FAIL" and out["interrupted_run_policy"] is None       # the author's decision is not recorded
+    path.write_text(json.dumps({**full, "git": {"commit": "0" * 40, "working_tree_clean": False}}))
+    out = pf.check_manifest(tmp_path, code)
+    assert out["status"] == "WARN" and out["manifest_written_from_unclean_tree"] is True
+    # With a namespace, every planned run is recomputed by the independent code.
+    rc = au.recount()
+    smoke, plan = "rnglab-v019-d-pilot-smoke", pf.NAMESPACES["rnglab-v019-d-pilot-smoke"][0]
+    assert sum(plan.values()) == 10 and pf.NAMESPACES["rnglab-v019-d-pilot"] == (pf.PLAN, "research/v019-d-pilot")
+    planned = [{"condition": c, "replica": r, "seeds": rc.run_seeds(smoke, c, r),
+                "rng_input_sha256": rc.rng_input_sha256(rc.run_seeds(smoke, c, r))} for c, n in plan.items() for r in range(n)]
+    whole = {**full, "namespace": smoke, "protocol_sha256": pf.sha256_file(au.REPO / "research/v019-d-pilot/protocol.json"),
+             "planned_runs": planned}
+    path.write_text(json.dumps(whole))
+    out = pf.check_manifest(tmp_path, code, smoke, plan)
+    assert out["status"] == "WARN" and not out["authorised_for_this_manifest"]      # the authorisation names another manifest
+    assert out["planned_run_problems"] == [] and out["planned_runs_checked"] is True
+    cases = {"another namespace": {"namespace": "rnglab-v019-d-pilot"}, "another protocol": {"protocol_sha256": "0" * 64},
+             "a run too few": {"planned_runs": planned[:-1]},
+             "a run too many": {"planned_runs": planned + [{**planned[0], "replica": 2}]},
+             "another seed": {"planned_runs": [{**planned[0], "seeds": {**planned[0]["seeds"], "start": 1}}] + planned[1:]},
+             "another random input": {"planned_runs": planned[:3] + [{**planned[3], "rng_input_sha256": "0" * 64}] + planned[4:]}}
+    for name, changed in cases.items():
+        path.write_text(json.dumps({**whole, **changed}))
+        out = pf.check_manifest(tmp_path, code, smoke, plan)
+        assert out["status"] == "FAIL" and len(out["planned_run_problems"]) == 1, name
+    path.write_text(json.dumps(full))
     path.write_text(json.dumps({k: v for k, v in full.items() if k != "tdk_deadline"}))
     out = pf.check_manifest(tmp_path, code)
     assert out["status"] == "WARN" and out["criterion_5"] == "INSUFFICIENT_INFORMATION"
@@ -247,8 +278,9 @@ def test_preflight_manifest_and_store_rules(tmp_path):
     assert pf.check_store(tmp_path)["status"] == "WARN"       # generation has started
     ig.run_paths(tmp_path, "healthy", 0)[0].unlink()
     assert pf.check_store(tmp_path)["status"] == "FAIL"       # a trace without its record
+    assert pf.check_store(tmp_path, {"healthy": 2})["status"] == "FAIL"
     with pytest.raises(SystemExit):
-        pf.run(tmp_path, "rnglab-v019-d-pilot-smoke", 8)
+        pf.run(tmp_path, "rnglab-v019-audit-smoke", 8)      # only the pilot and its smoke are checked
 
 
 def test_preflight_golden_detects_a_different_platform(tmp_path, monkeypatch):
