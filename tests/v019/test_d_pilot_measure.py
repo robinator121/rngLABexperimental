@@ -1,4 +1,8 @@
-"""Per-run Stage D engineering: smoke namespace, fixed random bytes, no campaign."""
+"""Per-run Stage D engineering: audit-only namespace, fixed random bytes, no campaign.
+
+No run is made with seeds of the pilot or smoke namespace: the author does not authorise sampling
+in those namespaces before their pre-generation manifests (decision of 2026-11-14).
+"""
 import hashlib
 import importlib.util
 import inspect
@@ -19,7 +23,7 @@ _spec = importlib.util.spec_from_file_location("v019_measure", REPO / "research/
 m = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(m)
 h1 = m.h1lib
-SMOKE = "rnglab-v019-d-pilot-smoke"
+NAMESPACE = "rnglab-v019-audit-smoke"   # audit engineering runs only; never a pilot or smoke namespace
 SPEC = json.loads((REPO / "research/v019-d-pilot/protocol.json").read_text())
 
 
@@ -61,7 +65,7 @@ def fault_window(family):
         return raw
     cap = m.dlib.CAPS[family]
     p = {"t0": 0, "T_cap": 1.0, "r": cap, "s_max": cap}
-    seeds = m.dlib.seeds_for(SMOKE, "fault/" + family, 0)
+    seeds = m.dlib.seeds_for(NAMESPACE, "fault/" + family, 0)
     return m.dlib.reapply(family, p, seeds, marks_for(len(raw)), len(raw), step=True, base_stream=raw)
 
 
@@ -362,14 +366,14 @@ def full_run():
     # Saturating SHIFT forces the high-consumption path and exercises the cap
     # end to end; sampled pilot-cap profiles need not ever produce a cut.
     p = {"t0": 0, "T_cap": 1.0, "r": 1.0, "s_max": 1.0}
-    run = m.dlib.generate_run(SMOKE, "fault/SHIFT", "SHIFT", 0, profile=p)
+    run = m.dlib.generate_run(NAMESPACE, "fault/SHIFT", "SHIFT", 0, profile=p)
     record, arrays = m.measure_run(run)
     return run, record, arrays
 
 
 def test_full_horizon_smoke(full_run):
     run, record, arrays = full_run
-    assert record["namespace"] == SMOKE
+    assert record["namespace"] == NAMESPACE
     assert record["profile_source"] == "supplied"
     assert record["status"] == "SUCCESS", record["failures"]
     assert len(record["conventional"]) == 159 and len(record["application"]) == 157
@@ -424,7 +428,7 @@ def test_incomplete_run_keeps_earlier_endpoints(full_run):
 def test_failed_storage_safe_null_and_marks_hash(tmp_path):
     arrays = {k: np.zeros(32, dtype=dtype) for k, dtype in m.ARRAY_DTYPES.items()}
     arrays["marks"][0] = 2**53 + 1  # must never pass through float64
-    record = {"namespace": SMOKE, "condition": "healthy", "replica": 2, "status": "FAILED",
+    record = {"namespace": NAMESPACE, "condition": "healthy", "replica": 2, "status": "FAILED",
               "missing": np.nan, "infinity": np.inf, "failure": {"phase": "test"}}
     entry = m.write_run(record, arrays, tmp_path)
     loaded, restored = m.load_run(tmp_path, "healthy", 2, manifest=entry)

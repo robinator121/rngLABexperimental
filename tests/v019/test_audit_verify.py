@@ -224,7 +224,8 @@ def test_verifier_accepts_consistent_runs_and_reports_every_tampering(stored):
     def fields(rec=record, arr=arrays, namespace=NS, deep=False):
         return {i["field"] for i in vf.verify_run(rec, arr, namespace, deep=deep, checkpoint_stride=1000)["issues"]}
 
-    assert "seeds" in fields(namespace="rnglab-v019-d-pilot-smoke")  # a run filed under the wrong namespace
+    # A run filed under the wrong namespace. Not the smoke namespace: the check would draw its profile.
+    assert "seeds" in fields(namespace=NS + "-other")
     tampered = copy.deepcopy(record)
     tampered["profile"]["T_cap"] = float(np.nextafter(tampered["profile"]["T_cap"], np.inf))
     assert "profile" in fields(tampered)

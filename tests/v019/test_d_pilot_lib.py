@@ -1,4 +1,4 @@
-"""C2 engineering checks only: smoke seeds/hand-built profiles, no campaign output.
+"""C2 engineering checks only: audit-only seeds and hand-built profiles, no campaign output.
 
 PROTOCOL.md sections 2.2 and 7; protocol.json implementation_checks I-1–I-3.
 Stage C modules are imported unmodified, as in tests/v018/test_h1_lib.py.
@@ -33,7 +33,7 @@ def load(name, path):
 d = load("v019_dlib", REPO / "research/v019-d-pilot/dlib.py")
 h1 = load("v019_test_h1", REPO / "research/v018-h1-detection/h1lib.py")
 c = load("v019_test_campaign", REPO / "research/v018-h1-detection/run_campaign.py")
-SMOKE = "rnglab-v019-d-pilot-smoke"
+NAMESPACE = "rnglab-v019-audit-smoke"   # audit engineering runs only; never a pilot or smoke namespace
 FAMILIES = ("SHIFT", "LAG1", "DUP")
 
 
@@ -69,10 +69,10 @@ def test_profile_draws_exact_and_seed_roles(family):
     gates = json.loads((REPO / "research/v018-h1-detection/results/gates.json").read_text())
     assert d.CAPS[family] == frozen["profile"]["caps"][family]["s_max"] == gates["cells"][family + "-5"]["severity"]
     for i in range(12):
-        seeds = d.seeds_for(SMOKE, "fault/" + family, i)
+        seeds = d.seeds_for(NAMESPACE, "fault/" + family, i)
         assert set(seeds) == {"local", "centroid", "start", "fault", "profile"}
-        assert all(seeds[k] == namespace_seed(SMOKE, "fault/" + family, k, f"{i:05d}") for k in seeds)
-        assert all(seeds[k] == h1.seeds_for(SMOKE, "fault/" + family, i)[k] for k in seeds if k != "profile")
+        assert all(seeds[k] == namespace_seed(NAMESPACE, "fault/" + family, k, f"{i:05d}") for k in seeds)
+        assert all(seeds[k] == h1.seeds_for(NAMESPACE, "fault/" + family, i)[k] for k in seeds if k != "profile")
         rng = np.random.default_rng(seeds["profile"])
         t0 = int(rng.integers(2048, 8193))
         T_cap = np.float64(np.exp(rng.uniform(np.log(2048.0), np.log(163840.0))))
@@ -115,7 +115,7 @@ def test_severity_formula_and_oracle_sum(p):
 
 
 def test_healthy_identity_and_read_contract():
-    seeds = d.seeds_for(SMOKE, "healthy", 0)
+    seeds = d.seeds_for(NAMESPACE, "healthy", 0)
     local = d.FaultyWords(PCG64Source(seeds["local"]), "healthy", d.draw_profile("healthy", seeds), seeds["fault"])
     clock = d.SweepClock(PCG64Source(seeds["centroid"]), local)
     base = PCG64Source(seeds["local"])
@@ -137,7 +137,7 @@ def test_healthy_identity_and_read_contract():
 
 @pytest.fixture(scope="module")
 def healthy_run():
-    return d.generate_run(SMOKE, "healthy", "healthy", 0, sweeps=64)
+    return d.generate_run(NAMESPACE, "healthy", "healthy", 0, sweeps=64)
 
 
 def test_real_healthy_run(healthy_run):
@@ -158,7 +158,7 @@ def test_real_healthy_run(healthy_run):
     reference = h1.PathIntegralHarmonicOscillator(beads=16, temperature=0.5, displacement_delta=0.4).run_simulation(
         PCG64Source(seeds["local"]), sweeps=64, burn_in=0, initial_path=start,
         centroid_source=PCG64Source(seeds["centroid"]),
-        initial_path_provenance={"namespace": SMOKE, "condition": "healthy", "role": "start",
+        initial_path_provenance={"namespace": NAMESPACE, "condition": "healthy", "role": "start",
                                  "replica": 0, "seed": seeds["start"]},
         uncertainty_batch_sizes=(512,), record_trace=True)
     assert run["start_sha256"] == hashlib.sha256(start.astype("<f8").tobytes()).hexdigest()
@@ -168,7 +168,7 @@ def test_real_healthy_run(healthy_run):
 
 @pytest.mark.parametrize("family", FAMILIES)
 def test_step_equivalence_all_four_paths(family, healthy_run):
-    seeds = d.seeds_for(SMOKE, "fault/" + family, 0)
+    seeds = d.seeds_for(NAMESPACE, "fault/" + family, 0)
     p, marks = profile(s_max=d.CAPS[family]), healthy_run["marks"]
     local = drive(family, p, seeds, marks, step=True)
     B0, n = int(marks[p["t0"] - 1]), int(marks[-1])
@@ -184,7 +184,7 @@ def test_step_equivalence_all_four_paths(family, healthy_run):
 def ramp_run(request):
     family = request.param
     p = profile(s_max=d.CAPS[family])
-    return d.generate_run(SMOKE, "fault/" + family, family, 0, sweeps=64, profile=p)
+    return d.generate_run(NAMESPACE, "fault/" + family, family, 0, sweeps=64, profile=p)
 
 
 def test_real_hand_built_ramp(ramp_run):
@@ -203,16 +203,16 @@ def test_real_hand_built_ramp(ramp_run):
 
 
 def test_real_draw_run_past_onset():
-    seeds = d.seeds_for(SMOKE, "fault/SHIFT", 0)
+    seeds = d.seeds_for(NAMESPACE, "fault/SHIFT", 0)
     p = d.draw_profile("SHIFT", seeds)
-    run = d.generate_run(SMOKE, "fault/SHIFT", "SHIFT", 0, sweeps=p["t0"] + 16)
+    run = d.generate_run(NAMESPACE, "fault/SHIFT", "SHIFT", 0, sweeps=p["t0"] + 16)
     assert run["profile_source"] == "seeded" and run["I-1"]["passed"]
     assert d.check_i2(run)["passed"] and d.check_i3(run)["passed"]
     assert run["severity"][p["t0"]] == 0 and run["severity"][p["t0"] + 1] > 0
 
 
 def test_dup_draw_schedule_and_emitted_previous():
-    seeds = d.seeds_for(SMOKE, "fault/DUP", 0)
+    seeds = d.seeds_for(NAMESPACE, "fault/DUP", 0)
     p = profile(t0=1, T_cap=2, s_max=0.9)
     marks = np.arange(1, 6, dtype=np.int64) * 128
     local = drive("DUP", p, seeds, marks)
@@ -234,7 +234,7 @@ def test_dup_draw_schedule_and_emitted_previous():
 
 
 def test_lag1_midpoint_and_state_survive_severity_change():
-    seeds = d.seeds_for(SMOKE, "fault/LAG1", 0)
+    seeds = d.seeds_for(NAMESPACE, "fault/LAG1", 0)
     p = profile(t0=0, T_cap=2)
     marks = np.arange(1, 4, dtype=np.int64) * 128
     local = drive("LAG1", p, seeds, marks)
@@ -310,7 +310,7 @@ def test_i2_i3_detect_corruption(ramp_run):
 
 def test_shortened_run_before_onset():
     p = profile(t0=64)
-    run = d.generate_run(SMOKE, "fault/DUP", "DUP", 1, sweeps=64, profile=p)
+    run = d.generate_run(NAMESPACE, "fault/DUP", "DUP", 1, sweeps=64, profile=p)
     assert run["B0"] is None and run["prefix_sha256"] is None
     assert run["emitted"] == run["raw_base"]
     checked = d.check_i2(run, expected_profile=p)
