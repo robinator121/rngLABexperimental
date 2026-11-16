@@ -1,0 +1,652 @@
+{
+  "id": "rnglab-v020-nuclear-b2-verify-v1",
+  "status": "DRAFT_PENDING_INDEPENDENT_REVIEW",
+  "human_readable": "research/v020-nuclear-b2-verify/PROTOCOL.md",
+  "scope": "Verification of the B2 aggregated decay engine (src/rnglab/nuclear/aggregate.py and its parts) against analytic laws and against the frozen Layer A engine, with healthy generators only. Not an RNG-sensitivity experiment, not evidence about branching processes, criticality or detectors, not a test of H1, H2 or H3, and not part of the Stage D pilot. Every nuclide and parameter is synthetic.",
+  "namespace": "rnglab-v020-nuclear-b2-verify",
+  "smoke_namespace": "rnglab-v020-nuclear-b2-verify-smoke",
+  "seed_recipe": "rnglab.seeds.namespace_seed(namespace, run, scheme, 'physics') for single runs; namespace_seed(namespace, run, scheme, 'physics', f'{r:04d}') for replicate r of ENS-B2, ENS-A and ENS-NAIVE",
+  "generators": {
+    "numpy-pcg64": "rnglab.nuclear.NumpyPCG64Source(seed): numpy PCG64 raw 64-bit outputs, seeded with SeedSequence(seed)",
+    "xoshiro256pp": "rnglab14.sources.Xoshiro256PlusPlusSource(seed=seed): pure-Python xoshiro256++ with SplitMix64 seeding"
+  },
+  "layouts": {
+    "B2": "nuclear-aggregate-layout-v1",
+    "Layer A": "nuclear-decay-layout-v1"
+  },
+  "schemes": {
+    "S1": {
+      "name": "S1-single",
+      "nuclides": [
+        {
+          "name": "Sa-400",
+          "z": 150,
+          "a": 400,
+          "level": 0,
+          "half_life": 1.0,
+          "channels": [
+            {
+              "daughter": "Sb-400",
+              "mode": "beta-",
+              "branching": 1.0,
+              "photon_yield": 0.6
+            }
+          ]
+        },
+        {
+          "name": "Sb-400",
+          "z": 151,
+          "a": 400,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        }
+      ]
+    },
+    "S2": {
+      "name": "S2-branching",
+      "nuclides": [
+        {
+          "name": "Xa-400",
+          "z": 150,
+          "a": 400,
+          "level": 0,
+          "half_life": 2.0,
+          "channels": [
+            {
+              "daughter": "Xb-396",
+              "mode": "alpha",
+              "branching": 0.64,
+              "photon_yield": 0.25
+            },
+            {
+              "daughter": "Xc-400m",
+              "mode": "beta-",
+              "branching": 0.36,
+              "photon_yield": 0.3
+            }
+          ]
+        },
+        {
+          "name": "Xb-396",
+          "z": 148,
+          "a": 396,
+          "level": 0,
+          "half_life": 0.5,
+          "channels": [
+            {
+              "daughter": "Xd-396",
+              "mode": "ec",
+              "branching": 1.0,
+              "photon_yield": 0.8
+            }
+          ]
+        },
+        {
+          "name": "Xc-400m",
+          "z": 151,
+          "a": 400,
+          "level": 1,
+          "half_life": 0.8,
+          "channels": [
+            {
+              "daughter": "Xc-400",
+              "mode": "it",
+              "branching": 1.0,
+              "photon_yield": 0.9
+            }
+          ]
+        },
+        {
+          "name": "Xc-400",
+          "z": 151,
+          "a": 400,
+          "level": 0,
+          "half_life": 3.0,
+          "channels": [
+            {
+              "daughter": "Xe-396",
+              "mode": "alpha",
+              "branching": 1.0,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Xd-396",
+          "z": 147,
+          "a": 396,
+          "level": 0,
+          "half_life": 1.25,
+          "channels": [
+            {
+              "daughter": "Xf-392",
+              "mode": "alpha",
+              "branching": 1.0,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Xe-396",
+          "z": 149,
+          "a": 396,
+          "level": 0,
+          "half_life": 1.6,
+          "channels": [
+            {
+              "daughter": "Xg-396",
+              "mode": "beta-",
+              "branching": 0.9,
+              "photon_yield": 0.5
+            },
+            {
+              "daughter": "Xh-395",
+              "mode": "beta-n",
+              "branching": 0.1,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Xf-392",
+          "z": 145,
+          "a": 392,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        },
+        {
+          "name": "Xg-396",
+          "z": 150,
+          "a": 396,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        },
+        {
+          "name": "Xh-395",
+          "z": 150,
+          "a": 395,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        }
+      ]
+    },
+    "S3": {
+      "name": "S3-transient-equilibrium",
+      "nuclides": [
+        {
+          "name": "Ya-410",
+          "z": 160,
+          "a": 410,
+          "level": 0,
+          "half_life": 10.0,
+          "channels": [
+            {
+              "daughter": "Yb-410",
+              "mode": "beta-",
+              "branching": 1.0,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Yb-410",
+          "z": 161,
+          "a": 410,
+          "level": 0,
+          "half_life": 1.0,
+          "channels": [
+            {
+              "daughter": "Yc-406",
+              "mode": "alpha",
+              "branching": 1.0,
+              "photon_yield": 1.0
+            }
+          ]
+        },
+        {
+          "name": "Yc-406",
+          "z": 159,
+          "a": 406,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        }
+      ]
+    },
+    "S4": {
+      "name": "S4-precursor-groups",
+      "nuclides": [
+        {
+          "name": "G1",
+          "z": 170,
+          "a": 440,
+          "level": 0,
+          "half_life": 0.6,
+          "channels": [
+            {
+              "daughter": "G1-n",
+              "mode": "beta-n",
+              "branching": 0.3,
+              "photon_yield": 0.0
+            },
+            {
+              "daughter": "G1-b",
+              "mode": "beta-",
+              "branching": 0.7,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "G1-n",
+          "z": 171,
+          "a": 439,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        },
+        {
+          "name": "G1-b",
+          "z": 171,
+          "a": 440,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        },
+        {
+          "name": "G2",
+          "z": 173,
+          "a": 446,
+          "level": 0,
+          "half_life": 2.5,
+          "channels": [
+            {
+              "daughter": "G2-n",
+              "mode": "beta-n",
+              "branching": 0.1,
+              "photon_yield": 0.0
+            },
+            {
+              "daughter": "G2-b",
+              "mode": "beta-",
+              "branching": 0.9,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "G2-n",
+          "z": 174,
+          "a": 445,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        },
+        {
+          "name": "G2-b",
+          "z": 174,
+          "a": 446,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        },
+        {
+          "name": "G3",
+          "z": 176,
+          "a": 452,
+          "level": 0,
+          "half_life": 9.0,
+          "channels": [
+            {
+              "daughter": "G3-n",
+              "mode": "beta-n",
+              "branching": 1.0,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "G3-n",
+          "z": 177,
+          "a": 451,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        }
+      ]
+    },
+    "S5": {
+      "name": "S5-stiff-and-close",
+      "nuclides": [
+        {
+          "name": "Za-450",
+          "z": 180,
+          "a": 450,
+          "level": 0,
+          "half_life": 1000.0,
+          "channels": [
+            {
+              "daughter": "Zb-450",
+              "mode": "beta-",
+              "branching": 1.0,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Zb-450",
+          "z": 181,
+          "a": 450,
+          "level": 0,
+          "half_life": 0.001,
+          "channels": [
+            {
+              "daughter": "Zc-446",
+              "mode": "alpha",
+              "branching": 1.0,
+              "photon_yield": 0.5
+            }
+          ]
+        },
+        {
+          "name": "Zc-446",
+          "z": 179,
+          "a": 446,
+          "level": 0,
+          "half_life": 10.0,
+          "channels": [
+            {
+              "daughter": "Zd-446",
+              "mode": "beta-",
+              "branching": 1.0,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Zd-446",
+          "z": 180,
+          "a": 446,
+          "level": 0,
+          "half_life": 10.01,
+          "channels": [
+            {
+              "daughter": "Ze-446",
+              "mode": "beta-",
+              "branching": 0.7,
+              "photon_yield": 0.0
+            },
+            {
+              "daughter": "Ze-445",
+              "mode": "beta-n",
+              "branching": 0.3,
+              "photon_yield": 0.0
+            }
+          ]
+        },
+        {
+          "name": "Ze-446",
+          "z": 181,
+          "a": 446,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        },
+        {
+          "name": "Ze-445",
+          "z": 181,
+          "a": 445,
+          "level": 0,
+          "half_life": null,
+          "channels": []
+        }
+      ]
+    }
+  },
+  "cases": {
+    "S1": {
+      "initial": {
+        "Sa-400": 100000
+      },
+      "times": [
+        0.0,
+        0.5,
+        1.0,
+        2.0,
+        4.0,
+        6.0
+      ]
+    },
+    "S2": {
+      "initial": {
+        "Xa-400": 100000
+      },
+      "times": [
+        0.0,
+        0.5,
+        1.0,
+        2.0,
+        4.0,
+        8.0,
+        12.0
+      ]
+    },
+    "S3": {
+      "initial": {
+        "Ya-410": 100000
+      },
+      "times": [
+        0.0,
+        1.0,
+        5.0,
+        10.0,
+        20.0,
+        40.0
+      ]
+    },
+    "S4": {
+      "initial": {
+        "G1": 40000,
+        "G2": 40000,
+        "G3": 20000
+      },
+      "times": [
+        0.0,
+        0.5,
+        1.0,
+        2.0,
+        5.0,
+        13.0
+      ]
+    },
+    "S5": {
+      "initial": {
+        "Za-450": 100000
+      },
+      "times": [
+        0.0,
+        0.001,
+        1.0,
+        1000.0,
+        3000.0
+      ]
+    }
+  },
+  "runs": {
+    "NC1": {
+      "generator": "numpy-pcg64",
+      "schemes": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "role": "negative control, primary healthy generator"
+    },
+    "NC2": {
+      "generator": "xoshiro256pp",
+      "schemes": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "role": "negative control, second healthy generator"
+    },
+    "ENS-B2": {
+      "generator": "numpy-pcg64",
+      "scheme": "S2",
+      "replicates": 400,
+      "initial": {
+        "Xa-400": 2000
+      },
+      "role": "B2 ensemble: means, variances, covariances, two-time covariances"
+    },
+    "ENS-A": {
+      "generator": "numpy-pcg64",
+      "scheme": "S2",
+      "replicates": 400,
+      "initial": {
+        "Xa-400": 2000
+      },
+      "engine": "rnglab.nuclear.simulate_decays (Layer A, frozen), horizon 12, observed on the S2 grid",
+      "role": "Layer A ensemble for the Layer A / B2 comparison"
+    },
+    "BIG": {
+      "generator": "numpy-pcg64",
+      "scheme": "S2",
+      "initial_sizes": [
+        1000000000000,
+        1152921504606859321
+      ],
+      "role": "huge populations: one part (1e12) and 129 parts (2**60 + 12345)"
+    },
+    "PC-B1": {
+      "generator": "numpy-pcg64",
+      "scheme": "S1",
+      "initial": {
+        "Sa-400": 400000
+      },
+      "perturbation": {
+        "Sa-400": {
+          "half_life": 1.02
+        }
+      },
+      "target": "NC1-style BT-STATE at t = 2.0 against the reference half-life 1.0",
+      "role": "positive control: physics error"
+    },
+    "PC-B2": {
+      "generator": "numpy-pcg64",
+      "scheme": "S2",
+      "initial": {
+        "Xa-400": 100000
+      },
+      "replicates": 400,
+      "replicate_initial": {
+        "Xa-400": 2000
+      },
+      "engine": "naive one-step aggregation (study script only): at most one decay per nucleus and interval",
+      "targets": [
+        "BT-STATE at t = 12.0 of the single run",
+        "CT-HOMO at t = 12.0 between ENS-NAIVE and ENS-A"
+      ],
+      "role": "positive control: a plausible aggregation error"
+    },
+    "XREF": {
+      "cases": [
+        {
+          "scheme": "S2",
+          "initial": {
+            "Xa-400": 1000000
+          },
+          "part_max": 9007199254740992
+        },
+        {
+          "scheme": "S4",
+          "initial": {
+            "G1": 40000,
+            "G2": 40000,
+            "G3": 20000
+          },
+          "part_max": 997
+        }
+      ],
+      "role": "software check: vectorised and reference B2 engines on the same stream"
+    },
+    "REPLAY": {
+      "of": "NC1 S2",
+      "role": "software check"
+    },
+    "CHECKPOINT": {
+      "of": "NC1 S2",
+      "resume_after_interval": 3,
+      "role": "software check: resume from a JSON checkpoint"
+    },
+    "SINK": {
+      "of": "NC1 S2",
+      "role": "software check: keep_outputs=False with a sink gives the same digest"
+    }
+  },
+  "tests": {
+    "BT-STATE": "counts in every state at every grid time t > 0 against Multinomial(N, p(t)), p from the Layer A matrix exponential; S4 per precursor group; chi-square with the pooling rule (min expected 5)",
+    "BT-DECAY": "decays of each unstable nuclide over the whole grid against Binomial(N, q_j(T)) (S4: per group), exact binomial",
+    "BT-BINS": "decays of the first nuclide of each scheme (S4: each precursor) in every grid interval plus 'none' against the multinomial law from decay_probabilities; chi-square, pooling rule",
+    "BT-CHANNEL": "first-channel decays over the grid given the nuclide's decays, for every nuclide with two or more channels, exact binomial",
+    "BT-PHOTON": "photons over the grid given the channel's decays, for every channel with photon yield strictly between 0 and 1, exact binomial",
+    "BT-NEUTRON": "S4: neutrons of each group in every interval plus 'none' against the multinomial with probabilities P_n (q(t_k+1) - q(t_k)); chi-square, pooling rule",
+    "BT-PATH": "S2: for every source nuclide with two or more path categories, the Pearson statistic of each planned interval's path-category counts against Multinomial(start count, q(delta)) from the engine's decimal laws, on cells fixed before generation from expected counts (minimum expected count 10; design.json, path_tests), summed over the planned intervals and referred to chi-square(summed degrees of freedom). Counts of several intervals are not pooled, because later start counts depend on earlier outcomes",
+    "ET-MEAN": "ENS-B2: count of each eligible state at t = 2 and t = 8 summed over replicates against Binomial(R N0, p_j(t)), exact",
+    "ET-VAR": "ENS-B2: sample variance of each eligible state at t = 2 and t = 8 against its exact variance, two-sided, with s^2 referred to a scaled chi-square whose degrees of freedom match the exact mean and variance of s^2 (rnglab.nuclear.moments, comparison.scaled_chisquare_variance_check)",
+    "ET-VARSUM": "ENS-B2: sample variance of N_j(2) + N_k(2) for every pair of states eligible at t = 2 (it carries Cov(N_j, N_k) given the ET-VAR tests), same method as ET-VAR",
+    "ET-VARSUM2": "ENS-B2: sample variance of N_j(2) + N_k(8) for j = k eligible at both times and for j = Xa-400 with every k eligible at t = 8 (it carries the two-time covariance), same method as ET-VAR",
+    "CT-HOMO": "ENS-A against ENS-B2: pooled state counts at every grid time t > 0, 2 x K homogeneity chi-square, pooling rule",
+    "CT-VAR": "ENS-A against ENS-B2: ratio of the two sample variances of each state eligible at t = 2 against F(nu, nu), two-sided, nu = 2 variance^2 / Var(s^2) from the exact moments (comparison.variance_ratio_f_check); the common scale cancels",
+    "CT-VARSUM": "ENS-A against ENS-B2: ratio of the two sample variances of N_j(2) + N_k(2) for every pair eligible at t = 2 (it carries the covariance given the CT-VAR tests), same method as CT-VAR",
+    "CT-DECAY": "ENS-A against ENS-B2: pooled decays of each unstable nuclide in every grid interval plus 'none', homogeneity chi-square",
+    "CT-PHOTON": "ENS-A against ENS-B2: pooled photons and photon-less decays of every channel with yield strictly between 0 and 1, 2 x 2 homogeneity chi-square",
+    "BIG-STATE": "BIG: counts at every grid time against Multinomial(N, p(t)), chi-square",
+    "BIG-DECAY": "BIG: decays of each unstable nuclide over the grid, z-test against N q_j(T) (normal approximation; Berry-Esseen distance below 1e-5 at these sizes)",
+    "eligibility": "a state is eligible at t when 2000 p_j(t) (1 - p_j(t)) >= 20 (design.json)",
+    "applicability": "a chi-square test with fewer than two cells after pooling is not applicable and is not run. Applicability never depends on the data: for every test it follows from fixed totals and probabilities (and, for BT-PATH, from cells fixed in design.json), so design.json lists exactly the tests that run"
+  },
+  "families": {
+    "NC1": "every test on NC1 runs, ENS-B2, the comparison ENS-A / ENS-B2 and BIG",
+    "NC2": "every test on NC2 runs",
+    "alpha": 0.01,
+    "procedure": "Holm step-down within each family (rnglab.stats.holm_bonferroni_correction)"
+  },
+  "deterministic_checks": {
+    "D1": "every B2 run reads exactly intervals * words_per_interval words and its source counts 8 bytes per word; every Layer A run reads nuclei * 3 * depth words",
+    "D2": "every B2 run: populations conserved and nonnegative, population changes equal inflow minus outflow, decays out of a nuclide at most its start count plus inflow, photons between 0 and the channel's decays (equal for yield 1, zero for yield 0), neutrons equal beta-delayed-neutron decays; every Layer A run satisfies rnglab.nuclear.checks.decay_invariants",
+    "D3": "XREF: identical digests, populations, path counts, decays, photons, neutrons and stream digests in both engines",
+    "D4": "REPLAY: identical digest and stream digest",
+    "D5": "CHECKPOINT: a run resumed from the JSON checkpoint after interval 3 reproduces the digest and the remaining outputs",
+    "D6": "SINK: keep_outputs=False with a sink reproduces the digest and the sink records the populations",
+    "D7": "ENS-B2, ENS-A and ENS-NAIVE: 400 distinct seeds and stream digests each; no Layer A decay at time 0",
+    "D8": "no random numbers: for every scheme, start nuclide and distinct interval length, the decimal interval law and the matrix exponential on the path tree agree within 1e-12, the end-state probabilities agree with the Layer A matrix exponential within 1e-12 (the float64 matrix exponential itself errs by up to 1.6e-13 on the stiff, close-rate scheme S5, confirmed against a 150-digit evaluation before the freeze), the probabilities sum to 1 within 1e-30 and every probability lies in its mean-value bracket",
+    "D9": "BIG: 1 part for 1e12 and 129 parts for 2**60 + 12345; populations conserved",
+    "D10": "exactly the tests named in design.json (planned_tests) ran in each family: no planned test was skipped or failed to compute, and no other test entered a family"
+  },
+  "reading_rules": {
+    "R1": "B2 agreement with the analytic laws and with Layer A: PASS iff D1 to D10 hold and Holm at family-wise alpha 0.01 rejects no test in NC1 and none in NC2. Otherwise FAIL, listing each failed item. The chance of a false FAIL is at most about 2%.",
+    "R2": "Sensitivity: PC-B1 rejects its target, and PC-B2 rejects both of its targets, each at p < 0.01 / (size of the NC1 family). If not, R1 is reported with the statement that the battery lacked the declared sensitivity. The other tests on the positive controls are reported descriptively, outside any family.",
+    "R3": "Descriptive, no verdict: run times, digits used by the decimal laws, largest decimal-versus-matrix-exponential difference, parts and times of the BIG runs.",
+    "general": "The study runs once from a clean committed tree. Every outcome is reported whichever way it falls. No threshold, size or test changes after generation; a code change after the freeze is an amendment written before any affected number is regenerated."
+  },
+  "smoke": {
+    "scale": 0.05,
+    "ens_replicates": 20,
+    "big_sizes": [
+      1000000000,
+      72057594037940281
+    ],
+    "xref_scale": 0.05,
+    "output": "research/v020-nuclear-b2-verify/smoke/ (not in Git, excluded from every result)"
+  }
+}

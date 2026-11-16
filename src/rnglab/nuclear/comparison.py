@@ -1,0 +1,238 @@
+"""RNGLab v0.20 nuclear module, milestone B2: moment tests and two-sample comparisons.
+
+Like ``checks``, every function returns a plain dict with its inputs, statistic
+and p-value, and raises ValueError on a non-finite input or result.
+"""
+from __future__ import annotations
+
+import math
+from typing import Any, Sequence
+
+import numpy as np
+from scipy import stats
+
+
+def _finite(*values: float) -> None:
+    if not all(math.isfinite(float(v)) for v in values):
+        raise ValueError("non-finite input, statistic or p-value")
+
+
+def z_check(estimate: float, expected: float, variance: float, label: str = "z") -> dict[str, Any]:
+    """Two-sided normal test of an estimate against its expected value and exact variance."""
+    _finite(estimate, expected, variance)
+    if not variance > 0:
+        raise ValueError("variance must be positive")
+    z = (float(estimate) - float(expected)) / math.sqrt(variance)
+    p = float(2.0 * stats.norm.sf(abs(z)))
+    _finite(z, p)
+    return {"test": label, "estimate": float(estimate), "expected": float(expected), "variance": float(variance),
+            "z": z, "p_value": p}
+
+
+def scaled_chisquare_variance_check(sample_variance: float, variance: float, variance_of_sample_variance: float,
+                                    label: str = "scaled_chisquare_variance") -> dict[str, Any]:
+    """Two-sided test of a sample variance against its exact variance, keeping the right skew of s^2.
+
+    s^2 is approximated by (variance / nu) chi-square(nu) with nu = 2 variance^2 / Var(s^2), which
+    matches the exact mean and variance of s^2 (Satterthwaite). A normal approximation of s^2 would
+    understate its right tail, by about a factor of 2 at z = 4.
+    """
+    _finite(sample_variance, variance, variance_of_sample_variance)
+    if not (variance > 0 and variance_of_sample_variance > 0):
+        raise ValueError("variances must be positive")
+    nu = 2.0 * variance ** 2 / variance_of_sample_variance
+    statistic = nu * sample_variance / variance
+    p = float(min(1.0, 2.0 * min(stats.chi2.cdf(statistic, nu), stats.chi2.sf(statistic, nu))))
+    _finite(statistic, p)
+    return {"test": label, "sample_variance": float(sample_variance), "variance": float(variance),
+            "variance_of_sample_variance": float(variance_of_sample_variance), "dof": nu, "statistic": statistic,
+            "ratio": float(sample_variance / variance), "p_value": p}
+
+
+def variance_ratio_f_check(sample_variance_a: float, sample_variance_b: float, variance: float,
+                           variance_of_sample_variance: float, label: str = "variance_ratio_f") -> dict[str, Any]:
+    """Two-sided test that two independent sample variances estimate the same variance.
+
+    Each s^2 is approximated by (variance / nu) chi-square(nu) with nu = 2 variance^2 / Var(s^2)
+    (as in scaled_chisquare_variance_check), so their ratio is F(nu, nu) and the common scale
+    cancels: only nu comes from the analytic reference. A z-test of the difference s_a^2 - s_b^2
+    with the exact null variance was tried first and rejected: its null rejection rate at the Holm
+    level was 1.66 times nominal (research/v020-nuclear-b2-verify/calibration.json).
+    """
+    _finite(sample_variance_a, sample_variance_b, variance, variance_of_sample_variance)
+    if not (sample_variance_a > 0 and sample_variance_b > 0 and variance > 0 and variance_of_sample_variance > 0):
+        raise ValueError("variances must be positive")
+    nu = 2.0 * variance ** 2 / variance_of_sample_variance
+    ratio = float(sample_variance_a) / float(sample_variance_b)
+    p = float(min(1.0, 2.0 * min(stats.f.cdf(ratio, nu, nu), stats.f.sf(ratio, nu, nu))))
+    _finite(ratio, p)
+    return {"test": label, "sample_a": float(sample_variance_a), "sample_b": float(sample_variance_b),
+            "dof": nu, "statistic": ratio, "p_value": p}
+
+
+def null_difference_check(a: float, b: float, variance_each: float, label: str = "null_difference") -> dict[str, Any]:
+    """z-test of a - b when both are independent draws of one statistic with known null variance.
+
+    Under the null the difference of two independent, identically distributed statistics is symmetric,
+    so a normal reference is accurate even when each statistic is skewed.
+    """
+    result = z_check(float(a) - float(b), 0.0, 2.0 * float(variance_each), label)
+    result.update({"sample_a": float(a), "sample_b": float(b)})
+    return result
+
+
+def sample_covariance(x: Sequence[float], y: Sequence[float]) -> float:
+    x, y = np.asarray(x, dtype=np.float64), np.asarray(y, dtype=np.float64)
+    if x.size != y.size or x.size < 2:
+        raise ValueError("need two samples of equal size >= 2")
+    return float(((x - x.mean()) * (y - y.mean())).sum() / (x.size - 1))
+
+
+def plugin_covariance_variance(x: Sequence[float], y: Sequence[float]) -> float:
+    """Reference-free estimate of Var(s_xy) from the sample's own second and fourth moments."""
+    x, y = np.asarray(x, dtype=np.float64), np.asarray(y, dtype=np.float64)
+    r = x.size
+    dx, dy = x - x.mean(), y - y.mean()
+    m22 = float(np.mean(dx * dx * dy * dy))
+    sxx, syy, sxy = float(dx @ dx / (r - 1)), float(dy @ dy / (r - 1)), float(dx @ dy / (r - 1))
+    return (m22 - sxy ** 2) / r + (sxx * syy + sxy ** 2) / (r * (r - 1))
+
+
+def covariance_difference_check(xa, ya, xb, yb, label: str = "covariance_difference") -> dict[str, Any]:
+    """Two-sample test of equal covariance (or variance when x is y), with plug-in variances."""
+    sa, sb = sample_covariance(xa, ya), sample_covariance(xb, yb)
+    va, vb = plugin_covariance_variance(xa, ya), plugin_covariance_variance(xb, yb)
+    result = z_check(sa - sb, 0.0, va + vb, label)
+    result.update({"sample_a": sa, "sample_b": sb})
+    return result
+
+
+def homogeneity_check(a: Sequence[int], b: Sequence[int], *, min_expected: float = 5.0) -> dict[str, Any]:
+    """Chi-square test that two count vectors come from one multinomial law (2 x K table).
+
+    Columns with an expected count below ``min_expected`` in either row are
+    pooled into one column, in their original order; a pooled column still
+    below the limit joins the remaining column with the smallest total.
+    Columns that are empty in both rows are dropped.
+    """
+    table = np.array([a, b], dtype=np.float64)
+    if table.ndim != 2 or table.shape[0] != 2 or np.any(table < 0) or not np.all(np.isfinite(table)):
+        raise ValueError("need two nonnegative count vectors of equal length")
+    keep = np.flatnonzero(table.sum(axis=0) > 0)
+    rows = table.sum(axis=1)
+    if np.any(rows == 0):
+        raise ValueError("each row needs at least one count")
+    expected_min = lambda cols: float(table[:, cols].sum() * rows.min() / rows.sum())  # noqa: E731
+    small = [int(c) for c in keep if expected_min([c]) < min_expected]
+    cells = [[int(c)] for c in keep if int(c) not in small]
+    if small:
+        if expected_min(small) < min_expected and cells:
+            target = min(range(len(cells)), key=lambda i: (table[:, cells[i]].sum(), cells[i][0]))
+            cells[target] = sorted(cells[target] + small)
+        else:
+            cells.append(small)
+    if len(cells) < 2:
+        raise ValueError("fewer than two columns after pooling; the check is undefined")
+    pooled = np.array([[table[r, c].sum() for c in cells] for r in range(2)])
+    statistic, p, dof, _ = stats.chi2_contingency(pooled, correction=False)
+    _finite(statistic, p)
+    return {"test": "homogeneity_chisquare", "a": [int(v) for v in a], "b": [int(v) for v in b], "cells": cells,
+            "statistic": float(statistic), "dof": int(dof), "p_value": float(p)}
+
+
+def pooled_cells(expected: Sequence[float], min_expected: float) -> list[list[int]]:
+    """Pooling of categories by expected count, decided before any data is seen.
+
+    Same rule as checks.multinomial_check, applied to expected counts: a
+    category with expected count 0 is left out; categories below
+    ``min_expected`` are pooled into one cell, in their original order; a pooled
+    cell still below the limit joins the remaining cell with the smallest
+    expected count (lowest index on ties). The result may have fewer than two
+    cells, in which case no chi-square test is defined.
+    """
+    expected = np.asarray(expected, dtype=np.float64)
+    if expected.ndim != 1 or not np.all(np.isfinite(expected)) or np.any(expected < 0):
+        raise ValueError("expected counts must be a finite nonnegative vector")
+    keep = [int(i) for i in np.flatnonzero(expected > 0)]
+    small = [i for i in keep if expected[i] < min_expected]
+    cells = [[i] for i in keep if expected[i] >= min_expected]
+    if small:
+        if expected[small].sum() < min_expected and cells:
+            target = min(range(len(cells)), key=lambda c: (expected[cells[c]].sum(), cells[c][0]))
+            cells[target] = sorted(cells[target] + small)
+        else:
+            cells.append(small)
+    return cells
+
+
+def fixed_cells_chisquare(observed: Sequence[int], probabilities: Sequence[float],
+                          cells: Sequence[Sequence[int]]) -> dict[str, Any]:
+    """Pearson statistic of counts against Multinomial(n, probabilities) on pre-declared cells.
+
+    n is the observed total. Every category with positive probability must lie
+    in exactly one cell; a category outside the cells must have probability 0
+    and count 0. Degrees of freedom: cells - 1. Returns the statistic and its
+    degrees of freedom (no p-value: statistics of several intervals are summed).
+    """
+    counts = np.asarray(observed, dtype=np.int64)
+    probs = np.asarray(probabilities, dtype=np.float64)
+    if counts.shape != probs.shape or counts.ndim != 1 or np.any(counts < 0) or not np.all(np.isfinite(probs)) \
+            or np.any(probs < 0):
+        raise ValueError("observed and probabilities must be matching finite nonnegative vectors")
+    members = [int(i) for cell in cells for i in cell]
+    if len(cells) < 2 or len(set(members)) != len(members) or any(not 0 <= i < probs.size for i in members):
+        raise ValueError("need two or more disjoint cells of valid category indices")
+    outside = np.ones(probs.size, dtype=bool)
+    outside[members] = False
+    if np.any(probs[outside] > 0) or np.any(counts[outside] > 0):
+        raise ValueError("a category outside the cells has positive probability or a nonzero count")
+    total = int(counts.sum())
+    if total <= 0:
+        raise ValueError("no observations: the statistic is undefined")
+    cell_probability = np.array([probs[list(cell)].sum() for cell in cells])
+    if abs(float(cell_probability.sum()) - 1.0) > 1e-9 or np.any(cell_probability <= 0):
+        raise ValueError("cell probabilities must be positive and sum to 1")
+    cell_observed = np.array([counts[list(cell)].sum() for cell in cells], dtype=np.float64)
+    cell_expected = total * cell_probability / cell_probability.sum()
+    statistic = float(((cell_observed - cell_expected) ** 2 / cell_expected).sum())
+    _finite(statistic)
+    return {"test": "fixed_cells_pearson", "total": total, "cells": [list(map(int, cell)) for cell in cells],
+            "cell_observed": cell_observed.tolist(), "cell_expected": cell_expected.tolist(),
+            "statistic": statistic, "dof": len(cells) - 1}
+
+
+def planned_path_cells(plan, expected_start_counts: Sequence[Sequence[float]], *,
+                       min_expected: float = 10.0) -> dict[int, dict[int, list[list[int]]]]:
+    """Pre-declared cells of the per-interval path-category tests of an AggregatePlan.
+
+    expected_start_counts[k][i] is the expected number of nuclei in nuclide i
+    at the start of interval k (from the exact law, before any data). Returns
+    {source nuclide: {interval: cells}}, keeping the intervals whose expected
+    category counts leave two or more cells. Because the cells are fixed in
+    advance, the degrees of freedom of each interval's Pearson statistic are
+    constants, and the statistics of successive intervals, each conditionally
+    chi-square given the past, sum to a chi-square with the summed degrees of
+    freedom (asymptotically).
+    """
+    out: dict[int, dict[int, list[list[int]]]] = {}
+    for i in plan.sources:
+        per_interval = {}
+        for k, delta in enumerate(plan.deltas.tolist()):
+            q = plan.interval_plans[delta][i].law.as_float()
+            cells = pooled_cells(float(expected_start_counts[k][i]) * q, min_expected)
+            if len(cells) >= 2:
+                per_interval[k] = cells
+        if per_interval:
+            out[int(i)] = per_interval
+    return out
+
+
+def summed_chisquare(parts: Sequence[dict[str, Any]], label: str = "summed_conditional_chisquare") -> dict[str, Any]:
+    """Sum of Pearson statistics with fixed degrees of freedom, referred to chi-square(summed dof)."""
+    if not parts:
+        raise ValueError("nothing to sum")
+    statistic = float(sum(part["statistic"] for part in parts))
+    dof = int(sum(part["dof"] for part in parts))
+    p = float(stats.chi2.sf(statistic, dof))
+    _finite(statistic, p)
+    return {"test": label, "statistic": statistic, "dof": dof, "parts": len(parts), "p_value": p}

@@ -1,0 +1,1100 @@
+{
+  "generated_by": "research/v020-nuclear-b2-verify/design.py (analytic references only, no random numbers)",
+  "scheme_sha256": {
+    "S1": "b3f6c1d3459f4bf9b580d7e3444867dee75b9033317027857bf3b28825f6ab31",
+    "S2": "e74bc4176803ad033aebe33102c51dbda3b254073707f6d7a5139d9a1f5e824e",
+    "S3": "f0022b8184798da94ed8d8407092fe6b83bf5a7c4efa7ae670b196f07bdd96e0",
+    "S4": "6247c51ab49e00ded1099aae984c998118f6b351df45fb24f6ef7a1c7eaffcaa",
+    "S5": "974476a3b7bac8b8bb5ec2bf4883b81ea4edf37773eafe155f80713828c57725"
+  },
+  "layer_a_schemes_identical": true,
+  "ens": {
+    "times": [
+      2.0,
+      8.0
+    ],
+    "per_replicate": 2000,
+    "eligible": {
+      "2.0": [
+        "Xa-400",
+        "Xb-396",
+        "Xc-400m",
+        "Xc-400",
+        "Xd-396",
+        "Xe-396",
+        "Xf-392"
+      ],
+      "8.0": [
+        "Xa-400",
+        "Xb-396",
+        "Xc-400m",
+        "Xc-400",
+        "Xd-396",
+        "Xe-396",
+        "Xf-392",
+        "Xg-396",
+        "Xh-395"
+      ]
+    },
+    "pairs_t2": [
+      [
+        "Xa-400",
+        "Xb-396"
+      ],
+      [
+        "Xa-400",
+        "Xc-400m"
+      ],
+      [
+        "Xa-400",
+        "Xc-400"
+      ],
+      [
+        "Xa-400",
+        "Xd-396"
+      ],
+      [
+        "Xa-400",
+        "Xe-396"
+      ],
+      [
+        "Xa-400",
+        "Xf-392"
+      ],
+      [
+        "Xb-396",
+        "Xc-400m"
+      ],
+      [
+        "Xb-396",
+        "Xc-400"
+      ],
+      [
+        "Xb-396",
+        "Xd-396"
+      ],
+      [
+        "Xb-396",
+        "Xe-396"
+      ],
+      [
+        "Xb-396",
+        "Xf-392"
+      ],
+      [
+        "Xc-400m",
+        "Xc-400"
+      ],
+      [
+        "Xc-400m",
+        "Xd-396"
+      ],
+      [
+        "Xc-400m",
+        "Xe-396"
+      ],
+      [
+        "Xc-400m",
+        "Xf-392"
+      ],
+      [
+        "Xc-400",
+        "Xd-396"
+      ],
+      [
+        "Xc-400",
+        "Xe-396"
+      ],
+      [
+        "Xc-400",
+        "Xf-392"
+      ],
+      [
+        "Xd-396",
+        "Xe-396"
+      ],
+      [
+        "Xd-396",
+        "Xf-392"
+      ],
+      [
+        "Xe-396",
+        "Xf-392"
+      ]
+    ],
+    "pairs_two_time": [
+      [
+        "Xa-400",
+        "Xa-400"
+      ],
+      [
+        "Xb-396",
+        "Xb-396"
+      ],
+      [
+        "Xc-400m",
+        "Xc-400m"
+      ],
+      [
+        "Xc-400",
+        "Xc-400"
+      ],
+      [
+        "Xd-396",
+        "Xd-396"
+      ],
+      [
+        "Xe-396",
+        "Xe-396"
+      ],
+      [
+        "Xf-392",
+        "Xf-392"
+      ],
+      [
+        "Xa-400",
+        "Xb-396"
+      ],
+      [
+        "Xa-400",
+        "Xc-400m"
+      ],
+      [
+        "Xa-400",
+        "Xc-400"
+      ],
+      [
+        "Xa-400",
+        "Xd-396"
+      ],
+      [
+        "Xa-400",
+        "Xe-396"
+      ],
+      [
+        "Xa-400",
+        "Xf-392"
+      ],
+      [
+        "Xa-400",
+        "Xg-396"
+      ],
+      [
+        "Xa-400",
+        "Xh-395"
+      ]
+    ]
+  },
+  "comparison": {
+    "unstable": [
+      "Xa-400",
+      "Xb-396",
+      "Xc-400m",
+      "Xc-400",
+      "Xd-396",
+      "Xe-396"
+    ],
+    "yield_channels": [
+      "Xa-400/alpha->Xb-396",
+      "Xa-400/beta-->Xc-400m",
+      "Xb-396/ec->Xd-396",
+      "Xc-400m/it->Xc-400",
+      "Xe-396/beta-->Xg-396"
+    ]
+  },
+  "path_tests": {
+    "min_expected": 10.0,
+    "cells": {
+      "Xa-400": {
+        "0": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6,
+            7,
+            8
+          ]
+        ],
+        "1": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6,
+            7,
+            8
+          ]
+        ],
+        "2": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7,
+            8
+          ]
+        ],
+        "3": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ]
+        ],
+        "4": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ]
+        ],
+        "5": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ]
+        ]
+      },
+      "Xb-396": {
+        "1": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "2": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "3": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "4": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "5": [
+          [
+            0,
+            1
+          ],
+          [
+            2
+          ]
+        ]
+      },
+      "Xc-400m": {
+        "1": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "2": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "3": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "4": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "5": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ]
+      },
+      "Xc-400": {
+        "1": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "2": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "3": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "4": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "5": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ]
+      },
+      "Xd-396": {
+        "1": [
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ],
+        "2": [
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ],
+        "3": [
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ],
+        "4": [
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ],
+        "5": [
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ]
+      },
+      "Xe-396": {
+        "2": [
+          [
+            0
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "3": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "4": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "5": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ]
+      }
+    },
+    "dof": {
+      "Xa-400": 43,
+      "Xb-396": 9,
+      "Xc-400m": 17,
+      "Xc-400": 14,
+      "Xd-396": 5,
+      "Xe-396": 7
+    }
+  },
+  "planned_tests": {
+    "NC1": [
+      "NC1 S1 BT-STATE Sa-400 t=0.5",
+      "NC1 S1 BT-STATE Sa-400 t=1.0",
+      "NC1 S1 BT-STATE Sa-400 t=2.0",
+      "NC1 S1 BT-STATE Sa-400 t=4.0",
+      "NC1 S1 BT-STATE Sa-400 t=6.0",
+      "NC1 S1 BT-DECAY Sa-400",
+      "NC1 S1 BT-BINS Sa-400",
+      "NC1 S1 BT-PHOTON Sa-400/beta-->Sb-400",
+      "NC1 S2 BT-STATE Xa-400 t=0.5",
+      "NC1 S2 BT-STATE Xa-400 t=1.0",
+      "NC1 S2 BT-STATE Xa-400 t=2.0",
+      "NC1 S2 BT-STATE Xa-400 t=4.0",
+      "NC1 S2 BT-STATE Xa-400 t=8.0",
+      "NC1 S2 BT-STATE Xa-400 t=12.0",
+      "NC1 S2 BT-DECAY Xa-400",
+      "NC1 S2 BT-DECAY Xb-396",
+      "NC1 S2 BT-DECAY Xc-400m",
+      "NC1 S2 BT-DECAY Xc-400",
+      "NC1 S2 BT-DECAY Xd-396",
+      "NC1 S2 BT-DECAY Xe-396",
+      "NC1 S2 BT-BINS Xa-400",
+      "NC1 S2 BT-CHANNEL Xa-400",
+      "NC1 S2 BT-PHOTON Xa-400/alpha->Xb-396",
+      "NC1 S2 BT-PHOTON Xa-400/beta-->Xc-400m",
+      "NC1 S2 BT-PHOTON Xb-396/ec->Xd-396",
+      "NC1 S2 BT-PHOTON Xc-400m/it->Xc-400",
+      "NC1 S2 BT-CHANNEL Xe-396",
+      "NC1 S2 BT-PHOTON Xe-396/beta-->Xg-396",
+      "NC1 S3 BT-STATE Ya-410 t=1.0",
+      "NC1 S3 BT-STATE Ya-410 t=5.0",
+      "NC1 S3 BT-STATE Ya-410 t=10.0",
+      "NC1 S3 BT-STATE Ya-410 t=20.0",
+      "NC1 S3 BT-STATE Ya-410 t=40.0",
+      "NC1 S3 BT-DECAY Ya-410",
+      "NC1 S3 BT-DECAY Yb-410",
+      "NC1 S3 BT-BINS Ya-410",
+      "NC1 S4 BT-STATE G1 t=0.5",
+      "NC1 S4 BT-STATE G1 t=1.0",
+      "NC1 S4 BT-STATE G1 t=2.0",
+      "NC1 S4 BT-STATE G1 t=5.0",
+      "NC1 S4 BT-STATE G1 t=13.0",
+      "NC1 S4 BT-STATE G2 t=0.5",
+      "NC1 S4 BT-STATE G2 t=1.0",
+      "NC1 S4 BT-STATE G2 t=2.0",
+      "NC1 S4 BT-STATE G2 t=5.0",
+      "NC1 S4 BT-STATE G2 t=13.0",
+      "NC1 S4 BT-STATE G3 t=0.5",
+      "NC1 S4 BT-STATE G3 t=1.0",
+      "NC1 S4 BT-STATE G3 t=2.0",
+      "NC1 S4 BT-STATE G3 t=5.0",
+      "NC1 S4 BT-STATE G3 t=13.0",
+      "NC1 S4 BT-DECAY G1",
+      "NC1 S4 BT-DECAY G2",
+      "NC1 S4 BT-DECAY G3",
+      "NC1 S4 BT-BINS G1",
+      "NC1 S4 BT-BINS G2",
+      "NC1 S4 BT-BINS G3",
+      "NC1 S4 BT-CHANNEL G1",
+      "NC1 S4 BT-CHANNEL G2",
+      "NC1 S4 BT-NEUTRON G1",
+      "NC1 S4 BT-NEUTRON G2",
+      "NC1 S4 BT-NEUTRON G3",
+      "NC1 S5 BT-STATE Za-450 t=1.0",
+      "NC1 S5 BT-STATE Za-450 t=1000.0",
+      "NC1 S5 BT-STATE Za-450 t=3000.0",
+      "NC1 S5 BT-DECAY Za-450",
+      "NC1 S5 BT-DECAY Zb-450",
+      "NC1 S5 BT-DECAY Zc-446",
+      "NC1 S5 BT-DECAY Zd-446",
+      "NC1 S5 BT-BINS Za-450",
+      "NC1 S5 BT-PHOTON Zb-450/alpha->Zc-446",
+      "NC1 S5 BT-CHANNEL Zd-446",
+      "NC1 S2 BT-PATH Xa-400",
+      "NC1 S2 BT-PATH Xb-396",
+      "NC1 S2 BT-PATH Xc-400m",
+      "NC1 S2 BT-PATH Xc-400",
+      "NC1 S2 BT-PATH Xd-396",
+      "NC1 S2 BT-PATH Xe-396",
+      "ENS ET-MEAN Xa-400 t=2.0",
+      "ENS ET-MEAN Xb-396 t=2.0",
+      "ENS ET-MEAN Xc-400m t=2.0",
+      "ENS ET-MEAN Xc-400 t=2.0",
+      "ENS ET-MEAN Xd-396 t=2.0",
+      "ENS ET-MEAN Xe-396 t=2.0",
+      "ENS ET-MEAN Xf-392 t=2.0",
+      "ENS ET-MEAN Xa-400 t=8.0",
+      "ENS ET-MEAN Xb-396 t=8.0",
+      "ENS ET-MEAN Xc-400m t=8.0",
+      "ENS ET-MEAN Xc-400 t=8.0",
+      "ENS ET-MEAN Xd-396 t=8.0",
+      "ENS ET-MEAN Xe-396 t=8.0",
+      "ENS ET-MEAN Xf-392 t=8.0",
+      "ENS ET-MEAN Xg-396 t=8.0",
+      "ENS ET-MEAN Xh-395 t=8.0",
+      "ENS ET-VAR Xa-400 t=2.0",
+      "ENS ET-VAR Xb-396 t=2.0",
+      "ENS ET-VAR Xc-400m t=2.0",
+      "ENS ET-VAR Xc-400 t=2.0",
+      "ENS ET-VAR Xd-396 t=2.0",
+      "ENS ET-VAR Xe-396 t=2.0",
+      "ENS ET-VAR Xf-392 t=2.0",
+      "ENS ET-VAR Xa-400 t=8.0",
+      "ENS ET-VAR Xb-396 t=8.0",
+      "ENS ET-VAR Xc-400m t=8.0",
+      "ENS ET-VAR Xc-400 t=8.0",
+      "ENS ET-VAR Xd-396 t=8.0",
+      "ENS ET-VAR Xe-396 t=8.0",
+      "ENS ET-VAR Xf-392 t=8.0",
+      "ENS ET-VAR Xg-396 t=8.0",
+      "ENS ET-VAR Xh-395 t=8.0",
+      "ENS ET-VARSUM Xa-400+Xb-396 t=2.0",
+      "ENS ET-VARSUM Xa-400+Xc-400m t=2.0",
+      "ENS ET-VARSUM Xa-400+Xc-400 t=2.0",
+      "ENS ET-VARSUM Xa-400+Xd-396 t=2.0",
+      "ENS ET-VARSUM Xa-400+Xe-396 t=2.0",
+      "ENS ET-VARSUM Xa-400+Xf-392 t=2.0",
+      "ENS ET-VARSUM Xb-396+Xc-400m t=2.0",
+      "ENS ET-VARSUM Xb-396+Xc-400 t=2.0",
+      "ENS ET-VARSUM Xb-396+Xd-396 t=2.0",
+      "ENS ET-VARSUM Xb-396+Xe-396 t=2.0",
+      "ENS ET-VARSUM Xb-396+Xf-392 t=2.0",
+      "ENS ET-VARSUM Xc-400m+Xc-400 t=2.0",
+      "ENS ET-VARSUM Xc-400m+Xd-396 t=2.0",
+      "ENS ET-VARSUM Xc-400m+Xe-396 t=2.0",
+      "ENS ET-VARSUM Xc-400m+Xf-392 t=2.0",
+      "ENS ET-VARSUM Xc-400+Xd-396 t=2.0",
+      "ENS ET-VARSUM Xc-400+Xe-396 t=2.0",
+      "ENS ET-VARSUM Xc-400+Xf-392 t=2.0",
+      "ENS ET-VARSUM Xd-396+Xe-396 t=2.0",
+      "ENS ET-VARSUM Xd-396+Xf-392 t=2.0",
+      "ENS ET-VARSUM Xe-396+Xf-392 t=2.0",
+      "ENS ET-VARSUM2 Xa-400@2+Xa-400@8",
+      "ENS ET-VARSUM2 Xb-396@2+Xb-396@8",
+      "ENS ET-VARSUM2 Xc-400m@2+Xc-400m@8",
+      "ENS ET-VARSUM2 Xc-400@2+Xc-400@8",
+      "ENS ET-VARSUM2 Xd-396@2+Xd-396@8",
+      "ENS ET-VARSUM2 Xe-396@2+Xe-396@8",
+      "ENS ET-VARSUM2 Xf-392@2+Xf-392@8",
+      "ENS ET-VARSUM2 Xa-400@2+Xb-396@8",
+      "ENS ET-VARSUM2 Xa-400@2+Xc-400m@8",
+      "ENS ET-VARSUM2 Xa-400@2+Xc-400@8",
+      "ENS ET-VARSUM2 Xa-400@2+Xd-396@8",
+      "ENS ET-VARSUM2 Xa-400@2+Xe-396@8",
+      "ENS ET-VARSUM2 Xa-400@2+Xf-392@8",
+      "ENS ET-VARSUM2 Xa-400@2+Xg-396@8",
+      "ENS ET-VARSUM2 Xa-400@2+Xh-395@8",
+      "COMP CT-HOMO t=0.5",
+      "COMP CT-HOMO t=1.0",
+      "COMP CT-HOMO t=2.0",
+      "COMP CT-HOMO t=4.0",
+      "COMP CT-HOMO t=8.0",
+      "COMP CT-HOMO t=12.0",
+      "COMP CT-VAR Xa-400 t=2.0",
+      "COMP CT-VAR Xb-396 t=2.0",
+      "COMP CT-VAR Xc-400m t=2.0",
+      "COMP CT-VAR Xc-400 t=2.0",
+      "COMP CT-VAR Xd-396 t=2.0",
+      "COMP CT-VAR Xe-396 t=2.0",
+      "COMP CT-VAR Xf-392 t=2.0",
+      "COMP CT-VARSUM Xa-400+Xb-396 t=2.0",
+      "COMP CT-VARSUM Xa-400+Xc-400m t=2.0",
+      "COMP CT-VARSUM Xa-400+Xc-400 t=2.0",
+      "COMP CT-VARSUM Xa-400+Xd-396 t=2.0",
+      "COMP CT-VARSUM Xa-400+Xe-396 t=2.0",
+      "COMP CT-VARSUM Xa-400+Xf-392 t=2.0",
+      "COMP CT-VARSUM Xb-396+Xc-400m t=2.0",
+      "COMP CT-VARSUM Xb-396+Xc-400 t=2.0",
+      "COMP CT-VARSUM Xb-396+Xd-396 t=2.0",
+      "COMP CT-VARSUM Xb-396+Xe-396 t=2.0",
+      "COMP CT-VARSUM Xb-396+Xf-392 t=2.0",
+      "COMP CT-VARSUM Xc-400m+Xc-400 t=2.0",
+      "COMP CT-VARSUM Xc-400m+Xd-396 t=2.0",
+      "COMP CT-VARSUM Xc-400m+Xe-396 t=2.0",
+      "COMP CT-VARSUM Xc-400m+Xf-392 t=2.0",
+      "COMP CT-VARSUM Xc-400+Xd-396 t=2.0",
+      "COMP CT-VARSUM Xc-400+Xe-396 t=2.0",
+      "COMP CT-VARSUM Xc-400+Xf-392 t=2.0",
+      "COMP CT-VARSUM Xd-396+Xe-396 t=2.0",
+      "COMP CT-VARSUM Xd-396+Xf-392 t=2.0",
+      "COMP CT-VARSUM Xe-396+Xf-392 t=2.0",
+      "COMP CT-DECAY Xa-400",
+      "COMP CT-DECAY Xb-396",
+      "COMP CT-DECAY Xc-400m",
+      "COMP CT-DECAY Xc-400",
+      "COMP CT-DECAY Xd-396",
+      "COMP CT-DECAY Xe-396",
+      "COMP CT-PHOTON Xa-400/alpha->Xb-396",
+      "COMP CT-PHOTON Xa-400/beta-->Xc-400m",
+      "COMP CT-PHOTON Xb-396/ec->Xd-396",
+      "COMP CT-PHOTON Xc-400m/it->Xc-400",
+      "COMP CT-PHOTON Xe-396/beta-->Xg-396",
+      "BIG 1000000000000 BIG-STATE t=0.5",
+      "BIG 1000000000000 BIG-STATE t=1.0",
+      "BIG 1000000000000 BIG-STATE t=2.0",
+      "BIG 1000000000000 BIG-STATE t=4.0",
+      "BIG 1000000000000 BIG-STATE t=8.0",
+      "BIG 1000000000000 BIG-STATE t=12.0",
+      "BIG 1000000000000 BIG-DECAY Xa-400",
+      "BIG 1000000000000 BIG-DECAY Xb-396",
+      "BIG 1000000000000 BIG-DECAY Xc-400m",
+      "BIG 1000000000000 BIG-DECAY Xc-400",
+      "BIG 1000000000000 BIG-DECAY Xd-396",
+      "BIG 1000000000000 BIG-DECAY Xe-396",
+      "BIG 1152921504606859321 BIG-STATE t=0.5",
+      "BIG 1152921504606859321 BIG-STATE t=1.0",
+      "BIG 1152921504606859321 BIG-STATE t=2.0",
+      "BIG 1152921504606859321 BIG-STATE t=4.0",
+      "BIG 1152921504606859321 BIG-STATE t=8.0",
+      "BIG 1152921504606859321 BIG-STATE t=12.0",
+      "BIG 1152921504606859321 BIG-DECAY Xa-400",
+      "BIG 1152921504606859321 BIG-DECAY Xb-396",
+      "BIG 1152921504606859321 BIG-DECAY Xc-400m",
+      "BIG 1152921504606859321 BIG-DECAY Xc-400",
+      "BIG 1152921504606859321 BIG-DECAY Xd-396",
+      "BIG 1152921504606859321 BIG-DECAY Xe-396"
+    ],
+    "NC2": [
+      "NC2 S1 BT-STATE Sa-400 t=0.5",
+      "NC2 S1 BT-STATE Sa-400 t=1.0",
+      "NC2 S1 BT-STATE Sa-400 t=2.0",
+      "NC2 S1 BT-STATE Sa-400 t=4.0",
+      "NC2 S1 BT-STATE Sa-400 t=6.0",
+      "NC2 S1 BT-DECAY Sa-400",
+      "NC2 S1 BT-BINS Sa-400",
+      "NC2 S1 BT-PHOTON Sa-400/beta-->Sb-400",
+      "NC2 S2 BT-STATE Xa-400 t=0.5",
+      "NC2 S2 BT-STATE Xa-400 t=1.0",
+      "NC2 S2 BT-STATE Xa-400 t=2.0",
+      "NC2 S2 BT-STATE Xa-400 t=4.0",
+      "NC2 S2 BT-STATE Xa-400 t=8.0",
+      "NC2 S2 BT-STATE Xa-400 t=12.0",
+      "NC2 S2 BT-DECAY Xa-400",
+      "NC2 S2 BT-DECAY Xb-396",
+      "NC2 S2 BT-DECAY Xc-400m",
+      "NC2 S2 BT-DECAY Xc-400",
+      "NC2 S2 BT-DECAY Xd-396",
+      "NC2 S2 BT-DECAY Xe-396",
+      "NC2 S2 BT-BINS Xa-400",
+      "NC2 S2 BT-CHANNEL Xa-400",
+      "NC2 S2 BT-PHOTON Xa-400/alpha->Xb-396",
+      "NC2 S2 BT-PHOTON Xa-400/beta-->Xc-400m",
+      "NC2 S2 BT-PHOTON Xb-396/ec->Xd-396",
+      "NC2 S2 BT-PHOTON Xc-400m/it->Xc-400",
+      "NC2 S2 BT-CHANNEL Xe-396",
+      "NC2 S2 BT-PHOTON Xe-396/beta-->Xg-396",
+      "NC2 S3 BT-STATE Ya-410 t=1.0",
+      "NC2 S3 BT-STATE Ya-410 t=5.0",
+      "NC2 S3 BT-STATE Ya-410 t=10.0",
+      "NC2 S3 BT-STATE Ya-410 t=20.0",
+      "NC2 S3 BT-STATE Ya-410 t=40.0",
+      "NC2 S3 BT-DECAY Ya-410",
+      "NC2 S3 BT-DECAY Yb-410",
+      "NC2 S3 BT-BINS Ya-410",
+      "NC2 S4 BT-STATE G1 t=0.5",
+      "NC2 S4 BT-STATE G1 t=1.0",
+      "NC2 S4 BT-STATE G1 t=2.0",
+      "NC2 S4 BT-STATE G1 t=5.0",
+      "NC2 S4 BT-STATE G1 t=13.0",
+      "NC2 S4 BT-STATE G2 t=0.5",
+      "NC2 S4 BT-STATE G2 t=1.0",
+      "NC2 S4 BT-STATE G2 t=2.0",
+      "NC2 S4 BT-STATE G2 t=5.0",
+      "NC2 S4 BT-STATE G2 t=13.0",
+      "NC2 S4 BT-STATE G3 t=0.5",
+      "NC2 S4 BT-STATE G3 t=1.0",
+      "NC2 S4 BT-STATE G3 t=2.0",
+      "NC2 S4 BT-STATE G3 t=5.0",
+      "NC2 S4 BT-STATE G3 t=13.0",
+      "NC2 S4 BT-DECAY G1",
+      "NC2 S4 BT-DECAY G2",
+      "NC2 S4 BT-DECAY G3",
+      "NC2 S4 BT-BINS G1",
+      "NC2 S4 BT-BINS G2",
+      "NC2 S4 BT-BINS G3",
+      "NC2 S4 BT-CHANNEL G1",
+      "NC2 S4 BT-CHANNEL G2",
+      "NC2 S4 BT-NEUTRON G1",
+      "NC2 S4 BT-NEUTRON G2",
+      "NC2 S4 BT-NEUTRON G3",
+      "NC2 S5 BT-STATE Za-450 t=1.0",
+      "NC2 S5 BT-STATE Za-450 t=1000.0",
+      "NC2 S5 BT-STATE Za-450 t=3000.0",
+      "NC2 S5 BT-DECAY Za-450",
+      "NC2 S5 BT-DECAY Zb-450",
+      "NC2 S5 BT-DECAY Zc-446",
+      "NC2 S5 BT-DECAY Zd-446",
+      "NC2 S5 BT-BINS Za-450",
+      "NC2 S5 BT-PHOTON Zb-450/alpha->Zc-446",
+      "NC2 S5 BT-CHANNEL Zd-446",
+      "NC2 S2 BT-PATH Xa-400",
+      "NC2 S2 BT-PATH Xb-396",
+      "NC2 S2 BT-PATH Xc-400m",
+      "NC2 S2 BT-PATH Xc-400",
+      "NC2 S2 BT-PATH Xd-396",
+      "NC2 S2 BT-PATH Xe-396"
+    ]
+  },
+  "family_sizes": {
+    "NC1": 215,
+    "NC2": 78
+  },
+  "positive_control_level": 4.651162790697675e-05,
+  "positive_controls": {
+    "PC-B1": {
+      "p_reference": 0.25,
+      "p_true": 0.25688876244335307,
+      "expected_z": 10.061681556050345,
+      "approximate_power": 0.9999999989455157
+    },
+    "PC-B2": {
+      "exact_p12": [
+        0.015625000000000007,
+        0.003333320617675783,
+        0.003742675781250002,
+        0.0639304421164773,
+        0.019931431069892997,
+        0.048372224292199555,
+        0.6067352483124314,
+        0.2144966920290659,
+        0.02383296578100732
+      ],
+      "naive_p12": [
+        0.015625,
+        0.030471350367515745,
+        0.019091328566698648,
+        0.13161826040255697,
+        0.14103121754688314,
+        0.11051417572566209,
+        0.4584974320856011,
+        0.08383611177457409,
+        0.00931512353050823
+      ],
+      "dof": 8,
+      "noncentrality_single_run": 129581.80452681919,
+      "approximate_power_single_run": 1.0,
+      "noncentrality_comparison": 204126.9891379536,
+      "approximate_power_comparison": 1.0
+    },
+    "method": "normal (PC-B1) and noncentral chi-square (PC-B2) approximations at the level alpha / NC1 family size"
+  },
+  "plans": {
+    "S1": {
+      "layout": {
+        "layout": "nuclear-aggregate-layout-v1",
+        "parts": 1,
+        "part_max": 9007199254740992,
+        "slots": 2,
+        "words_per_interval": 2,
+        "categories": 3,
+        "multinomial_slots": 1,
+        "photon_slots": 1
+      },
+      "diagnostics": {
+        "max_abs_decimal_minus_tree": 1.1102230246251565e-16,
+        "max_digits": 50
+      }
+    },
+    "S2": {
+      "layout": {
+        "layout": "nuclear-aggregate-layout-v1",
+        "parts": 1,
+        "part_max": 9007199254740992,
+        "slots": 25,
+        "words_per_interval": 25,
+        "categories": 29,
+        "multinomial_slots": 20,
+        "photon_slots": 5
+      },
+      "diagnostics": {
+        "max_abs_decimal_minus_tree": 7.049916206369744e-15,
+        "max_digits": 50
+      }
+    },
+    "S3": {
+      "layout": {
+        "layout": "nuclear-aggregate-layout-v1",
+        "parts": 1,
+        "part_max": 9007199254740992,
+        "slots": 3,
+        "words_per_interval": 3,
+        "categories": 6,
+        "multinomial_slots": 3,
+        "photon_slots": 0
+      },
+      "diagnostics": {
+        "max_abs_decimal_minus_tree": 5.329070518200751e-15,
+        "max_digits": 50
+      }
+    },
+    "S4": {
+      "layout": {
+        "layout": "nuclear-aggregate-layout-v1",
+        "parts": 1,
+        "part_max": 9007199254740992,
+        "slots": 5,
+        "words_per_interval": 5,
+        "categories": 13,
+        "multinomial_slots": 5,
+        "photon_slots": 0
+      },
+      "diagnostics": {
+        "max_abs_decimal_minus_tree": 5.332539965152705e-15,
+        "max_digits": 50
+      }
+    },
+    "S5": {
+      "layout": {
+        "layout": "nuclear-aggregate-layout-v1",
+        "parts": 1,
+        "part_max": 9007199254740992,
+        "slots": 15,
+        "words_per_interval": 15,
+        "categories": 20,
+        "multinomial_slots": 14,
+        "photon_slots": 1
+      },
+      "diagnostics": {
+        "max_abs_decimal_minus_tree": 1.5687451337953462e-13,
+        "max_digits": 50
+      }
+    }
+  }
+}

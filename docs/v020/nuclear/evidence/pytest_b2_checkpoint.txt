@@ -1,0 +1,19 @@
+# v0.20 nuclear module, B2 checkpoint (not frozen): test evidence
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-16T23:37:43Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite on this tree, nothing else running: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+...........                                                              [100%]
+945 passed, 2 skipped in 201.38s (0:03:21)
+
+## 2. Nuclear tests only (Layer A 115, B2 112): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider
+227 passed in 17.06s
+
+## 3. Earlier whole-suite runs of the same session
+- before the last two edits (protocol status string; refusal message of run_verification.py): 945 passed, 2 skipped in 203.47s (0:03:23)
+- while other processes were being run on the machine: 1 failed, 944 passed, 2 skipped in 202.50s (0:03:22)
+  The failure was tests/v019/test_pilot_driver.py::test_killed_generation_resumes_to_the_same_store (Stage D pilot,
+  unchanged on this branch): it kills a subprocess after a fixed 2 s and then requires a 'restart' journal event
+  (assert 0 >= 1). It depends on wall-clock timing; run alone four times afterwards it passed four times, and it
+  passes in run 1 above. No nuclear test was involved.
