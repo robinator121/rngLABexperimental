@@ -1,0 +1,121 @@
+{
+  "generated_by": "research/v020-nuclear-a-verify/design.py (analytic references only, no random numbers)",
+  "scheme_sha256": {
+    "S1": "b3f6c1d3459f4bf9b580d7e3444867dee75b9033317027857bf3b28825f6ab31",
+    "S2": "e74bc4176803ad033aebe33102c51dbda3b254073707f6d7a5139d9a1f5e824e",
+    "S3": "f0022b8184798da94ed8d8407092fe6b83bf5a7c4efa7ae670b196f07bdd96e0"
+  },
+  "bateman_rounding_bound_max": {
+    "value": 1.5906468061902248e-13,
+    "limit": 1e-10,
+    "scope": "every decay path of S1, S2, S3 from every start, at t = 0, the test times and the horizon"
+  },
+  "ens": {
+    "time": 2.0,
+    "per_replicate": 2000,
+    "p": {
+      "Xa-400": 0.5,
+      "Xb-396": 0.09333333333333294,
+      "Xc-400m": 0.0775735931288071,
+      "Xc-400": 0.08561423701966964,
+      "Xd-396": 0.14688537298982546,
+      "Xe-396": 0.013316869991580342,
+      "Xf-392": 0.07978129367684167,
+      "Xg-396": 0.003145769873948617,
+      "Xh-395": 0.0003495299859942909
+    },
+    "binomial_variance": {
+      "Xa-400": 500.0,
+      "Xb-396": 169.2444444444438,
+      "Xc-400m": 143.1118615557868,
+      "Xc-400": 156.56887887841893,
+      "Xd-396": 250.62012038293065,
+      "Xe-396": 26.279061930415377,
+      "Xf-392": 146.83247771218242,
+      "Xg-396": 6.271748011697548,
+      "Xh-395": 0.6988156295663634
+    },
+    "eligible": [
+      "Xa-400",
+      "Xb-396",
+      "Xc-400m",
+      "Xc-400",
+      "Xd-396",
+      "Xe-396",
+      "Xf-392"
+    ],
+    "T10b_normal_theory_error": {
+      "max_excess_kurtosis": 0.035053108693449984,
+      "max_relative_variance_change": 0.017482737960858197,
+      "max_relative_sd_change": 0.008703493580179078
+    }
+  },
+  "family_sizes": {
+    "NC1": 47,
+    "NC2": 33,
+    "per_test": {
+      "T1": 1,
+      "T2": 5,
+      "T3": 1,
+      "T4": 6,
+      "T5": 6,
+      "T6": 2,
+      "T7": 2,
+      "T8": 5,
+      "T9": 5
+    },
+    "T8_channels": [
+      "Xa-400/alpha",
+      "Xa-400/beta-",
+      "Xb-396/ec",
+      "Xc-400m/it",
+      "Xe-396/beta-"
+    ],
+    "T5_nuclides": [
+      "Xa-400",
+      "Xb-396",
+      "Xc-400m",
+      "Xc-400",
+      "Xd-396",
+      "Xe-396"
+    ]
+  },
+  "positive_control_level": 0.0002127659574468085,
+  "smallest_expected_cell_before_pooling": {
+    "T4": {
+      "0.5": 0.2339452118901784,
+      "1.0": 3.118010899383904,
+      "2.0": 34.95299859942909,
+      "4.0": 284.81823856522465,
+      "8.0": 1333.0078125000002,
+      "12.0": 333.3320617675783
+    },
+    "T9": {
+      "1.0": 1885.2231625769537,
+      "5.0": 7509.519790961588,
+      "10.0": 5544.704861111111,
+      "20.0": 2777.7671813964844,
+      "40.0": 694.444444434339
+    },
+    "T7 Xa-400": 647.2086912079677,
+    "T7 Xe-396": 31.180108993839056
+  },
+  "positive_controls": {
+    "PC1": {
+      "target": "T2 at t = 2",
+      "p_reference": 0.25,
+      "p_true": 0.25688876244335307,
+      "expected_z": 7.114683258422813,
+      "approximate_power": 0.9996767627276335
+    },
+    "PC2": {
+      "target": "T6 Xa-400",
+      "expected_decays": 98437.5,
+      "b_reference": 0.64,
+      "b_true": 0.62,
+      "expected_z": -13.072812914594943,
+      "approximate_power": 1.0
+    },
+    "method": "normal approximation to the exact binomial test at the Bonferroni level alpha / NC1 family size"
+  }
+}

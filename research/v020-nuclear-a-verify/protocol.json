@@ -1,0 +1,99 @@
+{
+  "id": "rnglab-v020-nuclear-a-verify-v1",
+  "status": "FROZEN_BEFORE_GENERATION",
+  "human_readable": "research/v020-nuclear-a-verify/PROTOCOL.md",
+  "scope": "Verification of the Layer A event-level decay simulator (src/rnglab/nuclear) against analytic decay laws, with healthy generators only. It is not an RNG-sensitivity experiment, not evidence about branching processes, criticality or detectors, not a test of H1, H2 or H3, and not part of the Stage D pilot. Every nuclide and parameter is synthetic.",
+  "namespace": "rnglab-v020-nuclear-a-verify",
+  "smoke_namespace": "rnglab-v020-nuclear-a-verify-smoke",
+  "seed_recipe": "rnglab.seeds.namespace_seed(namespace, run, scheme, 'physics') for every run except ENS; namespace_seed(namespace, 'ENS', 'S2', 'physics', f'{r:04d}') for ensemble replicate r = 0..replicates-1",
+  "generators": {
+    "numpy-pcg64": "rnglab.nuclear.NumpyPCG64Source(seed): numpy PCG64 raw 64-bit outputs, seeded with SeedSequence(seed)",
+    "xoshiro256pp": "rnglab14.sources.Xoshiro256PlusPlusSource(seed=seed): pure-Python xoshiro256++ with SplitMix64 seeding"
+  },
+  "layout": "nuclear-decay-layout-v1",
+  "engine": "rnglab.nuclear.simulate_decays with chunk 65536 unless a run states otherwise",
+  "schemes": {
+    "S1": {"name": "S1-single", "nuclides": [
+      {"name": "Sa-400", "z": 150, "a": 400, "level": 0, "half_life": 1.0,
+       "channels": [{"daughter": "Sb-400", "mode": "beta-", "branching": 1.0, "photon_yield": 0.6}]},
+      {"name": "Sb-400", "z": 151, "a": 400, "level": 0, "half_life": null, "channels": []}]},
+    "S2": {"name": "S2-branching", "nuclides": [
+      {"name": "Xa-400", "z": 150, "a": 400, "level": 0, "half_life": 2.0,
+       "channels": [{"daughter": "Xb-396", "mode": "alpha", "branching": 0.64, "photon_yield": 0.25},
+                    {"daughter": "Xc-400m", "mode": "beta-", "branching": 0.36, "photon_yield": 0.3}]},
+      {"name": "Xb-396", "z": 148, "a": 396, "level": 0, "half_life": 0.5,
+       "channels": [{"daughter": "Xd-396", "mode": "ec", "branching": 1.0, "photon_yield": 0.8}]},
+      {"name": "Xc-400m", "z": 151, "a": 400, "level": 1, "half_life": 0.8,
+       "channels": [{"daughter": "Xc-400", "mode": "it", "branching": 1.0, "photon_yield": 0.9}]},
+      {"name": "Xc-400", "z": 151, "a": 400, "level": 0, "half_life": 3.0,
+       "channels": [{"daughter": "Xe-396", "mode": "alpha", "branching": 1.0, "photon_yield": 0.0}]},
+      {"name": "Xd-396", "z": 147, "a": 396, "level": 0, "half_life": 1.25,
+       "channels": [{"daughter": "Xf-392", "mode": "alpha", "branching": 1.0, "photon_yield": 0.0}]},
+      {"name": "Xe-396", "z": 149, "a": 396, "level": 0, "half_life": 1.6,
+       "channels": [{"daughter": "Xg-396", "mode": "beta-", "branching": 0.9, "photon_yield": 0.5},
+                    {"daughter": "Xh-395", "mode": "beta-n", "branching": 0.1, "photon_yield": 0.0}]},
+      {"name": "Xf-392", "z": 145, "a": 392, "level": 0, "half_life": null, "channels": []},
+      {"name": "Xg-396", "z": 150, "a": 396, "level": 0, "half_life": null, "channels": []},
+      {"name": "Xh-395", "z": 150, "a": 395, "level": 0, "half_life": null, "channels": []}]},
+    "S3": {"name": "S3-transient-equilibrium", "nuclides": [
+      {"name": "Ya-410", "z": 160, "a": 410, "level": 0, "half_life": 10.0,
+       "channels": [{"daughter": "Yb-410", "mode": "beta-", "branching": 1.0, "photon_yield": 0.0}]},
+      {"name": "Yb-410", "z": 161, "a": 410, "level": 0, "half_life": 1.0,
+       "channels": [{"daughter": "Yc-406", "mode": "alpha", "branching": 1.0, "photon_yield": 1.0}]},
+      {"name": "Yc-406", "z": 159, "a": 406, "level": 0, "half_life": null, "channels": []}]}
+  },
+  "cases": {
+    "S1": {"initial": {"Sa-400": 200000}, "horizon": 6.0},
+    "S2": {"initial": {"Xa-400": 100000}, "horizon": 12.0},
+    "S3": {"initial": {"Ya-410": 100000}, "horizon": 40.0}
+  },
+  "runs": {
+    "NC1": {"generator": "numpy-pcg64", "schemes": ["S1", "S2", "S3"], "role": "negative control, primary healthy generator"},
+    "NC2": {"generator": "xoshiro256pp", "schemes": ["S1", "S2", "S3"], "role": "negative control, second healthy generator"},
+    "ENS": {"generator": "numpy-pcg64", "scheme": "S2", "replicates": 400, "initial": {"Xa-400": 2000}, "horizon": 2.0,
+            "time": 2.0, "role": "ensemble law and between-replicate independence"},
+    "PC1": {"generator": "numpy-pcg64", "scheme": "S1", "perturbation": {"Sa-400": {"half_life": 1.02}},
+            "target": "T2 at t = 2.0", "role": "positive control: half-life 2% longer than the reference"},
+    "PC2": {"generator": "numpy-pcg64", "scheme": "S2", "perturbation": {"Xa-400": {"branching": [0.62, 0.38]}},
+            "target": "T6 Xa-400", "role": "positive control: branching 0.62/0.38 against the reference 0.64/0.36"},
+    "XREF": {"generator": "numpy-pcg64", "scheme": "S2", "initial": {"Xa-400": 5000}, "horizon": 12.0,
+             "engines": {"vectorised": "simulate_decays, chunk 997", "reference": "simulate_decays_reference"},
+             "role": "software check: two engines on the same stream"},
+    "REPLAY": {"of": "NC1 S2", "chunk": 4099, "role": "software check: replay with another chunk size"}
+  },
+  "tests": {
+    "T1": {"scheme": "S1", "what": "decay times of Sa-400 against the exponential with rate ln 2 / 1.0 truncated at the horizon", "method": "Kolmogorov-Smirnov"},
+    "T2": {"scheme": "S1", "times": [0.5, 1.0, 2.0, 4.0, 6.0], "what": "Sa-400 count at t against Binomial(N, 2^-t)", "method": "exact binomial, two-sided"},
+    "T3": {"scheme": "S1", "what": "photons of the Sa-400 channel against Binomial(decays, 0.6)", "method": "exact binomial, two-sided"},
+    "T4": {"scheme": "S2", "times": [0.5, 1.0, 2.0, 4.0, 8.0, 12.0], "what": "counts in all nine states against Multinomial(N, p(t)), p from the matrix exponential", "method": "chi-square with the pooling rule (min expected 5)"},
+    "T5": {"scheme": "S2", "what": "decays of each unstable nuclide within the horizon against Binomial(N, q_j(12)), q from decay_probabilities", "method": "exact binomial, two-sided"},
+    "T6": {"scheme": "S2", "nuclides": ["Xa-400", "Xe-396"], "what": "decays through the first channel against Binomial(decays of the nuclide, first branching ratio)", "method": "exact binomial, two-sided"},
+    "T7": {"scheme": "S2", "nuclides": ["Xa-400", "Xe-396"], "bins": "[0,1], (1,2], ..., (11,12] and no decay by 12", "what": "decay times of the nuclide in unit bins against the multinomial law from decay_probabilities", "method": "chi-square with the pooling rule (min expected 5)"},
+    "T8": {"scheme": "S2", "what": "photons of each channel whose yield lies strictly between 0 and 1, against Binomial(decays through the channel, yield)", "method": "exact binomial, two-sided"},
+    "T9": {"scheme": "S3", "times": [1.0, 5.0, 10.0, 20.0, 40.0], "what": "counts in the three states against Multinomial(N, p(t))", "method": "chi-square with the pooling rule (min expected 5)"},
+    "T10a": {"run": "ENS", "what": "count of eligible nuclide j at t = 2 summed over replicates against Binomial(replicates * 2000, p_j(2))", "method": "exact binomial, two-sided"},
+    "T10b": {"run": "ENS", "what": "between-replicate variance of the count of eligible nuclide j at t = 2 against 2000 p_j (1 - p_j)", "method": "(R - 1) s^2 / variance against chi-square(R - 1), two-sided; a normal-theory approximation"},
+    "eligibility": "nuclides with 2000 p_j(2) (1 - p_j(2)) >= 20, from the matrix exponential before generation (design.json)"
+  },
+  "families": {
+    "NC1": "T1 to T9 on the NC1 runs, and T10a and T10b",
+    "NC2": "T1 to T9 on the NC2 runs",
+    "alpha": 0.01,
+    "procedure": "Holm step-down within each family (rnglab.stats.holm_bonferroni_correction)"
+  },
+  "deterministic_checks": {
+    "D1": "every run, including both XREF engines, REPLAY and every ENS replicate, reads exactly nuclei * 3 * depth words, and the source's byte count is 8 times that",
+    "D2": "every run of NC1, NC2, PC1, PC2, XREF and ENS satisfies every rnglab.nuclear.checks.decay_invariants item",
+    "D3": "XREF: identical discrete columns, final states and stream digests in the two engines, and the largest relative time difference at most 1e-12",
+    "D4": "REPLAY: events digest and stream digest equal to those of the NC1 S2 run",
+    "D5": "ENS: 400 distinct seeds and 400 distinct stream digests",
+    "A1": "no random numbers: largest absolute difference between the matrix exponential and the closed-form Bateman path sum at most 1e-11, for every scheme, start nuclide and test time; generator column sums at most 1e-15 in absolute value"
+  },
+  "reading_rules": {
+    "R1": "Layer A agreement with the analytic laws: PASS iff D1 to D5 and A1 hold and Holm at family-wise alpha 0.01 rejects no test in NC1 and none in NC2. Otherwise FAIL, listing each failed item. A FAIL from one test family with everything else passing is reported as such and is not explained away; the chance of a false FAIL is at most about 2% (two families at 1%).",
+    "R2": "Sensitivity: PC1 must reject its target test and PC2 its target test, each at p < 0.01 / (size of the NC1 family). If either does not, R1 is reported with the statement that the battery lacked the declared sensitivity.",
+    "R3": "Descriptive, no verdict: from NC1 S3, the ratio of Yb-410 to Ya-410 decays in (20, 40] with an approximate 95% interval (delta method on the log ratio, with the variances and the covariance of the two per-nucleus window indicators estimated from the run), next to its exact expectation from decay_probabilities and the transient-equilibrium limit lambda_b / (lambda_b - lambda_a).",
+    "general": "The study runs once from a clean committed tree. Every outcome is reported whichever way it falls. No threshold, size or test changes after generation; a code change after the freeze is an amendment written before any affected number is regenerated."
+  },
+  "smoke": {"scale": 0.05, "ens_replicates": 20, "xref_nuclei": 500, "output": "research/v020-nuclear-a-verify/smoke/ (not in Git, excluded from every result)"}
+}
