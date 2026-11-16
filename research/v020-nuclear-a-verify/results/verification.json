@@ -1,0 +1,9269 @@
+{
+ "protocol": {
+  "id": "rnglab-v020-nuclear-a-verify-v1",
+  "frozen_sha256": {
+   "protocol.json": "fb2f658a68844d1d8d8433bd5652ddc67ff6051a6a54599697fd028714b62a30",
+   "design.json": "84c37c1a2bea9b193ddcfb664492b8b16e523d107a9c190a6ae47d4edc7c4be7",
+   "design.py": "126429c2102fcc4d3fd8493e9498221a23e8e9c9204fc7599e1a43bb2f82bd28",
+   "run_verification.py": "4bbf32949aa0c3f1fd82850d63a5e53ad4152c171e3e81022957a46b694d4074"
+  }
+ },
+ "namespace": "rnglab-v020-nuclear-a-verify",
+ "smoke": false,
+ "code": {
+  "module_files_sha256": {
+   "__init__.py": "1a2efc3f54e1c9f5dc7d2ffee49d88af0dde7d59f72fea11792a961542a0151e",
+   "bateman.py": "26433bfeba4aaff869415ce6def31631d2085d3baa01a929720bd845f47e16cc",
+   "checks.py": "0977931ab30382b05b764ee55b3a234e6ba46b39bbce30c89c6255b962fa631e",
+   "decay.py": "dd564553f991cf57aa4e5055a26d612394262bcc13dd8e96c56b64992d5bbc2a",
+   "manifest.py": "2885abf0d2ac416da648ac7f7e9ad65c8a3973bd9ae9f32b2eae7aaffd5c36e5",
+   "streams.py": "27048bbfbde80f15350fa08c5df64f100ba18899407aac460093056def3d994b"
+  },
+  "git_commit": "c616a7b2d3b2cc9b80d66c756f55315c1193faf2",
+  "git_dirty": false
+ },
+ "environment": {
+  "python": "3.14.9",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "platform": "Linux-7.2.14-arch1-1-x86_64-with-glibc2.44",
+  "machine": "x86_64"
+ },
+ "started_utc": "2026-11-16T12:17:07.447765+00:00",
+ "runs": {
+  "NC1": {
+   "S1": {
+    "generator": "numpy-pcg64",
+    "seed": 13296431429100109250,
+    "seed_label": "rnglab-v020-nuclear-a-verify/NC1/S1/physics",
+    "seconds": 0.0394233909992181,
+    "summary": {
+     "engine": "vectorised",
+     "layout": "nuclear-decay-layout-v1",
+     "n_nuclei": 200000,
+     "n_events": 196986,
+     "words_per_nucleus": 3,
+     "first_word": 0,
+     "words_used": 600000,
+     "final_counts": {
+      "Sa-400": 3014,
+      "Sb-400": 196986
+     },
+     "decay_counts": {
+      "Sa-400": 196986,
+      "Sb-400": 0
+     },
+     "events_sha256": "1e7ca26fe0a4115a0323400f1088e16097d85a20ceb2894be066b043ca18a52b"
+    },
+    "stream_sha256": "c7b67b517ad420ab599b647e0bf16722fb2a161cbcad74af5de175d215d802f7",
+    "consumption": {
+     "words_expected": 600000,
+     "words_read": 600000,
+     "source_bytes": 4800000,
+     "ok": true
+    },
+    "invariants": {
+     "times_within_horizon": true,
+     "event_ids_follow_layout": true,
+     "lineage_links": true,
+     "first_events_leave_initial_state": true,
+     "channel_defines_daughter_and_mode": true,
+     "mode_bookkeeping": true,
+     "isomeric_transitions_lower_level": true,
+     "neutrons_only_from_beta_delayed_neutron": true,
+     "photon_yield_extremes": true,
+     "final_states_match_last_events": true,
+     "populations_at_horizon_match_final_states": true
+    },
+    "tests": {
+     "T1": {
+      "test": "kolmogorov_smirnov",
+      "n": 196986,
+      "statistic": 0.0015134915383299141,
+      "p_value": 0.7570202163587245
+     },
+     "T2 t=0.5": {
+      "test": "binomial_exact_two_sided",
+      "observed": 141627,
+      "trials": 200000,
+      "probability": 0.7071067811865476,
+      "expected": 141421.35623730952,
+      "z": 1.0104233743126303,
+      "p_value": 0.3126321147774713
+     },
+     "T2 t=1.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 100135,
+      "trials": 200000,
+      "probability": 0.5,
+      "expected": 100000.0,
+      "z": 0.6037383539249432,
+      "p_value": 0.5475055961922262
+     },
+     "T2 t=2.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 49932,
+      "trials": 200000,
+      "probability": 0.25,
+      "expected": 50000.0,
+      "z": -0.35115049005613913,
+      "p_value": 0.727413426951533
+     },
+     "T2 t=4.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 12259,
+      "trials": 200000,
+      "probability": 0.0625,
+      "expected": 12500.0,
+      "z": -2.2262626379951973,
+      "p_value": 0.02599516023315871
+     },
+     "T2 t=6.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 3014,
+      "trials": 200000,
+      "probability": 0.015625000000000007,
+      "expected": 3125.0000000000014,
+      "z": -2.0013252751971513,
+      "p_value": 0.04535193336022497
+     },
+     "T3": {
+      "test": "binomial_exact_two_sided",
+      "observed": 118874,
+      "trials": 196986,
+      "probability": 0.6,
+      "expected": 118191.59999999999,
+      "z": 3.1384536309497157,
+      "p_value": 0.001695709818251648
+     }
+    }
+   },
+   "S2": {
+    "generator": "numpy-pcg64",
+    "seed": 6497818100218078072,
+    "seed_label": "rnglab-v020-nuclear-a-verify/NC1/S2/physics",
+    "seconds": 0.0490171969995572,
+    "summary": {
+     "engine": "vectorised",
+     "layout": "nuclear-decay-layout-v1",
+     "n_nuclei": 100000,
+     "n_events": 309469,
+     "words_per_nucleus": 12,
+     "first_word": 0,
+     "words_used": 1200000,
+     "final_counts": {
+      "Xa-400": 1554,
+      "Xb-396": 355,
+      "Xc-400m": 363,
+      "Xc-400": 6444,
+      "Xd-396": 1937,
+      "Xe-396": 4841,
+      "Xf-392": 60558,
+      "Xg-396": 21534,
+      "Xh-395": 2414
+     },
+     "decay_counts": {
+      "Xa-400": 98446,
+      "Xb-396": 62495,
+      "Xc-400m": 35233,
+      "Xc-400": 28789,
+      "Xd-396": 60558,
+      "Xe-396": 23948,
+      "Xf-392": 0,
+      "Xg-396": 0,
+      "Xh-395": 0
+     },
+     "events_sha256": "f8f2ffba83f2f2e99e83d3b4938558b8b1376024ef377503cb0d0a4a6268d36d"
+    },
+    "stream_sha256": "4e053dc3106ed3dd1ac6809c8ec9e852a91e6478615a7138497fb4159085fc2c",
+    "consumption": {
+     "words_expected": 1200000,
+     "words_read": 1200000,
+     "source_bytes": 9600000,
+     "ok": true
+    },
+    "invariants": {
+     "times_within_horizon": true,
+     "event_ids_follow_layout": true,
+     "lineage_links": true,
+     "first_events_leave_initial_state": true,
+     "channel_defines_daughter_and_mode": true,
+     "mode_bookkeeping": true,
+     "isomeric_transitions_lower_level": true,
+     "neutrons_only_from_beta_delayed_neutron": true,
+     "photon_yield_extremes": true,
+     "final_states_match_last_events": true,
+     "populations_at_horizon_match_final_states": true
+    },
+    "tests": {
+     "T4 t=0.5": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       84283,
+       7142,
+       4581,
+       1092,
+       2581,
+       42,
+       277,
+       2,
+       0
+      ],
+      "probabilities": [
+       0.8408964152537145,
+       0.07272456858745911,
+       0.04619439310277032,
+       0.01064740092925147,
+       0.026415731462706833,
+       0.00041210195545194494,
+       0.002685994187456758,
+       2.1055069070116062e-05,
+       2.339452118901784e-06
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5,
+        7,
+        8
+       ],
+       [
+        6
+       ]
+      ],
+      "cell_observed": [
+       84283.0,
+       7142.0,
+       4581.0,
+       1092.0,
+       2581.0,
+       44.0,
+       277.0
+      ],
+      "cell_expected": [
+       84089.64152537145,
+       7272.456858745912,
+       4619.439310277032,
+       1064.740092925147,
+       2641.573146270683,
+       43.549647664096284,
+       268.5994187456758
+      ],
+      "statistic": 5.45896860361989,
+      "dof": 6,
+      "p_value": 0.48642971452932315,
+      "impossible": false
+     },
+     "T4 t=1.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       70791,
+       9681,
+       7038,
+       3273,
+       7229,
+       287,
+       1674,
+       25,
+       2
+      ],
+      "probabilities": [
+       0.7071067811865476,
+       0.09751611331979682,
+       0.06879805765432566,
+       0.03371343644595099,
+       0.07348666213461424,
+       0.002618263582627844,
+       0.01644888458619853,
+       0.0002806209809445515,
+       3.118010899383904e-05
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7,
+        8
+       ]
+      ],
+      "cell_observed": [
+       70791.0,
+       9681.0,
+       7038.0,
+       3273.0,
+       7229.0,
+       287.0,
+       1674.0,
+       27.0
+      ],
+      "cell_expected": [
+       70710.67811865476,
+       9751.611331979682,
+       6879.805765432566,
+       3371.3436445950992,
+       7348.666213461424,
+       261.8263582627844,
+       1644.888458619853,
+       31.18010899383905
+      ],
+      "statistic": 12.553409793097233,
+      "dof": 7,
+      "p_value": 0.08376649224474093,
+      "impossible": false
+     },
+     "T4 t=2.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       49995,
+       9254,
+       7941,
+       8585,
+       14661,
+       1283,
+       7913,
+       333,
+       35
+      ],
+      "probabilities": [
+       0.5,
+       0.09333333333333294,
+       0.0775735931288071,
+       0.08561423701966964,
+       0.14688537298982546,
+       0.013316869991580342,
+       0.07978129367684167,
+       0.003145769873948617,
+       0.0003495299859942909
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       49995.0,
+       9254.0,
+       7941.0,
+       8585.0,
+       14661.0,
+       1283.0,
+       7913.0,
+       333.0,
+       35.0
+      ],
+      "cell_expected": [
+       50000.0,
+       9333.333333333294,
+       7757.35931288071,
+       8561.423701966964,
+       14688.537298982546,
+       1331.6869991580343,
+       7978.129367684167,
+       314.5769873948617,
+       34.95299859942909
+      ],
+      "statistic": 8.529420369774192,
+      "dof": 8,
+      "p_value": 0.3835327618546028,
+      "impossible": false
+     },
+     "T4 t=4.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       24971,
+       5339,
+       5275,
+       14512,
+       16271,
+       4546,
+       26240,
+       2568,
+       278
+      ],
+      "probabilities": [
+       0.25,
+       0.052500000000000005,
+       0.052499999999999984,
+       0.14467947822465524,
+       0.1634887637119725,
+       0.04433869791882226,
+       0.26401123628802764,
+       0.02563364147087022,
+       0.0028481823856522466
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       24971.0,
+       5339.0,
+       5275.0,
+       14512.0,
+       16271.0,
+       4546.0,
+       26240.0,
+       2568.0,
+       278.0
+      ],
+      "cell_expected": [
+       25000.0,
+       5250.000000000001,
+       5249.999999999998,
+       14467.947822465523,
+       16348.87637119725,
+       4433.869791882225,
+       26401.123628802765,
+       2563.364147087022,
+       284.81823856522465
+      ],
+      "statistic": 6.157178210563455,
+      "dof": 8,
+      "p_value": 0.6296306053341983,
+      "impossible": false
+     },
+     "T4 t=8.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       6180,
+       1390,
+       1515,
+       11964,
+       6821,
+       6823,
+       51663,
+       12263,
+       1381
+      ],
+      "probabilities": [
+       0.0625,
+       0.013330078125000002,
+       0.014765624999999996,
+       0.11975961373064709,
+       0.06784269525680003,
+       0.06776098712073955,
+       0.5188272266182001,
+       0.12169239673375197,
+       0.01352137741486133
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       6180.0,
+       1390.0,
+       1515.0,
+       11964.0,
+       6821.0,
+       6823.0,
+       51663.0,
+       12263.0,
+       1381.0
+      ],
+      "cell_expected": [
+       6249.999999999999,
+       1333.0078125,
+       1476.5624999999993,
+       11975.961373064707,
+       6784.2695256800025,
+       6776.098712073955,
+       51882.72266182001,
+       12169.239673375196,
+       1352.1377414861329
+      ],
+      "statistic": 7.0257124211998905,
+      "dof": 8,
+      "p_value": 0.533861049097383,
+      "impossible": false
+     },
+     "T4 t=12.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       1554,
+       355,
+       363,
+       6444,
+       1937,
+       4841,
+       60558,
+       21534,
+       2414
+      ],
+      "probabilities": [
+       0.015625000000000007,
+       0.003333320617675783,
+       0.003742675781250002,
+       0.0639304421164773,
+       0.019931431069892997,
+       0.048372224292199555,
+       0.6067352483124314,
+       0.2144966920290659,
+       0.02383296578100732
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       1554.0,
+       355.0,
+       363.0,
+       6444.0,
+       1937.0,
+       4841.0,
+       60558.0,
+       21534.0,
+       2414.0
+      ],
+      "cell_expected": [
+       1562.5000000000002,
+       333.3320617675782,
+       374.2675781250001,
+       6393.044211647729,
+       1993.143106989299,
+       4837.2224292199535,
+       60673.52483124312,
+       21449.66920290658,
+       2383.296578100731
+      ],
+      "statistic": 4.731562247326621,
+      "dof": 8,
+      "p_value": 0.7858439078193281,
+      "impossible": false
+     },
+     "T5 Xa-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 98446,
+      "trials": 100000,
+      "probability": 0.984375,
+      "expected": 98437.5,
+      "z": 0.21673478782597003,
+      "p_value": 0.8383684778597515
+     },
+     "T5 Xb-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 62495,
+      "trials": 100000,
+      "probability": 0.6266666793823243,
+      "expected": 62666.66793823244,
+      "z": -1.1223350164188826,
+      "p_value": 0.26218741332645956
+     },
+     "T5 Xc-400m": {
+      "test": "binomial_exact_two_sided",
+      "observed": 35233,
+      "trials": 100000,
+      "probability": 0.35063232421875007,
+      "expected": 35063.23242187501,
+      "z": 1.1250801038993132,
+      "p_value": 0.26130714037713115
+     },
+     "T5 Xc-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 28789,
+      "trials": 100000,
+      "probability": 0.2867018821022728,
+      "expected": 28670.188210227283,
+      "z": 0.8308234138159161,
+      "p_value": 0.4073061105922402
+     },
+     "T5 Xd-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 60558,
+      "trials": 100000,
+      "probability": 0.6067352483124314,
+      "expected": 60673.52483124314,
+      "z": -0.7478822373444687,
+      "p_value": 0.45462968158094613
+     },
+     "T5 Xe-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 23948,
+      "trials": 100000,
+      "probability": 0.23832965781007326,
+      "expected": 23832.965781007326,
+      "z": 0.8537967175803108,
+      "p_value": 0.39335876993945085
+     },
+     "T6 Xa-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 62850,
+      "trials": 98446,
+      "probability": 0.64,
+      "expected": 63005.44,
+      "z": -1.0321017461282482,
+      "p_value": 0.3018400433731366
+     },
+     "T6 Xe-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 21534,
+      "trials": 23948,
+      "probability": 0.9,
+      "expected": 21553.2,
+      "z": -0.41356649691351105,
+      "p_value": 0.6744704835641837
+     },
+     "T7 Xa-400": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       29209,
+       20796,
+       14553,
+       10471,
+       7321,
+       5175,
+       3655,
+       2640,
+       1816,
+       1276,
+       856,
+       678,
+       1554
+      ],
+      "probabilities": [
+       0.2928932188134524,
+       0.20710678118654757,
+       0.14644660940672627,
+       0.10355339059327373,
+       0.07322330470336302,
+       0.051776695296636976,
+       0.03661165235168151,
+       0.025888347648318488,
+       0.018305826175840867,
+       0.012944173824159022,
+       0.009152913087920433,
+       0.006472086912079678,
+       0.015625
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ],
+       [
+        9
+       ],
+       [
+        10
+       ],
+       [
+        11
+       ],
+       [
+        12
+       ]
+      ],
+      "cell_observed": [
+       29209.0,
+       20796.0,
+       14553.0,
+       10471.0,
+       7321.0,
+       5175.0,
+       3655.0,
+       2640.0,
+       1816.0,
+       1276.0,
+       856.0,
+       678.0,
+       1554.0
+      ],
+      "cell_expected": [
+       29289.32188134524,
+       20710.678118654752,
+       14644.660940672626,
+       10355.33905932737,
+       7322.330470336301,
+       5177.669529663697,
+       3661.1652351681505,
+       2588.8347648318486,
+       1830.5826175840864,
+       1294.417382415902,
+       915.2913087920432,
+       647.2086912079676,
+       1562.4999999999998
+      ],
+      "statistic": 9.190717292221493,
+      "dof": 12,
+      "p_value": 0.686560090802222,
+      "impossible": false
+     },
+     "T7 Xe-396": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       27,
+       341,
+       901,
+       1577,
+       2257,
+       2702,
+       2912,
+       2927,
+       2875,
+       2727,
+       2475,
+       2227,
+       76052
+      ],
+      "probabilities": [
+       0.00031180108993839056,
+       0.0031834987700045158,
+       0.009057472876718077,
+       0.015929051119861485,
+       0.022014740829326168,
+       0.02638762238388115,
+       0.028822413789264784,
+       0.02950717328961873,
+       0.02881197730211535,
+       0.02714381758681858,
+       0.02487050444499747,
+       0.02228958432752856,
+       0.7616703421899267
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ],
+       [
+        9
+       ],
+       [
+        10
+       ],
+       [
+        11
+       ],
+       [
+        12
+       ]
+      ],
+      "cell_observed": [
+       27.0,
+       341.0,
+       901.0,
+       1577.0,
+       2257.0,
+       2702.0,
+       2912.0,
+       2927.0,
+       2875.0,
+       2727.0,
+       2475.0,
+       2227.0,
+       76052.0
+      ],
+      "cell_expected": [
+       31.180108993839056,
+       318.34987700045156,
+       905.7472876718077,
+       1592.9051119861485,
+       2201.474082932617,
+       2638.762238388115,
+       2882.2413789264783,
+       2950.717328961873,
+       2881.1977302115347,
+       2714.381758681858,
+       2487.0504444997473,
+       2228.958432752856,
+       76167.03421899267
+      ],
+      "statistic": 6.075309175322698,
+      "dof": 12,
+      "p_value": 0.9122382212796062,
+      "impossible": false
+     },
+     "T8 Xa-400/alpha": {
+      "test": "binomial_exact_two_sided",
+      "observed": 15578,
+      "trials": 62850,
+      "probability": 0.25,
+      "expected": 15712.5,
+      "z": -1.2389934409638836,
+      "p_value": 0.21705749497083657
+     },
+     "T8 Xa-400/beta-": {
+      "test": "binomial_exact_two_sided",
+      "observed": 10655,
+      "trials": 35596,
+      "probability": 0.3,
+      "expected": 10678.8,
+      "z": -0.2752749615451418,
+      "p_value": 0.7857741344071042
+     },
+     "T8 Xb-396/ec": {
+      "test": "binomial_exact_two_sided",
+      "observed": 49989,
+      "trials": 62495,
+      "probability": 0.8,
+      "expected": 49996.0,
+      "z": -0.0700028001680112,
+      "p_value": 0.9441914495131198
+     },
+     "T8 Xc-400m/it": {
+      "test": "binomial_exact_two_sided",
+      "observed": 31719,
+      "trials": 35233,
+      "probability": 0.9,
+      "expected": 31709.7,
+      "z": 0.1651531577686488,
+      "p_value": 0.8800164121655726
+     },
+     "T8 Xe-396/beta-": {
+      "test": "binomial_exact_two_sided",
+      "observed": 10769,
+      "trials": 21534,
+      "probability": 0.5,
+      "expected": 10767.0,
+      "z": 0.02725822907471068,
+      "p_value": 0.9836895091450741
+     }
+    }
+   },
+   "S3": {
+    "generator": "numpy-pcg64",
+    "seed": 9727604577586777601,
+    "seed_label": "rnglab-v020-nuclear-a-verify/NC1/S3/physics",
+    "seconds": 0.0217335790002835,
+    "summary": {
+     "engine": "vectorised",
+     "layout": "nuclear-decay-layout-v1",
+     "n_nuclei": 100000,
+     "n_events": 186865,
+     "words_per_nucleus": 6,
+     "first_word": 0,
+     "words_used": 600000,
+     "final_counts": {
+      "Ya-410": 6239,
+      "Yb-410": 657,
+      "Yc-406": 93104
+     },
+     "decay_counts": {
+      "Ya-410": 93761,
+      "Yb-410": 93104,
+      "Yc-406": 0
+     },
+     "events_sha256": "77930e0bb396772fbf2e21b3e9119d17aee17f5e70563d13cbacc823c393b7fe"
+    },
+    "stream_sha256": "1680113e43055d9d7ed958dd0c8b272657fbef9b6ee47c9bc0de266c050502ff",
+    "consumption": {
+     "words_expected": 600000,
+     "words_read": 600000,
+     "source_bytes": 4800000,
+     "ok": true
+    },
+    "invariants": {
+     "times_within_horizon": true,
+     "event_ids_follow_layout": true,
+     "lineage_links": true,
+     "first_events_leave_initial_state": true,
+     "channel_defines_daughter_and_mode": true,
+     "mode_bookkeeping": true,
+     "isomeric_transitions_lower_level": true,
+     "neutrons_only_from_beta_delayed_neutron": true,
+     "photon_yield_extremes": true,
+     "final_states_match_last_events": true,
+     "populations_at_horizon_match_final_states": true
+    },
+    "tests": {
+     "T9 t=1.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       93238,
+       4844,
+       1918
+      ],
+      "probabilities": [
+       0.9330329915368074,
+       0.04811477683742304,
+       0.018852231625769537
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       93238.0,
+       4844.0,
+       1918.0
+      ],
+      "cell_expected": [
+       93303.29915368075,
+       4811.477683742305,
+       1885.223162576954
+      ],
+      "statistic": 0.835393073309933,
+      "dof": 2,
+      "p_value": 0.6585620475462648,
+      "impossible": false
+     },
+     "T9 t=5.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       70689,
+       7579,
+       21732
+      ],
+      "probabilities": [
+       0.7071067811865476,
+       0.07509519790961589,
+       0.2177980209038366
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       70689.0,
+       7579.0,
+       21732.0
+      ],
+      "cell_expected": [
+       70710.67811865476,
+       7509.519790961588,
+       21779.80209038366
+      ],
+      "statistic": 0.7544121329768656,
+      "dof": 2,
+      "p_value": 0.6857747441414761,
+      "impossible": false
+     },
+     "T9 t=10.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       49847,
+       5603,
+       44550
+      ],
+      "probabilities": [
+       0.5,
+       0.05544704861111111,
+       0.4445529513888889
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       49847.0,
+       5603.0,
+       44550.0
+      ],
+      "cell_expected": [
+       50000.0,
+       5544.704861111111,
+       44455.29513888889
+      ],
+      "statistic": 1.2828287252043888,
+      "dof": 2,
+      "p_value": 0.5265471685130723,
+      "impossible": false
+     },
+     "T9 t=20.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       24944,
+       2759,
+       72297
+      ],
+      "probabilities": [
+       0.25,
+       0.027777671813964844,
+       0.7222223281860352
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       24944.0,
+       2759.0,
+       72297.0
+      ],
+      "cell_expected": [
+       25000.0,
+       2777.7671813964844,
+       72222.23281860352
+      ],
+      "statistic": 0.32963684703115254,
+      "dof": 2,
+      "p_value": 0.8480476756242512,
+      "impossible": false
+     },
+     "T9 t=40.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       6239,
+       657,
+       93104
+      ],
+      "probabilities": [
+       0.0625,
+       0.0069444444443433895,
+       0.9305555555556566
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       6239.0,
+       657.0,
+       93104.0
+      ],
+      "cell_expected": [
+       6250.0,
+       694.444444434339,
+       93055.55555556566
+      ],
+      "statistic": 2.063584476541019,
+      "dof": 2,
+      "p_value": 0.3563676920634348,
+      "impossible": false
+     }
+    },
+    "R3": {
+     "decays_Ya_20_40": 18705,
+     "decays_Yb_20_40": 20807,
+     "ratio": 1.1123763699545577,
+     "log_ratio_se": 0.0029626306575496865,
+     "indicator_correlation": 0.8942999421790794,
+     "interval95": [
+      1.1059357892331212,
+      1.1188544583508822
+     ],
+     "exact_expected_ratio": 1.1111105459713144,
+     "transient_equilibrium_limit": 1.1111111111111112
+    }
+   }
+  },
+  "NC2": {
+   "S1": {
+    "generator": "xoshiro256pp",
+    "seed": 5887266417243801748,
+    "seed_label": "rnglab-v020-nuclear-a-verify/NC2/S1/physics",
+    "seconds": 0.47485483399941586,
+    "summary": {
+     "engine": "vectorised",
+     "layout": "nuclear-decay-layout-v1",
+     "n_nuclei": 200000,
+     "n_events": 196887,
+     "words_per_nucleus": 3,
+     "first_word": 0,
+     "words_used": 600000,
+     "final_counts": {
+      "Sa-400": 3113,
+      "Sb-400": 196887
+     },
+     "decay_counts": {
+      "Sa-400": 196887,
+      "Sb-400": 0
+     },
+     "events_sha256": "84c8394c7d90c349165d53d2bc17846921f6666d7745ed132fda2384692a5b00"
+    },
+    "stream_sha256": "6dbf9b566b5003888b836f8e6a28ce88bc8571540698c294a59b7e17a601fdea",
+    "consumption": {
+     "words_expected": 600000,
+     "words_read": 600000,
+     "source_bytes": 4800000,
+     "ok": true
+    },
+    "invariants": {
+     "times_within_horizon": true,
+     "event_ids_follow_layout": true,
+     "lineage_links": true,
+     "first_events_leave_initial_state": true,
+     "channel_defines_daughter_and_mode": true,
+     "mode_bookkeeping": true,
+     "isomeric_transitions_lower_level": true,
+     "neutrons_only_from_beta_delayed_neutron": true,
+     "photon_yield_extremes": true,
+     "final_states_match_last_events": true,
+     "populations_at_horizon_match_final_states": true
+    },
+    "tests": {
+     "T1": {
+      "test": "kolmogorov_smirnov",
+      "n": 196887,
+      "statistic": 0.0017556192067338938,
+      "p_value": 0.5780294742709169
+     },
+     "T2 t=0.5": {
+      "test": "binomial_exact_two_sided",
+      "observed": 141242,
+      "trials": 200000,
+      "probability": 0.7071067811865476,
+      "expected": 141421.35623730952,
+      "z": -0.8812605455924687,
+      "p_value": 0.3777959396787518
+     },
+     "T2 t=1.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 99933,
+      "trials": 200000,
+      "probability": 0.5,
+      "expected": 100000.0,
+      "z": -0.2996331089849718,
+      "p_value": 0.7661634887119071
+     },
+     "T2 t=2.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 50097,
+      "trials": 200000,
+      "probability": 0.25,
+      "expected": 50000.0,
+      "z": 0.5009058461094926,
+      "p_value": 0.6164376389193238
+     },
+     "T2 t=4.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 12667,
+      "trials": 200000,
+      "probability": 0.0625,
+      "expected": 12500.0,
+      "z": 1.54267991927468,
+      "p_value": 0.12290807371561616
+     },
+     "T2 t=6.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 3113,
+      "trials": 200000,
+      "probability": 0.015625000000000007,
+      "expected": 3125.0000000000014,
+      "z": -0.2163594892105248,
+      "p_value": 0.8357427330845084
+     },
+     "T3": {
+      "test": "binomial_exact_two_sided",
+      "observed": 117550,
+      "trials": 196887,
+      "probability": 0.6,
+      "expected": 118132.2,
+      "z": -2.6782928347419537,
+      "p_value": 0.007420159594771358
+     }
+    }
+   },
+   "S2": {
+    "generator": "xoshiro256pp",
+    "seed": 3627396204597775869,
+    "seed_label": "rnglab-v020-nuclear-a-verify/NC2/S2/physics",
+    "seconds": 0.9612625829995523,
+    "summary": {
+     "engine": "vectorised",
+     "layout": "nuclear-decay-layout-v1",
+     "n_nuclei": 100000,
+     "n_events": 309476,
+     "words_per_nucleus": 12,
+     "first_word": 0,
+     "words_used": 1200000,
+     "final_counts": {
+      "Xa-400": 1564,
+      "Xb-396": 335,
+      "Xc-400m": 375,
+      "Xc-400": 6377,
+      "Xd-396": 2002,
+      "Xe-396": 4737,
+      "Xf-392": 60643,
+      "Xg-396": 21494,
+      "Xh-395": 2473
+     },
+     "decay_counts": {
+      "Xa-400": 98436,
+      "Xb-396": 62645,
+      "Xc-400m": 35081,
+      "Xc-400": 28704,
+      "Xd-396": 60643,
+      "Xe-396": 23967,
+      "Xf-392": 0,
+      "Xg-396": 0,
+      "Xh-395": 0
+     },
+     "events_sha256": "721ff3a90644288ea003fc518a4b966ec3efdac580d01dc0ef1d179e1c14ddb9"
+    },
+    "stream_sha256": "f484c89d91c4807a08efbca3a6b5ff06d88920068425c317a8dcf15886f7727b",
+    "consumption": {
+     "words_expected": 1200000,
+     "words_read": 1200000,
+     "source_bytes": 9600000,
+     "ok": true
+    },
+    "invariants": {
+     "times_within_horizon": true,
+     "event_ids_follow_layout": true,
+     "lineage_links": true,
+     "first_events_leave_initial_state": true,
+     "channel_defines_daughter_and_mode": true,
+     "mode_bookkeeping": true,
+     "isomeric_transitions_lower_level": true,
+     "neutrons_only_from_beta_delayed_neutron": true,
+     "photon_yield_extremes": true,
+     "final_states_match_last_events": true,
+     "populations_at_horizon_match_final_states": true
+    },
+    "tests": {
+     "T4 t=0.5": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       83935,
+       7291,
+       4682,
+       1074,
+       2688,
+       47,
+       282,
+       1,
+       0
+      ],
+      "probabilities": [
+       0.8408964152537145,
+       0.07272456858745911,
+       0.04619439310277032,
+       0.01064740092925147,
+       0.026415731462706833,
+       0.00041210195545194494,
+       0.002685994187456758,
+       2.1055069070116062e-05,
+       2.339452118901784e-06
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5,
+        7,
+        8
+       ],
+       [
+        6
+       ]
+      ],
+      "cell_observed": [
+       83935.0,
+       7291.0,
+       4682.0,
+       1074.0,
+       2688.0,
+       48.0,
+       282.0
+      ],
+      "cell_expected": [
+       84089.64152537145,
+       7272.456858745912,
+       4619.439310277032,
+       1064.740092925147,
+       2641.573146270683,
+       43.549647664096284,
+       268.5994187456758
+      ],
+      "statistic": 3.1987732675821707,
+      "dof": 6,
+      "p_value": 0.783516988381328,
+      "impossible": false
+     },
+     "T4 t=1.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       70423,
+       9767,
+       6980,
+       3436,
+       7513,
+       242,
+       1611,
+       25,
+       3
+      ],
+      "probabilities": [
+       0.7071067811865476,
+       0.09751611331979682,
+       0.06879805765432566,
+       0.03371343644595099,
+       0.07348666213461424,
+       0.002618263582627844,
+       0.01644888458619853,
+       0.0002806209809445515,
+       3.118010899383904e-05
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7,
+        8
+       ]
+      ],
+      "cell_observed": [
+       70423.0,
+       9767.0,
+       6980.0,
+       3436.0,
+       7513.0,
+       242.0,
+       1611.0,
+       28.0
+      ],
+      "cell_expected": [
+       70710.67811865476,
+       9751.611331979682,
+       6879.805765432566,
+       3371.3436445950992,
+       7348.666213461424,
+       261.8263582627844,
+       1644.888458619853,
+       31.18010899383905
+      ],
+      "statistic": 10.092582739491064,
+      "dof": 7,
+      "p_value": 0.18338732141435557,
+      "impossible": false
+     },
+     "T4 t=2.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       49944,
+       9397,
+       7726,
+       8727,
+       14553,
+       1290,
+       8031,
+       295,
+       37
+      ],
+      "probabilities": [
+       0.5,
+       0.09333333333333294,
+       0.0775735931288071,
+       0.08561423701966964,
+       0.14688537298982546,
+       0.013316869991580342,
+       0.07978129367684167,
+       0.003145769873948617,
+       0.0003495299859942909
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       49944.0,
+       9397.0,
+       7726.0,
+       8727.0,
+       14553.0,
+       1290.0,
+       8031.0,
+       295.0,
+       37.0
+      ],
+      "cell_expected": [
+       50000.0,
+       9333.333333333294,
+       7757.35931288071,
+       8561.423701966964,
+       14688.537298982546,
+       1331.6869991580343,
+       7978.129367684167,
+       314.5769873948617,
+       34.95299859942909
+      ],
+      "statistic": 8.070209407582505,
+      "dof": 8,
+      "p_value": 0.4266420943849781,
+      "impossible": false
+     },
+     "T4 t=4.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       24952,
+       5199,
+       5182,
+       14534,
+       16194,
+       4509,
+       26646,
+       2480,
+       304
+      ],
+      "probabilities": [
+       0.25,
+       0.052500000000000005,
+       0.052499999999999984,
+       0.14467947822465524,
+       0.1634887637119725,
+       0.04433869791882226,
+       0.26401123628802764,
+       0.02563364147087022,
+       0.0028481823856522466
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       24952.0,
+       5199.0,
+       5182.0,
+       14534.0,
+       16194.0,
+       4509.0,
+       26646.0,
+       2480.0,
+       304.0
+      ],
+      "cell_expected": [
+       25000.0,
+       5250.000000000001,
+       5249.999999999998,
+       14467.947822465523,
+       16348.87637119725,
+       4433.869791882225,
+       26401.123628802765,
+       2563.364147087022,
+       284.81823856522465
+      ],
+      "statistic": 10.784377246970038,
+      "dof": 8,
+      "p_value": 0.21421853363611595,
+      "impossible": false
+     },
+     "T4 t=8.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       6304,
+       1349,
+       1473,
+       11857,
+       6878,
+       6820,
+       51748,
+       12193,
+       1378
+      ],
+      "probabilities": [
+       0.0625,
+       0.013330078125000002,
+       0.014765624999999996,
+       0.11975961373064709,
+       0.06784269525680003,
+       0.06776098712073955,
+       0.5188272266182001,
+       0.12169239673375197,
+       0.01352137741486133
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       6304.0,
+       1349.0,
+       1473.0,
+       11857.0,
+       6878.0,
+       6820.0,
+       51748.0,
+       12193.0,
+       1378.0
+      ],
+      "cell_expected": [
+       6249.999999999999,
+       1333.0078125,
+       1476.5624999999993,
+       11975.961373064707,
+       6784.2695256800025,
+       6776.098712073955,
+       51882.72266182001,
+       12169.239673375196,
+       1352.1377414861329
+      ],
+      "statistic": 4.318984179093279,
+      "dof": 8,
+      "p_value": 0.8272581168461332,
+      "impossible": false
+     },
+     "T4 t=12.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       1564,
+       335,
+       375,
+       6377,
+       2002,
+       4737,
+       60643,
+       21494,
+       2473
+      ],
+      "probabilities": [
+       0.015625000000000007,
+       0.003333320617675783,
+       0.003742675781250002,
+       0.0639304421164773,
+       0.019931431069892997,
+       0.048372224292199555,
+       0.6067352483124314,
+       0.2144966920290659,
+       0.02383296578100732
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       1564.0,
+       335.0,
+       375.0,
+       6377.0,
+       2002.0,
+       4737.0,
+       60643.0,
+       21494.0,
+       2473.0
+      ],
+      "cell_expected": [
+       1562.5000000000002,
+       333.3320617675782,
+       374.2675781250001,
+       6393.044211647729,
+       1993.143106989299,
+       4837.2224292199535,
+       60673.52483124312,
+       21449.66920290658,
+       2383.296578100731
+      ],
+      "statistic": 5.650619152130378,
+      "dof": 8,
+      "p_value": 0.6863015995522959,
+      "impossible": false
+     },
+     "T5 Xa-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 98436,
+      "trials": 100000,
+      "probability": 0.984375,
+      "expected": 98437.5,
+      "z": -0.03824731549870059,
+      "p_value": 0.9694889730298224
+     },
+     "T5 Xb-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 62645,
+      "trials": 100000,
+      "probability": 0.6266666793823243,
+      "expected": 62666.66793823244,
+      "z": -0.14166119813787037,
+      "p_value": 0.8882151504982074
+     },
+     "T5 Xc-400m": {
+      "test": "binomial_exact_two_sided",
+      "observed": 35081,
+      "trials": 100000,
+      "probability": 0.35063232421875007,
+      "expected": 35063.23242187501,
+      "z": 0.1177489180424558,
+      "p_value": 0.9076719155521233
+     },
+     "T5 Xc-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 28704,
+      "trials": 100000,
+      "probability": 0.2867018821022728,
+      "expected": 28670.188210227283,
+      "z": 0.2364380391872993,
+      "p_value": 0.8120728232543888
+     },
+     "T5 Xd-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 60643,
+      "trials": 100000,
+      "probability": 0.6067352483124314,
+      "expected": 60673.52483124314,
+      "z": -0.19761101435098796,
+      "p_value": 0.843475741809762
+     },
+     "T5 Xe-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 23967,
+      "trials": 100000,
+      "probability": 0.23832965781007326,
+      "expected": 23832.965781007326,
+      "z": 0.9948168225202071,
+      "p_value": 0.3199493452129042
+     },
+     "T6 Xa-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 62980,
+      "trials": 98436,
+      "probability": 0.64,
+      "expected": 62999.04,
+      "z": -0.1264295895085542,
+      "p_value": 0.899602403239384
+     },
+     "T6 Xe-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 21494,
+      "trials": 23967,
+      "probability": 0.9,
+      "expected": 21570.3,
+      "z": -1.6428444513868463,
+      "p_value": 0.10174674753408106
+     },
+     "T7 Xa-400": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       29577,
+       20479,
+       14624,
+       10368,
+       7215,
+       5129,
+       3632,
+       2672,
+       1821,
+       1333,
+       974,
+       612,
+       1564
+      ],
+      "probabilities": [
+       0.2928932188134524,
+       0.20710678118654757,
+       0.14644660940672627,
+       0.10355339059327373,
+       0.07322330470336302,
+       0.051776695296636976,
+       0.03661165235168151,
+       0.025888347648318488,
+       0.018305826175840867,
+       0.012944173824159022,
+       0.009152913087920433,
+       0.006472086912079678,
+       0.015625
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ],
+       [
+        9
+       ],
+       [
+        10
+       ],
+       [
+        11
+       ],
+       [
+        12
+       ]
+      ],
+      "cell_observed": [
+       29577.0,
+       20479.0,
+       14624.0,
+       10368.0,
+       7215.0,
+       5129.0,
+       3632.0,
+       2672.0,
+       1821.0,
+       1333.0,
+       974.0,
+       612.0,
+       1564.0
+      ],
+      "cell_expected": [
+       29289.32188134524,
+       20710.678118654752,
+       14644.660940672626,
+       10355.33905932737,
+       7322.330470336301,
+       5177.669529663697,
+       3661.1652351681505,
+       2588.8347648318486,
+       1830.5826175840864,
+       1294.417382415902,
+       915.2913087920432,
+       647.2086912079676,
+       1562.4999999999998
+      ],
+      "statistic": 17.27926212749973,
+      "dof": 12,
+      "p_value": 0.13939092928554017,
+      "impossible": false
+     },
+     "T7 Xe-396": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       28,
+       304,
+       882,
+       1570,
+       2226,
+       2705,
+       2909,
+       2947,
+       2922,
+       2714,
+       2500,
+       2260,
+       76033
+      ],
+      "probabilities": [
+       0.00031180108993839056,
+       0.0031834987700045158,
+       0.009057472876718077,
+       0.015929051119861485,
+       0.022014740829326168,
+       0.02638762238388115,
+       0.028822413789264784,
+       0.02950717328961873,
+       0.02881197730211535,
+       0.02714381758681858,
+       0.02487050444499747,
+       0.02228958432752856,
+       0.7616703421899267
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ],
+       [
+        9
+       ],
+       [
+        10
+       ],
+       [
+        11
+       ],
+       [
+        12
+       ]
+      ],
+      "cell_observed": [
+       28.0,
+       304.0,
+       882.0,
+       1570.0,
+       2226.0,
+       2705.0,
+       2909.0,
+       2947.0,
+       2922.0,
+       2714.0,
+       2500.0,
+       2260.0,
+       76033.0
+      ],
+      "cell_expected": [
+       31.180108993839056,
+       318.34987700045156,
+       905.7472876718077,
+       1592.9051119861485,
+       2201.474082932617,
+       2638.762238388115,
+       2882.2413789264783,
+       2950.717328961873,
+       2881.1977302115347,
+       2714.381758681858,
+       2487.0504444997473,
+       2228.958432752856,
+       76167.03421899267
+      ],
+      "statistic": 5.425659192716531,
+      "dof": 12,
+      "p_value": 0.9422317064093921,
+      "impossible": false
+     },
+     "T8 Xa-400/alpha": {
+      "test": "binomial_exact_two_sided",
+      "observed": 15677,
+      "trials": 62980,
+      "probability": 0.25,
+      "expected": 15745.0,
+      "z": -0.6257587751444367,
+      "p_value": 0.534496314739446
+     },
+     "T8 Xa-400/beta-": {
+      "test": "binomial_exact_two_sided",
+      "observed": 10598,
+      "trials": 35456,
+      "probability": 0.3,
+      "expected": 10636.8,
+      "z": -0.4496527034521667,
+      "p_value": 0.6554733596052894
+     },
+     "T8 Xb-396/ec": {
+      "test": "binomial_exact_two_sided",
+      "observed": 50011,
+      "trials": 62645,
+      "probability": 0.8,
+      "expected": 50116.0,
+      "z": -1.0487841152309485,
+      "p_value": 0.29427803021110677
+     },
+     "T8 Xc-400m/it": {
+      "test": "binomial_exact_two_sided",
+      "observed": 31523,
+      "trials": 35081,
+      "probability": 0.9,
+      "expected": 31572.9,
+      "z": -0.8880620439726343,
+      "p_value": 0.37354904181271564
+     },
+     "T8 Xe-396/beta-": {
+      "test": "binomial_exact_two_sided",
+      "observed": 10746,
+      "trials": 21494,
+      "probability": 0.5,
+      "expected": 10747.0,
+      "z": -0.01364179042787182,
+      "p_value": 0.9945577763176487
+     }
+    }
+   },
+   "S3": {
+    "generator": "xoshiro256pp",
+    "seed": 3810191977199745782,
+    "seed_label": "rnglab-v020-nuclear-a-verify/NC2/S3/physics",
+    "seconds": 0.5033631079986662,
+    "summary": {
+     "engine": "vectorised",
+     "layout": "nuclear-decay-layout-v1",
+     "n_nuclei": 100000,
+     "n_events": 186698,
+     "words_per_nucleus": 6,
+     "first_word": 0,
+     "words_used": 600000,
+     "final_counts": {
+      "Ya-410": 6282,
+      "Yb-410": 738,
+      "Yc-406": 92980
+     },
+     "decay_counts": {
+      "Ya-410": 93718,
+      "Yb-410": 92980,
+      "Yc-406": 0
+     },
+     "events_sha256": "6f6a930dff2552e39f50cd181e2bdf2e486062906ce2de9169fdb9b4a4653439"
+    },
+    "stream_sha256": "9fc741a2d7ad34bd35444842581951410b6b0e8baf2b5b8bf2212a1f5d14f916",
+    "consumption": {
+     "words_expected": 600000,
+     "words_read": 600000,
+     "source_bytes": 4800000,
+     "ok": true
+    },
+    "invariants": {
+     "times_within_horizon": true,
+     "event_ids_follow_layout": true,
+     "lineage_links": true,
+     "first_events_leave_initial_state": true,
+     "channel_defines_daughter_and_mode": true,
+     "mode_bookkeeping": true,
+     "isomeric_transitions_lower_level": true,
+     "neutrons_only_from_beta_delayed_neutron": true,
+     "photon_yield_extremes": true,
+     "final_states_match_last_events": true,
+     "populations_at_horizon_match_final_states": true
+    },
+    "tests": {
+     "T9 t=1.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       93364,
+       4768,
+       1868
+      ],
+      "probabilities": [
+       0.9330329915368074,
+       0.04811477683742304,
+       0.018852231625769537
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       93364.0,
+       4768.0,
+       1868.0
+      ],
+      "cell_expected": [
+       93303.29915368075,
+       4811.477683742305,
+       1885.223162576954
+      ],
+      "statistic": 0.5897140775875906,
+      "dof": 2,
+      "p_value": 0.744638034208407,
+      "impossible": false
+     },
+     "T9 t=5.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       70607,
+       7552,
+       21841
+      ],
+      "probabilities": [
+       0.7071067811865476,
+       0.07509519790961589,
+       0.2177980209038366
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       70607.0,
+       7552.0,
+       21841.0
+      ],
+      "cell_expected": [
+       70710.67811865476,
+       7509.519790961588,
+       21779.80209038366
+      ],
+      "statistic": 0.5642767954885599,
+      "dof": 2,
+      "p_value": 0.7541693019799014,
+      "impossible": false
+     },
+     "T9 t=10.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       49993,
+       5517,
+       44490
+      ],
+      "probabilities": [
+       0.5,
+       0.05544704861111111,
+       0.4445529513888889
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       49993.0,
+       5517.0,
+       44490.0
+      ],
+      "cell_expected": [
+       50000.0,
+       5544.704861111111,
+       44455.29513888889
+      ],
+      "statistic": 0.16650405405702273,
+      "dof": 2,
+      "p_value": 0.920119223082107,
+      "impossible": false
+     },
+     "T9 t=20.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       24933,
+       2713,
+       72354
+      ],
+      "probabilities": [
+       0.25,
+       0.027777671813964844,
+       0.7222223281860352
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       24933.0,
+       2713.0,
+       72354.0
+      ],
+      "cell_expected": [
+       25000.0,
+       2777.7671813964844,
+       72222.23281860352
+      ],
+      "statistic": 1.9300944219883687,
+      "dof": 2,
+      "p_value": 0.38096521356828594,
+      "impossible": false
+     },
+     "T9 t=40.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       6282,
+       738,
+       92980
+      ],
+      "probabilities": [
+       0.0625,
+       0.0069444444443433895,
+       0.9305555555556566
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ]
+      ],
+      "cell_observed": [
+       6282.0,
+       738.0,
+       92980.0
+      ],
+      "cell_expected": [
+       6250.0,
+       694.444444434339,
+       93055.55555556566
+      ],
+      "statistic": 2.956991046099909,
+      "dof": 2,
+      "p_value": 0.22798042179155711,
+      "impossible": false
+     }
+    }
+   }
+  },
+  "PC1": {
+   "S1": {
+    "generator": "numpy-pcg64",
+    "seed": 17439584514004263045,
+    "seed_label": "rnglab-v020-nuclear-a-verify/PC1/S1/physics",
+    "seconds": 0.01969876600014686,
+    "summary": {
+     "engine": "vectorised",
+     "layout": "nuclear-decay-layout-v1",
+     "n_nuclei": 200000,
+     "n_events": 196577,
+     "words_per_nucleus": 3,
+     "first_word": 0,
+     "words_used": 600000,
+     "final_counts": {
+      "Sa-400": 3423,
+      "Sb-400": 196577
+     },
+     "decay_counts": {
+      "Sa-400": 196577,
+      "Sb-400": 0
+     },
+     "events_sha256": "dd2b54b49f8fe4f4da081a2dceb7a01d9f90e0e50b3f6adb6381fdaf0ccb064f"
+    },
+    "stream_sha256": "e89004d8f41c36c50b0e612776ef473db1d84789ef158db50522d68887a934d0",
+    "consumption": {
+     "words_expected": 600000,
+     "words_read": 600000,
+     "source_bytes": 4800000,
+     "ok": true
+    },
+    "invariants": {
+     "times_within_horizon": true,
+     "event_ids_follow_layout": true,
+     "lineage_links": true,
+     "first_events_leave_initial_state": true,
+     "channel_defines_daughter_and_mode": true,
+     "mode_bookkeeping": true,
+     "isomeric_transitions_lower_level": true,
+     "neutrons_only_from_beta_delayed_neutron": true,
+     "photon_yield_extremes": true,
+     "final_states_match_last_events": true,
+     "populations_at_horizon_match_final_states": true
+    },
+    "tests": {
+     "T1": {
+      "test": "kolmogorov_smirnov",
+      "n": 196577,
+      "statistic": 0.005627073084032208,
+      "p_value": 7.81483313277431e-06
+     },
+     "T2 t=0.5": {
+      "test": "binomial_exact_two_sided",
+      "observed": 142055,
+      "trials": 200000,
+      "probability": 0.7071067811865476,
+      "expected": 141421.35623730952,
+      "z": 3.113386277479857,
+      "p_value": 0.0018385455124186624
+     },
+     "T2 t=1.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 100985,
+      "trials": 200000,
+      "probability": 0.5,
+      "expected": 100000.0,
+      "z": 4.405053915674586,
+      "p_value": 1.0683725988854556e-05
+     },
+     "T2 t=2.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 51114,
+      "trials": 200000,
+      "probability": 0.25,
+      "expected": 50000.0,
+      "z": 5.75267126356675,
+      "p_value": 9.47662496658453e-09
+     },
+     "T2 t=4.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 13114,
+      "trials": 200000,
+      "probability": 0.0625,
+      "expected": 12500.0,
+      "z": 5.671889044518884,
+      "p_value": 1.796085440369107e-08
+     },
+     "T2 t=6.0": {
+      "test": "binomial_exact_two_sided",
+      "observed": 3423,
+      "trials": 200000,
+      "probability": 0.015625000000000007,
+      "expected": 3125.0000000000014,
+      "z": 5.3729273153940635,
+      "p_value": 1.205801022345673e-07
+     },
+     "T3": {
+      "test": "binomial_exact_two_sided",
+      "observed": 117855,
+      "trials": 196577,
+      "probability": 0.6,
+      "expected": 117946.2,
+      "z": -0.41987775456922516,
+      "p_value": 0.675247802575335
+     }
+    }
+   }
+  },
+  "PC2": {
+   "S2": {
+    "generator": "numpy-pcg64",
+    "seed": 5134171384891115928,
+    "seed_label": "rnglab-v020-nuclear-a-verify/PC2/S2/physics",
+    "seconds": 0.04892614600066736,
+    "summary": {
+     "engine": "vectorised",
+     "layout": "nuclear-decay-layout-v1",
+     "n_nuclei": 100000,
+     "n_events": 310317,
+     "words_per_nucleus": 12,
+     "first_word": 0,
+     "words_used": 1200000,
+     "final_counts": {
+      "Xa-400": 1566,
+      "Xb-396": 312,
+      "Xc-400m": 442,
+      "Xc-400": 6681,
+      "Xd-396": 1899,
+      "Xe-396": 5057,
+      "Xf-392": 58940,
+      "Xg-396": 22601,
+      "Xh-395": 2502
+     },
+     "decay_counts": {
+      "Xa-400": 98434,
+      "Xb-396": 60839,
+      "Xc-400m": 36841,
+      "Xc-400": 30160,
+      "Xd-396": 58940,
+      "Xe-396": 25103,
+      "Xf-392": 0,
+      "Xg-396": 0,
+      "Xh-395": 0
+     },
+     "events_sha256": "b96430b67035cc9fae3aedce73264296d0b04e2869f0dfe485ba2cca766001ab"
+    },
+    "stream_sha256": "057a7ee4f246304fe0a8cf08d052d237cd143f6035bc0a089ec78401c2847f25",
+    "consumption": {
+     "words_expected": 1200000,
+     "words_read": 1200000,
+     "source_bytes": 9600000,
+     "ok": true
+    },
+    "invariants": {
+     "times_within_horizon": true,
+     "event_ids_follow_layout": true,
+     "lineage_links": true,
+     "first_events_leave_initial_state": true,
+     "channel_defines_daughter_and_mode": true,
+     "mode_bookkeeping": true,
+     "isomeric_transitions_lower_level": true,
+     "neutrons_only_from_beta_delayed_neutron": true,
+     "photon_yield_extremes": true,
+     "final_states_match_last_events": true,
+     "populations_at_horizon_match_final_states": true
+    },
+    "tests": {
+     "T4 t=0.5": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       84315,
+       6993,
+       4758,
+       1084,
+       2557,
+       39,
+       253,
+       1,
+       0
+      ],
+      "probabilities": [
+       0.8408964152537145,
+       0.07272456858745911,
+       0.04619439310277032,
+       0.01064740092925147,
+       0.026415731462706833,
+       0.00041210195545194494,
+       0.002685994187456758,
+       2.1055069070116062e-05,
+       2.339452118901784e-06
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5,
+        7,
+        8
+       ],
+       [
+        6
+       ]
+      ],
+      "cell_observed": [
+       84315.0,
+       6993.0,
+       4758.0,
+       1084.0,
+       2557.0,
+       40.0,
+       253.0
+      ],
+      "cell_expected": [
+       84089.64152537145,
+       7272.456858745912,
+       4619.439310277032,
+       1064.740092925147,
+       2641.573146270683,
+       43.549647664096284,
+       268.5994187456758
+      ],
+      "statistic": 19.75011112798197,
+      "dof": 6,
+      "p_value": 0.003067662330955645,
+      "impossible": false
+     },
+     "T4 t=1.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       70779,
+       9525,
+       7226,
+       3499,
+       7139,
+       253,
+       1551,
+       25,
+       3
+      ],
+      "probabilities": [
+       0.7071067811865476,
+       0.09751611331979682,
+       0.06879805765432566,
+       0.03371343644595099,
+       0.07348666213461424,
+       0.002618263582627844,
+       0.01644888458619853,
+       0.0002806209809445515,
+       3.118010899383904e-05
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7,
+        8
+       ]
+      ],
+      "cell_observed": [
+       70779.0,
+       9525.0,
+       7226.0,
+       3499.0,
+       7139.0,
+       253.0,
+       1551.0,
+       28.0
+      ],
+      "cell_expected": [
+       70710.67811865476,
+       9751.611331979682,
+       6879.805765432566,
+       3371.3436445950992,
+       7348.666213461424,
+       261.8263582627844,
+       1644.888458619853,
+       31.18010899383905
+      ],
+      "statistic": 39.54939233247116,
+      "dof": 7,
+      "p_value": 1.5350803617646996e-06,
+      "impossible": false
+     },
+     "T4 t=2.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       50165,
+       8930,
+       8267,
+       8944,
+       14199,
+       1414,
+       7749,
+       295,
+       37
+      ],
+      "probabilities": [
+       0.5,
+       0.09333333333333294,
+       0.0775735931288071,
+       0.08561423701966964,
+       0.14688537298982546,
+       0.013316869991580342,
+       0.07978129367684167,
+       0.003145769873948617,
+       0.0003495299859942909
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       50165.0,
+       8930.0,
+       8267.0,
+       8944.0,
+       14199.0,
+       1414.0,
+       7749.0,
+       295.0,
+       37.0
+      ],
+      "cell_expected": [
+       50000.0,
+       9333.333333333294,
+       7757.35931288071,
+       8561.423701966964,
+       14688.537298982546,
+       1331.6869991580343,
+       7978.129367684167,
+       314.5769873948617,
+       34.95299859942909
+      ],
+      "statistic": 97.87412450858079,
+      "dof": 8,
+      "p_value": 1.1602477675713538e-17,
+      "impossible": false
+     },
+     "T4 t=4.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       24913,
+       5095,
+       5671,
+       15204,
+       15779,
+       4617,
+       25723,
+       2689,
+       309
+      ],
+      "probabilities": [
+       0.25,
+       0.052500000000000005,
+       0.052499999999999984,
+       0.14467947822465524,
+       0.1634887637119725,
+       0.04433869791882226,
+       0.26401123628802764,
+       0.02563364147087022,
+       0.0028481823856522466
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       24913.0,
+       5095.0,
+       5671.0,
+       15204.0,
+       15779.0,
+       4617.0,
+       25723.0,
+       2689.0,
+       309.0
+      ],
+      "cell_expected": [
+       25000.0,
+       5250.000000000001,
+       5249.999999999998,
+       14467.947822465523,
+       16348.87637119725,
+       4433.869791882225,
+       26401.123628802765,
+       2563.364147087022,
+       284.81823856522465
+      ],
+      "statistic": 129.14226060277392,
+      "dof": 8,
+      "p_value": 4.259976259173881e-24,
+      "impossible": false
+     },
+     "T4 t=8.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       6204,
+       1298,
+       1506,
+       12548,
+       6666,
+       7202,
+       50337,
+       12793,
+       1446
+      ],
+      "probabilities": [
+       0.0625,
+       0.013330078125000002,
+       0.014765624999999996,
+       0.11975961373064709,
+       0.06784269525680003,
+       0.06776098712073955,
+       0.5188272266182001,
+       0.12169239673375197,
+       0.01352137741486133
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       6204.0,
+       1298.0,
+       1506.0,
+       12548.0,
+       6666.0,
+       7202.0,
+       50337.0,
+       12793.0,
+       1446.0
+      ],
+      "cell_expected": [
+       6249.999999999999,
+       1333.0078125,
+       1476.5624999999993,
+       11975.961373064707,
+       6784.2695256800025,
+       6776.098712073955,
+       51882.72266182001,
+       12169.239673375196,
+       1352.1377414861329
+      ],
+      "statistic": 142.53873606914203,
+      "dof": 8,
+      "p_value": 7.031855545845908e-27,
+      "impossible": false
+     },
+     "T4 t=12.0": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       1566,
+       312,
+       442,
+       6681,
+       1899,
+       5057,
+       58940,
+       22601,
+       2502
+      ],
+      "probabilities": [
+       0.015625000000000007,
+       0.003333320617675783,
+       0.003742675781250002,
+       0.0639304421164773,
+       0.019931431069892997,
+       0.048372224292199555,
+       0.6067352483124314,
+       0.2144966920290659,
+       0.02383296578100732
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ]
+      ],
+      "cell_observed": [
+       1566.0,
+       312.0,
+       442.0,
+       6681.0,
+       1899.0,
+       5057.0,
+       58940.0,
+       22601.0,
+       2502.0
+      ],
+      "cell_expected": [
+       1562.5000000000002,
+       333.3320617675782,
+       374.2675781250001,
+       6393.044211647729,
+       1993.143106989299,
+       4837.2224292199535,
+       60673.52483124312,
+       21449.66920290658,
+       2383.296578100731
+      ],
+      "statistic": 158.27320511413458,
+      "dof": 8,
+      "p_value": 3.672452972209656e-30,
+      "impossible": false
+     },
+     "T5 Xa-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 98434,
+      "trials": 100000,
+      "probability": 0.984375,
+      "expected": 98437.5,
+      "z": -0.08924373616363472,
+      "p_value": 0.9288846616502007
+     },
+     "T5 Xb-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 60839,
+      "trials": 100000,
+      "probability": 0.6266666793823243,
+      "expected": 62666.66793823244,
+      "z": -11.948973970241257,
+      "p_value": 1.0484559362225347e-32
+     },
+     "T5 Xc-400m": {
+      "test": "binomial_exact_two_sided",
+      "observed": 36841,
+      "trials": 100000,
+      "probability": 0.35063232421875007,
+      "expected": 35063.23242187501,
+      "z": 11.781583701648174,
+      "p_value": 8.127972029908343e-32
+     },
+     "T5 Xc-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 30160,
+      "trials": 100000,
+      "probability": 0.2867018821022728,
+      "expected": 28670.188210227283,
+      "z": 10.41790986811984,
+      "p_value": 3.602170732250985e-25
+     },
+     "T5 Xd-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 58940,
+      "trials": 100000,
+      "probability": 0.6067352483124314,
+      "expected": 60673.52483124314,
+      "z": -11.222456811502726,
+      "p_value": 4.346377622718216e-29
+     },
+     "T5 Xe-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 25103,
+      "trials": 100000,
+      "probability": 0.23832965781007326,
+      "expected": 23832.965781007326,
+      "z": 9.426334675768738,
+      "p_value": 7.168335597681795e-21
+     },
+     "T6 Xa-400": {
+      "test": "binomial_exact_two_sided",
+      "observed": 61151,
+      "trials": 98434,
+      "probability": 0.64,
+      "expected": 62997.76,
+      "z": -12.262997936203352,
+      "p_value": 2.5404911529505845e-34
+     },
+     "T6 Xe-396": {
+      "test": "binomial_exact_two_sided",
+      "observed": 22601,
+      "trials": 25103,
+      "probability": 0.9,
+      "expected": 22592.7,
+      "z": 0.17462001637636215,
+      "p_value": 0.8746206442169436
+     },
+     "T7 Xa-400": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       29221,
+       20614,
+       14788,
+       10464,
+       7313,
+       5187,
+       3703,
+       2506,
+       1877,
+       1217,
+       914,
+       630,
+       1566
+      ],
+      "probabilities": [
+       0.2928932188134524,
+       0.20710678118654757,
+       0.14644660940672627,
+       0.10355339059327373,
+       0.07322330470336302,
+       0.051776695296636976,
+       0.03661165235168151,
+       0.025888347648318488,
+       0.018305826175840867,
+       0.012944173824159022,
+       0.009152913087920433,
+       0.006472086912079678,
+       0.015625
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ],
+       [
+        9
+       ],
+       [
+        10
+       ],
+       [
+        11
+       ],
+       [
+        12
+       ]
+      ],
+      "cell_observed": [
+       29221.0,
+       20614.0,
+       14788.0,
+       10464.0,
+       7313.0,
+       5187.0,
+       3703.0,
+       2506.0,
+       1877.0,
+       1217.0,
+       914.0,
+       630.0,
+       1566.0
+      ],
+      "cell_expected": [
+       29289.32188134524,
+       20710.678118654752,
+       14644.660940672626,
+       10355.33905932737,
+       7322.330470336301,
+       5177.669529663697,
+       3661.1652351681505,
+       2588.8347648318486,
+       1830.5826175840864,
+       1294.417382415902,
+       915.2913087920432,
+       647.2086912079676,
+       1562.4999999999998
+      ],
+      "statistic": 12.585482113685599,
+      "dof": 12,
+      "p_value": 0.39987495605242324,
+      "impossible": false
+     },
+     "T7 Xe-396": {
+      "test": "multinomial_chisquare",
+      "observed": [
+       28,
+       304,
+       971,
+       1695,
+       2334,
+       2717,
+       3089,
+       3101,
+       2976,
+       2901,
+       2592,
+       2395,
+       74897
+      ],
+      "probabilities": [
+       0.00031180108993839056,
+       0.0031834987700045158,
+       0.009057472876718077,
+       0.015929051119861485,
+       0.022014740829326168,
+       0.02638762238388115,
+       0.028822413789264784,
+       0.02950717328961873,
+       0.02881197730211535,
+       0.02714381758681858,
+       0.02487050444499747,
+       0.02228958432752856,
+       0.7616703421899267
+      ],
+      "total": 100000,
+      "cells": [
+       [
+        0
+       ],
+       [
+        1
+       ],
+       [
+        2
+       ],
+       [
+        3
+       ],
+       [
+        4
+       ],
+       [
+        5
+       ],
+       [
+        6
+       ],
+       [
+        7
+       ],
+       [
+        8
+       ],
+       [
+        9
+       ],
+       [
+        10
+       ],
+       [
+        11
+       ],
+       [
+        12
+       ]
+      ],
+      "cell_observed": [
+       28.0,
+       304.0,
+       971.0,
+       1695.0,
+       2334.0,
+       2717.0,
+       3089.0,
+       3101.0,
+       2976.0,
+       2901.0,
+       2592.0,
+       2395.0,
+       74897.0
+      ],
+      "cell_expected": [
+       31.180108993839056,
+       318.34987700045156,
+       905.7472876718077,
+       1592.9051119861485,
+       2201.474082932617,
+       2638.762238388115,
+       2882.2413789264783,
+       2950.717328961873,
+       2881.1977302115347,
+       2714.381758681858,
+       2487.0504444997473,
+       2228.958432752856,
+       76167.03421899267
+      ],
+      "statistic": 98.92357916220666,
+      "dof": 12,
+      "p_value": 9.045285744108818e-16,
+      "impossible": false
+     },
+     "T8 Xa-400/alpha": {
+      "test": "binomial_exact_two_sided",
+      "observed": 15342,
+      "trials": 61151,
+      "probability": 0.25,
+      "expected": 15287.75,
+      "z": 0.5066374915680789,
+      "p_value": 0.6140483365718779
+     },
+     "T8 Xa-400/beta-": {
+      "test": "binomial_exact_two_sided",
+      "observed": 11196,
+      "trials": 37283,
+      "probability": 0.3,
+      "expected": 11184.9,
+      "z": 0.12544631430654163,
+      "p_value": 0.9010652494905511
+     },
+     "T8 Xb-396/ec": {
+      "test": "binomial_exact_two_sided",
+      "observed": 48689,
+      "trials": 60839,
+      "probability": 0.8,
+      "expected": 48671.200000000004,
+      "z": 0.18041347740879574,
+      "p_value": 0.8592170901089964
+     },
+     "T8 Xc-400m/it": {
+      "test": "binomial_exact_two_sided",
+      "observed": 33081,
+      "trials": 36841,
+      "probability": 0.9,
+      "expected": 33156.9,
+      "z": -1.3181195947391082,
+      "p_value": 0.18688554893829099
+     },
+     "T8 Xe-396/beta-": {
+      "test": "binomial_exact_two_sided",
+      "observed": 11311,
+      "trials": 22601,
+      "probability": 0.5,
+      "expected": 11300.5,
+      "z": 0.13968683171747961,
+      "p_value": 0.8941660200470827
+     }
+    }
+   }
+  }
+ },
+ "timings_seconds": {
+  "NC1 S1": 0.0394233909992181,
+  "NC1 S2": 0.0490171969995572,
+  "NC1 S3": 0.0217335790002835,
+  "NC2 S1": 0.47485483399941586,
+  "NC2 S2": 0.9612625829995523,
+  "NC2 S3": 0.5033631079986662,
+  "PC1 S1": 0.01969876600014686,
+  "PC2 S2": 0.04892614600066736,
+  "ENS": 0.6363091269995493
+ },
+ "analytic_crosscheck": {
+  "max_abs_expm_minus_paths": 5.329070518200751e-15,
+  "max_abs_generator_column_sum": 2.0816681711721685e-17,
+  "error": null,
+  "ok": true
+ },
+ "ensemble": {
+  "replicates": 400,
+  "counts_at_t": [
+   [
+    982,
+    184,
+    164,
+    179,
+    302,
+    33,
+    150,
+    4,
+    2
+   ],
+   [
+    976,
+    199,
+    160,
+    166,
+    326,
+    26,
+    144,
+    2,
+    1
+   ],
+   [
+    996,
+    195,
+    146,
+    181,
+    265,
+    37,
+    173,
+    6,
+    1
+   ],
+   [
+    976,
+    188,
+    162,
+    181,
+    301,
+    31,
+    151,
+    8,
+    2
+   ],
+   [
+    953,
+    194,
+    167,
+    175,
+    314,
+    23,
+    164,
+    9,
+    1
+   ],
+   [
+    1002,
+    196,
+    149,
+    176,
+    275,
+    32,
+    165,
+    4,
+    1
+   ],
+   [
+    1049,
+    162,
+    148,
+    180,
+    278,
+    24,
+    153,
+    6,
+    0
+   ],
+   [
+    1021,
+    179,
+    159,
+    169,
+    268,
+    30,
+    165,
+    7,
+    2
+   ],
+   [
+    1015,
+    184,
+    165,
+    164,
+    291,
+    24,
+    153,
+    4,
+    0
+   ],
+   [
+    998,
+    176,
+    142,
+    199,
+    295,
+    25,
+    158,
+    7,
+    0
+   ],
+   [
+    966,
+    184,
+    165,
+    152,
+    324,
+    23,
+    177,
+    7,
+    2
+   ],
+   [
+    1000,
+    198,
+    155,
+    153,
+    292,
+    31,
+    168,
+    3,
+    0
+   ],
+   [
+    975,
+    199,
+    171,
+    155,
+    284,
+    28,
+    185,
+    2,
+    1
+   ],
+   [
+    1024,
+    179,
+    151,
+    180,
+    298,
+    19,
+    144,
+    5,
+    0
+   ],
+   [
+    1029,
+    188,
+    160,
+    165,
+    281,
+    21,
+    148,
+    7,
+    1
+   ],
+   [
+    961,
+    182,
+    151,
+    166,
+    316,
+    33,
+    187,
+    4,
+    0
+   ],
+   [
+    1006,
+    192,
+    146,
+    160,
+    301,
+    24,
+    162,
+    6,
+    3
+   ],
+   [
+    1003,
+    172,
+    156,
+    194,
+    275,
+    23,
+    174,
+    2,
+    1
+   ],
+   [
+    1004,
+    188,
+    147,
+    163,
+    303,
+    32,
+    159,
+    4,
+    0
+   ],
+   [
+    987,
+    193,
+    160,
+    165,
+    287,
+    30,
+    166,
+    12,
+    0
+   ],
+   [
+    1024,
+    162,
+    167,
+    158,
+    303,
+    26,
+    152,
+    7,
+    1
+   ],
+   [
+    1028,
+    169,
+    165,
+    137,
+    308,
+    36,
+    152,
+    5,
+    0
+   ],
+   [
+    1002,
+    186,
+    151,
+    170,
+    301,
+    25,
+    160,
+    4,
+    1
+   ],
+   [
+    1006,
+    179,
+    160,
+    170,
+    282,
+    35,
+    161,
+    6,
+    1
+   ],
+   [
+    971,
+    168,
+    180,
+    187,
+    304,
+    34,
+    152,
+    4,
+    0
+   ],
+   [
+    997,
+    174,
+    167,
+    199,
+    286,
+    24,
+    143,
+    7,
+    3
+   ],
+   [
+    1017,
+    167,
+    139,
+    166,
+    306,
+    24,
+    171,
+    9,
+    1
+   ],
+   [
+    974,
+    200,
+    154,
+    167,
+    295,
+    23,
+    177,
+    8,
+    2
+   ],
+   [
+    989,
+    194,
+    143,
+    181,
+    312,
+    24,
+    147,
+    9,
+    1
+   ],
+   [
+    991,
+    183,
+    167,
+    173,
+    287,
+    20,
+    176,
+    2,
+    1
+   ],
+   [
+    979,
+    171,
+    157,
+    195,
+    306,
+    27,
+    163,
+    1,
+    1
+   ],
+   [
+    1033,
+    167,
+    155,
+    176,
+    288,
+    22,
+    151,
+    7,
+    1
+   ],
+   [
+    993,
+    212,
+    141,
+    176,
+    300,
+    15,
+    159,
+    2,
+    2
+   ],
+   [
+    1002,
+    203,
+    151,
+    170,
+    280,
+    26,
+    162,
+    6,
+    0
+   ],
+   [
+    998,
+    185,
+    131,
+    190,
+    296,
+    19,
+    174,
+    7,
+    0
+   ],
+   [
+    1042,
+    185,
+    153,
+    156,
+    279,
+    29,
+    147,
+    9,
+    0
+   ],
+   [
+    986,
+    192,
+    141,
+    196,
+    303,
+    21,
+    155,
+    4,
+    2
+   ],
+   [
+    1004,
+    166,
+    176,
+    191,
+    296,
+    19,
+    143,
+    5,
+    0
+   ],
+   [
+    1011,
+    188,
+    151,
+    169,
+    293,
+    34,
+    148,
+    5,
+    1
+   ],
+   [
+    992,
+    185,
+    172,
+    153,
+    301,
+    25,
+    165,
+    7,
+    0
+   ],
+   [
+    1060,
+    181,
+    136,
+    175,
+    292,
+    26,
+    122,
+    8,
+    0
+   ],
+   [
+    972,
+    179,
+    163,
+    182,
+    291,
+    35,
+    167,
+    9,
+    2
+   ],
+   [
+    1005,
+    191,
+    148,
+    176,
+    279,
+    35,
+    162,
+    3,
+    1
+   ],
+   [
+    1017,
+    184,
+    143,
+    167,
+    286,
+    37,
+    161,
+    5,
+    0
+   ],
+   [
+    988,
+    183,
+    185,
+    157,
+    283,
+    25,
+    172,
+    6,
+    1
+   ],
+   [
+    951,
+    187,
+    143,
+    202,
+    304,
+    33,
+    170,
+    7,
+    3
+   ],
+   [
+    1057,
+    179,
+    148,
+    160,
+    266,
+    19,
+    163,
+    8,
+    0
+   ],
+   [
+    1063,
+    166,
+    134,
+    155,
+    272,
+    26,
+    180,
+    4,
+    0
+   ],
+   [
+    1011,
+    176,
+    149,
+    166,
+    301,
+    21,
+    166,
+    10,
+    0
+   ],
+   [
+    1000,
+    179,
+    159,
+    186,
+    294,
+    28,
+    151,
+    3,
+    0
+   ],
+   [
+    1009,
+    173,
+    128,
+    168,
+    283,
+    36,
+    194,
+    8,
+    1
+   ],
+   [
+    990,
+    204,
+    139,
+    181,
+    274,
+    36,
+    170,
+    6,
+    0
+   ],
+   [
+    983,
+    185,
+    174,
+    167,
+    282,
+    35,
+    165,
+    8,
+    1
+   ],
+   [
+    973,
+    201,
+    166,
+    161,
+    312,
+    30,
+    154,
+    3,
+    0
+   ],
+   [
+    1022,
+    169,
+    169,
+    181,
+    292,
+    23,
+    138,
+    6,
+    0
+   ],
+   [
+    1018,
+    177,
+    139,
+    171,
+    316,
+    16,
+    159,
+    3,
+    1
+   ],
+   [
+    1000,
+    176,
+    135,
+    167,
+    328,
+    26,
+    161,
+    6,
+    1
+   ],
+   [
+    982,
+    193,
+    162,
+    168,
+    317,
+    27,
+    144,
+    6,
+    1
+   ],
+   [
+    979,
+    176,
+    173,
+    170,
+    309,
+    31,
+    156,
+    6,
+    0
+   ],
+   [
+    986,
+    173,
+    159,
+    181,
+    289,
+    24,
+    182,
+    6,
+    0
+   ],
+   [
+    973,
+    186,
+    161,
+    169,
+    316,
+    25,
+    164,
+    5,
+    1
+   ],
+   [
+    1000,
+    193,
+    174,
+    147,
+    287,
+    28,
+    165,
+    6,
+    0
+   ],
+   [
+    1028,
+    163,
+    151,
+    174,
+    295,
+    23,
+    155,
+    8,
+    3
+   ],
+   [
+    995,
+    173,
+    170,
+    169,
+    311,
+    24,
+    151,
+    7,
+    0
+   ],
+   [
+    964,
+    187,
+    162,
+    203,
+    282,
+    29,
+    166,
+    6,
+    1
+   ],
+   [
+    986,
+    201,
+    151,
+    173,
+    286,
+    24,
+    175,
+    3,
+    1
+   ],
+   [
+    997,
+    180,
+    148,
+    181,
+    307,
+    31,
+    149,
+    6,
+    1
+   ],
+   [
+    1014,
+    194,
+    141,
+    171,
+    279,
+    20,
+    172,
+    9,
+    0
+   ],
+   [
+    994,
+    190,
+    145,
+    160,
+    311,
+    19,
+    175,
+    6,
+    0
+   ],
+   [
+    981,
+    194,
+    168,
+    164,
+    313,
+    27,
+    146,
+    6,
+    1
+   ],
+   [
+    979,
+    180,
+    156,
+    185,
+    316,
+    20,
+    156,
+    7,
+    1
+   ],
+   [
+    989,
+    186,
+    155,
+    164,
+    302,
+    36,
+    163,
+    5,
+    0
+   ],
+   [
+    1004,
+    194,
+    145,
+    180,
+    294,
+    24,
+    150,
+    9,
+    0
+   ],
+   [
+    990,
+    172,
+    181,
+    169,
+    309,
+    27,
+    149,
+    3,
+    0
+   ],
+   [
+    1044,
+    174,
+    151,
+    152,
+    290,
+    20,
+    165,
+    4,
+    0
+   ],
+   [
+    992,
+    194,
+    156,
+    159,
+    295,
+    31,
+    159,
+    13,
+    1
+   ],
+   [
+    1016,
+    202,
+    151,
+    155,
+    272,
+    32,
+    167,
+    5,
+    0
+   ],
+   [
+    1028,
+    187,
+    143,
+    150,
+    291,
+    25,
+    169,
+    6,
+    1
+   ],
+   [
+    1003,
+    183,
+    147,
+    178,
+    291,
+    29,
+    166,
+    3,
+    0
+   ],
+   [
+    990,
+    153,
+    159,
+    181,
+    318,
+    29,
+    163,
+    7,
+    0
+   ],
+   [
+    1015,
+    203,
+    151,
+    171,
+    254,
+    33,
+    163,
+    9,
+    1
+   ],
+   [
+    993,
+    208,
+    165,
+    174,
+    273,
+    17,
+    167,
+    1,
+    2
+   ],
+   [
+    991,
+    190,
+    160,
+    186,
+    312,
+    22,
+    137,
+    2,
+    0
+   ],
+   [
+    1014,
+    199,
+    153,
+    189,
+    281,
+    24,
+    133,
+    6,
+    1
+   ],
+   [
+    990,
+    175,
+    164,
+    176,
+    287,
+    25,
+    171,
+    11,
+    1
+   ],
+   [
+    990,
+    208,
+    165,
+    174,
+    307,
+    16,
+    128,
+    10,
+    2
+   ],
+   [
+    1031,
+    172,
+    156,
+    164,
+    300,
+    24,
+    145,
+    6,
+    2
+   ],
+   [
+    1018,
+    184,
+    145,
+    171,
+    291,
+    26,
+    159,
+    6,
+    0
+   ],
+   [
+    1028,
+    183,
+    150,
+    175,
+    286,
+    22,
+    145,
+    10,
+    1
+   ],
+   [
+    966,
+    202,
+    162,
+    163,
+    305,
+    28,
+    171,
+    3,
+    0
+   ],
+   [
+    1030,
+    191,
+    158,
+    147,
+    284,
+    27,
+    150,
+    11,
+    2
+   ],
+   [
+    995,
+    197,
+    156,
+    186,
+    294,
+    23,
+    144,
+    4,
+    1
+   ],
+   [
+    965,
+    192,
+    162,
+    180,
+    313,
+    23,
+    158,
+    7,
+    0
+   ],
+   [
+    973,
+    184,
+    151,
+    187,
+    302,
+    33,
+    159,
+    10,
+    1
+   ],
+   [
+    974,
+    191,
+    161,
+    178,
+    300,
+    21,
+    171,
+    3,
+    1
+   ],
+   [
+    1003,
+    177,
+    151,
+    170,
+    294,
+    30,
+    169,
+    6,
+    0
+   ],
+   [
+    971,
+    200,
+    170,
+    168,
+    290,
+    30,
+    167,
+    4,
+    0
+   ],
+   [
+    1006,
+    180,
+    149,
+    182,
+    302,
+    26,
+    146,
+    8,
+    1
+   ],
+   [
+    986,
+    173,
+    168,
+    147,
+    311,
+    29,
+    180,
+    5,
+    1
+   ],
+   [
+    1015,
+    184,
+    148,
+    179,
+    295,
+    28,
+    143,
+    6,
+    2
+   ],
+   [
+    994,
+    204,
+    150,
+    159,
+    291,
+    37,
+    158,
+    3,
+    4
+   ],
+   [
+    1005,
+    196,
+    127,
+    186,
+    296,
+    30,
+    153,
+    7,
+    0
+   ],
+   [
+    976,
+    207,
+    148,
+    191,
+    308,
+    18,
+    147,
+    3,
+    2
+   ],
+   [
+    1004,
+    203,
+    152,
+    169,
+    270,
+    25,
+    162,
+    13,
+    2
+   ],
+   [
+    1006,
+    195,
+    158,
+    176,
+    281,
+    24,
+    154,
+    5,
+    1
+   ],
+   [
+    1013,
+    183,
+    158,
+    166,
+    274,
+    36,
+    164,
+    6,
+    0
+   ],
+   [
+    1006,
+    176,
+    169,
+    170,
+    284,
+    33,
+    152,
+    10,
+    0
+   ],
+   [
+    993,
+    177,
+    151,
+    168,
+    325,
+    14,
+    165,
+    7,
+    0
+   ],
+   [
+    971,
+    192,
+    151,
+    169,
+    315,
+    23,
+    173,
+    6,
+    0
+   ],
+   [
+    996,
+    173,
+    166,
+    170,
+    300,
+    15,
+    168,
+    10,
+    2
+   ],
+   [
+    1013,
+    180,
+    137,
+    179,
+    304,
+    21,
+    158,
+    7,
+    1
+   ],
+   [
+    991,
+    195,
+    172,
+    162,
+    271,
+    23,
+    182,
+    3,
+    1
+   ],
+   [
+    1024,
+    195,
+    155,
+    151,
+    311,
+    18,
+    139,
+    7,
+    0
+   ],
+   [
+    1007,
+    189,
+    156,
+    166,
+    292,
+    24,
+    159,
+    6,
+    1
+   ],
+   [
+    979,
+    199,
+    167,
+    172,
+    285,
+    32,
+    161,
+    3,
+    2
+   ],
+   [
+    967,
+    186,
+    159,
+    178,
+    298,
+    26,
+    179,
+    6,
+    1
+   ],
+   [
+    991,
+    184,
+    138,
+    179,
+    311,
+    30,
+    164,
+    3,
+    0
+   ],
+   [
+    995,
+    174,
+    144,
+    182,
+    316,
+    29,
+    154,
+    5,
+    1
+   ],
+   [
+    1007,
+    184,
+    121,
+    178,
+    308,
+    31,
+    161,
+    9,
+    1
+   ],
+   [
+    978,
+    206,
+    159,
+    175,
+    270,
+    29,
+    174,
+    9,
+    0
+   ],
+   [
+    992,
+    229,
+    150,
+    162,
+    290,
+    26,
+    145,
+    4,
+    2
+   ],
+   [
+    1018,
+    190,
+    152,
+    173,
+    281,
+    23,
+    158,
+    5,
+    0
+   ],
+   [
+    1012,
+    182,
+    139,
+    167,
+    305,
+    34,
+    151,
+    10,
+    0
+   ],
+   [
+    994,
+    153,
+    169,
+    175,
+    319,
+    20,
+    161,
+    7,
+    2
+   ],
+   [
+    949,
+    189,
+    158,
+    184,
+    313,
+    37,
+    165,
+    4,
+    1
+   ],
+   [
+    1028,
+    173,
+    157,
+    157,
+    300,
+    27,
+    154,
+    3,
+    1
+   ],
+   [
+    999,
+    197,
+    134,
+    159,
+    304,
+    29,
+    172,
+    6,
+    0
+   ],
+   [
+    996,
+    187,
+    164,
+    177,
+    275,
+    32,
+    163,
+    6,
+    0
+   ],
+   [
+    996,
+    188,
+    148,
+    196,
+    281,
+    26,
+    161,
+    3,
+    1
+   ],
+   [
+    992,
+    201,
+    157,
+    162,
+    295,
+    18,
+    166,
+    7,
+    2
+   ],
+   [
+    1019,
+    180,
+    144,
+    180,
+    278,
+    19,
+    173,
+    7,
+    0
+   ],
+   [
+    1001,
+    189,
+    168,
+    138,
+    308,
+    21,
+    165,
+    9,
+    1
+   ],
+   [
+    987,
+    187,
+    173,
+    167,
+    283,
+    27,
+    169,
+    5,
+    2
+   ],
+   [
+    978,
+    175,
+    167,
+    167,
+    291,
+    23,
+    191,
+    7,
+    1
+   ],
+   [
+    996,
+    193,
+    164,
+    171,
+    295,
+    22,
+    147,
+    10,
+    2
+   ],
+   [
+    1007,
+    163,
+    173,
+    171,
+    290,
+    31,
+    157,
+    7,
+    1
+   ],
+   [
+    1044,
+    172,
+    157,
+    163,
+    300,
+    25,
+    132,
+    6,
+    1
+   ],
+   [
+    991,
+    191,
+    165,
+    171,
+    293,
+    22,
+    166,
+    1,
+    0
+   ],
+   [
+    1019,
+    194,
+    141,
+    172,
+    285,
+    31,
+    151,
+    7,
+    0
+   ],
+   [
+    1006,
+    188,
+    163,
+    171,
+    287,
+    18,
+    164,
+    1,
+    2
+   ],
+   [
+    1009,
+    179,
+    151,
+    168,
+    282,
+    26,
+    181,
+    4,
+    0
+   ],
+   [
+    979,
+    176,
+    146,
+    188,
+    295,
+    23,
+    187,
+    5,
+    1
+   ],
+   [
+    995,
+    167,
+    153,
+    175,
+    323,
+    26,
+    154,
+    7,
+    0
+   ],
+   [
+    979,
+    191,
+    158,
+    183,
+    285,
+    25,
+    172,
+    7,
+    0
+   ],
+   [
+    995,
+    189,
+    146,
+    170,
+    302,
+    23,
+    166,
+    9,
+    0
+   ],
+   [
+    1016,
+    176,
+    155,
+    162,
+    296,
+    28,
+    159,
+    8,
+    0
+   ],
+   [
+    1023,
+    177,
+    143,
+    155,
+    306,
+    25,
+    163,
+    8,
+    0
+   ],
+   [
+    994,
+    182,
+    139,
+    169,
+    323,
+    26,
+    158,
+    8,
+    1
+   ],
+   [
+    990,
+    182,
+    168,
+    163,
+    279,
+    29,
+    180,
+    8,
+    1
+   ],
+   [
+    989,
+    200,
+    161,
+    162,
+    296,
+    29,
+    153,
+    10,
+    0
+   ],
+   [
+    998,
+    195,
+    149,
+    153,
+    324,
+    31,
+    147,
+    3,
+    0
+   ],
+   [
+    1031,
+    206,
+    143,
+    160,
+    281,
+    27,
+    143,
+    7,
+    2
+   ],
+   [
+    1011,
+    180,
+    159,
+    179,
+    280,
+    23,
+    156,
+    12,
+    0
+   ],
+   [
+    1043,
+    207,
+    158,
+    150,
+    270,
+    18,
+    144,
+    10,
+    0
+   ],
+   [
+    974,
+    198,
+    166,
+    190,
+    301,
+    26,
+    138,
+    4,
+    3
+   ],
+   [
+    1043,
+    191,
+    126,
+    161,
+    266,
+    33,
+    171,
+    8,
+    1
+   ],
+   [
+    985,
+    192,
+    160,
+    170,
+    272,
+    28,
+    189,
+    3,
+    1
+   ],
+   [
+    1005,
+    178,
+    138,
+    177,
+    310,
+    30,
+    158,
+    3,
+    1
+   ],
+   [
+    969,
+    203,
+    147,
+    165,
+    331,
+    26,
+    153,
+    5,
+    1
+   ],
+   [
+    985,
+    188,
+    183,
+    158,
+    292,
+    29,
+    159,
+    6,
+    0
+   ],
+   [
+    1016,
+    180,
+    132,
+    157,
+    312,
+    29,
+    168,
+    3,
+    3
+   ],
+   [
+    1001,
+    168,
+    163,
+    184,
+    305,
+    16,
+    160,
+    3,
+    0
+   ],
+   [
+    1007,
+    183,
+    161,
+    189,
+    258,
+    25,
+    165,
+    10,
+    2
+   ],
+   [
+    1007,
+    187,
+    149,
+    159,
+    295,
+    28,
+    170,
+    5,
+    0
+   ],
+   [
+    1027,
+    197,
+    157,
+    164,
+    273,
+    23,
+    146,
+    13,
+    0
+   ],
+   [
+    1003,
+    191,
+    165,
+    157,
+    314,
+    20,
+    141,
+    7,
+    2
+   ],
+   [
+    1026,
+    182,
+    136,
+    171,
+    305,
+    31,
+    141,
+    8,
+    0
+   ],
+   [
+    1044,
+    169,
+    137,
+    192,
+    289,
+    19,
+    139,
+    10,
+    1
+   ],
+   [
+    1013,
+    170,
+    169,
+    164,
+    295,
+    31,
+    154,
+    4,
+    0
+   ],
+   [
+    997,
+    175,
+    159,
+    172,
+    322,
+    11,
+    159,
+    5,
+    0
+   ],
+   [
+    990,
+    200,
+    160,
+    156,
+    283,
+    35,
+    171,
+    5,
+    0
+   ],
+   [
+    1002,
+    193,
+    174,
+    154,
+    265,
+    37,
+    169,
+    6,
+    0
+   ],
+   [
+    1050,
+    186,
+    145,
+    160,
+    277,
+    25,
+    150,
+    6,
+    1
+   ],
+   [
+    1053,
+    185,
+    141,
+    156,
+    284,
+    33,
+    145,
+    3,
+    0
+   ],
+   [
+    981,
+    192,
+    150,
+    186,
+    322,
+    21,
+    143,
+    4,
+    1
+   ],
+   [
+    992,
+    229,
+    144,
+    188,
+    274,
+    28,
+    138,
+    6,
+    1
+   ],
+   [
+    1010,
+    190,
+    148,
+    183,
+    298,
+    26,
+    143,
+    2,
+    0
+   ],
+   [
+    1024,
+    175,
+    153,
+    169,
+    294,
+    28,
+    150,
+    6,
+    1
+   ],
+   [
+    1011,
+    193,
+    167,
+    165,
+    291,
+    19,
+    146,
+    6,
+    2
+   ],
+   [
+    1022,
+    186,
+    162,
+    171,
+    255,
+    26,
+    170,
+    7,
+    1
+   ],
+   [
+    1060,
+    177,
+    149,
+    165,
+    286,
+    24,
+    134,
+    5,
+    0
+   ],
+   [
+    1006,
+    161,
+    158,
+    156,
+    318,
+    23,
+    170,
+    8,
+    0
+   ],
+   [
+    985,
+    180,
+    166,
+    174,
+    309,
+    25,
+    154,
+    6,
+    1
+   ],
+   [
+    966,
+    182,
+    173,
+    197,
+    322,
+    17,
+    137,
+    6,
+    0
+   ],
+   [
+    1020,
+    186,
+    141,
+    158,
+    311,
+    28,
+    151,
+    5,
+    0
+   ],
+   [
+    1012,
+    222,
+    150,
+    162,
+    278,
+    18,
+    152,
+    6,
+    0
+   ],
+   [
+    950,
+    203,
+    165,
+    171,
+    316,
+    22,
+    165,
+    7,
+    1
+   ],
+   [
+    1026,
+    180,
+    171,
+    164,
+    273,
+    34,
+    145,
+    6,
+    1
+   ],
+   [
+    1026,
+    175,
+    153,
+    157,
+    310,
+    21,
+    152,
+    6,
+    0
+   ],
+   [
+    1025,
+    182,
+    149,
+    183,
+    278,
+    31,
+    144,
+    8,
+    0
+   ],
+   [
+    1029,
+    192,
+    152,
+    170,
+    283,
+    20,
+    150,
+    4,
+    0
+   ],
+   [
+    999,
+    190,
+    171,
+    169,
+    272,
+    26,
+    163,
+    7,
+    3
+   ],
+   [
+    1020,
+    165,
+    168,
+    180,
+    286,
+    25,
+    153,
+    3,
+    0
+   ],
+   [
+    986,
+    181,
+    134,
+    195,
+    318,
+    31,
+    148,
+    6,
+    1
+   ],
+   [
+    995,
+    213,
+    154,
+    142,
+    299,
+    32,
+    158,
+    7,
+    0
+   ],
+   [
+    1035,
+    169,
+    165,
+    148,
+    285,
+    30,
+    160,
+    7,
+    1
+   ],
+   [
+    998,
+    171,
+    162,
+    203,
+    273,
+    25,
+    165,
+    2,
+    1
+   ],
+   [
+    1031,
+    176,
+    135,
+    164,
+    306,
+    19,
+    161,
+    8,
+    0
+   ],
+   [
+    998,
+    196,
+    151,
+    159,
+    299,
+    27,
+    166,
+    4,
+    0
+   ],
+   [
+    1005,
+    187,
+    156,
+    161,
+    292,
+    29,
+    161,
+    7,
+    2
+   ],
+   [
+    1017,
+    178,
+    148,
+    192,
+    274,
+    37,
+    149,
+    5,
+    0
+   ],
+   [
+    1014,
+    168,
+    149,
+    180,
+    294,
+    22,
+    164,
+    4,
+    5
+   ],
+   [
+    1016,
+    165,
+    165,
+    162,
+    277,
+    28,
+    180,
+    7,
+    0
+   ],
+   [
+    1011,
+    175,
+    155,
+    156,
+    317,
+    30,
+    151,
+    5,
+    0
+   ],
+   [
+    1009,
+    183,
+    153,
+    168,
+    314,
+    20,
+    142,
+    11,
+    0
+   ],
+   [
+    972,
+    198,
+    174,
+    185,
+    290,
+    19,
+    157,
+    5,
+    0
+   ],
+   [
+    975,
+    194,
+    168,
+    157,
+    330,
+    33,
+    136,
+    7,
+    0
+   ],
+   [
+    1015,
+    223,
+    147,
+    163,
+    281,
+    21,
+    142,
+    5,
+    3
+   ],
+   [
+    1020,
+    198,
+    141,
+    156,
+    294,
+    26,
+    159,
+    6,
+    0
+   ],
+   [
+    1041,
+    161,
+    154,
+    168,
+    291,
+    30,
+    147,
+    8,
+    0
+   ],
+   [
+    1022,
+    176,
+    163,
+    156,
+    286,
+    26,
+    165,
+    6,
+    0
+   ],
+   [
+    973,
+    172,
+    168,
+    187,
+    301,
+    28,
+    163,
+    5,
+    3
+   ],
+   [
+    964,
+    226,
+    171,
+    153,
+    293,
+    29,
+    156,
+    7,
+    1
+   ],
+   [
+    985,
+    184,
+    143,
+    175,
+    297,
+    30,
+    179,
+    6,
+    1
+   ],
+   [
+    1019,
+    180,
+    158,
+    178,
+    273,
+    23,
+    163,
+    3,
+    3
+   ],
+   [
+    1025,
+    181,
+    145,
+    173,
+    308,
+    28,
+    132,
+    6,
+    2
+   ],
+   [
+    970,
+    201,
+    150,
+    158,
+    323,
+    27,
+    165,
+    5,
+    1
+   ],
+   [
+    961,
+    189,
+    174,
+    175,
+    299,
+    29,
+    167,
+    4,
+    2
+   ],
+   [
+    1011,
+    167,
+    173,
+    175,
+    297,
+    20,
+    150,
+    7,
+    0
+   ],
+   [
+    966,
+    207,
+    152,
+    182,
+    278,
+    40,
+    166,
+    9,
+    0
+   ],
+   [
+    977,
+    171,
+    153,
+    170,
+    323,
+    23,
+    176,
+    7,
+    0
+   ],
+   [
+    986,
+    215,
+    175,
+    159,
+    264,
+    28,
+    168,
+    5,
+    0
+   ],
+   [
+    992,
+    192,
+    152,
+    186,
+    301,
+    26,
+    148,
+    2,
+    1
+   ],
+   [
+    983,
+    206,
+    147,
+    166,
+    296,
+    25,
+    171,
+    6,
+    0
+   ],
+   [
+    996,
+    196,
+    169,
+    173,
+    263,
+    40,
+    158,
+    4,
+    1
+   ],
+   [
+    1045,
+    167,
+    165,
+    159,
+    262,
+    36,
+    160,
+    6,
+    0
+   ],
+   [
+    1004,
+    188,
+    151,
+    173,
+    285,
+    19,
+    169,
+    11,
+    0
+   ],
+   [
+    978,
+    209,
+    184,
+    162,
+    274,
+    31,
+    152,
+    10,
+    0
+   ],
+   [
+    1013,
+    179,
+    153,
+    149,
+    313,
+    26,
+    162,
+    5,
+    0
+   ],
+   [
+    984,
+    193,
+    165,
+    180,
+    300,
+    24,
+    148,
+    6,
+    0
+   ],
+   [
+    1014,
+    182,
+    153,
+    192,
+    293,
+    28,
+    130,
+    7,
+    1
+   ],
+   [
+    1011,
+    173,
+    147,
+    178,
+    279,
+    36,
+    167,
+    8,
+    1
+   ],
+   [
+    1015,
+    170,
+    136,
+    177,
+    301,
+    27,
+    165,
+    7,
+    2
+   ],
+   [
+    1027,
+    181,
+    161,
+    166,
+    283,
+    23,
+    151,
+    8,
+    0
+   ],
+   [
+    1029,
+    178,
+    140,
+    177,
+    296,
+    24,
+    148,
+    8,
+    0
+   ],
+   [
+    1036,
+    170,
+    148,
+    176,
+    268,
+    22,
+    178,
+    2,
+    0
+   ],
+   [
+    975,
+    193,
+    180,
+    168,
+    286,
+    39,
+    149,
+    6,
+    4
+   ],
+   [
+    1009,
+    193,
+    154,
+    183,
+    281,
+    24,
+    148,
+    8,
+    0
+   ],
+   [
+    1003,
+    195,
+    149,
+    166,
+    300,
+    20,
+    161,
+    6,
+    0
+   ],
+   [
+    990,
+    196,
+    159,
+    173,
+    300,
+    19,
+    155,
+    7,
+    1
+   ],
+   [
+    1062,
+    187,
+    161,
+    180,
+    247,
+    24,
+    130,
+    6,
+    3
+   ],
+   [
+    1004,
+    194,
+    161,
+    171,
+    283,
+    34,
+    149,
+    4,
+    0
+   ],
+   [
+    978,
+    187,
+    156,
+    184,
+    306,
+    28,
+    157,
+    4,
+    0
+   ],
+   [
+    951,
+    190,
+    171,
+    181,
+    311,
+    19,
+    169,
+    7,
+    1
+   ],
+   [
+    992,
+    172,
+    159,
+    174,
+    309,
+    35,
+    153,
+    4,
+    2
+   ],
+   [
+    996,
+    199,
+    155,
+    166,
+    295,
+    26,
+    161,
+    2,
+    0
+   ],
+   [
+    971,
+    198,
+    185,
+    172,
+    296,
+    27,
+    141,
+    10,
+    0
+   ],
+   [
+    998,
+    169,
+    140,
+    177,
+    310,
+    21,
+    174,
+    11,
+    0
+   ],
+   [
+    1001,
+    167,
+    170,
+    173,
+    300,
+    27,
+    158,
+    3,
+    1
+   ],
+   [
+    1038,
+    179,
+    149,
+    155,
+    292,
+    25,
+    156,
+    6,
+    0
+   ],
+   [
+    1009,
+    156,
+    172,
+    180,
+    298,
+    35,
+    146,
+    4,
+    0
+   ],
+   [
+    1007,
+    173,
+    164,
+    169,
+    295,
+    30,
+    155,
+    7,
+    0
+   ],
+   [
+    975,
+    195,
+    162,
+    157,
+    299,
+    27,
+    179,
+    6,
+    0
+   ],
+   [
+    999,
+    211,
+    155,
+    163,
+    279,
+    19,
+    165,
+    8,
+    1
+   ],
+   [
+    1028,
+    174,
+    135,
+    168,
+    309,
+    30,
+    149,
+    7,
+    0
+   ],
+   [
+    998,
+    171,
+    145,
+    167,
+    311,
+    28,
+    177,
+    3,
+    0
+   ],
+   [
+    1009,
+    198,
+    145,
+    161,
+    293,
+    29,
+    159,
+    6,
+    0
+   ],
+   [
+    981,
+    198,
+    146,
+    176,
+    275,
+    30,
+    188,
+    6,
+    0
+   ],
+   [
+    1021,
+    189,
+    138,
+    158,
+    289,
+    22,
+    178,
+    5,
+    0
+   ],
+   [
+    1027,
+    206,
+    161,
+    144,
+    273,
+    23,
+    156,
+    10,
+    0
+   ],
+   [
+    988,
+    172,
+    161,
+    185,
+    297,
+    30,
+    157,
+    10,
+    0
+   ],
+   [
+    1014,
+    205,
+    146,
+    179,
+    274,
+    21,
+    155,
+    4,
+    2
+   ],
+   [
+    1013,
+    180,
+    164,
+    167,
+    275,
+    27,
+    167,
+    7,
+    0
+   ],
+   [
+    1020,
+    174,
+    166,
+    152,
+    295,
+    24,
+    164,
+    5,
+    0
+   ],
+   [
+    987,
+    177,
+    152,
+    182,
+    319,
+    36,
+    140,
+    6,
+    1
+   ],
+   [
+    1037,
+    191,
+    126,
+    186,
+    268,
+    25,
+    164,
+    3,
+    0
+   ],
+   [
+    1019,
+    171,
+    153,
+    171,
+    288,
+    17,
+    171,
+    10,
+    0
+   ],
+   [
+    1006,
+    181,
+    146,
+    174,
+    301,
+    25,
+    157,
+    9,
+    1
+   ],
+   [
+    990,
+    197,
+    172,
+    172,
+    294,
+    17,
+    145,
+    12,
+    1
+   ],
+   [
+    1011,
+    178,
+    160,
+    197,
+    259,
+    34,
+    156,
+    4,
+    1
+   ],
+   [
+    1013,
+    184,
+    146,
+    181,
+    284,
+    17,
+    168,
+    5,
+    2
+   ],
+   [
+    982,
+    194,
+    153,
+    184,
+    300,
+    24,
+    153,
+    9,
+    1
+   ],
+   [
+    1005,
+    192,
+    145,
+    180,
+    306,
+    26,
+    142,
+    4,
+    0
+   ],
+   [
+    1008,
+    191,
+    162,
+    158,
+    293,
+    30,
+    151,
+    7,
+    0
+   ],
+   [
+    1005,
+    195,
+    157,
+    154,
+    296,
+    31,
+    155,
+    6,
+    1
+   ],
+   [
+    1005,
+    199,
+    158,
+    163,
+    282,
+    30,
+    152,
+    11,
+    0
+   ],
+   [
+    1015,
+    213,
+    157,
+    156,
+    286,
+    19,
+    151,
+    3,
+    0
+   ],
+   [
+    1020,
+    183,
+    148,
+    143,
+    302,
+    23,
+    170,
+    11,
+    0
+   ],
+   [
+    999,
+    183,
+    162,
+    177,
+    271,
+    22,
+    181,
+    5,
+    0
+   ],
+   [
+    1045,
+    158,
+    153,
+    183,
+    269,
+    25,
+    155,
+    11,
+    1
+   ],
+   [
+    998,
+    182,
+    169,
+    162,
+    297,
+    35,
+    153,
+    4,
+    0
+   ],
+   [
+    985,
+    193,
+    163,
+    154,
+    303,
+    37,
+    157,
+    7,
+    1
+   ],
+   [
+    994,
+    168,
+    148,
+    171,
+    327,
+    33,
+    155,
+    4,
+    0
+   ],
+   [
+    1024,
+    166,
+    151,
+    179,
+    287,
+    25,
+    158,
+    8,
+    2
+   ],
+   [
+    1026,
+    185,
+    141,
+    182,
+    278,
+    28,
+    149,
+    10,
+    1
+   ],
+   [
+    1004,
+    168,
+    173,
+    187,
+    282,
+    27,
+    154,
+    5,
+    0
+   ],
+   [
+    1006,
+    171,
+    160,
+    182,
+    288,
+    26,
+    159,
+    5,
+    3
+   ],
+   [
+    990,
+    177,
+    136,
+    185,
+    300,
+    25,
+    181,
+    6,
+    0
+   ],
+   [
+    1008,
+    179,
+    152,
+    154,
+    308,
+    26,
+    163,
+    8,
+    2
+   ],
+   [
+    995,
+    168,
+    164,
+    164,
+    313,
+    23,
+    164,
+    9,
+    0
+   ],
+   [
+    984,
+    181,
+    178,
+    150,
+    325,
+    25,
+    151,
+    4,
+    2
+   ],
+   [
+    1014,
+    178,
+    160,
+    152,
+    307,
+    23,
+    158,
+    7,
+    1
+   ],
+   [
+    999,
+    171,
+    175,
+    160,
+    307,
+    22,
+    158,
+    6,
+    2
+   ],
+   [
+    999,
+    196,
+    166,
+    155,
+    282,
+    28,
+    167,
+    7,
+    0
+   ],
+   [
+    1032,
+    179,
+    159,
+    152,
+    264,
+    25,
+    180,
+    8,
+    1
+   ],
+   [
+    975,
+    182,
+    143,
+    173,
+    327,
+    28,
+    162,
+    8,
+    2
+   ],
+   [
+    1017,
+    192,
+    162,
+    168,
+    270,
+    25,
+    153,
+    13,
+    0
+   ],
+   [
+    990,
+    168,
+    155,
+    170,
+    311,
+    28,
+    167,
+    9,
+    2
+   ],
+   [
+    1017,
+    166,
+    140,
+    199,
+    277,
+    32,
+    164,
+    5,
+    0
+   ],
+   [
+    969,
+    190,
+    160,
+    183,
+    312,
+    26,
+    155,
+    4,
+    1
+   ],
+   [
+    980,
+    197,
+    163,
+    171,
+    295,
+    26,
+    162,
+    5,
+    1
+   ],
+   [
+    969,
+    189,
+    146,
+    170,
+    320,
+    28,
+    170,
+    6,
+    2
+   ],
+   [
+    989,
+    169,
+    149,
+    192,
+    299,
+    32,
+    163,
+    7,
+    0
+   ],
+   [
+    1012,
+    193,
+    166,
+    143,
+    257,
+    42,
+    181,
+    6,
+    0
+   ],
+   [
+    989,
+    166,
+    160,
+    165,
+    295,
+    27,
+    192,
+    5,
+    1
+   ],
+   [
+    992,
+    195,
+    163,
+    159,
+    275,
+    33,
+    171,
+    11,
+    1
+   ],
+   [
+    974,
+    194,
+    164,
+    176,
+    279,
+    31,
+    174,
+    8,
+    0
+   ],
+   [
+    1008,
+    181,
+    131,
+    185,
+    274,
+    34,
+    178,
+    8,
+    1
+   ],
+   [
+    988,
+    186,
+    153,
+    166,
+    292,
+    30,
+    179,
+    6,
+    0
+   ],
+   [
+    981,
+    211,
+    162,
+    138,
+    310,
+    26,
+    167,
+    4,
+    1
+   ],
+   [
+    1005,
+    180,
+    132,
+    171,
+    305,
+    36,
+    166,
+    4,
+    1
+   ],
+   [
+    1049,
+    179,
+    173,
+    156,
+    247,
+    26,
+    166,
+    4,
+    0
+   ],
+   [
+    1002,
+    165,
+    152,
+    163,
+    305,
+    38,
+    163,
+    11,
+    1
+   ],
+   [
+    986,
+    191,
+    173,
+    173,
+    279,
+    26,
+    167,
+    4,
+    1
+   ],
+   [
+    981,
+    201,
+    161,
+    155,
+    293,
+    22,
+    176,
+    11,
+    0
+   ],
+   [
+    983,
+    206,
+    140,
+    155,
+    317,
+    26,
+    165,
+    5,
+    3
+   ],
+   [
+    1014,
+    165,
+    168,
+    190,
+    273,
+    20,
+    163,
+    6,
+    1
+   ],
+   [
+    1008,
+    183,
+    156,
+    178,
+    264,
+    28,
+    173,
+    10,
+    0
+   ],
+   [
+    1013,
+    184,
+    167,
+    171,
+    290,
+    27,
+    144,
+    3,
+    1
+   ],
+   [
+    1012,
+    197,
+    154,
+    169,
+    266,
+    31,
+    163,
+    8,
+    0
+   ],
+   [
+    965,
+    167,
+    168,
+    181,
+    305,
+    29,
+    179,
+    6,
+    0
+   ],
+   [
+    1031,
+    182,
+    150,
+    191,
+    287,
+    19,
+    138,
+    2,
+    0
+   ],
+   [
+    993,
+    186,
+    164,
+    147,
+    315,
+    24,
+    164,
+    6,
+    1
+   ],
+   [
+    984,
+    192,
+    137,
+    170,
+    295,
+    25,
+    184,
+    12,
+    1
+   ],
+   [
+    1020,
+    180,
+    156,
+    166,
+    282,
+    27,
+    164,
+    4,
+    1
+   ],
+   [
+    999,
+    190,
+    152,
+    157,
+    309,
+    37,
+    144,
+    10,
+    2
+   ],
+   [
+    1028,
+    188,
+    145,
+    175,
+    296,
+    21,
+    140,
+    6,
+    1
+   ],
+   [
+    1022,
+    204,
+    121,
+    166,
+    307,
+    28,
+    147,
+    5,
+    0
+   ],
+   [
+    989,
+    176,
+    161,
+    175,
+    285,
+    34,
+    174,
+    3,
+    3
+   ],
+   [
+    1025,
+    181,
+    149,
+    173,
+    296,
+    17,
+    149,
+    10,
+    0
+   ],
+   [
+    978,
+    185,
+    167,
+    190,
+    306,
+    27,
+    140,
+    6,
+    1
+   ],
+   [
+    980,
+    192,
+    154,
+    184,
+    296,
+    24,
+    163,
+    6,
+    1
+   ],
+   [
+    967,
+    192,
+    174,
+    173,
+    290,
+    20,
+    178,
+    3,
+    3
+   ],
+   [
+    959,
+    208,
+    153,
+    185,
+    302,
+    22,
+    161,
+    9,
+    1
+   ],
+   [
+    1045,
+    169,
+    152,
+    155,
+    293,
+    26,
+    153,
+    7,
+    0
+   ],
+   [
+    984,
+    189,
+    167,
+    194,
+    261,
+    22,
+    176,
+    6,
+    1
+   ],
+   [
+    1004,
+    183,
+    146,
+    161,
+    295,
+    25,
+    180,
+    6,
+    0
+   ],
+   [
+    998,
+    219,
+    153,
+    191,
+    249,
+    25,
+    160,
+    5,
+    0
+   ],
+   [
+    981,
+    196,
+    156,
+    176,
+    307,
+    22,
+    154,
+    7,
+    1
+   ],
+   [
+    1003,
+    200,
+    161,
+    187,
+    276,
+    22,
+    145,
+    6,
+    0
+   ],
+   [
+    978,
+    180,
+    152,
+    182,
+    289,
+    26,
+    181,
+    9,
+    3
+   ],
+   [
+    999,
+    187,
+    172,
+    166,
+    285,
+    26,
+    153,
+    11,
+    1
+   ],
+   [
+    995,
+    184,
+    174,
+    162,
+    295,
+    27,
+    159,
+    3,
+    1
+   ],
+   [
+    1020,
+    181,
+    170,
+    172,
+    280,
+    29,
+    146,
+    2,
+    0
+   ],
+   [
+    998,
+    165,
+    163,
+    174,
+    319,
+    27,
+    149,
+    5,
+    0
+   ],
+   [
+    956,
+    210,
+    184,
+    163,
+    282,
+    34,
+    162,
+    8,
+    1
+   ],
+   [
+    1007,
+    192,
+    149,
+    177,
+    293,
+    37,
+    135,
+    10,
+    0
+   ],
+   [
+    1023,
+    194,
+    137,
+    166,
+    292,
+    29,
+    155,
+    4,
+    0
+   ],
+   [
+    986,
+    181,
+    149,
+    174,
+    310,
+    26,
+    171,
+    3,
+    0
+   ],
+   [
+    987,
+    174,
+    142,
+    175,
+    321,
+    26,
+    166,
+    8,
+    1
+   ],
+   [
+    972,
+    199,
+    164,
+    171,
+    303,
+    24,
+    163,
+    4,
+    0
+   ],
+   [
+    1019,
+    180,
+    168,
+    175,
+    283,
+    23,
+    146,
+    6,
+    0
+   ],
+   [
+    989,
+    198,
+    182,
+    186,
+    267,
+    29,
+    145,
+    4,
+    0
+   ],
+   [
+    962,
+    224,
+    162,
+    182,
+    296,
+    19,
+    150,
+    5,
+    0
+   ],
+   [
+    987,
+    168,
+    148,
+    174,
+    334,
+    31,
+    151,
+    7,
+    0
+   ],
+   [
+    978,
+    201,
+    162,
+    178,
+    307,
+    31,
+    135,
+    7,
+    1
+   ],
+   [
+    947,
+    199,
+    170,
+    195,
+    313,
+    31,
+    137,
+    7,
+    1
+   ],
+   [
+    969,
+    188,
+    162,
+    167,
+    311,
+    23,
+    164,
+    16,
+    0
+   ],
+   [
+    988,
+    195,
+    159,
+    159,
+    298,
+    41,
+    154,
+    6,
+    0
+   ],
+   [
+    1008,
+    185,
+    150,
+    203,
+    244,
+    38,
+    163,
+    9,
+    0
+   ],
+   [
+    1022,
+    171,
+    160,
+    177,
+    294,
+    26,
+    145,
+    4,
+    1
+   ],
+   [
+    979,
+    197,
+    151,
+    168,
+    296,
+    36,
+    166,
+    6,
+    1
+   ],
+   [
+    1011,
+    187,
+    159,
+    172,
+    300,
+    26,
+    136,
+    8,
+    1
+   ],
+   [
+    997,
+    199,
+    169,
+    187,
+    270,
+    18,
+    157,
+    3,
+    0
+   ],
+   [
+    975,
+    198,
+    169,
+    171,
+    292,
+    27,
+    165,
+    3,
+    0
+   ],
+   [
+    1006,
+    189,
+    152,
+    166,
+    302,
+    28,
+    147,
+    9,
+    1
+   ],
+   [
+    1013,
+    182,
+    163,
+    164,
+    296,
+    25,
+    150,
+    7,
+    0
+   ],
+   [
+    925,
+    187,
+    149,
+    200,
+    322,
+    29,
+    178,
+    10,
+    0
+   ],
+   [
+    1031,
+    213,
+    144,
+    160,
+    269,
+    27,
+    145,
+    7,
+    4
+   ],
+   [
+    978,
+    175,
+    174,
+    185,
+    294,
+    31,
+    156,
+    5,
+    2
+   ],
+   [
+    1017,
+    173,
+    170,
+    179,
+    284,
+    25,
+    144,
+    8,
+    0
+   ],
+   [
+    1018,
+    199,
+    132,
+    181,
+    291,
+    23,
+    146,
+    9,
+    1
+   ],
+   [
+    983,
+    204,
+    167,
+    156,
+    286,
+    26,
+    165,
+    13,
+    0
+   ],
+   [
+    959,
+    201,
+    177,
+    179,
+    289,
+    28,
+    159,
+    8,
+    0
+   ],
+   [
+    974,
+    191,
+    155,
+    181,
+    291,
+    30,
+    171,
+    7,
+    0
+   ],
+   [
+    1003,
+    185,
+    158,
+    173,
+    275,
+    19,
+    179,
+    7,
+    1
+   ],
+   [
+    990,
+    196,
+    163,
+    163,
+    285,
+    29,
+    171,
+    3,
+    0
+   ],
+   [
+    996,
+    186,
+    157,
+    174,
+    292,
+    17,
+    170,
+    6,
+    2
+   ],
+   [
+    982,
+    210,
+    150,
+    173,
+    301,
+    29,
+    149,
+    6,
+    0
+   ],
+   [
+    1004,
+    171,
+    154,
+    151,
+    321,
+    27,
+    164,
+    7,
+    1
+   ],
+   [
+    1014,
+    194,
+    130,
+    185,
+    293,
+    23,
+    156,
+    5,
+    0
+   ],
+   [
+    1023,
+    193,
+    132,
+    163,
+    288,
+    26,
+    168,
+    6,
+    1
+   ],
+   [
+    1028,
+    166,
+    154,
+    156,
+    290,
+    22,
+    179,
+    3,
+    2
+   ],
+   [
+    992,
+    193,
+    149,
+    181,
+    303,
+    25,
+    154,
+    3,
+    0
+   ],
+   [
+    1007,
+    191,
+    152,
+    162,
+    292,
+    22,
+    168,
+    5,
+    1
+   ],
+   [
+    988,
+    186,
+    161,
+    182,
+    310,
+    34,
+    134,
+    5,
+    0
+   ],
+   [
+    1027,
+    196,
+    150,
+    173,
+    264,
+    32,
+    151,
+    7,
+    0
+   ],
+   [
+    1022,
+    184,
+    176,
+    168,
+    280,
+    16,
+    145,
+    8,
+    1
+   ],
+   [
+    933,
+    216,
+    181,
+    171,
+    267,
+    33,
+    189,
+    6,
+    4
+   ],
+   [
+    973,
+    187,
+    153,
+    162,
+    342,
+    23,
+    155,
+    2,
+    3
+   ],
+   [
+    970,
+    193,
+    161,
+    173,
+    292,
+    36,
+    170,
+    4,
+    1
+   ],
+   [
+    989,
+    183,
+    153,
+    182,
+    294,
+    28,
+    164,
+    7,
+    0
+   ],
+   [
+    1007,
+    189,
+    153,
+    164,
+    297,
+    30,
+    157,
+    3,
+    0
+   ],
+   [
+    981,
+    181,
+    141,
+    196,
+    287,
+    23,
+    188,
+    3,
+    0
+   ],
+   [
+    1003,
+    198,
+    142,
+    198,
+    278,
+    19,
+    157,
+    4,
+    1
+   ],
+   [
+    998,
+    168,
+    150,
+    153,
+    329,
+    32,
+    163,
+    7,
+    0
+   ],
+   [
+    1006,
+    178,
+    139,
+    196,
+    285,
+    29,
+    155,
+    11,
+    1
+   ],
+   [
+    974,
+    191,
+    152,
+    183,
+    287,
+    24,
+    183,
+    4,
+    2
+   ],
+   [
+    993,
+    176,
+    155,
+    172,
+    299,
+    27,
+    171,
+    7,
+    0
+   ],
+   [
+    1016,
+    170,
+    159,
+    156,
+    306,
+    15,
+    171,
+    7,
+    0
+   ]
+  ],
+  "nuclides": [
+   "Xa-400",
+   "Xb-396",
+   "Xc-400m",
+   "Xc-400",
+   "Xd-396",
+   "Xe-396",
+   "Xf-392",
+   "Xg-396",
+   "Xh-395"
+  ],
+  "seeds": [
+   153748675583950973,
+   17474784382689042679,
+   16639190660092490588,
+   10320889342317455480,
+   8792275094443875348,
+   11374253155082062592,
+   7516641531377584312,
+   5815834993417759232,
+   3223743223312806402,
+   9613570909377000883,
+   5640715713771896416,
+   15827016795590658399,
+   1515941860871325781,
+   12205930316494571988,
+   14852477796971701155,
+   10017665643909349683,
+   1247753022774574521,
+   12550356199268972885,
+   5219052815706413634,
+   11948163168270873696,
+   2919890277332073916,
+   10765484788210423872,
+   17359122941545723056,
+   6615167785033047509,
+   2676509498814359657,
+   4452749851591897297,
+   16107433930342017717,
+   7223774861897750718,
+   8259017823138084976,
+   4876955463401117284,
+   15287047119319132114,
+   8166137152586981834,
+   8911513393576003017,
+   7750621146655997462,
+   10187465251524446209,
+   13493372043262874348,
+   3350540336101607001,
+   11420084527011837955,
+   14589653604874954581,
+   2189139913890249814,
+   9988947007534387723,
+   6303651256453558390,
+   13206399649185420330,
+   8753619760887068521,
+   5694275208124881068,
+   6808377523620634494,
+   3438050209761070012,
+   9124473345966687570,
+   18052124062532098702,
+   780960673984388584,
+   15347958077668770844,
+   17564954639209637260,
+   2003268657631181755,
+   4074608574826778827,
+   18249845004427435558,
+   15138779900063425258,
+   17235274074938063536,
+   12632109223888682654,
+   14509454435536387587,
+   9705461999996977903,
+   7086643544487975350,
+   6809306071072143223,
+   6857857227681001192,
+   14058991799749712995,
+   2736979451599659173,
+   3099416065402378265,
+   16534469501644547799,
+   12835595324564895131,
+   9263721898009842338,
+   6225436669052238714,
+   3718588544260968655,
+   7930523637520041365,
+   4618943952012916370,
+   18087108756158694021,
+   16723746702666431955,
+   2299874198884732005,
+   12420015165783257519,
+   4083850394565249282,
+   16872817281525696042,
+   15528948363484436652,
+   10821522802351201873,
+   16031703639843355204,
+   15497566802198609253,
+   2554395252692965612,
+   8316840684466711857,
+   1662355471783498846,
+   13520341464484801925,
+   8597028680143677183,
+   4327510189694649350,
+   15074026762754366549,
+   7338831090226707763,
+   16873524903735649072,
+   7282619816111846454,
+   16110358873830185867,
+   2803406924888905994,
+   5552174484908090272,
+   11443073896619138334,
+   9485618200432620260,
+   641832298215972691,
+   13081115961146256808,
+   18024945029661544067,
+   10670184143918043327,
+   6674009083845789620,
+   5241333793808599452,
+   12664970679390430104,
+   662088288441090741,
+   15416114188941061575,
+   9848240000100851525,
+   2287350544555460941,
+   18345224468730984758,
+   15734918656963672716,
+   14912626780796418277,
+   15234088788241930241,
+   8132676740837916361,
+   13115496731646899421,
+   2636611520211190349,
+   13539629812854315298,
+   12400526259463127711,
+   11383588722714615361,
+   9018114811590740252,
+   12393640664070000267,
+   17227655291918629264,
+   3373204237432474311,
+   12387294129074766262,
+   8417133099817534523,
+   17236490192788385740,
+   3122170101398151901,
+   14886673220676596905,
+   18172029532631461876,
+   3506326971727298659,
+   3425429925283971167,
+   10721111679976292172,
+   16666878952312275566,
+   10395572120396641392,
+   18253283378101670139,
+   7272562761460705703,
+   9892067751658821817,
+   9821954486964213111,
+   2782817675447627263,
+   9404522823329537590,
+   11547070142644444668,
+   16633290989264530862,
+   1961585433599208458,
+   13658366455781183469,
+   7826059579359904901,
+   6505167165995023237,
+   6232158673438486098,
+   339350754148528479,
+   15346968786393398950,
+   3395828055260231474,
+   11425598782680188376,
+   2872228782882658446,
+   13571068648894707987,
+   13368700157462905223,
+   7147700505424854686,
+   17634467558645103023,
+   10108779427507240571,
+   15008234280023387170,
+   9718593766712826359,
+   2836913809449943821,
+   17523186208263567672,
+   772172138102898010,
+   10124627213486635140,
+   8529959337575254823,
+   11308542738414348051,
+   14604779360549070226,
+   17523608883917624029,
+   603627933570444819,
+   16552682518516825857,
+   6263159460044135908,
+   17555012993483789255,
+   8526906223645654314,
+   3960471635704616621,
+   661774365581721500,
+   3896542934283429519,
+   11783672238208257441,
+   16688884063018248380,
+   16489630329125649428,
+   4229867706303062066,
+   15347576965530670617,
+   1467943666378820199,
+   12055995890897477139,
+   16855187814438942102,
+   17770293580632700336,
+   1922626753385092995,
+   17132535676419009,
+   10814211971825915811,
+   8427738358232711379,
+   3611160166291557658,
+   9094364502921324598,
+   16598167619176241560,
+   4981818677661604783,
+   1542180888745317895,
+   18228203675779675987,
+   12516839623948601254,
+   17636665476740598900,
+   15360549144226696344,
+   6320808287712016100,
+   13250089215204765989,
+   5131927901932508693,
+   464802542035087295,
+   89989899056670266,
+   3420434550958892545,
+   15391188836877852989,
+   17383434564515547954,
+   14998444707492123168,
+   14698663761013719229,
+   10359331660519623647,
+   7048790037459555549,
+   3033111266957882153,
+   9120202580249053850,
+   2630078934517662242,
+   14458379685518125734,
+   4472710851577857094,
+   10725819837895250611,
+   16265758967272116858,
+   7218977399522497043,
+   14473059186769102536,
+   11927013729975584354,
+   10889830398175985647,
+   11751150037574646036,
+   18180952617604156311,
+   14672344091990434833,
+   8324163205157370654,
+   8536847425137957380,
+   1247891071241058388,
+   10751181876821726331,
+   7031621769518437391,
+   17350205791105153739,
+   8402406775391988494,
+   2098046005830077349,
+   16497921256473928748,
+   15989234329129105853,
+   6720178224274385009,
+   9508930367098852969,
+   1860451268434704489,
+   9596117420684414081,
+   2994683958003009609,
+   1181688792341557674,
+   11922800459670893849,
+   13172292014835168793,
+   15514104396239199843,
+   9283145066378602600,
+   15096181740100316459,
+   15368528149680308281,
+   16628080475167004649,
+   4194399667386674957,
+   5000437871355704544,
+   684712752031879805,
+   12319258035284608856,
+   8322370443469554947,
+   1107541684132484037,
+   16737333026332419452,
+   17077945612907544718,
+   14015128774439885550,
+   13389098851794362834,
+   17487478868543984985,
+   322547628982682012,
+   5144156376577718586,
+   2437910481080474642,
+   9726978174784126759,
+   18328666101513515562,
+   6126544211328026599,
+   2160340213287953249,
+   4397595823657785155,
+   5342798331306852711,
+   15585911682981816371,
+   13251641135182245976,
+   13453428793983498649,
+   8171779582462732245,
+   2339573255993995953,
+   5851650401452974761,
+   6055905713957960087,
+   9661434930395851187,
+   8551840813537527584,
+   11000879959046684784,
+   4821813263396353043,
+   1690690316287830903,
+   3043321839743107661,
+   10612604527264600184,
+   14002962636520255748,
+   8730757232262380260,
+   18332347512311850356,
+   17537795947809961796,
+   4286826829487762644,
+   2391523961380261106,
+   1554593649453615895,
+   12013276023856879020,
+   3092937019046350194,
+   12499514563225581488,
+   11907882582786561537,
+   4455352717394126306,
+   15972271271446425111,
+   14491285620149256790,
+   8686245529902676278,
+   5577629928169816706,
+   5173804274898559050,
+   1171815832990423122,
+   4031054480556109584,
+   8202996690569345731,
+   11236498315032017690,
+   13161170199243537794,
+   14335762285711902953,
+   12926521508478098872,
+   5860797143635731768,
+   3143783690213504595,
+   13082101944728808652,
+   9704485678130559318,
+   16944637647157240716,
+   11938191999772082047,
+   7657731362717045938,
+   2917962549380316266,
+   7734366131875817131,
+   1472376623467652357,
+   1618054253843489362,
+   3565546766287527478,
+   12500538373204831560,
+   18173568075555402011,
+   18010975214946126366,
+   13526945303727133230,
+   15917221416355771186,
+   12476329703648213277,
+   17772290166308099301,
+   6326835736935639421,
+   6706055151467253804,
+   4033082625884410198,
+   18429517700563684388,
+   5361297418227997185,
+   17049436366407927826,
+   10588108170715735103,
+   1793903530472009725,
+   17706737382663777674,
+   504327797428684179,
+   154610273632738414,
+   12002514910101675135,
+   15583320303493921177,
+   8732494950300922219,
+   8372841535636309989,
+   1711727356826591,
+   8690216425657001515,
+   15076957366711580499,
+   1950891299594951304,
+   7042748963195857292,
+   7279503841982107967,
+   2787060020190087994,
+   7865425004867495497,
+   16178491790743684240,
+   10402821795289499460,
+   4040366009247501786,
+   14491487898691979220,
+   16290257848726115615,
+   780966024651519132,
+   8885815437110020154,
+   10242476395393058673,
+   7181192884687745202,
+   16583210764168357735,
+   3838095152120929060,
+   15511977093168115574,
+   1196427267444401108,
+   72740471433378017,
+   3427371621997768996,
+   9910852830176558145,
+   212843043707943445,
+   3181670600199417018,
+   11165510028470185667,
+   10182140601079867550,
+   15846338848820261503,
+   2477229592747178466,
+   11093969115914043761,
+   9445234191467096479,
+   914560795803632070,
+   4708410178027252239,
+   14180618337379423296,
+   6802686273267815592,
+   12430904857983094389,
+   21422431138660958,
+   14927782120423502130,
+   6131154272494301692,
+   4339946943037550469,
+   17832828484481418294,
+   6535271101183769322,
+   12495660246551648786,
+   10559214240371347125,
+   6010138833447055717,
+   17192723045677825208,
+   3031210649071323004,
+   5048277390573164604,
+   15278834507822642435,
+   12015124868125091875,
+   11696243627358813359,
+   7905002580343209001,
+   14922123421435833087,
+   11112043003186810683,
+   2829807668927757986,
+   14339179712126191758,
+   14584935646992423617,
+   18124408957638481846,
+   18025421025873573738,
+   12140023229099580894,
+   11207258936302481018
+  ],
+  "stream_sha256": [
+   "f3d48f1ccb1f2c117e5fbf8e6917a14ec69aca471cdbbce0b925dd9d6fa9e7c8",
+   "2e30a6c92195d23a3abe868ef9be6c7f7d17c480c257f23d09f79b1c17bd0f0b",
+   "5d51047dd4a88e47cc510fb0752354650bfb27a48572f79084030bb1220badcb",
+   "785f9c5076ae1be5190fb64b211e8f5940c8201ab32e94115207ce5e8f8e7dff",
+   "ff5f7b9cdb24d6a2c5a9f4dd5ddb37d5566c9097cf4b80d7b1ee4539bf363b09",
+   "b925c39cdafc9d8395432bfdc73033c9cf6539b79f4e8a084994fccdc18ad120",
+   "bb3832f202c3b802afaa0d6c329d31dba7e162c4d7820f0fa1bb0e8526620cd3",
+   "ba71f62711f68e7165abf0903f87e6a536ec5d0ed54eedb06f68115bf5dbae44",
+   "77b8eb664a7fdc295057985d2d9230191354dd122ddc7183dcf6c12822b8cf22",
+   "c25ad741a9127b3682b79090cf8bee872a9ae9b98a74acd8c49f611c720b97e2",
+   "1cb32cc84a9ea05c9f363cce8bfde8a4e903343384cc082cbcf8ff41a6061e5d",
+   "77aec981b48fc02162cad04d16b80edba23f063f51e039b313a32e3e247c7684",
+   "b298fc1259441e1396ec48faa255b4d01e6a67bec1cdd68fb094e1666ab8708e",
+   "694cff0eb30df000a78c976fe8c3a9970ed6f4c38bdc41f5d150101451a7f15f",
+   "4b54d2345f4cd41e95ec7469d929ed5e08ff22e6959b5092efe546be53f8b7f9",
+   "a58007fd63bf2870f283495ad8398f41922523e666d5df31fb0f2031fb5426a9",
+   "4a85d9f2f91dd572b6b0b901e5c1a7703afeb622a3567e5976def970bfe43f4e",
+   "da918667472692f3f4102aad4da388c82696b3e718af9188b7282d6befcd8829",
+   "c3a63ee35011b7cfdb723f3bb52bd7dd1db8f6f12877a36946c4a41c989c61ff",
+   "8ffa15023f234b27978a996c8050ab73e4d9327100896e2c132a683a31fe8f13",
+   "69a9848b566782856627b152c65bef853b9a7581507462d8830b44c1a19211ab",
+   "fbf97e13a0ea7f8c7203445817199abba90a3ac95de62ada73fb331de5e7b80a",
+   "ee7f1c62b4a3fb22fde56c6e537d1c8046d7acec042a39f2e5014f22cd0d12cc",
+   "95ccc7253defcb2a0190a5b8d1036fba710b8bd05a9e8fa4a1a6fd5ac4d7c14b",
+   "6d651b8d4dc8227e0f994921a1352f88d2162f11e31fcdc9fd89b88cee10e024",
+   "8ba95f301719cd1d3372af884fef7d22bd3a2e77bf810c4dbb9f963ff039ef8e",
+   "5b134723ce81e5d5abe1e0d34e4b563dbc4e56d718b671c06153bab241bc14b4",
+   "b762d50c987a43d717143aceec6b60880380b26c917b6696e2b4125cced1064d",
+   "b04e99bdc13547ed509889a0877c6f841a07c783a126b3c7c61ccea75ecf8346",
+   "a3c4589c184a38f157ddfb8ddba11c069500b49def1e3353ea62beb046c351e7",
+   "53229e7d4f8505f3fa74fd9d0d158ff48b0f7e5161b68de385a41ece7e1cfb9d",
+   "8ad54436c59f9646ffbd6eefa5212bed00b8aa7bd2c4fabecfda08a5ebaa9196",
+   "5716d98d68950d809395942984b2f9c3ca4b00d3d3e6b2a71c075791c0a5f5f1",
+   "668dc22268dd979067e45d29999b6bcd70930830c29e3d258b73b611db490b94",
+   "57ab68e294c80bb9c4d2281820f7880f9d1839ccf8234077f933867aa82a7548",
+   "3880348bfbeb43ec8e834ca2730c870931bc076240c513d790c50d1274db1226",
+   "4d5fadfba5022267eac24ff6b1d64b7bc4c0efe3839808fcb6b96cdfd2396a43",
+   "79f811b05738d9288c750e7b92b12089e5b8ca6f20533d313d82b8f97c13556f",
+   "a73b79e5b8fbc46935a3835f2b3c82277a60df0da9260c3c2ce5e4d924f66cc0",
+   "4d33f922db6916a2ec3e3aa2e8c26e3ded6a99ab5abe66cc30f8f2915b4ac677",
+   "3ef036d63a660b27ca389d744081d713c9cd674ae7b47a0005df3f7c29bd25eb",
+   "8da468273292673220f216b84c8e1d122b3aa4f1cca6a3c3a440d2a183041084",
+   "7b77b5c6aa5bf6ea6a0e168055226803c72748f098d0093098c388cb3fd6ce2c",
+   "d5bcf7195d02acdef72f785713845e6d3575d7f26d4b9f4a38606df761f55ef5",
+   "7bc984a92eb126970031c518ca442354bb07c35e153e45e2e09813f741eebab9",
+   "42b27c536c69d7b6dedc026c2f1d49363cffd9b944d3042cb26ca2635a44d737",
+   "eb9072e2f6aede40bbebefabb56f5b497c3ab552aacafd6487bccaade6dcd515",
+   "22bff81945d57b730ff73640161d229f9ebd570d561b5da21a309aade497ca84",
+   "a61d71992de292dc84d6e6466823572ea9ed1d83d862a81863dd4e36ad18fd16",
+   "e0f467eb6a7625b1f1b71085903115bb3e648509d46de82dee02b4936a6975d9",
+   "d0bc43cd4d32e314e06e1020c247f40aef80dae28b696423ef2ecf4e109f2b81",
+   "3919e720b0db2a1d396da42cb8b7d575bbe248d8f62d094c7c093e42cbf39129",
+   "843b62ab2166c2358d5d8a01cb8f04b4e88873cb3f55f22199c6607f185b783b",
+   "e3e953a9c990930eedba6d1c7cac927f298be887aec1c63b27fe617dec4cfd0f",
+   "4d1f99f79525da26451253a1f83ee0b7bc1b73dec06253eec68f2c58d6eb3a4f",
+   "85cc2bff3051320ef3af0e58793f57aa9340ef5fffe11a6d48ecdc211616833c",
+   "3801b9d93f6ad2ff6dc18ee992edccae6594a13e4e2da9f88f678ffa595abda9",
+   "d41eaf0d6741c3adb1a38edccf8b4d9cee20f40a89087c3c38fffedb5c72266d",
+   "960fe95a718d04695e6d0a055bc6a650b44bb311e86677fc8736a1d6c384cc5c",
+   "306ce6be2b5cb4ee3039890e5e887171e661f4839c90ceb914931f29c1ec6165",
+   "94fe972d6dda17cbcde18404a57209dbbf0f0a48065b9cd65a58eaccc64e81f5",
+   "116f49bfd86d4ededeb4aab9a6fbb7f7a1330d5beb265669dca48321356bcf57",
+   "451cc7dc21a69bf8f8b56950c1493cb16b08ee3d52bd019ee588a389e256a825",
+   "ee0ad6a42dd8f538e5ebe2ca88434f2296d681a9cdacfbf20646c34b8b2d2165",
+   "d2c09ff269142358b5d1b8c119f661534d10dd5b4bf27e96db8169031077cf80",
+   "a466a3d457ce0e27f0f3a39c19af0912b3dab402ea3d4f00ecd230dcb8c1581b",
+   "310664334a319110bda5c575cf99a58048a0bf900697890a2c8594fddd69d674",
+   "91a5c629e3fac0823376630df2b6af29c9ffe949c2f7a1cd0e16a97a83b9bc15",
+   "fd3b639073748e337f423bfca300ac90af3f475e9ac4c4a53c614554c4d4c5a7",
+   "fcc71138c3234c7ad5301903f2e6ef695a92d9114f666427eea3beb4e367dc90",
+   "475f1f5df54244438f27ffa526f2e28f4a3782d4f6fcd8845113a27e708dfb0e",
+   "6e802fd94ce1de23acf83612029756aedcf2640d7b1db03ef55b023b5cfb5304",
+   "07b2010667721bc313f93f072fd9a31e5005865242ffc9df20c1c84bb52449f1",
+   "1a1d9e89f1252cd07ad528ddbdfb11b6d2ee66011ddf25e095a1f5f2b9278805",
+   "a93bbfb9d22f7fd032b5d5b5505f00865cfed6a0b2b5ba0f69353c5249ee5d58",
+   "43d25f754ec83ae43c87e20ea5e06814292a1c49d693dceccb957234a4463b39",
+   "aa5e6728df80c7d383910dbb9e3c2b45e30acd773f7d5021042bbc951e53d0cd",
+   "ecac3ddfd2b81fd85f0b85cf765bfc74f65615ed86064813fd54303a0498dbc0",
+   "cd5f0aff4eeb1edae3afa7b85f50bea6821cf812d88e904b284facfad2d8f8c2",
+   "4033b847153eee84d25e5b7db94eba0518f94401c6aff54a7f675a278ea12731",
+   "6c60580e53d3fed18685abacfcd1cc37886fa77b673e5fc51ba359bcff3c9248",
+   "c6938961440fc526abf2c552abb5e6d5cbde1eee59ce3c23f95ba5a72ace2354",
+   "8751b80926ee5a254018cfbeb6e2edb84105505b697d8da18a74bef61b74a234",
+   "ffa68cdbd3316bc20a17658810989d960194efaeb7e05a80a2b6757ab0abae42",
+   "999df8076fe91af5a4d7f2b301f2202d5b7d065da5383f8393b2139213052c57",
+   "ee7228d150e7a0d8923c696bc05ccc7ed7b11aa655840639c670f2c605e968a9",
+   "dfd85f54c950f346f528cdb0e03c02b74de571226867947e65c9cee110196df2",
+   "103644921933445d9662f330daebb6951c45ab091f2e254845d3d7e5a0413c60",
+   "e4c45971513ba16c483ab44a4d147edc76ed57606c8183a52a6548594fe12e54",
+   "a7d53377ab1828abf93feda43df5cb8b9ec03f1105172213e90d6238be265b85",
+   "0f4ea5eff7a8a367dd4b671ac362bdfe8e32e157c0709e46b26bfb374688328a",
+   "79aa7db26c289a34532810414ffcb41a1dc97379168e2719f7c2702fbd4f411b",
+   "27a5aa708f6606eee5d79c9b85a6eb199fa0260fd14546045bca5b6f4f197933",
+   "508602e6565ec27f0e489609e768ef07969d925623b58b32bbf3c00c77d1b53c",
+   "1e727bbc0661ae28bf71865d01631d61e214492fdf77451692a2dcba65d3ce90",
+   "c522b18d899fe015c706a957696e08842d90815cdeb27ffd3f6d498ec6692400",
+   "7f79715f856254e572de764ea41d46f78f8fccec2ee5e087d78abcfdbb92de5c",
+   "836b276ec5300c42770c5e88047e129039f2382d7229b9d30264d68ce3211864",
+   "aad1a5fb3d6853e8188f29fd551c5c54aec8772c1d23118af98c3fd187055220",
+   "e1529e1c8bc714cda15a6132edde8bad58bb8691190354fd93e5a3606673b490",
+   "3e5a2db87d295a0c9872dbaa5a6f0d46bae5cd617eeac1c2cd513bf434fab90b",
+   "236d2e42dc7450a8aa39427e0fc43645ff16a4c8d143257090f92ca5d8bc11e8",
+   "8db6954057f78b84326162b5ec595d3990d48c99fbdff7d3ef2682175ff5287d",
+   "7ce857a07490798f3b476d883f6be17f22c65b7c3de062f6627f32959d0e5c56",
+   "a3bb45504840c8f5a4983d721b8b80654b6f0bfad8b7c48ef4566c413764415c",
+   "8b68674d331c5f56166d4f821d6a0f5af37ee3176759d545dd312da7218045fb",
+   "50d317bdfcdca10dbe36d76885a79100e414df0f74497e3cbdb38f56b0012e28",
+   "e4d381ea75c7173004b9c684b808465bcd7582269081b710b2dabe65c31c2572",
+   "db8487cfbda130c3d420d58e12a397ead7932884f2d2d91abf0cb05fe6ff71cd",
+   "db73040b6d7bd3d76d69914f748c986f2083bd84cdaa2e4c7e664b44af3a4b36",
+   "dcf3d9da24c9c60258aa1b6020bdaa18a752b3dd7e92edcdefdf738c54533762",
+   "2563d36d01f726b111d1350ef43fb0d6243ed47881640ddc941c9fc618b0f59a",
+   "09913593c822653defc063123db89b4ed2a1480b9b5862dfa849c16eb46c59bc",
+   "5a773abe17d6f8a2caac5fbcd21a0cd58bf194a5c4816dd7a4c1394f9b864dd0",
+   "3a6328e28407b93282af23c6cea87e70d57d918452266e57f1f4479e3b7dacd7",
+   "a4bb975d871a39670f3c69891e7b35c3461d1e282b2d15f955b83e5d055798b4",
+   "30daa027b4574aeceab225ea9deb7dd5fd704f7a19525d42a059b36a31239502",
+   "6aa63792ce9a023a6b37dd306fb92f5066f11258a634781a52b6b07607efd752",
+   "2f19fe1bd7f9a5097d4b31cf42fead37875333434c0b5c11a1ae3dea2bdcd1a9",
+   "7027a5826f99bc2a902f8a11f37ad39f65856a620462009152a1f5a1555baf91",
+   "1087895fa41027581c48d77820592d5105850982d7503f4b844f61521c54321f",
+   "4a6cfa623ef0845fdb9e3ba9ae233119cb3c08014ee0d753fd93c69b26c29f54",
+   "9749eaed4d09742f40495decf80876f402a3b046cb7c2fe7ee35ce1a257f7473",
+   "a83016ed156cfbec4c3bd43a2636a12a7e7f29421f02e51fe01e8fd946151b60",
+   "bbbb60e4967313a08517f6b4d23d165572a76e2462f4d389d4afc41a8b05d6e8",
+   "6093083dddeac3a2562e1df4db5614178e1be3b9508c914017ec73543c48a189",
+   "ecd8181eecd769aece041c61d1a944459ab3556cdf4ee5fd8b9181ee7a8ab537",
+   "f8a777f3856d5420fd45fa0905f327310221bcc2f312163e39e3c73880bba211",
+   "0e4ddad5c5ae62829bfe8ee5e7c80723eea64ee2e6e7e17f80dcd64c69c4403c",
+   "f4847577f654adc65ef6bf4eded0bacd125750a34b93a38c740ef1a0b06b9ee7",
+   "a9223cad08fd8529322f51b5dab661c02cd5cfa43896c0784bffd480bdb903e7",
+   "9155e0be6bd9f6930767d2658d0b73a6333385727080ff5d7f6502b3c21afa72",
+   "14f5bca97b4034fff7d03bc79fb0b10345ca44455fa612d045beb4369b3d450f",
+   "cab437371f25ef88e0093136aa506e8a20cd706a8c4f780bc69517f303bf1626",
+   "348e80ff4fd9a40325b6dabc7980ea82dd155300cbfccc9df0cad3218f4321d2",
+   "11b850cd7055bdff5d265f3159a441e5655d097ec1f4b5b3fc01d3b40e9064c3",
+   "3f8c94a42f027077a4a112c28700e30625483dcb5d449cd1abe47a3e1f264f88",
+   "5f827c9402bdce3e5f9f9607c5068ab6b60dc8b017a46ee7321416523608f648",
+   "c7926806ce4b8ea3b96b0aad050e5133c37d5f98b38790f43d0b10d5b1ac1bc8",
+   "9441969884cead0726b54fa8b3631f5c44fb09c1645abf37a2c0ca51ee260da9",
+   "6df4af6b8049b36585c7c3ab57bd51c0418b5e50b6efb46d96096b2308f1c0c8",
+   "e1cf03f28b3ee46c3a96efd9bb014365a521827e10c0bc62ba35e80dd407f38d",
+   "8f81678b76a5dadfd4bbad30632534009f001c66319cd0ef613c55a0eb0e1b20",
+   "d280e5f03d9a3b5f695280ddc2ecb24b94a614186b19b8266bd69465beef05bf",
+   "bfafe05524390ecc85ebbf6574106350ce756dea059be5ba1d019fd29280830c",
+   "40fbfefd90adb4b9640819297509f99298616f1de1a2abc2988a595f7e8c362b",
+   "55a9ef3fd2920943cd142abde1fcdffaedc7350f0e1b70d7c6f27981498bf172",
+   "1c6b0ce20c7f0c70859d89666bcd7d2f1818838b33bcd9185c7c349626c190b9",
+   "d3232fff83cdf30a2a1239e37eb7fa31e1597260684b5c56ee7470f99f0874bc",
+   "604dc6e44528abdab202a8a56a9e466055a787ae7646cebf9d7790ab49478aa9",
+   "9d95ce269d667a269faf01e32bc3b152c64e3e51c09ca1e4744db9aa3c8b5b17",
+   "d52f734dfd6ad583722656939559c84a6ebff99dcfab935f8229cd57039e4b38",
+   "5ada42b615e05356b9351d586a27ab1990257c5bcdfc9a8890346ef994695ac7",
+   "2d6de68934f80e27f48285eb0e118dcf92348bdbdf2ddfa08c194f8a1ee1f540",
+   "f5c9fa730767a2fbb6984c64964b357f1c5e7305fa47df910abd3edaba0c92f3",
+   "7d12d6ea465f6825d488e7580da1ac647e081b527cb261ba2a8333c0b30d38bc",
+   "1c6e9cf2f6e97e2a645a42af4714b53bcc733c513a3fb12f8b26d7b1ed8797b0",
+   "9fcf54db4a5a9c658423df8d81be0ac0ef7b67dc30333d29366a58e25b2348f0",
+   "7da86b0f4360b64f085c45f8c78e3ba19b27858f30b3f96047a24c971f4d7acb",
+   "bb804d2dc2d372d9e298cdcd45668447f0210482a24bca2574fa99725618b20b",
+   "5828e0ab021dd065ee0146868e3307c714cb695ee9dca010730bb5b54384f567",
+   "2d96a5f6531eaa8fbed62e584be35b5afdd383328a6f1bfe7917bbc999f1d30a",
+   "9b1ae8c8f75e2994952ee6b6ed9299a0fbca71bb868e465466ca7bd9c568ba42",
+   "b6a3b4f3f4970d2dd6c3ebfdc786f495b25e2950a4499990dfcd6406f9e70872",
+   "a080ad3a8bd1cca043b07575f329a477d89f214bc253b553c68071995c16b098",
+   "1b198b685435c997160f6cde8a2e2af2dee019f12991eba9fea21227e7a6a510",
+   "d75695edb5ee920945f5954ea7c7892fc9118da709508319472266759596538a",
+   "1c7d535bcce3ebf538ee21927ed3f18615151c374e84d549cf5714dd18fb8c91",
+   "44d88af4e09eba44c4e219568add6121afbc2e1759888f4eb25c2d5eb73e2fcf",
+   "a1ba37e0c8843d9fc56bf6dee7e29bf7dd44f3d87f12409fb17f0234035f4c81",
+   "5f263b7eb044e99c4b74d9cd798c041f042ceeee565a817fa361d6b992bc0b27",
+   "73c79c33118bea8872f8d5816d3cc63f9d949764867f77ac0f656f987d172124",
+   "f9306b104148d69c6037571eea1f9240bed8e93f66a00a70b999c8d660335150",
+   "1b1389a89c680c1a4afa87641ceff1ae5d071e7122da67020117ef060ec9151c",
+   "49bef95aadf7d65cecc1e2c7b824e33fad940420ed5be6c74f444fc72782857b",
+   "537cb73cdaf20b087dc719b2b79ab70be4d31c277c8d0c6771d7c3d5ae678baa",
+   "a1d8e29168f1ad70a5ddebd905d01e9981ee186d8c3788552814d02b5e2216e0",
+   "9df8909086a7962693d22859f30a4b980bfd92aa3284b48c85f59e5252dd41d7",
+   "7db5a1c7a9176c92fb5e0c16ba421b30fcad9bd57241b16d18669afce98d3f1f",
+   "eab20c254574a6b084a34a449e28c2e77d24ce1fdb5de999c56b14f0c3e5db30",
+   "e991c4b4ca0e08ab95fe3475493df241131770383093e78e5830778499c5e1af",
+   "fbbb7d3b1f74597171d5a641bdddc676555de5d1671ce7f62ed9946208ac5d9b",
+   "a9b88147a1f36247716e1ab09f3d39cd1028c067c586db4b71ed6d50875a0e5d",
+   "fc3b663acd3767a9da94e60b71a729714c8d35ff7970523de4022fb1c8b01c13",
+   "01ae64c467e77e88358258d4bc96deee849e0d143446716ed39aeec5ed656d56",
+   "130ee3d0b7c7e4c864d5d5c714793d346e1bee0b9bf3d4dbcfef97f31fd95fdd",
+   "f9709f0e4a978d739941d0a07036f5e2529429afbf736549bd58553a4f3e57fa",
+   "7fdc0faa7251af4728edfd3f490904b800adcc634702829278b1bce8166ec303",
+   "496b36b9397a56d42cbeba1f339ecac1516094398a66fa9b662e3cd9494c69d0",
+   "31ef39855d16135cc824f19c4771177721d98c771b1aeac38cd7ced76c146ff4",
+   "987af1f1fc415280e4b56aa84fc57f2ee3035dc358cbd11f9eb64bc53a714d12",
+   "816b2584f8b78403a39ca08d976cdbb386b64c8f189497e2d3e78ca1d379c829",
+   "07dc32636bc0b3c3c5e0fcf7da2ba82208c7f770af71ecb562a52cd1f30f56bc",
+   "6cb22a39a45bb4c7f8544325e70b30e98f1a7c613166962ee0217e34fdb6956e",
+   "f557d9947b2728ba80646c11fbec72e09a1672a19b1cdf6da402855e1606734a",
+   "baf2811f87f182688e71f5019262d96a0a323e1cbc5345e089343bf3b6e562da",
+   "087b48d44b4c0bf1e12909f59906e37a40486668645abc31541b12e572bd8ee5",
+   "02bd9b8cdb16830d269e5468a876b09c071d8c17c6d219d62f46cd3849e5046a",
+   "5670bce3e3301791c0a1b566fed48917d9ec5c9aec886953bdf049c609886283",
+   "687fab81dac74b5547043647698134ea6f1c1a4bc31734f7b13c131f646924da",
+   "2ae5d3c3bec37c2005da776fd4deee4f6cccd2961f7bda0cb8a5753f35895738",
+   "fbd3c1c958ad08aa6e183b4014383c3da9b44022ecda98838c4774a64d531c3a",
+   "8e0f4923a9ced934acc29da6e797204ef9a50b4c835b7ba910f401ea17256790",
+   "0dab82e03b25fe894cc99531282f8c1d44e2b2dc0761e3b09e32cab7828b069c",
+   "7542bbe1786c18f99740202308d22fe094a8fa76b60176668d462cc2e5412662",
+   "5f790731e11114eb82632df3900e3825b4b4a4bf89dd78658a9ca5378924ed20",
+   "742a61cfff9a3bd4b519e266394e5b2866d78caf07dac341ca74c439ca8d905d",
+   "5eba7f1979779ef5d26089c7d3ea8dcb2ed19e50d1276e72f6c81268c3f6b3f2",
+   "7296500023dce931fb3acbf562ba1603bef3ec166e1a2f631e704c431a8564cf",
+   "8477e933d3db9f40a7cc7fefd0bd428362515c6b19bcaa059894b6c318f275a2",
+   "25b17c179f3693e4cb7e5abfb315f142e4269ce724890adc82218e3e381c3f98",
+   "f3da7a3d919c54d7665fef31ddcd7d81436ad393dd486d0a59ccc5799c25020b",
+   "5d0ad9c3d1d85b395e259fd647332feb94ea960b473ec8acd75c7d9e8871dd85",
+   "8cb39e1814a5135b3250cceb224b060d39131709af7798f118b91f73e0faf99b",
+   "e7bc70e42b6fb80856dc77bda484a4ba73b18a5463841df92691f3c3ad2dd156",
+   "74635f9e5d26e871cb00fc68cd4fe8d9a4e681e724462660e5e5ebc479a008ea",
+   "6acb1a3451878ffb8071318cbd4d51aba21442b142ee2f9912dc53fc7362f9c4",
+   "28c393def3063740853030f5fd9e55b8d7327147e189ee486e70e8cbbb455a73",
+   "20412d0f4894b6871a7a8e53693145fb7127b4ebdfb2ac5ec555fb856ada2939",
+   "478ea2400781bfe075a69997d6d6feb44d6ffa79e34a4ca0b3c251d49044559c",
+   "acdb549e74dcbb71015248e5961f75f76a7de1aaa4ae41121d9ce67895917a00",
+   "7114dcf488f994a8310c6009f14e179f185acdbf2ff3b46fb43cb32fdd4f4e43",
+   "f5c5fc010efc76f38362ec3909f98f546de56e439c9e0520cd7c752f7fab0cfe",
+   "45cc037f8137cfd564495f0530cee8a1b0ffbb810ecb04a71cda52a4c51fb179",
+   "5ea7c6263f40dc34968f6a74fc213e7ed8bbfe929d992715f2b9a32e8704ec65",
+   "3ce3655997c8f90f1b65c8df0921f24aba535e66e5b26af9eb764bf77a1ec73a",
+   "47de12ee9d0aa4ac6b628ae3d9dbbc8c7c3ff56837d0cddcb314c4e8db537a5e",
+   "e5fb4663e3a378d3b77f7db295fc0ddce549c9283d12b6f1a9f201cc99008ff3",
+   "2751fbbdf6470ac7893d6d54dfba8a22921d1a01a6435a0a6ace1948d5892fa8",
+   "5868be7a74eaad94c408614f666a3b9047f6cba62cbb3dd8a9ffa55f0be9ffc7",
+   "75827ce5adf735292cadf64e614f8d04a0f179c9438522e0f5e0a0f966673e93",
+   "82e8188ea9fdf0772a2a71c2b383afd2b008bf6639972ee6bb7c45ddc4cd9c3a",
+   "8d5ec380804ae49615268970b3615670a601254ca6bf1c0ad4c9ed19c8ea7a4a",
+   "29de1f386777753861e094849fa85dae17d0de29bc9e7ac82fac8a2f85b549e1",
+   "410e8972d21ecef1cfc0475bffb1c132d1498c80b4eecf644696758c376f808a",
+   "8493b0ae18d1c6c078364757bb79a9cbed46e2ecbdafb0554ece860e09a49bf7",
+   "12f890e6c5202cd348f05cb6532e94cd701a157d9bc16251dd96a4d2600185a1",
+   "54e0df99da99cd8048a5b5e99e5722202da73b3d276037b48086735dbe213a3b",
+   "8b6846ed34d731cbf3a083bccb6db833dca0d5b29d4afa403b5f6e0d45afdde2",
+   "f4181ab0655b6366633e6043db675480ee59772cc993338492126cf28093d9bb",
+   "b4a0a6584bd742c68fee34185dfdb3bfb1b1f7119d14a68f1e5b0423af1e0733",
+   "5b8eb4dba24b3048b4da91f855265db20643a77b0e2a5a0a07d03571d8a3d6cb",
+   "61535d68169f7756f556e3ac527a7f078dc9557f2a841e9e972975cf6949b51c",
+   "a0e21f89d49a289c47dd5998fad05e0a6b70ef870c96bc0d339d375d53523026",
+   "be3bae9694cc4c9c148ea1ae99cc99333c22382871c2d430561242bc336166b3",
+   "0de827bcc8d3f7ec55790bf605b0477569952655dc757091fd6808d4f35a54c2",
+   "d9f48e23f015fc86f87525f7872b0be66d5b07fef2db61a327b93c96eff09a84",
+   "819783a2f6130ab7d48d39d833f5bf52098c24691ae44bd1f722256268733410",
+   "6f987c7b61894d49e5a96574dddf39927797ad660e2bd1303ded823e928d87a4",
+   "f99425bf79b70860f2e6094bf4c61e6fe7f8766e3e02e0e831fb1d5b45610a20",
+   "f76613d19d633a57d2009314064ad0f698152ecd5e76766ef12c966022d1725b",
+   "189b336e35af3fa4bd9fd65c603a5799371d13abfd36c5c989f1dab037029c1e",
+   "8eeaccc19f7fad49628f19de3f7aeccf54a2028603ddd47ef121c32e5a6231ae",
+   "fb01a5d5c32d81ad2ae84ab76d4328f995309da1dcf05102ad2ce46cb973117b",
+   "39a217b535bb596cbd753d3069127169d37ff58ba4c9f4876878ddbff6323b55",
+   "69028ac9433040806cb5234e40a57ebb7f23e630ba40c8230f48e97e9d4594dd",
+   "328b60fcbcbe02d38b0acf32fa7c67b560ffdb156bd3af0db6f34a4f701b9ef3",
+   "eb35651284d383b375693d3f7f19614ed4c63b2075206342b61286f904d64803",
+   "ccd165fa6c737ca51648d6574af621b5fd8b66ee77bcc241b3d3b1129d13b8a2",
+   "a0088d9c6280eb1781b44b14be695e5790f21056936c0e06aeb27171c11d42bb",
+   "b7166202314d1ef45817366268583ed67e1541eba7c2ef5b6d5665602c0674c4",
+   "f0ed1afcad341d5b673bf9e685e52a175f4364730000a08d77c95f94863f2149",
+   "0e6d9ac9c8b7825c77e2bab1a08ec4a47773881bca865a12ecc3b5acf8744067",
+   "620013101013f3bfbea5a3ff49f5a4b385cb64e36ee89b884f08f9804ea8754c",
+   "2220dc6e6c82fc35ee3011bb1d5f773fa86e5b50dbe23664a91c8a314e881a5e",
+   "db409ec073c4ce2444bdebb2e1afbac328d488e6d0b01af49ada330c69280a07",
+   "478f6c6482a2deb52f1cc672c655aadb07cfe525c0f1314d0773fabae1008556",
+   "ce1529c1076b1b65d951a4085e6a610f62514eefc832b479acbcaa59ac758223",
+   "620f7e584d9db419d937aa8c831cc22ce23d9e8cd764c55772e5795d50b33d13",
+   "d29ef4381f84795fc02171b2362e4e00b015e2d5c035cf30046df68e8ae6a365",
+   "0254431f2e2e537df52ac161111e12ad0d30e70c5f57df0ab28175cf4b151356",
+   "c7e822cd19018409a479bea2bc0d5c1058408d699b7b3dc8809d23375a2e8cb1",
+   "fe0010283b3d337227843eb8939d31076e171beffd8cc1922103a08da44636fb",
+   "25034e79f380f12c292fcad928ce036eadd48fe7e16680754f0b26ee972bd26e",
+   "16db99e636b388a0e1a240ddbd38b2ca654a3f0e8bff9722d671542f53d97074",
+   "c6c1ee832ec4518a42a3bd72826c067850b7746d76b2bec4e05b2a5b2682ff54",
+   "12a021b3a6f9c1d75e5b1b264537ccdde26936233728d20bca881bc0b90f5f0f",
+   "6683318648f7133ce75d2a66d755b76793e942622683b754bf322ff1808b4ecd",
+   "2207c33907f4dc467b20f1b77572943ff1ca94d85df0d2261cf1f0326ab1878e",
+   "9bbe36c3e8f6c290ff1fcba18c21be4ca7375e2e4260cf286530aa3e4be2b2e2",
+   "9e88a6ffde54c9fc1750c7c37f70d1d63a2a95f651f7aa9bbb4876625895b50d",
+   "85145ec784aca0f092cf2cf3966cbbf815e18221e9d76d42b6333e4db067725e",
+   "ea5d2a0a0c979f5bccfc50dbe42fe1a3ab067607d99ce65d6475a19b3250f7c4",
+   "eb482cf5b744592c6e04603e57bd8aed8f5b41a7f06b15ab8499cb73e012d11d",
+   "997cc573a80df8eab513423b2b6eccc600ee66ce89413c6b269757ea09483683",
+   "6ee166e79b7b293c09d7c2e52810b91729ca34af31a27d4a959b8e6ab7cc6dc4",
+   "5e1639d2e1b828b1c212705fc13c0165fae14ec4f570d8fd1e7f143d7d09954a",
+   "8ad54d74d4738b7fb57e2db3db44e357cd2b3b618e23930b28c8b151540de5dd",
+   "40a6ba45f3c0bb8120a2557f2dbb5bb943d13e67c05dc2033753ba45af3d31f2",
+   "823e258fc3bf0d16a2e66d26075766620d43f9cd52301cc08747bffccbb125ed",
+   "6c6a1b4db7f200cc59c94b69f8f63f1d22981c213e5e6532b2ed0b0ee33d9cf0",
+   "24858f9e1ca559fe878509114d3d2530318ec5a92e8b403883387b814ed0a716",
+   "df79baf352e4d38dee8087a3e860bea3b3480366210325d119f38a2fb00c5b76",
+   "c0d70d9280afa900279a556b4166f9c902904ccd4ea1bd30508dbb4099b3a2cd",
+   "d66fc2046725ea2dd4c2c105331d535f96cf534e4ac504d8f8ca07803ebc2f1e",
+   "96f91e9a2c350dd05b03635713e758e0ddf6e2bba2125eac0db2c656cd91f8a9",
+   "358417f007d0df8d2e9599cd02cf11b1677216a771b251c2e6a59d4939ad56e9",
+   "fb5f5af304772a6f8b343b674c8fd3c6191912fd5cdc1fda453aa61ba85257fa",
+   "6fcdf7bdaad9b690cd6eb309a07c75efe9a4d50e92db3ec237b675734cbc1660",
+   "aece9eb54bc752a0736c8307e05ed09dfa11a854631ad97baeabfb207f311fad",
+   "1fe879b3d7fc8938259fd131b7e013fb122bfc8ea1a8bb6f9e89f12b61e8c5c6",
+   "20cd79c75487f8c85fbef7bfb1e7f3e4974baa307f2709c697faebb5fd57556c",
+   "bf9e928b6a5921e35d55f3c0bb9dfe524a8024792e9efa58d9270a9de54fd693",
+   "7ec55359991e5242b3e075cb1df48376c485ada5055e9cc5c1955d37f9fb2600",
+   "495365db34a8670c7b2afc5ad50bc772e927018ad21ad55d6ab5060881b8ee19",
+   "061de074691ffb54b14b186aa43fb3c7bc6565962e874b84e4285dfc567e7b8d",
+   "9462e9a13bb357cfdfc787b3d40be7fd949961cd7e60096f9e32942b1146eacf",
+   "d88650d7e35e8e0f9221959b40ce6aa1de096d0397e4a6b4d5eddc8c1e3ab0b7",
+   "a94d18621812975ecaec1f29e3b21b348e57c322f2c44055724bec0e7e3e4e84",
+   "fbf5cabfdd3f8d2cbfcadaaeb77e7413d07ca436ddd4e7304abd3d06a62d2bbc",
+   "5f2fe16b38f69b0b46f7821d417f2173cc0734ebad58044094d6cc47701e1e7f",
+   "7883a6efb1d0bbb1848c704392dca7c107f0aa97806d03050effc8574192fee3",
+   "0c2d0736f60351e46a628f06a47e030db3d13c1aab1fdae5239a2b5b7ac4a570",
+   "6b85950269d815c65a54cecac6ae9873251127602d9f777413c5c6113c3140ec",
+   "9c1f540c06e4d7caf38ba9d4ae42ea899936cc2d792674003dfedd681e5a1734",
+   "bd327bd5335af67678fc1a30e74bcdc9829ca1ded41375a9cca329ccf4d3ae50",
+   "76d4d1c1243013d21743279edef376c8f7ae3ae87f1b071c66b4f536fa84b933",
+   "3670c57a83d082ba14d280f830cabd1a76ee96f21817c88a8b3055ef3a2d0275",
+   "bd5c850291ecc4e52492c895ed525a501551648971190c8d122faedbc01eed2b",
+   "2cacb9762a9fc744c4ace3512964aa473b5a235de1f1515341917b1cffdb0f07",
+   "657fb2396ae706d81870deb28f9cc08864efc005e22b7b6d488fc539442cc4c3",
+   "700a6acb814c703b3789eb84175cb6e3bc6c9dddd04d8ee078027d53b42e6805",
+   "80b97a75dee0e09cf331f6a56300764d854436e94fd57ef2e40beff2239ad5e0",
+   "f0c6d9445b59ec8f11e16f806e96626697184f2329c582af4598a174d16295b3",
+   "92a2dfb61ef3e9522d92b0e28d7d315000d69743a18d0bdf4fce086da8653c6d",
+   "3c19614c69321b027c4096eea221baffccfc9f5d1441261f10b220d3fc79cd64",
+   "0691c940f9f2af85f3721bf629b7f929112e404bef0bd6507bdfc2514bfe4e9b",
+   "f66b868ef2d3243e69424385c1a2cb77354a2759987bc5bbceea303e70374f22",
+   "12f57191e0d61997eb2555b9720e5aeaaae3958db413ed76487e65f6b89f94d0",
+   "8bc7e48080e4f12182ec9559bc030b6bba375dddd885ca8b3500bb467cb5822f",
+   "bdf92b670fd9cc6730c7080d0f703510a4c29e014feb044c83f0394cb0f41f6a",
+   "34727a4f1dcd9e2050288b18375d9fcbb5d910be6f729f7a889335367b4f6451",
+   "ff38e497865bdfb09bf3c2595e3c043130f10487027a3ce11fedb8c51b38b889",
+   "66fcb44312ebbd3f2b81a9db60b85b6d5d80b99d762f86bad1803f3ede12d7c6",
+   "5d7081e1b0175bc1dfda696edd4866b64e9acfbafbf656605a9dc3ad744f311f",
+   "ad12ac754cb7f24db3a3068431bc4b7c1a692a271a6943f5e3c5a0619e0fef3f",
+   "ada18e285899c0803bb2af5a18096b87fcf2562a39a7ea493c94b183dfa807c1",
+   "6658b1802a3bd67f23961b556bb38fed5264cd795767218e716600602f1e5eff",
+   "59032c3d2e1a55c71fff7c4504b5d90cfcf0527964172bd054ecc64d42605d82",
+   "c65bb93e1b97c0ad61b1353ae087dd1bb129a80a643e90f563d3afc2aa3b7c64",
+   "156cac2781667ac6ebdfc1e67dd4b5738f2136a815e9aa05c5851775f2208e68",
+   "3d8c81f1c05251b7e10ab3417a114ed02b45ab6262c35a4472290b743f6c591b",
+   "14b74115dab5e43d8dce35540b7e5112156e45bcfe6e1971303db682b0c486c1",
+   "9dc46684ac57cd2d9c66bcd545532598e5252ac60765658d3567f9269c5080a4",
+   "6e75385e9e5fbadafbd92de157b08b23f479c98fa5fe2ba723262acd11412a18",
+   "628bae0e9f5dec1978503048cfe6e3e008b35d6e1b6d108ca84180d3df34d153",
+   "9d96fbf2b958dd4329ca6d55ad82c219698fcdb211f77639dfef61f4a3b68da0",
+   "c94bc6e7b0d4449773ce8a7f64fe4577146b03221f06b17ed7eb785efe89e3d6",
+   "b76ef695b209f8b128155901c9447bfa69ca58b1745a36a34ad53b0ed50f1ead",
+   "534d2e503a0bb0f0f287c83d5f75cd9ff8c4251ed959cedd2e31d244faa11272",
+   "53bf486b4c31918bbbdda1eb0188a76a1fc96ef00909d9683b5cda4d105facf6",
+   "d4e791805ad6792d7660a1f3d7ca958c8e6f7ebb1bc7624fde01df2207acca57",
+   "3916bf9df4a5a9d7ece29e51e212a1183b56930ee009688d41da1d16dff3ab0d",
+   "ba12b4af0f6db160d1dc4c0df4f18416417e2e0425b5fc12105cc74c24b61856",
+   "aa50acc81e41239fb2ae004f8d1d8947518df27df7a5457badc2509b320af939",
+   "f60009fb18f75ae8cdc4aba0a73e18933a9506ca4f75d0c70b18448c434b1b1d",
+   "a42784008d38dab9f8f0224d04dd53519b7aff1c357403b87f6b7f0cf3e97dae",
+   "79a5b5727ea870ada38ca897e7a769cf30c4c4df18a80d7b77f58fb7e202879c",
+   "b3b7cc5624be0057b4eeea4bcbdca3a92fdcbfc12d9e523a5d5f349d5556f0f2",
+   "33d389fe42aa59ba56eba8f9af972f7a602f307ace98417f7462e01308d7490a",
+   "7e6e7bf2710609209905c57a4bd84b48514652e47feeaa5271b7eb01324d42b2",
+   "45b1419b473299931601ef0da8a4f2f45ab836724e10ff30bcbf60ea1cac144d",
+   "10af798d903c65959f6db95fcd4d7b9b3afc32c50487e04c28c7ebe329722988",
+   "db5939a1ffa6f3df8a9aecf2249c3e1af4ab64639c632b8e848d867e75149cd4",
+   "e72ad0836662a48ed2d36db25bab1b8f6f80b585af5fd372f8e6c4d36d74ccb0",
+   "1f92de715acdab97b435e09eacc5232d279d914cdaaa73dea70ceb2bb86db65c",
+   "0018edb531e7bea9ae4e04207e85d9b9a80530448aae0805b59f779a108ae4f4",
+   "0bae88a1b1bf2cf718ab7b7050135bd047cd6b3d31206964f73b0c27b99cad8b",
+   "d5f179da33dcada99c9416f4306b775d8658768c4f84a720f26dd4c9b2e9828f",
+   "625beb8069ab4bbade6b0911f24b1fcfbc7bfe8dbd904b2b33defc1ba651c3c7",
+   "e6c407a62cc8b797dcb959198f345b1c4536c3886446eb904b90e27b055b998c",
+   "5c371b4972bfdfd7227237a4114ae60592d6db35a95ee0a8ecf59f93bf013642",
+   "b353a0350a3b493ad995f67e09f09bf9041eedd304e968eb49f277aec2242421",
+   "ca322704975994b801a4a4d2925db08e27997a738f8066d431e85ac5251082e0",
+   "7330bc26338bfab9b2aa7b13ba152bf6686f342cfb79e30bb5e8d4e121dea79e",
+   "b32b88d15c34f2abc3e8474d8bce4d1bac108ee49ced4049375ac30693bbb8f6",
+   "666cabedfed40cd37f160e86ecf2ec5be9f7b3b2c7e4e375a167d9a2f43c7baa",
+   "6b9931e6b1eb5ad34a991e6e45aeb600b5f3133e1a8fb95ec93e3db75ca5d733",
+   "81717614be15e0018b95b358c1f8fa28e7a7f6495acb47eac90f734edd1f19ed",
+   "cc2cb72139b55e94d87a3d5a6be10bd6255012a1240864300a98f6cca0ccce34",
+   "95052c8d30998584117ae73cb3100fe64139447bf15a0dd878315f4e2645739b",
+   "7a7a99f8cdbf9d7d2b7e61f8237c8d86c4a48fd01eb061c93ac83e2247483537",
+   "9eb3186368f54ec78a9b2530fd8fc9b4e430d1691e0b2a4a4034ca509574a954",
+   "a25e0bb0a085efa30b4f033ed4351555506637c1525a4f438ddeeddd9d7924a2",
+   "88a1722bc6844f7cb94d2eda13c77e9e7ca5adc5ea4618b5db80de149d670614",
+   "88507946978928830e6d0fc31833507a0e3743e11a4985433cb8f941b32d4dee",
+   "013fb39b9bd4fd2e964fc8aa7d524a79e7db010f78b1432fc92813f871940bc6",
+   "2a776af2267245205b930e2ece6539204d943aeca7f48cb33cd24bdf35435c43",
+   "dfa33572c50f87956cdaf8b470d1adc0fba1adadce87ed3a664a0aa6c37508f0",
+   "d8b22b4d63d5100aa1ee1792f0afd1a8823359edc968aa8c7ae11788e7657568",
+   "822e73162d5f815bbc822bed53b13aabc12825503e9b35f3875fb07053655125",
+   "e789e708d986039e9c5508ed3686306b3a1381a7873b6d426e12003cf248f9af",
+   "f14fc03f63184eb4822d82ce70284b11515b81db24c7558c904c325efaf3f708",
+   "9d3596d4c77272136bc9d4a9a254bcbafed32f74b75b581679dd85d11a0c79d5",
+   "a05d07e6fc9415c02b82d5e3a9e2d75c4357a315d104bc09741752933e97ee61",
+   "726212b90ac83a00ef4fe32f7f1310fc4ad16a5653ea8af6123ace16416c6fa6",
+   "af51aefc1238dae4e46af02bd235520d05a7d8b7302c62a6619a06c776fe4cbb",
+   "f0fefa9706a400c334d59694ad7545d8f0e5f61405706c7bc68d799d237d3a26",
+   "d5a6d52f97fd0f73dc5b5596dea3f17a8aa241518c3e64e9673149b4b0aa2fea",
+   "d5bef505b0cb934d5bb67fe811e4079d3ebcd8ecc792add74766ffd6ab39df2d"
+  ],
+  "invariants_ok": true,
+  "consumption_ok": true,
+  "distinct_seeds": true,
+  "distinct_streams": true,
+  "tests": {
+   "T10a Xa-400": {
+    "test": "binomial_exact_two_sided",
+    "observed": 400121,
+    "trials": 800000,
+    "probability": 0.5,
+    "expected": 400000.0,
+    "z": 0.27056422527747453,
+    "p_value": 0.7875863645313875
+   },
+   "T10b Xa-400": {
+    "test": "variance_ratio_chisquare",
+    "n": 400,
+    "sample_variance": 490.80300125313283,
+    "variance": 500.0,
+    "ratio": 0.9816060025062657,
+    "statistic": 391.660795,
+    "dof": 399,
+    "p_value": 0.8120545568505512
+   },
+   "T10a Xb-396": {
+    "test": "binomial_exact_two_sided",
+    "observed": 74481,
+    "trials": 800000,
+    "probability": 0.09333333333333294,
+    "expected": 74666.66666666635,
+    "z": -0.7135866786890533,
+    "p_value": 0.4770688274443339
+   },
+   "T10b Xb-396": {
+    "test": "variance_ratio_chisquare",
+    "n": 400,
+    "sample_variance": 170.74836466165414,
+    "variance": 169.2444444444438,
+    "ratio": 1.0088860832161852,
+    "statistic": 402.5455472032579,
+    "dof": 399,
+    "p_value": 0.8817695872572964
+   },
+   "T10a Xc-400m": {
+    "test": "binomial_exact_two_sided",
+    "observed": 62300,
+    "trials": 800000,
+    "probability": 0.0775735931288071,
+    "expected": 62058.87450304568,
+    "z": 1.0078022522694219,
+    "p_value": 0.31380077896099634
+   },
+   "T10b Xc-400m": {
+    "test": "variance_ratio_chisquare",
+    "n": 400,
+    "sample_variance": 139.9674185463659,
+    "variance": 143.1118615557868,
+    "ratio": 0.9780280755540649,
+    "statistic": 390.2332021460719,
+    "dof": 399,
+    "p_value": 0.7725831176791658
+   },
+   "T10a Xc-400": {
+    "test": "binomial_exact_two_sided",
+    "observed": 68471,
+    "trials": 800000,
+    "probability": 0.08561423701966964,
+    "expected": 68491.38961573571,
+    "z": -0.08147536684186028,
+    "p_value": 0.937891218913306
+   },
+   "T10b Xc-400": {
+    "test": "variance_ratio_chisquare",
+    "n": 400,
+    "sample_variance": 157.27417919799495,
+    "variance": 156.56887887841893,
+    "ratio": 1.004504728683174,
+    "statistic": 400.7973867445865,
+    "dof": 399,
+    "p_value": 0.9305719517910961
+   },
+   "T10a Xd-396": {
+    "test": "binomial_exact_two_sided",
+    "observed": 117461,
+    "trials": 800000,
+    "probability": 0.14688537298982546,
+    "expected": 117508.29839186037,
+    "z": -0.14938548871889853,
+    "p_value": 0.8832394294750051
+   },
+   "T10b Xd-396": {
+    "test": "variance_ratio_chisquare",
+    "n": 400,
+    "sample_variance": 273.5606453634085,
+    "variance": 250.62012038293065,
+    "ratio": 1.0915350489235514,
+    "statistic": 435.522484520497,
+    "dof": 399,
+    "p_value": 0.20095252329628405
+   },
+   "T10a Xe-396": {
+    "test": "binomial_exact_two_sided",
+    "observed": 10616,
+    "trials": 800000,
+    "probability": 0.013316869991580342,
+    "expected": 10653.495993264274,
+    "z": -0.3657210328748194,
+    "p_value": 0.7181874632330392
+   },
+   "T10b Xe-396": {
+    "test": "variance_ratio_chisquare",
+    "n": 400,
+    "sample_variance": 28.454536340852133,
+    "variance": 26.279061930415377,
+    "ratio": 1.0827835642001689,
+    "statistic": 432.03064211586735,
+    "dof": 399,
+    "p_value": 0.24526626120230305
+   },
+   "T10a Xf-392": {
+    "test": "binomial_exact_two_sided",
+    "observed": 63759,
+    "trials": 800000,
+    "probability": 0.07978129367684167,
+    "expected": 63825.034941473335,
+    "z": -0.27247881251985195,
+    "p_value": 0.7869514529834252
+   },
+   "T10b Xf-392": {
+    "test": "variance_ratio_chisquare",
+    "n": 400,
+    "sample_variance": 158.24510651629072,
+    "variance": 146.83247771218242,
+    "ratio": 1.0777255072033796,
+    "statistic": 430.01247737414843,
+    "dof": 399,
+    "p_value": 0.2739269779741834
+   }
+  }
+ },
+ "xref": {
+  "nuclei": 5000,
+  "events": [
+   15491,
+   15491
+  ],
+  "discrete_columns_equal": true,
+  "final_states_equal": true,
+  "stream_digests_equal": true,
+  "max_relative_time_difference": 0.0,
+  "digests_equal": true,
+  "reference_engine_seconds": 0.04170626000086486,
+  "ok": true,
+  "consumption": {
+   "vectorised": {
+    "words_expected": 60000,
+    "words_read": 60000,
+    "source_bytes": 480000,
+    "ok": true
+   },
+   "reference": {
+    "words_expected": 60000,
+    "words_read": 60000,
+    "source_bytes": 480000,
+    "ok": true
+   }
+  }
+ },
+ "replay": {
+  "chunk": 4099,
+  "events_sha256": "f8f2ffba83f2f2e99e83d3b4938558b8b1376024ef377503cb0d0a4a6268d36d",
+  "original_events_sha256": "f8f2ffba83f2f2e99e83d3b4938558b8b1376024ef377503cb0d0a4a6268d36d",
+  "stream_sha256": "4e053dc3106ed3dd1ac6809c8ec9e852a91e6478615a7138497fb4159085fc2c",
+  "original_stream_sha256": "4e053dc3106ed3dd1ac6809c8ec9e852a91e6478615a7138497fb4159085fc2c",
+  "ok": true,
+  "consumption": {
+   "words_expected": 1200000,
+   "words_read": 1200000,
+   "source_bytes": 9600000,
+   "ok": true
+  }
+ },
+ "families": {
+  "NC1": {
+   "tests": [
+    "NC1 S1 T1",
+    "NC1 S1 T2 t=0.5",
+    "NC1 S1 T2 t=1.0",
+    "NC1 S1 T2 t=2.0",
+    "NC1 S1 T2 t=4.0",
+    "NC1 S1 T2 t=6.0",
+    "NC1 S1 T3",
+    "NC1 S2 T4 t=0.5",
+    "NC1 S2 T4 t=1.0",
+    "NC1 S2 T4 t=2.0",
+    "NC1 S2 T4 t=4.0",
+    "NC1 S2 T4 t=8.0",
+    "NC1 S2 T4 t=12.0",
+    "NC1 S2 T5 Xa-400",
+    "NC1 S2 T5 Xb-396",
+    "NC1 S2 T5 Xc-400m",
+    "NC1 S2 T5 Xc-400",
+    "NC1 S2 T5 Xd-396",
+    "NC1 S2 T5 Xe-396",
+    "NC1 S2 T6 Xa-400",
+    "NC1 S2 T6 Xe-396",
+    "NC1 S2 T7 Xa-400",
+    "NC1 S2 T7 Xe-396",
+    "NC1 S2 T8 Xa-400/alpha",
+    "NC1 S2 T8 Xa-400/beta-",
+    "NC1 S2 T8 Xb-396/ec",
+    "NC1 S2 T8 Xc-400m/it",
+    "NC1 S2 T8 Xe-396/beta-",
+    "NC1 S3 T9 t=1.0",
+    "NC1 S3 T9 t=5.0",
+    "NC1 S3 T9 t=10.0",
+    "NC1 S3 T9 t=20.0",
+    "NC1 S3 T9 t=40.0",
+    "ENS T10a Xa-400",
+    "ENS T10b Xa-400",
+    "ENS T10a Xb-396",
+    "ENS T10b Xb-396",
+    "ENS T10a Xc-400m",
+    "ENS T10b Xc-400m",
+    "ENS T10a Xc-400",
+    "ENS T10b Xc-400",
+    "ENS T10a Xd-396",
+    "ENS T10b Xd-396",
+    "ENS T10a Xe-396",
+    "ENS T10b Xe-396",
+    "ENS T10a Xf-392",
+    "ENS T10b Xf-392"
+   ],
+   "p_values": [
+    0.7570202163587245,
+    0.3126321147774713,
+    0.5475055961922262,
+    0.727413426951533,
+    0.02599516023315871,
+    0.04535193336022497,
+    0.001695709818251648,
+    0.48642971452932315,
+    0.08376649224474093,
+    0.3835327618546028,
+    0.6296306053341983,
+    0.533861049097383,
+    0.7858439078193281,
+    0.8383684778597515,
+    0.26218741332645956,
+    0.26130714037713115,
+    0.4073061105922402,
+    0.45462968158094613,
+    0.39335876993945085,
+    0.3018400433731366,
+    0.6744704835641837,
+    0.686560090802222,
+    0.9122382212796062,
+    0.21705749497083657,
+    0.7857741344071042,
+    0.9441914495131198,
+    0.8800164121655726,
+    0.9836895091450741,
+    0.6585620475462648,
+    0.6857747441414761,
+    0.5265471685130723,
+    0.8480476756242512,
+    0.3563676920634348,
+    0.7875863645313875,
+    0.8120545568505512,
+    0.4770688274443339,
+    0.8817695872572964,
+    0.31380077896099634,
+    0.7725831176791658,
+    0.937891218913306,
+    0.9305719517910961,
+    0.8832394294750051,
+    0.20095252329628405,
+    0.7181874632330392,
+    0.24526626120230305,
+    0.7869514529834252,
+    0.2739269779741834
+   ],
+   "holm": {
+    "method": "holm",
+    "alpha": 0.01,
+    "tests": 47,
+    "rejected": 0,
+    "adjusted_p_values": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     0.07969836145782745,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "reject": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   "rejected": []
+  },
+  "NC2": {
+   "tests": [
+    "NC2 S1 T1",
+    "NC2 S1 T2 t=0.5",
+    "NC2 S1 T2 t=1.0",
+    "NC2 S1 T2 t=2.0",
+    "NC2 S1 T2 t=4.0",
+    "NC2 S1 T2 t=6.0",
+    "NC2 S1 T3",
+    "NC2 S2 T4 t=0.5",
+    "NC2 S2 T4 t=1.0",
+    "NC2 S2 T4 t=2.0",
+    "NC2 S2 T4 t=4.0",
+    "NC2 S2 T4 t=8.0",
+    "NC2 S2 T4 t=12.0",
+    "NC2 S2 T5 Xa-400",
+    "NC2 S2 T5 Xb-396",
+    "NC2 S2 T5 Xc-400m",
+    "NC2 S2 T5 Xc-400",
+    "NC2 S2 T5 Xd-396",
+    "NC2 S2 T5 Xe-396",
+    "NC2 S2 T6 Xa-400",
+    "NC2 S2 T6 Xe-396",
+    "NC2 S2 T7 Xa-400",
+    "NC2 S2 T7 Xe-396",
+    "NC2 S2 T8 Xa-400/alpha",
+    "NC2 S2 T8 Xa-400/beta-",
+    "NC2 S2 T8 Xb-396/ec",
+    "NC2 S2 T8 Xc-400m/it",
+    "NC2 S2 T8 Xe-396/beta-",
+    "NC2 S3 T9 t=1.0",
+    "NC2 S3 T9 t=5.0",
+    "NC2 S3 T9 t=10.0",
+    "NC2 S3 T9 t=20.0",
+    "NC2 S3 T9 t=40.0"
+   ],
+   "p_values": [
+    0.5780294742709169,
+    0.3777959396787518,
+    0.7661634887119071,
+    0.6164376389193238,
+    0.12290807371561616,
+    0.8357427330845084,
+    0.007420159594771358,
+    0.783516988381328,
+    0.18338732141435557,
+    0.4266420943849781,
+    0.21421853363611595,
+    0.8272581168461332,
+    0.6863015995522959,
+    0.9694889730298224,
+    0.8882151504982074,
+    0.9076719155521233,
+    0.8120728232543888,
+    0.843475741809762,
+    0.3199493452129042,
+    0.899602403239384,
+    0.10174674753408106,
+    0.13939092928554017,
+    0.9422317064093921,
+    0.534496314739446,
+    0.6554733596052894,
+    0.29427803021110677,
+    0.37354904181271564,
+    0.9945577763176487,
+    0.744638034208407,
+    0.7541693019799014,
+    0.920119223082107,
+    0.38096521356828594,
+    0.22798042179155711
+   ],
+   "holm": {
+    "method": "holm",
+    "alpha": 0.01,
+    "tests": 33,
+    "rejected": 0,
+    "adjusted_p_values": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     0.2448652666274548,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "reject": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   "rejected": []
+  }
+ },
+ "positive_controls": {
+  "level": 0.0002127659574468085,
+  "PC1": {
+   "target": "T2 t=2.0",
+   "p_value": 9.47662496658453e-09,
+   "rejected": true
+  },
+  "PC2": {
+   "target": "T6 Xa-400",
+   "p_value": 2.5404911529505845e-34,
+   "rejected": true
+  }
+ },
+ "verdicts": {
+  "deterministic": {
+   "D1 consumption": true,
+   "D2 invariants": true,
+   "D3 xref": true,
+   "D4 replay": true,
+   "D5 ensemble streams": true,
+   "A1 analytic cross-check": true
+  },
+  "R1": "PASS",
+  "R1_failed_items": [],
+  "R2": "MET"
+ },
+ "finished_utc": "2026-11-16T12:17:11.357113+00:00",
+ "elapsed_seconds": 3.909340596999755
+}

@@ -1,0 +1,225 @@
+{
+ "schema": "rnglab-nuclear-run-manifest-v1",
+ "experiment": "rnglab-v020-nuclear-a-verify-v1",
+ "run_id": "XREF_S2_reference",
+ "code": {
+  "module_files_sha256": {
+   "__init__.py": "1a2efc3f54e1c9f5dc7d2ffee49d88af0dde7d59f72fea11792a961542a0151e",
+   "bateman.py": "26433bfeba4aaff869415ce6def31631d2085d3baa01a929720bd845f47e16cc",
+   "checks.py": "0977931ab30382b05b764ee55b3a234e6ba46b39bbce30c89c6255b962fa631e",
+   "decay.py": "dd564553f991cf57aa4e5055a26d612394262bcc13dd8e96c56b64992d5bbc2a",
+   "manifest.py": "2885abf0d2ac416da648ac7f7e9ad65c8a3973bd9ae9f32b2eae7aaffd5c36e5",
+   "streams.py": "27048bbfbde80f15350fa08c5df64f100ba18899407aac460093056def3d994b"
+  },
+  "git_commit": "c616a7b2d3b2cc9b80d66c756f55315c1193faf2",
+  "git_dirty": false
+ },
+ "environment": {
+  "python": "3.14.9",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "platform": "Linux-7.2.14-arch1-1-x86_64-with-glibc2.44",
+  "machine": "x86_64"
+ },
+ "rng": {
+  "role": "physics",
+  "layout": "nuclear-decay-layout-v1",
+  "words_per_nucleus": 12,
+  "first_word_of_run": 0,
+  "source": {
+   "source_id": "numpy-pcg64:8593b6ed057c04fa+0",
+   "family": "reference_prng",
+   "is_deterministic": true,
+   "is_physical": false,
+   "seed": 9625237957736400122,
+   "created_at": "2026-11-16T12:17:11.234530+00:00",
+   "metadata": {
+    "generator": "numpy PCG64, raw 64-bit outputs",
+    "seeding": "numpy.random.SeedSequence(seed)",
+    "seed_label": "rnglab-v020-nuclear-a-verify/XREF/S2/physics",
+    "start_word": 0,
+    "numpy": "2.5.3"
+   }
+  },
+  "word_convention": "8-byte big-endian words; uniform = (word >> 11) * 2**-53",
+  "first_source_byte": 0,
+  "words_read": 60000,
+  "bytes_read": 480000,
+  "source_consumed_bytes": 480000,
+  "source_stream_sha256": "93fa5e506b82cc49fb792b1272dee5f2a53cf556187e3dc35b929472c6cf9109"
+ },
+ "configuration": {
+  "scheme": {
+   "name": "S2-branching",
+   "nuclides": [
+    {
+     "name": "Xa-400",
+     "z": 150,
+     "a": 400,
+     "level": 0,
+     "half_life": 2.0,
+     "channels": [
+      {
+       "daughter": "Xb-396",
+       "mode": "alpha",
+       "branching": 0.64,
+       "photon_yield": 0.25
+      },
+      {
+       "daughter": "Xc-400m",
+       "mode": "beta-",
+       "branching": 0.36,
+       "photon_yield": 0.3
+      }
+     ]
+    },
+    {
+     "name": "Xb-396",
+     "z": 148,
+     "a": 396,
+     "level": 0,
+     "half_life": 0.5,
+     "channels": [
+      {
+       "daughter": "Xd-396",
+       "mode": "ec",
+       "branching": 1.0,
+       "photon_yield": 0.8
+      }
+     ]
+    },
+    {
+     "name": "Xc-400m",
+     "z": 151,
+     "a": 400,
+     "level": 1,
+     "half_life": 0.8,
+     "channels": [
+      {
+       "daughter": "Xc-400",
+       "mode": "it",
+       "branching": 1.0,
+       "photon_yield": 0.9
+      }
+     ]
+    },
+    {
+     "name": "Xc-400",
+     "z": 151,
+     "a": 400,
+     "level": 0,
+     "half_life": 3.0,
+     "channels": [
+      {
+       "daughter": "Xe-396",
+       "mode": "alpha",
+       "branching": 1.0,
+       "photon_yield": 0.0
+      }
+     ]
+    },
+    {
+     "name": "Xd-396",
+     "z": 147,
+     "a": 396,
+     "level": 0,
+     "half_life": 1.25,
+     "channels": [
+      {
+       "daughter": "Xf-392",
+       "mode": "alpha",
+       "branching": 1.0,
+       "photon_yield": 0.0
+      }
+     ]
+    },
+    {
+     "name": "Xe-396",
+     "z": 149,
+     "a": 396,
+     "level": 0,
+     "half_life": 1.6,
+     "channels": [
+      {
+       "daughter": "Xg-396",
+       "mode": "beta-",
+       "branching": 0.9,
+       "photon_yield": 0.5
+      },
+      {
+       "daughter": "Xh-395",
+       "mode": "beta-n",
+       "branching": 0.1,
+       "photon_yield": 0.0
+      }
+     ]
+    },
+    {
+     "name": "Xf-392",
+     "z": 145,
+     "a": 392,
+     "level": 0,
+     "half_life": null,
+     "channels": []
+    },
+    {
+     "name": "Xg-396",
+     "z": 150,
+     "a": 396,
+     "level": 0,
+     "half_life": null,
+     "channels": []
+    },
+    {
+     "name": "Xh-395",
+     "z": 150,
+     "a": 395,
+     "level": 0,
+     "half_life": null,
+     "channels": []
+    }
+   ]
+  },
+  "scheme_sha256": "e74bc4176803ad033aebe33102c51dbda3b254073707f6d7a5139d9a1f5e824e",
+  "initial": {
+   "Xa-400": 5000
+  },
+  "horizon": "12.0",
+  "engine": "reference"
+ },
+ "outputs": {
+  "engine": "reference",
+  "layout": "nuclear-decay-layout-v1",
+  "n_nuclei": 5000,
+  "n_events": 15491,
+  "words_per_nucleus": 12,
+  "first_word": 0,
+  "words_used": 60000,
+  "final_counts": {
+   "Xa-400": 79,
+   "Xb-396": 14,
+   "Xc-400m": 12,
+   "Xc-400": 333,
+   "Xd-396": 102,
+   "Xe-396": 246,
+   "Xf-392": 2999,
+   "Xg-396": 1104,
+   "Xh-395": 111
+  },
+  "decay_counts": {
+   "Xa-400": 4921,
+   "Xb-396": 3101,
+   "Xc-400m": 1794,
+   "Xc-400": 1461,
+   "Xd-396": 2999,
+   "Xe-396": 1215,
+   "Xf-392": 0,
+   "Xg-396": 0,
+   "Xh-395": 0
+  },
+  "events_sha256": "7e2eade4aa79195ef599faa947ba6d235983a8a9f34ab3445ccccd936cecc5f1"
+ },
+ "extra": {
+  "seed_label": "rnglab-v020-nuclear-a-verify/XREF/S2/physics"
+ }
+}

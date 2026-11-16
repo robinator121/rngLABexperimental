@@ -89,7 +89,7 @@ Detection efficiency (thinning), background (independent Poisson superposition),
 | Component | Implemented | Tested | Independently verified | Experimentally validated |
 |---|---|---|---|---|
 | RNG bridge (`streams.py`) | yes | unit tests | conventions checked against `RandomSource.random_float` | n/a |
-| Layer A event engines | yes | unit tests | second independent review done before the freeze; frozen study against analytic laws (`research/v020-nuclear-a-verify`) pending | no: synthetic schemes have no experimental counterpart |
+| Layer A event engines | yes | unit tests | frozen study against analytic laws: R1 PASS, R2 MET (`NUCLEAR_PHYSICS_VALIDATION.md`); code and protocol reviewed twice before the freeze | no: synthetic schemes have no experimental counterpart |
 | Layer A analytic references | yes | unit tests | two independent routes agree | n/a |
 | Layer A aggregated mode | no (B2) | — | — | — |
 | Layer B, Layer C | no | — | — | — |

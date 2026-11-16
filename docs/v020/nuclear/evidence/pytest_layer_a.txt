@@ -1,0 +1,13 @@
+# v0.20 nuclear module, Layer A: test evidence
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-16T12:18:30Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+........................................................................ [ 94%]
+...........................................                              [100%]
+833 passed, 2 skipped in 200.59s (0:03:20)
+
+## 2. Layer A tests only: PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider
+...........................................                              [100%]
+115 passed in 1.16s
