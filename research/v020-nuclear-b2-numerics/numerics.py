@@ -314,25 +314,33 @@ def inversion_tails_section() -> dict:
             "rows": rows, "total_mismatches": sum(r["mismatches"] for r in rows)}
 
 
-def _chernoff_tail(n: int, p: float, k: int, lower: bool) -> float:
-    """Chernoff bound on P(X <= k) (lower) or P(X >= k) (upper) for Binomial(n, p), k beyond the mean."""
-    x = k / n
-    if lower and x <= 0.0:
-        return (1.0 - p) ** n
-    if not lower and x >= 1.0:
-        return p ** n
-    kl = x * math.log(x / p) + (1.0 - x) * math.log((1.0 - x) / (1.0 - p))
-    return math.exp(-n * kl)
+def _chernoff_tail(n: int, p: float, k: int, lower: bool) -> Decimal:
+    """Chernoff bound exp(-n KL(k/n || p)) on P(X <= k) (lower) or P(X >= k) (upper), k beyond the mean.
+
+    Evaluated in 60-digit decimal with an exponent range that cannot underflow, so a positive bound is
+    never replaced by 0 (float64 returned 0 for 3.07e-783 at n = 10**6, p = 1/2, k = 469,994).
+    """
+    with localcontext(Context(prec=60, Emin=-10 ** 9, Emax=10 ** 9)):
+        big_n, prob = Decimal(n), Decimal(p)
+        if lower and k <= 0:
+            return (1 - prob) ** n
+        if not lower and k >= n:
+            return prob ** n
+        x = Decimal(k) / big_n
+        kl = x * (x / prob).ln() + (1 - x) * ((1 - x) / (1 - prob)).ln()
+        return (-big_n * kl).exp()
 
 
 def midpoint_convention_section() -> dict:
-    """The discretisation of the midpoint rule with exact F, evaluated exactly.
+    """The discretisation of the midpoint rule with exact F, evaluated in 60-digit decimal.
 
     G(x) = clip(ceil(2**53 F(x) - 1/2), 0, 2**53) / 2**53 is the distribution function of the midpoint rule
     with exact F. Bound: |Var_G - Var_F| <= B2 + B1**2 with B1 = sum_x e(x), B2 = sum_x |2 (x - mean) + 1| e(x),
     e(x) = min(2**-54, F(x), 1 - F(x)) (summation by parts, tails included). F is exact (60-digit decimal) on
     mean +- 60 sd; outside, e(x) <= F(a - 1) or 1 - F(b), bounded by Chernoff, contributes at most
-    a (2 mean + 1) F(a - 1) and (n - b) (2 (n - mean) + 1) (1 - F(b)) to B2. Var_G is computed exactly beside it.
+    a (2 mean + 1) F(a - 1) and (n - b) (2 (n - mean) + 1) (1 - F(b)) to B2. Var_G is computed beside it.
+    Every quantity is a 60-digit decimal (tails included, without underflow): a high-precision evaluation,
+    not interval arithmetic, so rounding errors of relative order 1e-58 are not bounded.
     'left_endpoint_share' is the variance that inverting at u = 0 itself (probability 2**-53 of x = 0) would add.
     The old bound 2**-54 (z_low**2 + z_high**2) left out the tails and fails for tiny means (review finding).
     """
@@ -357,8 +365,8 @@ def midpoint_convention_section() -> dict:
                 g_mean += x * mass
                 g_second += Decimal(x) * x * mass
                 g_prev = g
-            low_tail = Decimal(_chernoff_tail(n, p, a - 1, True)) if a > 0 else Decimal(0)
-            high_tail = Decimal(_chernoff_tail(n, p, b + 1, False)) if b < n else Decimal(0)
+            low_tail = _chernoff_tail(n, p, a - 1, True) if a > 0 else Decimal(0)
+            high_tail = _chernoff_tail(n, p, b + 1, False) if b < n else Decimal(0)
             b1 += a * low_tail + (n - b) * high_tail
             b2 += a * (2 * mean + 1) * low_tail + (n - b) * (2 * (n - mean) + 1) * high_tail
             var_g = g_second - g_mean ** 2
@@ -376,12 +384,58 @@ def midpoint_convention_section() -> dict:
     return {"rows": rows, "bound_holds_everywhere": all(r["bound_holds"] for r in rows)}
 
 
-def cdf_finiteness_section() -> dict:
-    """Boost's F and S at every point the bisection can reach, n up to PART_MAX, and the NaN region above it.
+def _traced_draws() -> dict:
+    """Every F and S evaluation that actual draws make, fallbacks to the global bounds included.
 
-    Points: mean + z sd for 73 values of z in [-9, 9] (draws stay within the quantiles of 2**-54 and
+    binomial_inverse runs at extreme and central uniforms, with the default bracket and with the narrowest
+    one (half_width=1), which sends the search to the global bounds -1 and n when the quantile guess misses;
+    Boost's functions are wrapped while it runs, so every point a bisection evaluates is counted.
+    """
+    real_lower, real_upper = special.betaincc, special.betainc
+    seen = {"draws": 0, "evaluations": 0, "nonfinite": 0, "z_min": math.inf, "z_max": -math.inf}
+    current = {}
+
+    def traced(function):
+        def wrapper(a, b, x):
+            out = function(a, b, x)
+            values = np.asarray(out, dtype=np.float64)
+            z = (np.asarray(a, dtype=np.float64) - 1.0 - current["mean"]) / current["sd"]
+            seen["evaluations"] += int(values.size)
+            seen["nonfinite"] += int(np.sum(~np.isfinite(values)))
+            if values.size:
+                seen["z_min"] = min(seen["z_min"], float(np.min(z)))
+                seen["z_max"] = max(seen["z_max"], float(np.max(z)))
+            return out
+        return wrapper
+
+    special.betaincc, special.betainc = traced(real_lower), traced(real_upper)
+    try:
+        for n in (2 ** 30, 2 ** 40, 2 ** 46, 2 ** 49, PART_MAX - 1, PART_MAX):
+            for p in (0.5, 0.45, 0.3, 0.1, 1e-2, 1e-4, 1e-6):
+                if n * p <= TABLE_MEAN_MAX:
+                    continue
+                current.update(mean=n * p, sd=math.sqrt(n * p * (1 - p)))
+                for u in (0.0, 2.0 ** -53, 1e-9, 0.25, 0.5, 1.0 - 2.0 ** -10, 1.0 - 2.0 ** -11, 1.0 - 2.0 ** -53):
+                    for width in (None, 1):
+                        if width is None:
+                            binomial_inverse(n, p, u)
+                        else:
+                            binomial_inverse(n, p, u, half_width=width)
+                        seen["draws"] += 1
+    finally:
+        special.betaincc, special.betainc = real_lower, real_upper
+    return seen
+
+
+def cdf_finiteness_section() -> dict:
+    """Boost's F and S at scanned points and at every evaluation of traced draws, n up to PART_MAX, and the
+    NaN region above it.
+
+    Scanned points: mean + z sd for 73 values of z in [-9, 9] (draws stay within the quantiles of 2**-54 and
     1 - 2**-54, about +-8.3 sd) and every k within 50 of the mean; only n p > TABLE_MEAN_MAX (Boost regime).
-    Rows with n > PART_MAX document why PART_MAX is 2**50: the sampler refuses those n.
+    The scan is not exhaustive: a bisection that falls back to the global bounds evaluates points far outside
+    that window, which the traced draws cover (``traced``). Rows with n > PART_MAX document why PART_MAX is
+    2**50: the sampler refuses those n.
     """
     rows = []
     for n in (2 ** 30, 2 ** 36, 2 ** 40, 2 ** 44, 2 ** 46, 2 ** 48, 2 ** 49, PART_MAX - 1, PART_MAX,
@@ -402,7 +456,7 @@ def cdf_finiteness_section() -> dict:
                          "nonfinite_F": int(np.sum(~np.isfinite(f))), "nonfinite_S": int(np.sum(~np.isfinite(s)))})
     inside = [r for r in rows if r["within_domain"]]
     outside = [r for r in rows if not r["within_domain"]]
-    return {"part_max": PART_MAX, "rows": rows,
+    return {"part_max": PART_MAX, "rows": rows, "traced": _traced_draws(),
             "points_within_domain": sum(r["points"] for r in inside),
             "nonfinite_within_domain": sum(r["nonfinite_F"] + r["nonfinite_S"] for r in inside),
             "nonfinite_beyond_domain": sum(r["nonfinite_F"] + r["nonfinite_S"] for r in outside)}

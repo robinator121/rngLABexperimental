@@ -97,6 +97,9 @@ def worker(config: dict) -> dict:
     return out
 
 
+DETERMINISTIC = ("words", "bytes", "parts", "words_per_interval", "imported")  # fixed by the configuration
+
+
 def measure(config: dict, repeats: int = 3, threads: str | None = None) -> dict:
     samples = []
     for repeat in range(repeats):
@@ -106,12 +109,18 @@ def measure(config: dict, repeats: int = 3, threads: str | None = None) -> dict:
         samples.append(json.loads(done.stdout.strip().splitlines()[-1]))
     timed = [k for k in ("wall_seconds", "cpu_seconds", "plan_seconds", "max_rss_bytes") if k in samples[0]]
     summary = {k: statistics.median(s[k] for s in samples) for k in timed}  # every timing is a median
-    constant = {k: v for k, v in samples[0].items() if k not in timed and k not in ("repeat", "traced_peak_bytes")}
-    varying = sorted(k for k in constant if any(s.get(k) != constant[k] for s in samples))
-    if varying:
-        raise RuntimeError(f"repeats disagree on {varying}; they must describe the same computation")
-    summary.update(constant)
     summary["samples"] = {k: [s[k] for s in samples] for k in timed}
+    for key in samples[0]:
+        if key in timed or key in ("repeat", "traced_peak_bytes"):
+            continue
+        values = [s.get(key) for s in samples]
+        if all(value == values[0] for value in values):
+            summary[key] = values[0]
+        elif key in DETERMINISTIC:      # fixed by the configuration: a difference means another computation
+            raise RuntimeError(f"repeats disagree on {key} ({values}); they must describe the same computation")
+        else:                           # stochastic (each repeat has its own seed): median, samples kept
+            summary[key] = statistics.median(values)
+            summary["samples"][key] = values
     traced = subprocess.run([sys.executable, __file__, "worker", json.dumps(dict(config, repeat=50, trace=True))],
                             capture_output=True, text=True, env=child_env(threads), check=True)
     summary["traced_peak_bytes"] = json.loads(traced.stdout.strip().splitlines()[-1])["traced_peak_bytes"]

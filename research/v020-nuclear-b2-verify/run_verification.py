@@ -21,11 +21,13 @@ from __future__ import annotations
 import argparse
 import copy
 import datetime
+import fcntl
 import json
 import math
 import os
 import signal
 import socket
+import subprocess
 import sys
 import time
 from decimal import Context, Decimal, localcontext
@@ -76,7 +78,9 @@ def frozen_hashes(*, smoke: bool = False) -> dict:
     return {"frozen": True, "files": listed}
 
 
-ATTEMPT_SCHEMA = "rnglab-b2-attempt-v1"
+ATTEMPT_SCHEMA = "rnglab-b2-attempt-v2"
+ATTEMPTS = "research/v020-nuclear-b2-verify/results/attempts/"
+C1_LIMIT = 0.02
 
 
 class Terminated(BaseException):
@@ -99,11 +103,11 @@ def _synced(path: Path, text: str, mode: str) -> None:
 
 
 def write_new(path: Path, text: str) -> None:
-    """Publish a file atomically and never over an existing one (temporary file, fsync, hard link)."""
+    """Publish a file atomically and never over an existing one (synced temporary file, then a hard link)."""
     tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
     _synced(tmp, text, "x")
     try:
-        os.link(tmp, path)  # FileExistsError if path exists, even when a concurrent run created it
+        os.link(tmp, path)  # FileExistsError if path exists: complete or absent, never overwritten
     finally:
         tmp.unlink()
 
@@ -114,50 +118,88 @@ def _replace(path: Path, text: str) -> None:
     os.replace(tmp, path)
 
 
-def begin_attempt(out_dir: Path, script: str, code: dict, *, previous_ended: bool = False,
-                  deviation: str | None = None) -> dict:
-    """Reserve the next attempt of a once-only record run, atomically, before any random number is drawn.
+def record_tree(repo: Path) -> dict:
+    """Every change in the tree, split into files of earlier attempts (untracked, inside ATTEMPTS) and the rest."""
+    out = subprocess.run(["git", "-C", str(repo), "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+                         capture_output=True, check=True).stdout.decode()
+    attempt_files, other = [], []
+    for entry in out.split("\0"):
+        if entry:
+            (attempt_files if entry.startswith("?? " + ATTEMPTS) else other).append(entry)
+    return {"attempt_files": attempt_files, "other_changes": other}
 
-    Every attempt leaves out_dir/attempts/<script>-<k>.json, status "started" until it ends as
-    "completed", "failed" or "terminated", and a folder out_dir/attempts/<script>-<k>/ for its files.
-    Refused: a completed attempt (the run is never repeated); an attempt still marked "started",
-    unless the operator declares with --previous-attempt-ended that its process is gone (a node
-    failure or SIGKILL leaves no end record); an earlier attempt on another commit, unless
-    --deviation gives the reason (recorded here and in the results). A rerun on the same commit
-    draws the same numbers (fixed seeds), so it reproduces what the interrupted attempt would have
-    produced; no statistic is written before an attempt completes. Concurrent launches race for the
-    same file name, and only one can create it.
+
+def require_record_tree(repo: Path, script: str) -> dict:
+    """A record run starts from a committed tree; only files that earlier attempts left in ATTEMPTS may be
+    uncommitted (they are evidence, committed with the results), so an interrupted attempt can be rerun."""
+    tree = record_tree(repo)
+    if tree["other_changes"]:
+        raise SystemExit(f"the record {script} run needs a committed tree; only files of earlier attempts in "
+                         f"{ATTEMPTS} may be uncommitted, not: " + "; ".join(tree["other_changes"][:5]))
+    return tree
+
+
+def begin_attempt(out_dir: Path, script: str, code: dict, *, deviation: str | None = None) -> dict:
+    """Reserve the next attempt of a once-only record run before any random number is drawn.
+
+    The attempt holds an exclusive flock on attempts/<script>.lock for as long as it runs; the kernel
+    releases it when the process ends, however it ends. While it is held no other attempt of the script
+    can run, so an earlier record still marked "started" belongs to a process that died (a node failure,
+    SIGKILL): it is listed as interrupted in the new record. Refused: an attempt that holds the lock; a
+    completed attempt (the run is never repeated); an earlier attempt on another commit, unless
+    ``deviation`` gives the reason (recorded). Records are published atomically (complete or absent).
+    A rerun on the same commit draws the same numbers (fixed seeds): it replays, it is not a new sample.
     """
     folder = out_dir / "attempts"
     folder.mkdir(parents=True, exist_ok=True)
-    previous = []
-    for path in sorted(folder.glob(f"{script}-*.json")):
-        number = path.stem[len(script) + 1:]
-        if number.isdigit():
-            previous.append((int(number), path, json.loads(path.read_text())))
-    previous.sort()
-    for number, path, record in previous:
-        if record["status"] == "completed":
-            raise SystemExit(f"{path} records a completed attempt; the run is never repeated")
-        if record["status"] == "started" and not previous_ended:
-            raise SystemExit(f"{path}: attempt {number} started on {record['host']} (pid {record['pid']}) and has no "
-                             "end record; if its process is gone, rerun with --previous-attempt-ended")
-        if record["code"].get("git_commit") != code.get("git_commit") and not deviation:
-            raise SystemExit(f"attempt {number} ran on commit {record['code'].get('git_commit')}; a rerun on another "
-                             "commit is a protocol deviation: give --deviation '<reason>'")
-    number = 1 + max((n for n, _, _ in previous), default=0)
-    record = {"schema": ATTEMPT_SCHEMA, "script": script, "attempt": number, "status": "started",
-              "started_utc": _utc(), "host": socket.gethostname(), "pid": os.getpid(), "argv": sys.argv,
-              "code": code, "previous_attempts": [{"attempt": n, "status": r["status"],
-                                                   "git_commit": r["code"].get("git_commit")} for n, _, r in previous],
-              "previous_declared_ended": bool(previous_ended), "deviation": deviation}
-    path = folder / f"{script}-{number}.json"
+    lock_path = folder / f"{script}.lock"
+    lock = open(lock_path, "a+")
     try:
-        _synced(path, json.dumps(record, indent=1) + "\n", "x")
-    except FileExistsError:
-        raise SystemExit(f"{path} was created by a concurrent launch; only one attempt may run") from None
-    (folder / f"{script}-{number}").mkdir()
-    return {"path": path, "dir": folder / f"{script}-{number}", "record": record}
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        lock.close()
+        raise SystemExit(f"another {script} attempt is running: it holds {lock_path}") from None
+    except OSError as error:
+        lock.close()
+        raise SystemExit(f"cannot lock {lock_path} ({error}); record runs need a file system with flock") from None
+    try:
+        previous = []
+        for path in sorted(folder.glob(f"{script}-*.json")):
+            number = path.stem[len(script) + 1:]
+            if number.isdigit():
+                try:
+                    previous.append((int(number), path, json.loads(path.read_text())))
+                except (OSError, json.JSONDecodeError) as error:
+                    raise SystemExit(f"{path} cannot be read ({error}); records are published atomically, so "
+                                     "it was changed by hand: inspect it before any rerun") from None
+        previous.sort()
+        for number, path, record in previous:
+            if record["status"] == "completed":
+                raise SystemExit(f"{path} records a completed attempt; the run is never repeated")
+            if record["code"].get("git_commit") != code.get("git_commit") and not deviation:
+                raise SystemExit(f"attempt {number} ran on commit {record['code'].get('git_commit')}; a rerun on "
+                                 "another commit is a protocol deviation: give --deviation '<reason>'")
+        number = 1 + max((n for n, _, _ in previous), default=0)
+        record = {"schema": ATTEMPT_SCHEMA, "script": script, "attempt": number, "status": "started",
+                  "started_utc": _utc(), "host": socket.gethostname(), "pid": os.getpid(), "argv": sys.argv,
+                  "code": code, "previous_attempts": [{"attempt": n, "status": r["status"],
+                                                       "git_commit": r["code"].get("git_commit")}
+                                                      for n, _, r in previous],
+                  "interrupted_attempts": [n for n, _, r in previous if r["status"] == "started"],
+                  "leftover_temporary_files": sorted(p.name for p in folder.glob(".*.tmp")),
+                  "deviation": deviation}
+        path = folder / f"{script}-{number}.json"
+        write_new(path, json.dumps(record, indent=1) + "\n")
+        (folder / f"{script}-{number}").mkdir()
+        lock.seek(0)
+        lock.truncate()
+        lock.write(json.dumps({"attempt": number, "host": record["host"], "pid": record["pid"]}) + "\n")
+        lock.flush()
+    except BaseException:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+        lock.close()
+        raise
+    return {"path": path, "dir": folder / f"{script}-{number}", "record": record, "lock": lock}
 
 
 def end_attempt(attempt: dict, status: str, **fields) -> None:
@@ -165,20 +207,80 @@ def end_attempt(attempt: dict, status: str, **fields) -> None:
     _replace(attempt["path"], json.dumps(attempt["record"], indent=1, default=str) + "\n")
 
 
+def release_attempt(attempt: dict) -> None:
+    lock = attempt.pop("lock", None)
+    if lock is not None:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+        lock.close()
+
+
 def run_attempt(attempt: dict, body, result_file: Path) -> int:
     """Run body() as the reserved attempt; record how it ended (SIGTERM included) and the result's SHA-256."""
     handler = signal.signal(signal.SIGTERM, _raise_terminated)
     try:
-        status = body()
-    except BaseException as error:
-        end_attempt(attempt, "terminated" if isinstance(error, (Terminated, KeyboardInterrupt)) else "failed",
-                    error=f"{type(error).__name__}: {error}")
-        raise
+        try:
+            status = body()
+        except BaseException as error:
+            end_attempt(attempt, "terminated" if isinstance(error, (Terminated, KeyboardInterrupt)) else "failed",
+                        error=f"{type(error).__name__}: {error}")
+            raise
+        end_attempt(attempt, "completed", exit_status=status, result=result_file.name,
+                    result_sha256=file_sha256(result_file))
+        return status
     finally:
         signal.signal(signal.SIGTERM, handler)
-    end_attempt(attempt, "completed", exit_status=status, result=result_file.name,
-                result_sha256=file_sha256(result_file))
-    return status
+        release_attempt(attempt)
+
+
+def r0_reading(families: dict, limit: float = C1_LIMIT) -> dict:
+    """R0 per family as reading_rules.R0 words it: an upper bound above the limit is not evidence of an excess."""
+    out = {}
+    for family, f in families.items():
+        low, high = f["false_fail_ci95"]
+        if high <= limit:
+            statement = f"C1 holds: the false-FAIL rate is below {limit} (95% upper bound {high:.4f})"
+        elif low > limit:
+            statement = f"C1 fails: the false-FAIL rate exceeds {limit} (95% lower bound {low:.4f})"
+        else:
+            statement = (f"C1 fails: the calibration did not establish that the false-FAIL rate is below {limit} "
+                         f"(95% interval {low:.4f} to {high:.4f})")
+        out[family] = {"false_fail_rate": f["false_fail_rate"], "false_fail_ci95": [low, high],
+                       "C1_holds": high <= limit, "excess_established": low > limit, "statement": statement}
+    return out
+
+
+def record_calibration(protocol: dict, frozen: dict, code: dict, results: Path = HERE / "results") -> dict:
+    """The completed record calibration that R0 reads. The verification refuses to start without one that ran
+    on the same frozen files, module files and numerical libraries, and whose attempt record shows it completed."""
+    path = results / "calibration.json"
+    if not path.exists():
+        raise SystemExit("results/calibration.json is missing: run the record calibration first and commit it "
+                         "(protocol.json record_procedure)")
+    data = json.loads(path.read_text())
+    spec, now, problems = protocol["calibration"], environment(), []
+    if data.get("development") is not False:
+        problems.append("it is a development run")
+    if data.get("namespace") != spec["namespace"] or data.get("batteries") != spec["batteries"]:
+        problems.append("its namespace or number of batteries differs from protocol.json")
+    if data.get("protocol_files") != frozen:
+        problems.append("it ran with other frozen files")
+    if data.get("code", {}).get("module_files_sha256") != code.get("module_files_sha256"):
+        problems.append("it ran with other module files")
+    for key in ("python", "numpy", "scipy"):
+        if data.get("environment", {}).get(key) != now.get(key):
+            problems.append(f"it ran with {key} {data.get('environment', {}).get(key)}, this run has {now.get(key)}")
+    attempt = data.get("attempt") or {}
+    record_path = results / str(attempt.get("record", "attempts/missing"))
+    if not record_path.is_file():
+        problems.append("its attempt record is missing")
+    else:
+        record = json.loads(record_path.read_text())
+        if record.get("status") != "completed" or record.get("result_sha256") != file_sha256(path):
+            problems.append("its attempt record does not show it completed with this file")
+    if problems:
+        raise SystemExit("results/calibration.json cannot serve R0: " + "; ".join(problems))
+    return {"file": "results/calibration.json", "sha256": file_sha256(path), "attempt": attempt.get("number"),
+            "replay_check": data.get("replay_check"), "R0": r0_reading(data["families"])}
 
 
 _MEMO: dict = {}
@@ -589,8 +691,6 @@ def scaled(initial: dict, scale: float) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--smoke", action="store_true")
-    parser.add_argument("--previous-attempt-ended", action="store_true",
-                        help="declare that an attempt left as 'started' is no longer running")
     parser.add_argument("--deviation", default=None, help="reason for a rerun on another commit (recorded)")
     args = parser.parse_args()
     frozen = frozen_hashes(smoke=args.smoke)
@@ -599,21 +699,22 @@ def main() -> int:
     code = code_identity(REPO)
     out_dir = HERE / ("smoke" if args.smoke else "results")
     if args.smoke:
-        return study(args, frozen, protocol, design, code, out_dir, out_dir / "manifests", None)
-    if code["git_dirty"] is not False:
-        raise SystemExit("the main run needs a clean, committed Git tree")
+        return study(args, frozen, protocol, design, code, out_dir, out_dir / "manifests", None, None, None)
+    tree = require_record_tree(REPO, "verification")
     if (out_dir / "verification.json").exists():
         raise SystemExit("results/verification.json exists; results are never overwritten")
-    attempt = begin_attempt(out_dir, "verification", code, previous_ended=args.previous_attempt_ended,
-                            deviation=args.deviation)
+    calibration = record_calibration(protocol, frozen, code)
+    attempt = begin_attempt(out_dir, "verification", code, deviation=args.deviation)
     return run_attempt(attempt, lambda: study(args, frozen, protocol, design, code, out_dir, attempt["dir"] / "manifests",
-                                              attempt), out_dir / "verification.json")
+                                              attempt, calibration, tree), out_dir / "verification.json")
 
 
 def study(args, frozen: dict, protocol: dict, design: dict, code: dict, out_dir: Path, manifests: Path,
-          attempt: dict | None) -> int:
-    """The study itself; with an attempt (the record run) its result is published without overwriting."""
+          attempt: dict | None, calibration: dict | None, tree: dict | None) -> int:
+    """The study itself. Nothing is written before it ends: manifests and results are published together at
+    the end; with an attempt (the record run) results are published without overwriting."""
     manifests.mkdir(parents=True, exist_ok=True)
+    pending: dict[str, str] = {}
     ns = protocol["smoke_namespace"] if args.smoke else protocol["namespace"]
     smoke = protocol["smoke"]
     scale = smoke["scale"] if args.smoke else 1.0
@@ -640,7 +741,7 @@ def study(args, frozen: dict, protocol: dict, design: dict, code: dict, out_dir:
         return run, stream, time.perf_counter() - t0, s, label
 
     def manifest(run_id, run, stream, label):
-        (manifests / f"{run_id}.json").write_text(json.dumps(
+        pending[f"{run_id}.json"] = (json.dumps(
             aggregate_manifest(experiment=experiment, run_id=run_id, run=run, code=code,
                                extra={"seed_label": label}), indent=1) + "\n")
 
@@ -728,7 +829,7 @@ def study(args, frozen: dict, protocol: dict, design: dict, code: dict, out_dir:
                           "populations_b2": pop_b.tolist(), "populations_layer_a": pop_a.tolist(),
                           "populations_naive": pop_n.tolist(), "layer_a_decays_at_time_zero": a_zero,
                           "tests": ens_tests, "comparison_tests": comp_tests}
-    (manifests / "ENSEMBLES_S2.json").write_text(json.dumps(
+    pending["ENSEMBLES_S2.json"] = (json.dumps(
         {"schema": "rnglab-nuclear-ensemble-manifest-v1", "experiment": experiment, "code": code,
          "seed_recipe": protocol["seed_recipe"], "seeds": seeds, "stream_sha256": digests}, indent=1) + "\n")
     tests["NC1"].update(family_members(ens_tests))
@@ -847,8 +948,13 @@ def study(args, frozen: dict, protocol: dict, design: dict, code: dict, out_dir:
                           "R1_failed_items": failed,
                           "R2": "MET" if all(result["positive_controls"][k]["rejected"]
                                              for k in ("PC-B1", "PC-B2 single run", "PC-B2 comparison")) else "NOT MET"}
+    result["calibration"] = calibration
+    result["tree"] = tree
+    result["verdicts"]["R0"] = calibration["R0"] if calibration else "not read: smoke run"
     result["finished_utc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     result["elapsed_seconds"] = time.perf_counter() - clock
+    for name, text in pending.items():
+        (manifests / name).write_text(text)
     if attempt is None:
         (out_dir / "verification.json").write_text(json.dumps(result, indent=1, default=str) + "\n")
     else:

@@ -1,0 +1,22 @@
+# v0.20 nuclear module, B2 after the fourth review (not frozen): test evidence
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-17T18:42:27Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+1008 passed, 2 skipped, 3 warnings in 217.87s (0:03:37)
+
+## 2. Nuclear tests only (Layer A 115, B2 175 including 24 in test_b2_guards.py and 39 in test_b2_integrity.py): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider
+290 passed, 3 warnings in 32.58s
+
+The three warnings are RuntimeWarnings (overflow in the float64 matrix exponential) raised on purpose by
+test_b2_guards.py, which checks that a non-finite reference fails D8. test_b2_integrity.py passes with
+DeprecationWarning turned into an error (it expects NumPy's deprecation warnings for dtype and shape
+assignment explicitly).
+
+## 3. Items 32-40 change no draw
+run_verification.py --smoke (unfrozen; smoke namespace; output not in Git) on this tree and on an exported
+copy of db50f3f (whose smoke results equal those of 413e818): the 13 run manifests have identical digests and
+word counts. 8 of the 305 NC1 and NC2 p-values differ, all BT-PHOTON-T, by at most 3.5e-15 relative (the
+allocation statistic is now an exact rational). R1 PASS in both; R2 NOT MET at the smoke scale in both, as
+before. design.py regenerates design.json with only the new calibration_null_lattice block added.

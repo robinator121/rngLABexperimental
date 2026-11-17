@@ -6,6 +6,7 @@ and p-value, and raises ValueError on a non-finite input or result.
 from __future__ import annotations
 
 import math
+from fractions import Fraction
 from typing import Any, Sequence
 
 import numpy as np
@@ -252,14 +253,19 @@ def allocation_check(successes: Sequence[int], trials: Sequence[int], probabilit
     members = sorted(int(i) for cell in cells for i in cell)
     if len(cells) < 2 or members != list(range(len(s))):
         raise ValueError("cells must partition the intervals into two or more parts")
-    statistic = 0.0
+    # The float probability is a binary fraction a / b; with it each term is the exact rational
+    # (S b - a T)**2 / (a (b - a) T), so no residual is lost to cancellation however large T is
+    # (at p = 1 - 2**-53 and T near 2**62 a float residual S - p T is zero).
+    a, b = float(probability).as_integer_ratio()
+    terms = []
     cell_successes, cell_trials = [], []
     for cell in cells:
         sc, nc = sum(s[int(i)] for i in cell), sum(n[int(i)] for i in cell)  # Python integers: exact
         cell_successes.append(sc)
         cell_trials.append(nc)
         if nc > 0:
-            statistic += (sc - probability * nc) ** 2 / (probability * (1.0 - probability) * nc)
+            terms.append(Fraction((sc * b - a * nc) ** 2, a * (b - a) * nc))
+    statistic = float(sum(terms, Fraction(0)))
     dof = len(cells)
     p = float(stats.chi2.sf(statistic, dof))
     _finite(statistic, p)

@@ -69,10 +69,14 @@ Boost's incomplete beta returns NaN near the centre of the distribution for
 n close to 2**53 (seen at n = 2**53 - 1 and 2**53 for p >= 0.2, where
 a + b = n + 1 reaches the end of the exactly representable integers); a NaN
 made every comparison false and moved draws by thousands (review finding).
-A scan found no non-finite value up to n = 2**52.5 (numerics: cdf_finiteness
-covers the supported domain). PART_MAX = 2**50 keeps a factor 4 below the
-NaN region and limits F's error to about 1e-13. Whatever the cause, a
-non-finite value of F or S raises FloatingPointError; it never steers a draw.
+PART_MAX = 2**50 keeps a factor 4 below that region and limits F's error to
+about 1e-13. It is supported empirically, not proved: numerics, cdf_finiteness,
+found no non-finite value at the points it scans (mean +- 9 sd and the centre,
+nine probabilities, n up to 2**50) nor at any evaluation of the draws it traces
+(extreme and central uniforms, narrow brackets that force the fallbacks to the
+global bounds); the scan cannot cover every point a bisection may reach.
+Whatever the cause, a non-finite value of F or S raises FloatingPointError
+(here and in ``sampler_tails``); it never steers a draw.
 0 <= n <= PART_MAX per draw and 0 <= p <= 1/2. Callers sample min(p, 1 - p) and
 flip (x -> n - x) when p > 1/2, with the complement computed accurately by
 them. Larger n is handled by ``split_counts``: Binomial(n, p) is the sum of
@@ -139,7 +143,10 @@ def sampler_tails(k: int, n: int, p: float) -> tuple[float, float]:
     if n * p <= TABLE_MEAN_MAX:
         lower, upper = table_tails(n, p)
         return (float(lower[k]), float(upper[k])) if k < lower.size else (1.0, 0.0)
-    return float(special.betaincc(k + 1.0, n - k, p)), float(special.betainc(k + 1.0, n - k, p))
+    f, s = float(special.betaincc(k + 1.0, n - k, p)), float(special.betainc(k + 1.0, n - k, p))
+    if not (math.isfinite(f) and math.isfinite(s)):
+        raise FloatingPointError(f"F or S not finite at k={k}, n={n}, p={p!r}; the sampler refuses such a draw")
+    return f, s
 
 
 def uses_upper_tail(n: int, p: float, u: float) -> bool:

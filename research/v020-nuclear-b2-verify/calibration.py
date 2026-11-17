@@ -329,8 +329,6 @@ def main() -> int:
     parser.add_argument("--workers", type=int, default=None, help="default: the CPUs this process may use")
     parser.add_argument("--chunk", type=int, default=10)
     parser.add_argument("--out", type=Path, default=None, help="development only: another output file")
-    parser.add_argument("--previous-attempt-ended", action="store_true",
-                        help="declare that an attempt left as 'started' is no longer running")
     parser.add_argument("--deviation", default=None, help="reason for a rerun on another commit (recorded)")
     args = parser.parse_args()
     if args.out is not None and not args.development:
@@ -347,22 +345,20 @@ def main() -> int:
             raise SystemExit("the record run uses the number of batteries in protocol.json")
         frozen = verify.frozen_hashes()
         namespace, batteries = spec["namespace"], spec["batteries"]
-        if code_identity(REPO)["git_dirty"] is not False:
-            raise SystemExit("the record run needs a clean, committed Git tree")
+        tree = verify.require_record_tree(REPO, "calibration")
         out = HERE / "results" / "calibration.json"
     if out.exists():
         raise SystemExit(f"{out} exists; results are never overwritten")
     workers = args.workers or allocated_cpus()
     if args.development:
         return calibrate(verify, namespace, batteries, out, frozen, args, workers, None)
-    attempt = verify.begin_attempt(out.parent, "calibration", code_identity(REPO),
-                                   previous_ended=args.previous_attempt_ended, deviation=args.deviation)
+    attempt = verify.begin_attempt(out.parent, "calibration", code_identity(REPO), deviation=args.deviation)
     return verify.run_attempt(attempt, lambda: calibrate(verify, namespace, batteries, out, frozen, args, workers,
-                                                         attempt), out)
+                                                         attempt, tree), out)
 
 
 def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, args, workers: int,
-              attempt: dict | None) -> int:
+              attempt: dict | None, tree: dict | None = None) -> int:
     """Run the batteries in a process pool. With an attempt (the record run) every finished chunk's digest is
     appended to the attempt's chunks.jsonl (kept if the attempt is interrupted) and the result is published
     without overwriting; the replay check compares the digests with earlier attempts on the same commit."""
@@ -406,6 +402,7 @@ def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, a
                              "previous_attempts": attempt["record"]["previous_attempts"],
                              "deviation": attempt["record"]["deviation"]}
         result["replay_check"] = replay_check(attempt)
+        result["tree"] = tree
         verify.write_new(out, json.dumps(result, indent=1) + "\n")
     for family, f in summary.items():
         print(f"{family}: {f['failed_batteries']} / {batteries} batteries fail under the null "

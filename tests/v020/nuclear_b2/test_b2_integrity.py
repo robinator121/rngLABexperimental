@@ -128,7 +128,7 @@ def test_results_are_immutable(branching, ns):
     run = simulate_aggregate(branching, {"Xa-400": 3000}, TIMES, _stream(ns, "result"))
     with pytest.raises(TypeError):
         run.initial["Xa-400"] = 5
-    with pytest.raises(dataclasses.FrozenInstanceError):
+    with pytest.raises(AttributeError):
         run.digest = "0" * 64
     provenance = run.stream_provenance()
     provenance["words_read"] = -1
@@ -301,10 +301,12 @@ def test_attempts_are_reserved_once_and_record_how_they_ended(tmp_path):
     first = rv.begin_attempt(tmp_path, "x", code)
     assert first["path"].name == "x-1.json" and first["dir"].is_dir()
     assert json.loads(first["path"].read_text())["status"] == "started"
-    with pytest.raises(SystemExit, match="no end record"):
-        rv.begin_attempt(tmp_path, "x", code)                     # still marked as running
-    second = rv.begin_attempt(tmp_path, "x", code, previous_ended=True)
+    with pytest.raises(SystemExit, match="another x attempt is running"):
+        rv.begin_attempt(tmp_path, "x", code)                     # the first holds the lock
+    rv.release_attempt(first)                    # as if its process died: the lock is gone, no end record
+    second = rv.begin_attempt(tmp_path, "x", code)
     assert second["record"]["previous_attempts"] == [{"attempt": 1, "status": "started", "git_commit": "c1"}]
+    assert second["record"]["interrupted_attempts"] == [1]
 
     def broken():
         raise KeyError("boom")
@@ -312,8 +314,8 @@ def test_attempts_are_reserved_once_and_record_how_they_ended(tmp_path):
         rv.run_attempt(second, broken, tmp_path / "result.json")
     assert json.loads(second["path"].read_text())["status"] == "failed"
     with pytest.raises(SystemExit, match="deviation"):
-        rv.begin_attempt(tmp_path, "x", {"git_commit": "c2"}, previous_ended=True)
-    third = rv.begin_attempt(tmp_path, "x", code, previous_ended=True)
+        rv.begin_attempt(tmp_path, "x", {"git_commit": "c2"})
+    third = rv.begin_attempt(tmp_path, "x", code)
 
     def works():
         rv.write_new(tmp_path / "result.json", "{}\n")
@@ -322,7 +324,99 @@ def test_attempts_are_reserved_once_and_record_how_they_ended(tmp_path):
     record = json.loads(third["path"].read_text())
     assert record["status"] == "completed" and record["result_sha256"] == rv.file_sha256(tmp_path / "result.json")
     with pytest.raises(SystemExit, match="completed attempt"):
-        rv.begin_attempt(tmp_path, "x", code, previous_ended=True, deviation="any")
+        rv.begin_attempt(tmp_path, "x", code, deviation="any")
+
+
+def test_overlapping_launches_are_refused_and_records_are_complete_or_absent(tmp_path):
+    """The review's probes: a second recovery launch treated the running attempt as dead (2 and 3 both
+    'started'); a reservation cut off mid-write ({"schema":) raised JSONDecodeError."""
+    rv = _verification()
+    code = {"git_commit": "c1"}
+    running = rv.begin_attempt(tmp_path, "y", code)
+    for _ in range(2):                           # however often it is tried while the first runs
+        with pytest.raises(SystemExit, match="another y attempt is running"):
+            rv.begin_attempt(tmp_path, "y", code)
+    assert sorted(p.name for p in (tmp_path / "attempts").glob("y-*.json")) == ["y-1.json"]
+    rv.release_attempt(running)
+    leftover = tmp_path / "attempts" / ".y-2.json.999.tmp"
+    leftover.write_text('{"schema":')            # a crash between the temporary file and its link
+    nxt = rv.begin_attempt(tmp_path, "y", code)
+    assert nxt["record"]["attempt"] == 2 and nxt["record"]["leftover_temporary_files"] == [leftover.name]
+    rv.release_attempt(nxt)
+    (tmp_path / "attempts" / "y-2.json").write_text('{"schema":')   # edited by hand
+    with pytest.raises(SystemExit, match="cannot be read"):
+        rv.begin_attempt(tmp_path, "y", code)
+
+
+def _git(repo, *args):
+    subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@example.invalid", *args],
+                   check=True, capture_output=True)
+
+
+def test_a_record_run_may_start_with_files_of_earlier_attempts_and_nothing_else(tmp_path):
+    """The review's probe: an interrupted attempt's untracked files made the tree dirty, so the documented
+    rerun on the same commit was refused by the clean-tree guard."""
+    rv = _verification()
+    _git(tmp_path, "init", "-q")
+    (tmp_path / "tracked.txt").write_text("a\n")
+    _git(tmp_path, "add", "tracked.txt")
+    _git(tmp_path, "commit", "-q", "-m", "c")
+    attempts = tmp_path / rv.ATTEMPTS
+    (attempts / "calibration-1").mkdir(parents=True)
+    (attempts / "calibration-1.json").write_text("{}\n")
+    (attempts / "calibration-1" / "chunks.jsonl").write_text("")
+    tree = rv.require_record_tree(tmp_path, "calibration")
+    assert len(tree["attempt_files"]) == 2 and tree["other_changes"] == []
+    (tmp_path / "tracked.txt").write_text("b\n")
+    with pytest.raises(SystemExit, match="tracked.txt"):
+        rv.require_record_tree(tmp_path, "calibration")
+    (tmp_path / "tracked.txt").write_text("a\n")
+    (attempts.parent / "calibration.json").write_text("{}\n")   # results outside attempts/ must be committed
+    with pytest.raises(SystemExit, match="calibration.json"):
+        rv.require_record_tree(tmp_path, "verification")
+
+
+def test_r0_never_reads_an_upper_bound_above_the_limit_as_an_excess():
+    """The review's probe: 950 of 50,000 (1.9%, interval 1.78% to 2.02%) was to be reported as an excess."""
+    rv = _verification()
+    from scipy import stats
+
+    def family(k, n=50000):
+        ci = stats.binomtest(k, n).proportion_ci(method="exact")
+        return {"false_fail_rate": k / n, "false_fail_ci95": [ci.low, ci.high]}
+    reading = rv.r0_reading({"inconclusive": family(950), "holds": family(500), "excess": family(1300)})
+    assert not reading["inconclusive"]["C1_holds"] and not reading["inconclusive"]["excess_established"]
+    assert "did not establish" in reading["inconclusive"]["statement"]
+    assert reading["holds"]["C1_holds"] and "C1 holds" in reading["holds"]["statement"]
+    assert reading["excess"]["excess_established"] and "exceeds" in reading["excess"]["statement"]
+
+
+def test_the_verification_needs_a_matching_completed_record_calibration(tmp_path):
+    """The review's probe: the verification reached the study without results/calibration.json."""
+    rv = _verification()
+    protocol = json.loads((REPO / "research/v020-nuclear-b2-verify/protocol.json").read_text())
+    spec = protocol["calibration"]
+    frozen = {"frozen": True, "files": {"protocol.json": "0" * 64}}
+    code = {"module_files_sha256": {"aggregate.py": "1" * 64}, "git_commit": "c"}
+    with pytest.raises(SystemExit, match="missing"):
+        rv.record_calibration(protocol, frozen, code, tmp_path)
+    data = {"development": False, "namespace": spec["namespace"], "batteries": spec["batteries"],
+            "protocol_files": frozen, "code": code, "environment": rv.environment(),
+            "attempt": {"number": 1, "record": "attempts/calibration-1.json"},
+            "families": {"NC1": {"false_fail_rate": 0.01, "false_fail_ci95": [0.009, 0.011]}}}
+    (tmp_path / "attempts").mkdir()
+    (tmp_path / "calibration.json").write_text(json.dumps(data))
+    record = {"status": "completed", "result_sha256": rv.file_sha256(tmp_path / "calibration.json")}
+    (tmp_path / "attempts" / "calibration-1.json").write_text(json.dumps(record))
+    info = rv.record_calibration(protocol, frozen, code, tmp_path)
+    assert info["R0"]["NC1"]["C1_holds"] and info["attempt"] == 1
+    for change, message in ((dict(data, development=True), "development"),
+                             (dict(data, protocol_files={"frozen": True, "files": {}}), "frozen files"),
+                             (dict(data, code={"module_files_sha256": {}}), "module files"),
+                             (dict(data, environment=dict(data["environment"], numpy="0.0")), "numpy")):
+        (tmp_path / "calibration.json").write_text(json.dumps(change))   # the attempt record no longer matches
+        with pytest.raises(SystemExit, match=message):
+            rv.record_calibration(protocol, frozen, code, tmp_path)
 
 
 def test_results_are_published_atomically_and_never_overwritten(tmp_path):
@@ -500,11 +594,126 @@ def test_the_record_calibration_path_logs_chunks_replays_and_publishes_once(tmp_
     assert a["batteries"] == 4 and a["attempt"]["number"] == 1
     assert a["replay_check"] == {"chunks_compared": 0, "mismatches": []}
     assert len((first["dir"] / "chunks.jsonl").read_text().splitlines()) == 2
-    second = rv.begin_attempt(results, "calibration", code, previous_ended=True)   # the first never ended
+    rv.release_attempt(first)                    # as if its process died: no end record
+    second = rv.begin_attempt(results, "calibration", code)
     assert cal.calibrate(rv, namespace, 4, results / "b.json", {}, args, 1, second) == 0
     b = json.loads((results / "b.json").read_text())
     assert b["replay_check"] == {"chunks_compared": 2, "mismatches": []}            # the same draws again
     assert a["families"] == b["families"]
+    rv.release_attempt(second)
     with pytest.raises(FileExistsError):
         cal.calibrate(rv, namespace, 4, results / "a.json", {}, args, 1,
-                      rv.begin_attempt(results, "calibration", code, previous_ended=True))
+                      rv.begin_attempt(results, "calibration", code))
+
+
+# --- 10. Fourth review: corrections to the corrections -------------------------------------------------------
+
+def _simple() -> DecayScheme:
+    return DecayScheme("simple", [Nuclide("P", 1, 2, 1.0, (Channel("D", Mode.BETA_MINUS, 1.0),)),
+                                  Nuclide("D", 2, 2, math.inf)])
+
+
+def test_reassigning_dtype_or_shape_of_a_returned_array_changes_nothing(ns):
+    """The review's probe: p_small.dtype = '>f8' in a sink made the second interval decay nothing,
+    and final_populations.dtype = '>i8' changed the reported populations."""
+    scheme, t = _simple(), [0.0, 1.0, 2.0]
+    reference = simulate_aggregate(scheme, {"P": 10000}, t, _stream(ns, "dtype"))
+    plan = AggregatePlan(scheme, t, 10000)
+
+    def vandal(interval, record):
+        source = plan.interval_plans[1.0][0]
+        for view in (source.p_small, source.flip, plan.category_steps, plan.first_category, plan.deltas):
+            if view.ndim > 1:
+                with pytest.warns(DeprecationWarning):
+                    view.shape = (-1,)
+            with pytest.warns(DeprecationWarning):
+                view.dtype = ">f8" if view.dtype.kind == "f" else ">i8" if view.dtype.kind == "i" else "u1"
+
+    run = simulate_aggregate(scheme, {"P": 10000}, t, _stream(ns, "dtype"), plan=plan, sink=vandal)
+    assert run.digest == reference.digest and run.populations.tolist() == reference.populations.tolist()
+    final = run.final_populations.tolist()
+    view = run.final_populations
+    with pytest.warns(DeprecationWarning):
+        view.dtype = ">i8"
+    assert run.final_populations.tolist() == final and run.summary()["final_populations"] == dict(zip("PD", final))
+    assert run.final_populations is not run.final_populations      # every read is a fresh view
+
+
+def test_a_stream_given_another_source_during_the_run_is_refused(ns):
+    """The review's probe: w.source = other in a sink; the run used two sources and named only the second."""
+    scheme, t = _simple(), [0.0, 1.0, 2.0]
+    stream = _stream(ns, "swap-a")
+    other = labelled_source(ns, "integrity", "swap-b")
+
+    def swap(interval, record):
+        stream.source = other
+    with pytest.raises(RuntimeError, match="another source"):
+        simulate_aggregate(scheme, {"P": 10000}, t, stream, sink=swap)
+    assert other.consumed_bytes == 0
+
+
+def test_unaligned_sources_cannot_publish_checkpoints(ns):
+    """The review's probe: a source one byte into a word published checkpoints no resume could use."""
+    source = labelled_source(ns, "integrity", "unaligned")
+    source.read_bytes(1)
+    with pytest.raises(ValueError, match="word boundary"):
+        simulate_aggregate(_simple(), {"P": 100}, [0.0, 1.0, 2.0], WordStream(source), checkpoint_every=1,
+                           on_checkpoint=lambda checkpoint: None)
+    assert source.consumed_bytes == 1
+
+
+def test_the_allocation_statistic_is_exact_at_probabilities_near_one():
+    """The review's probe: at p = 1 - 2**-53 and T = 2**62 - 1 the float residual was 0 (p = 1);
+    the exact statistic is 30.25 (p = 2.7e-7)."""
+    from fractions import Fraction
+    n, p = 2 ** 62 - 1, 1 - 2 ** -53
+    result = allocation_check([n - 600, n - 600], [n, n], p, [[0], [1]])
+    exact = 2 * (Fraction(n - 600) - Fraction(p) * n) ** 2 / (Fraction(p) * (1 - Fraction(p)) * n)
+    assert result["statistic"] == float(exact) and 2.6e-7 < result["p_value"] < 2.8e-7
+    small = allocation_check([3, 5, 9], [10, 10, 20], 0.37, [[0, 1], [2]])
+    terms = [(Fraction(8) - Fraction(0.37) * 20) ** 2 / (Fraction(0.37) * (1 - Fraction(0.37)) * 20),
+             (Fraction(9) - Fraction(0.37) * 20) ** 2 / (Fraction(0.37) * (1 - Fraction(0.37)) * 20)]
+    assert small["statistic"] == float(sum(terms))
+
+
+def test_sampler_tails_refuse_a_non_finite_value(monkeypatch):
+    monkeypatch.setattr(binomial_module.special, "betaincc", lambda a, b, x: float("nan"))
+    with pytest.raises(FloatingPointError):
+        binomial_module.sampler_tails(5000, 10000, 0.5)
+
+
+def test_chernoff_tails_do_not_underflow():
+    """The review's probe: float64 gave 0 for the bound 3.07e-783 at n = 10**6, p = 1/2, k = 469,994."""
+    from decimal import Decimal, localcontext
+    numerics = _load("b2_integrity_numerics", "research/v020-nuclear-b2-numerics/numerics.py")
+    value = numerics._chernoff_tail(10 ** 6, 0.5, 469994, True)
+    with localcontext() as context:
+        context.prec = 80
+        x = Decimal(469994) / 10 ** 6
+        kl = x * (x / Decimal("0.5")).ln() + (1 - x) * ((1 - x) / Decimal("0.5")).ln()
+        reference = (-10 ** 6 * kl).exp()
+        assert value > 0 and abs(value / reference - 1) < Decimal("1e-50")
+
+
+def test_benchmark_keeps_stochastic_fields_of_real_layer_a_repeats(ns, monkeypatch):
+    """The review's probe: Layer A event counts differ between repeats (own seeds), and the consistency
+    check stopped the benchmark on its first Layer A configuration."""
+    bench = _load("b2_integrity_benchmark", "research/v020-nuclear-b2-bench/benchmark.py")
+    monkeypatch.setattr(bench, "NAMESPACE", f"{ns}-benchmark")
+    samples = [bench.worker({"engine": "layer_a", "n": 1000, "repeat": k}) for k in range(3)]
+    assert len({s["events"] for s in samples}) > 1 and len({s["words"] for s in samples}) == 1
+    traced = dict(samples[0], traced_peak_bytes=1)
+    outputs = iter(samples + [traced])
+    monkeypatch.setattr(bench.subprocess, "run", lambda *args, **kw: subprocess.CompletedProcess(
+        args, 0, stdout=json.dumps(next(outputs)) + "\n", stderr=""))
+    summary = bench.measure({"engine": "layer_a", "n": 1000}, repeats=3, threads="1")
+    assert summary["samples"]["events"] == [s["events"] for s in samples]
+    assert summary["events"] == sorted(s["events"] for s in samples)[1] and summary["words"] == samples[0]["words"]
+
+
+def test_the_design_bounds_the_calibration_null_lattice():
+    """numpy's binomial at counts above 2**53 returns integers on a lattice; design.json bounds its spacing
+    against the standard deviation of the BIG state counts."""
+    design = json.loads((REPO / "research/v020-nuclear-b2-verify/design.json").read_text())
+    lattice = design["calibration_null_lattice"]
+    assert lattice["cells_above_2_53"] > 0 and lattice["worst"]["spacing_over_sd"] < 1e-6

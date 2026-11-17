@@ -234,6 +234,20 @@ def main() -> None:
     big_parts = [-(-size // PART_MAX) for size in protocol["runs"]["BIG"]["initial_sizes"]]
     if big_parts != protocol["runs"]["BIG"]["parts"]:
         raise SystemExit(f"BIG parts {big_parts} differ from protocol.json")
+    # calibration.py draws the BIG null with numpy's binomial and multinomial, which return doubles cast to
+    # integers: at counts above 2**53 the null lies on a lattice whose spacing is at most the float spacing at
+    # twice the count. Relative to the standard deviation of the state counts the BIG tests use:
+    null_lattice = []
+    for size in protocol["runs"]["BIG"]["initial_sizes"]:
+        p_big = state_probabilities(s2, "Xa-400", cases["S2"]["times"])
+        for it, t in enumerate(cases["S2"]["times"][1:], start=1):
+            for j, q in enumerate(np.asarray(p_big[it], dtype=np.float64).tolist()):
+                mean = size * q
+                if 0.0 < q < 1.0 and mean >= 2.0 ** 53:
+                    spacing = float(np.spacing(2.0 * mean))
+                    null_lattice.append({"size": size, "t": t, "nuclide": names[j], "mean": mean, "spacing": spacing,
+                                         "spacing_over_sd": spacing / math.sqrt(size * q * (1.0 - q))})
+    null_lattice_worst = max(null_lattice, key=lambda row: row["spacing_over_sd"]) if null_lattice else None
 
     # Sensitivity of the variance tests at the Holm level (approximate: nu taken from the null moments).
     index = {name: j for j, name in enumerate(names)}
@@ -312,6 +326,10 @@ def main() -> None:
         "path_tests": path_detail,
         "photon_interval_tests": {"min_expected": verify.PHOTON_MIN_EXPECTED, "cells": photon_cells},
         "big_parts": big_parts,
+        "calibration_null_lattice": {
+            "note": "numpy's binomial and multinomial at counts above 2**53 return integers on a lattice of spacing "
+                    "at most np.spacing(2 * count); the BIG null of calibration.py is exact up to that lattice",
+            "cells_above_2_53": len(null_lattice), "worst": null_lattice_worst},
         "sensitivity": sensitivity,
         "planned_tests": families,
         "family_sizes": {k: len(v) for k, v in families.items()},

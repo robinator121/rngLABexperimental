@@ -92,7 +92,6 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Any, Callable, Mapping, Sequence
 
@@ -117,6 +116,44 @@ def _frozen(values: Any, dtype: Any = None) -> np.ndarray:
     """A read-only copy backed by an immutable bytes object, so its WRITEABLE flag cannot be set again."""
     array = np.ascontiguousarray(values if dtype is None else np.asarray(values, dtype=dtype))
     return np.frombuffer(array.tobytes(), dtype=array.dtype).reshape(array.shape)
+
+
+class _Array:
+    """An array attribute that nothing a caller does to what it returns can change.
+
+    The instance keeps the array's bytes (immutable), dtype and shape; every read returns a fresh
+    read-only view of those bytes. Writing through a view fails (its memory is a bytes object), and
+    reassigning a view's dtype or shape changes that view only: the next read sees the stored array.
+    """
+
+    def __set_name__(self, owner: type, name: str) -> None:
+        self.private = f"_{name}_array"
+
+    def __get__(self, obj: Any, owner: type | None = None) -> Any:
+        if obj is None:
+            return self
+        data, dtype, shape = obj.__dict__[self.private]
+        return np.frombuffer(data, dtype=dtype).reshape(shape)
+
+    def __set__(self, obj: Any, value: Any) -> None:
+        if obj._sealed:
+            raise AttributeError(f"{type(obj).__name__} is immutable")
+        array = np.ascontiguousarray(value)
+        object.__setattr__(obj, self.private, (array.tobytes(), array.dtype.str, array.shape))
+
+
+class _Sealed:
+    """Attributes are set while __init__ runs and never again: no rebinding, no deletion."""
+
+    _sealed = False
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        if self._sealed:
+            raise AttributeError(f"{type(self).__name__} is immutable; cannot set {name!r}")
+        object.__setattr__(self, name, value)
+
+    def __delattr__(self, name: str) -> None:
+        raise AttributeError(f"{type(self).__name__} is immutable; cannot delete {name!r}")
 
 
 def category_counts(scheme: DecayScheme) -> list[int]:
@@ -159,35 +196,36 @@ def _grid_sha256(grid: np.ndarray) -> str:
     return hashlib.sha256(json.dumps([repr(t) for t in grid.tolist()]).encode()).hexdigest()
 
 
-@dataclass(frozen=True)
-class SourcePlan:
-    """Sampling plan of one start nuclide for one interval length."""
+class SourcePlan(_Sealed):
+    """Sampling plan of one start nuclide for one interval length (immutable)."""
 
-    start: int
-    law: IntervalLaw
-    p_small: np.ndarray        # (K - 1,) probability actually inverted, <= 1/2
-    flip: np.ndarray           # (K - 1,) True when the conditional probability exceeds 1/2
-    first_category: int        # global index of the source's first category
+    p_small = _Array()         # (K - 1,) probability actually inverted, <= 1/2
+    flip = _Array()            # (K - 1,) True when the conditional probability exceeds 1/2
+
+    def __init__(self, start: int, law: IntervalLaw, p_small: np.ndarray, flip: np.ndarray, first_category: int):
+        self.start = int(start)
+        self.law = law
+        self.p_small = p_small
+        self.flip = flip
+        self.first_category = int(first_category)  # global index of the source's first category
+        self._sealed = True
 
 
-class AggregatePlan:
+class AggregatePlan(_Sealed):
     """Everything fixed before sampling: categories, interval laws, slots and word layout.
 
     Immutable once built (see the module docstring): attributes cannot be rebound or deleted,
-    containers are tuples and read-only mappings, arrays are read-only views of immutable bytes.
-    ``scheme`` is the caller's object, kept to check identity; the engines use ``nuclides`` (the
-    scheme's tuple of frozen nuclides, taken when the plan is built) and ``scheme_sha256``.
+    containers are tuples and read-only mappings, and every array attribute returns a fresh
+    read-only view of stored bytes. ``scheme`` is the caller's object, kept to check identity;
+    the engines use ``nuclides`` (the scheme's tuple of frozen nuclides, taken when the plan is
+    built) and ``scheme_sha256``.
     """
 
-    _sealed = False
-
-    def __setattr__(self, name: str, value: Any) -> None:
-        if self._sealed:
-            raise AttributeError(f"AggregatePlan is immutable; cannot set {name!r}")
-        object.__setattr__(self, name, value)
-
-    def __delattr__(self, name: str) -> None:
-        raise AttributeError(f"AggregatePlan is immutable; cannot delete {name!r}")
+    times = _Array()
+    deltas = _Array()
+    first_category = _Array()
+    category_end = _Array()
+    category_steps = _Array()
 
     def __init__(self, scheme: DecayScheme, times: Sequence[float], total: int, *, part_max: int = PART_MAX,
                  max_categories: int = MAX_CATEGORIES):
@@ -214,18 +252,19 @@ class AggregatePlan:
         self.part_max = part_max
         self.parts = max(1, -(-self.total // part_max))
         self.categories = tuple(tuple(path_categories(scheme, i)) for i in range(len(scheme)))
-        self.first_category = np.cumsum([0] + [len(c) for c in self.categories[:-1]]).astype(np.int64)
+        first_category = np.cumsum([0] + [len(c) for c in self.categories[:-1]]).astype(np.int64)
         self.n_categories = int(sum(len(c) for c in self.categories))
         width = max(scheme.max_channels, 1)
         self.n_channels = width
-        self.category_end = np.zeros(self.n_categories, dtype=np.int64)
-        self.category_steps = np.zeros((self.n_categories, len(scheme) * width), dtype=np.int64)
+        category_end = np.zeros(self.n_categories, dtype=np.int64)
+        category_steps = np.zeros((self.n_categories, len(scheme) * width), dtype=np.int64)
         for i, cats in enumerate(self.categories):
             for k, category in enumerate(cats):
-                g = self.first_category[i] + k
-                self.category_end[g] = category.end
+                g = first_category[i] + k
+                category_end[g] = category.end
                 for parent, channel in category.steps:
-                    self.category_steps[g, parent * width + channel] += 1
+                    category_steps[g, parent * width + channel] += 1
+        self.first_category, self.category_end, self.category_steps = first_category, category_end, category_steps
         self.sources = tuple(i for i, cats in enumerate(self.categories) if len(cats) >= 2)
         self.yield_channels = tuple((j, k, c.photon_yield) for j, n in enumerate(self.nuclides)
                                     for k, c in enumerate(n.channels) if 0.0 < c.photon_yield < 1.0)
@@ -234,7 +273,7 @@ class AggregatePlan:
         self.neutron_channels = tuple((j, k) for j, n in enumerate(self.nuclides)
                                       for k, c in enumerate(n.channels) if c.mode is Mode.BETA_DELAYED_NEUTRON)
         neutron_columns = [j * width + k for j, k in self.neutron_channels]
-        self.max_neutrons_per_nucleus = (int(self.category_steps[:, neutron_columns].sum(axis=1).max())
+        self.max_neutrons_per_nucleus = (int(category_steps[:, neutron_columns].sum(axis=1).max())
                                          if neutron_columns else 0)
         if self.max_neutrons_per_nucleus * self.total > INT64_MAX:
             raise ValueError("the neutron count of one interval could exceed 2**63 - 1 for this scheme and "
@@ -248,10 +287,7 @@ class AggregatePlan:
         self.photon_slot_offset = slot
         self.slots = slot + len(self.yield_channels)
         self.words_per_interval = self.slots * self.parts
-        self.deltas = _frozen(np.diff(self.times))
-        self.first_category = _frozen(self.first_category)
-        self.category_end = _frozen(self.category_end)
-        self.category_steps = _frozen(self.category_steps)
+        self.deltas = np.diff(self.times)
         interval_plans: dict[float, Mapping[int, SourcePlan]] = {}
         # The path-tree matrix exponential is a cross-check only; where it is not finite (rates near the float
         # limits) the comparison is counted as unavailable, never as agreement.
@@ -263,8 +299,7 @@ class AggregatePlan:
                 law = interval_law(scheme, i, delta)
                 p, r = law.conditional()
                 flip = p > 0.5
-                plans[i] = SourcePlan(i, law, _frozen(np.where(flip, r, p)), _frozen(flip),
-                                      int(self.first_category[i]))
+                plans[i] = SourcePlan(i, law, np.where(flip, r, p), flip, int(first_category[i]))
                 tree = tree_probabilities(scheme, i, delta)
                 if np.all(np.isfinite(tree)):
                     diagnostics["tree_comparisons"] += 1
@@ -298,12 +333,30 @@ def _vector_binomials(n: np.ndarray, p_small: np.ndarray, flip: np.ndarray, unif
     return np.where(flip, n - total, total)
 
 
-def _interval_record(plan: AggregatePlan, populations: np.ndarray, counts: np.ndarray,
+class _Views:
+    """Private views of a plan's arrays for one run, read once from the plan and never handed out."""
+
+    def __init__(self, plan: AggregatePlan):
+        self.plan = plan
+        self.first_category = plan.first_category.tolist()
+        self.category_end = plan.category_end
+        self.category_steps = plan.category_steps
+        self.deltas = plan.deltas.tolist()
+        self._sources: dict[float, dict[int, tuple[np.ndarray, np.ndarray]]] = {}
+
+    def sources(self, delta: float) -> dict[int, tuple[np.ndarray, np.ndarray]]:
+        """(p_small, flip) of every source nuclide for one interval length."""
+        if delta not in self._sources:
+            self._sources[delta] = {i: (s.p_small, s.flip) for i, s in self.plan.interval_plans[delta].items()}
+        return self._sources[delta]
+
+
+def _interval_record(plan: AggregatePlan, views: _Views, counts: np.ndarray,
                      photons: np.ndarray) -> dict[str, np.ndarray]:
     """One interval's outputs, as read-only arrays (a sink cannot alter the run through them)."""
     new_populations = np.zeros(plan.n_nuclides, dtype=np.int64)
-    np.add.at(new_populations, plan.category_end, counts)
-    decays = (counts @ plan.category_steps).reshape(plan.n_nuclides, plan.n_channels)
+    np.add.at(new_populations, views.category_end, counts)
+    decays = (counts @ views.category_steps).reshape(plan.n_nuclides, plan.n_channels)
     neutrons = np.int64(sum(int(decays[j, k]) for j, k in plan.neutron_channels))
     record = {"populations": new_populations, "path_counts": np.array(counts, dtype=np.int64),
               "decays": decays, "photons": np.array(photons, dtype=np.int64), "neutrons": neutrons}
@@ -336,33 +389,41 @@ def _initial_digest(plan: AggregatePlan, populations: np.ndarray) -> bytes:
     return hashlib.sha256(header.encode()).digest()
 
 
-@dataclass(frozen=True, eq=False)
-class AggregateRun:
+class AggregateRun(_Sealed):
     """Result of an aggregated run (or of the part of it after a resume).
 
     ``populations`` has one row per grid time from ``first_interval`` on;
     ``path_counts``, ``decays``, ``photons`` and ``neutrons`` one row per
     interval. Arrays are empty when the run was made with keep_outputs=False.
-    Immutable: ``initial`` is a read-only mapping, arrays are read-only views of
-    immutable bytes, and ``provenance`` is the canonical JSON of the stream's
-    provenance when the run ended (``stream_provenance()`` returns a fresh copy).
+    Immutable: ``initial`` is a read-only mapping, every array attribute returns
+    a fresh read-only view of stored bytes, and ``provenance`` is the canonical
+    JSON of the stream's provenance when the run ended (``stream_provenance()``
+    returns a fresh copy).
     """
 
-    plan: AggregatePlan
-    initial: Mapping[str, int]
-    first_interval: int
-    first_word: int
-    engine: str
-    populations: np.ndarray
-    path_counts: np.ndarray
-    decays: np.ndarray
-    photons: np.ndarray
-    neutrons: np.ndarray
-    final_populations: np.ndarray
-    digest: str
-    words_read: int
-    provenance: str
-    layout: str = field(default=LAYOUT)
+    populations = _Array()
+    path_counts = _Array()
+    decays = _Array()
+    photons = _Array()
+    neutrons = _Array()
+    final_populations = _Array()
+
+    def __init__(self, plan: AggregatePlan, initial: Mapping[str, int], first_interval: int, first_word: int,
+                 engine: str, arrays: Mapping[str, np.ndarray], final_populations: np.ndarray, digest: str,
+                 words_read: int, provenance: str):
+        self.plan = plan
+        self.initial = MappingProxyType(dict(initial))
+        self.first_interval = int(first_interval)
+        self.first_word = int(first_word)
+        self.engine = engine
+        for key in ("populations", "path_counts", "decays", "photons", "neutrons"):
+            setattr(self, key, arrays[key])
+        self.final_populations = final_populations
+        self.digest = digest
+        self.words_read = int(words_read)
+        self.provenance = provenance
+        self.layout = LAYOUT
+        self._sealed = True
 
     def stream_provenance(self) -> dict[str, Any]:
         return json.loads(self.provenance)
@@ -528,7 +589,10 @@ def simulate_aggregate(scheme: DecayScheme, initial: Mapping[str, int], times: S
     if bool(checkpoint_every) != (on_checkpoint is not None):
         raise ValueError("checkpoint_every and on_checkpoint must be given together")
     if checkpoint_every or resume_from is not None:
-        stream_identity(stream)  # refuses a source that is not replayable, before any random number is read
+        here = stream_identity(stream)  # refuses a source that is not replayable, before any random number is read
+        if checkpoint_every and not here["byte_aligned"]:
+            raise ValueError("checkpoints need the source at a word boundary (its byte count is not a multiple of 8), "
+                             "or no resume could reach the checkpoint's position")
     initial = MappingProxyType({n.name: int(c) for n, c in zip(plan.nuclides, populations)})
     running = _initial_digest(plan, populations)
     first_interval = 0
@@ -536,31 +600,33 @@ def simulate_aggregate(scheme: DecayScheme, initial: Mapping[str, int], times: S
         first_interval, populations, running = _resume_state(plan, initial, resume_from, stream)
     first_word = stream.words_read
     ledger = _Ledger(stream)
+    views = _Views(plan)
+    first_category = views.first_category
     kept: dict[str, list] = {"populations": [populations.copy()], "path_counts": [], "decays": [], "photons": [],
                              "neutrons": []}
-    for interval in range(first_interval, plan.deltas.size):
+    for interval in range(first_interval, len(views.deltas)):
         expected_words = (interval + 1 - first_interval) * plan.words_per_interval
-        sources = plan.interval_plans[float(plan.deltas[interval])]
+        sources = views.sources(views.deltas[interval])
         u = stream.uniforms(plan.words_per_interval).reshape(plan.slots, plan.parts)
         counts = np.zeros(plan.n_categories, dtype=np.int64)
         for i, n in enumerate(plan.categories):
             if len(n) == 1:
-                counts[plan.first_category[i]] = populations[i]
+                counts[first_category[i]] = populations[i]
         remaining = {i: populations[i] for i in plan.sources}
         stages = max((len(plan.categories[i]) - 1 for i in plan.sources), default=0)
         for stage in range(stages):
             active = [i for i in plan.sources if len(plan.categories[i]) - 1 > stage]
             n = np.array([remaining[i] for i in active], dtype=np.int64)
-            p_small = np.array([sources[i].p_small[stage] for i in active])
-            flip = np.array([sources[i].flip[stage] for i in active])
+            p_small = np.array([sources[i][0][stage] for i in active])
+            flip = np.array([sources[i][1][stage] for i in active])
             slots = [plan.slot_offset[i] + stage for i in active]
             x = _vector_binomials(n, p_small, flip, u[slots], plan.parts, plan.part_max)
             for i, value in zip(active, x):
-                counts[plan.first_category[i] + stage] = value
+                counts[first_category[i] + stage] = value
                 remaining[i] -= value
         for i in plan.sources:
-            counts[plan.first_category[i] + len(plan.categories[i]) - 1] = remaining[i]
-        decays = (counts @ plan.category_steps).reshape(plan.n_nuclides, plan.n_channels)
+            counts[first_category[i] + len(plan.categories[i]) - 1] = remaining[i]
+        decays = (counts @ views.category_steps).reshape(plan.n_nuclides, plan.n_channels)
         if plan.yield_channels:
             n = np.array([decays[j, k] for j, k, _ in plan.yield_channels], dtype=np.int64)
             y = np.array([yield_ for _, _, yield_ in plan.yield_channels])
@@ -569,7 +635,7 @@ def simulate_aggregate(scheme: DecayScheme, initial: Mapping[str, int], times: S
                                         plan.parts, plan.part_max)
         else:
             sampled = np.zeros(0, dtype=np.int64)
-        record = _interval_record(plan, populations, counts, _photons_from(plan, decays, sampled))
+        record = _interval_record(plan, views, counts, _photons_from(plan, decays, sampled))
         _check_interval(plan, interval, record)
         ledger.check(expected_words, f"during interval {interval}")
         running = _chain_digest(running, interval, record)
@@ -584,21 +650,29 @@ def simulate_aggregate(scheme: DecayScheme, initial: Mapping[str, int], times: S
             on_checkpoint(make_checkpoint(plan, initial, interval + 1, populations, running,
                                           (interval + 1) * plan.words_per_interval, stream_identity(stream)))
             ledger.check(expected_words, f"by the checkpoint callback after interval {interval}")
-    return _finish(plan, initial, first_interval, first_word, "vectorised", kept, populations, running, stream,
+    ledger.check((len(views.deltas) - first_interval) * plan.words_per_interval, "before the run ended")
+    return _finish(plan, initial, first_interval, first_word, "vectorised", kept, populations, running, ledger,
                    keep_outputs)
 
 
 class _Ledger:
-    """The words a run has read against the bytes its source has emitted since the run began."""
+    """The words a run has read against the bytes its source has emitted since the run began.
+
+    It pins the stream's source object: a stream whose source was replaced while the run lasted
+    fails the next check, and the run's provenance is taken from the pinned source."""
 
     def __init__(self, stream: WordStream):
         self.stream = stream
+        self.source = stream.source
         self.words = stream.words_read
         self.emitted = int(stream.source.consumed_bytes)
 
     def check(self, expected_words: int, where: str) -> None:
+        if self.stream.source is not self.source:
+            raise RuntimeError(f"the run's stream was given another source {where}; the run's random numbers "
+                               "no longer come from one source")
         words = self.stream.words_read - self.words
-        emitted = int(self.stream.source.consumed_bytes) - self.emitted
+        emitted = int(self.source.consumed_bytes) - self.emitted
         if words != expected_words or emitted != 8 * expected_words:
             raise RuntimeError(f"the run's source was read outside its layout {where}: the layout accounts for "
                                f"{expected_words} words, the run's stream has read {words} and the source has "
@@ -614,7 +688,7 @@ def _check_interval(plan: AggregatePlan, interval: int, record: Mapping[str, np.
                            f"than decays (populations {populations}, total {plan.total})")
 
 
-def _finish(plan, initial, first_interval, first_word, engine, kept, populations, running, stream, keep_outputs):
+def _finish(plan, initial, first_interval, first_word, engine, kept, populations, running, ledger, keep_outputs):
     width = (plan.n_nuclides, plan.n_channels)
     if keep_outputs:
         arrays = {"populations": np.array(kept["populations"], dtype=np.int64),
@@ -627,13 +701,11 @@ def _finish(plan, initial, first_interval, first_word, engine, kept, populations
                   "path_counts": np.zeros((0, plan.n_categories), dtype=np.int64),
                   "decays": np.zeros((0, *width), dtype=np.int64), "photons": np.zeros((0, *width), dtype=np.int64),
                   "neutrons": np.zeros(0, dtype=np.int64)}
-    arrays = {key: _frozen(value) for key, value in arrays.items()}
-    provenance = {**stream.provenance(), "replay_identity": replay_identity(stream.source),
+    stream = ledger.stream                 # its source is the pinned one: the ledger's last check passed
+    provenance = {**stream.provenance(), "replay_identity": replay_identity(ledger.source),
                   "first_word_of_run": first_word, "words_read_by_run": stream.words_read - first_word}
-    return AggregateRun(plan, MappingProxyType(dict(initial)), first_interval, first_word, engine,
-                        arrays["populations"], arrays["path_counts"], arrays["decays"], arrays["photons"],
-                        arrays["neutrons"], _frozen(populations), running.hex(), stream.words_read - first_word,
-                        json.dumps(provenance, sort_keys=True, default=str))
+    return AggregateRun(plan, initial, first_interval, first_word, engine, arrays, populations, running.hex(),
+                        stream.words_read - first_word, json.dumps(provenance, sort_keys=True, default=str))
 
 
 def simulate_aggregate_reference(scheme: DecayScheme, initial: Mapping[str, int], times: Sequence[float],
@@ -653,22 +725,24 @@ def simulate_aggregate_reference(scheme: DecayScheme, initial: Mapping[str, int]
     running = _initial_digest(plan, populations)
     first_word = stream.words_read
     ledger = _Ledger(stream)
+    views = _Views(plan)
     kept: dict[str, list] = {"populations": [populations.copy()], "path_counts": [], "decays": [], "photons": [],
                              "neutrons": []}
     width = plan.n_channels
-    for interval in range(plan.deltas.size):
-        sources = plan.interval_plans[float(plan.deltas[interval])]
+    for interval in range(len(views.deltas)):
+        sources = views.sources(views.deltas[interval])
         words = stream.uniforms(plan.words_per_interval)
         slot = 0
         counts = [0] * plan.n_categories
         for i, cats in enumerate(plan.categories):
-            start = int(plan.first_category[i])
+            start = views.first_category[i]
             if len(cats) == 1:
                 counts[start] = int(populations[i])
                 continue
             remaining = int(populations[i])
+            p_small, flip = sources[i]
             for k in range(len(cats) - 1):
-                value = binomial_draw(remaining, float(sources[i].p_small[k]), bool(sources[i].flip[k]),
+                value = binomial_draw(remaining, float(p_small[k]), bool(flip[k]),
                                       words[slot * plan.parts:(slot + 1) * plan.parts], part_max=plan.part_max)
                 slot += 1
                 counts[start + k] = value
@@ -678,7 +752,7 @@ def simulate_aggregate_reference(scheme: DecayScheme, initial: Mapping[str, int]
         new_populations = [0] * len(nuclides)
         for i, cats in enumerate(plan.categories):
             for k, category in enumerate(cats):
-                c = counts[int(plan.first_category[i]) + k]
+                c = counts[views.first_category[i] + k]
                 new_populations[category.end] += c
                 for parent, channel in category.steps:
                     decays[parent][channel] += c
@@ -705,7 +779,8 @@ def simulate_aggregate_reference(scheme: DecayScheme, initial: Mapping[str, int]
         populations = record["populations"]
         for key in kept:
             kept[key].append(record[key])
-    return _finish(plan, initial, 0, first_word, "reference", kept, populations, running, stream, True)
+    ledger.check(len(views.deltas) * plan.words_per_interval, "before the run ended")
+    return _finish(plan, initial, 0, first_word, "reference", kept, populations, running, ledger, True)
 
 
 def aggregate_manifest(*, experiment: str, run_id: str, run: AggregateRun, code: Mapping[str, Any],

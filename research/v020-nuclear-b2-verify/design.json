@@ -1170,6 +1170,18 @@
     1,
     1025
   ],
+  "calibration_null_lattice": {
+    "note": "numpy's binomial and multinomial at counts above 2**53 return integers on a lattice of spacing at most np.spacing(2 * count); the BIG null of calibration.py is exact up to that lattice",
+    "cells_above_2_53": 42,
+    "worst": {
+      "size": 1152921504606859321,
+      "t": 0.5,
+      "nuclide": "Xa-400",
+      "mean": 9.694875602928269e+17,
+      "spacing": 256.0,
+      "spacing_over_sd": 6.51821771812329e-07
+    }
+  },
   "sensitivity": {
     "level": 4.5045045045045046e-05,
     "replicates": 400,

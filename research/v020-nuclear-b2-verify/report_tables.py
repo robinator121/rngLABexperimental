@@ -33,7 +33,13 @@ def main() -> None:
              f"Namespace `{r['namespace']}`; code `{r['code']['git_commit']}` (dirty: {r['code']['git_dirty']}); "
              f"started {r['started_utc']}; {r['elapsed_seconds']:.1f} s in total.", "", "## Verdicts", "",
              f"- R1: **{v['R1']}**" + (f" (failed: {', '.join(v['R1_failed_items'])})" if v["R1_failed_items"] else ""),
-             f"- R2: **{v['R2']}**", "", "| Deterministic check | Holds |", "|---|---|"]
+             f"- R2: **{v['R2']}**"]
+    r0 = v.get("R0")
+    if isinstance(r0, dict):
+        lines += [f"- R0, {family}: {entry['statement']}" for family, entry in r0.items()]
+    else:
+        lines.append(f"- R0: {r0 or 'missing from verification.json (a deviation)'}")
+    lines += ["", "| Deterministic check | Holds |", "|---|---|"]
     lines += [f"| {k} | {ok} |" for k, ok in v["deterministic"].items()]
     laws = r["laws"]
     lines += ["", f"D8: {laws['laws_checked']} interval laws; largest |decimal - path-tree expm| "
