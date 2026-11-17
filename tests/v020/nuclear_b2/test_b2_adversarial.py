@@ -10,6 +10,7 @@
 Fixed seeds of the B2 test namespace; exact references are rational arithmetic.
 """
 import copy
+import hashlib
 import json
 import math
 from fractions import Fraction
@@ -108,14 +109,17 @@ def test_plans_and_results_are_read_only(branching, ns):
             array[...] = 0
 
 
-def test_forced_writes_to_returned_arrays_do_not_leak_into_later_runs(branching, ns):
+def test_returned_and_plan_arrays_cannot_be_made_writable_again(branching, ns):
     plan = AggregatePlan(branching, TIMES, 6000)
     first = simulate_aggregate(branching, {"Xa-400": 6000}, TIMES, WordStream(_source(ns, "leak")), plan=plan)
     digest, populations = first.digest, first.populations.copy()
-    for key in OUTPUTS + ("final_populations",):
-        array = getattr(first, key)
-        array.setflags(write=True)
-        array[...] = 123
+    source = next(iter(plan.interval_plans[float(plan.deltas[0])].values()))
+    arrays = [getattr(first, key) for key in OUTPUTS + ("final_populations",)]
+    arrays += [plan.times, plan.deltas, plan.category_end, plan.category_steps, plan.first_category,
+               source.p_small, source.flip]
+    for array in arrays:                       # backed by immutable bytes: the flag cannot be set again
+        with pytest.raises(ValueError, match="WRITEABLE"):
+            array.setflags(write=True)
     second = simulate_aggregate(branching, {"Xa-400": 6000}, TIMES, WordStream(_source(ns, "leak")), plan=plan)
     assert second.digest == digest and np.array_equal(second.populations, populations)
 
@@ -202,10 +206,12 @@ def _edits(checkpoint, words_per_interval):
     flipped = ("0" if checkpoint["running_sha256"][0] != "0" else "1") + checkpoint["running_sha256"][1:]
     yield "running digest changed", dict(checkpoint, running_sha256=flipped), False
     yield "initial changed", dict(checkpoint, initial=dict(checkpoint["initial"], **{"Xa-400": 1})), True
-    yield "grid changed", dict(checkpoint, times=checkpoint["times"][:-1] + ["13.0"]), True
+    yield "grid changed", dict(checkpoint, grid_sha256=hashlib.sha256(b"another grid").hexdigest()), True
     yield "layout changed", dict(checkpoint, layout=dict(checkpoint["layout"], parts=2)), True
     yield "scheme changed", dict(checkpoint, scheme_sha256="0" * 64), True
-    yield "seed changed", dict(checkpoint, stream=dict(checkpoint["stream"], seed=checkpoint["stream"]["seed"] + 1)), True
+    parameters = checkpoint["stream"]["parameters"]
+    yield "seed changed", dict(checkpoint, stream=dict(checkpoint["stream"],
+                                                       parameters=dict(parameters, seed=parameters["seed"] + 1))), True
     yield "position changed", dict(checkpoint, stream=dict(checkpoint["stream"],
                                                            word_position=checkpoint["stream"]["word_position"] + 1)), True
 

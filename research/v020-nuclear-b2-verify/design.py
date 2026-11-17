@@ -299,7 +299,7 @@ def main() -> None:
     plans = {}
     for key, scheme in schemes.items():
         plan = AggregatePlan(scheme, cases[key]["times"], sum(cases[key]["initial"].values()))
-        plans[key] = {"layout": plan.layout(), "diagnostics": plan.diagnostics}
+        plans[key] = {"layout": plan.layout(), "diagnostics": dict(plan.diagnostics)}
 
     design = {
         "generated_by": "research/v020-nuclear-b2-verify/design.py (analytic references only, no random numbers)",

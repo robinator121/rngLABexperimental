@@ -17,6 +17,34 @@ def _finite(*values: float) -> None:
         raise ValueError("non-finite input, statistic or p-value")
 
 
+def _counts(values: Any, what: str) -> list[int]:
+    """A vector of nonnegative integer counts as Python integers: nothing is truncated, no sum can overflow."""
+    items = values.tolist() if isinstance(values, np.ndarray) else list(values)
+    out = []
+    for value in items:
+        if isinstance(value, (bool, np.bool_)) or not isinstance(value, (int, np.integer)) or value < 0:
+            raise ValueError(f"{what} must be nonnegative integers, got {value!r}")
+        out.append(int(value))
+    return out
+
+
+def _satterthwaite(variance: float, variance_of_sample_variance: float) -> float:
+    """nu = 2 variance**2 / Var(s^2), refused unless positive and finite (an input underflowed or overflowed)."""
+    try:
+        nu = 2.0 * float(variance) ** 2 / float(variance_of_sample_variance)
+    except (OverflowError, ZeroDivisionError):
+        nu = math.inf
+    if not (math.isfinite(nu) and nu > 0):
+        raise ValueError(f"degrees of freedom {nu!r} are not positive and finite (an input underflowed or overflowed)")
+    return nu
+
+
+def _two_sided(lower: float, upper: float) -> float:
+    """2 min(lower, upper), capped at 1, after checking that both tails are finite (a NaN is never read as 1)."""
+    _finite(lower, upper)
+    return float(min(1.0, 2.0 * min(lower, upper)))
+
+
 def z_check(estimate: float, expected: float, variance: float, label: str = "z") -> dict[str, Any]:
     """Two-sided normal test of an estimate against its expected value and exact variance."""
     _finite(estimate, expected, variance)
@@ -40,10 +68,10 @@ def scaled_chisquare_variance_check(sample_variance: float, variance: float, var
     _finite(sample_variance, variance, variance_of_sample_variance)
     if not (variance > 0 and variance_of_sample_variance > 0):
         raise ValueError("variances must be positive")
-    nu = 2.0 * variance ** 2 / variance_of_sample_variance
+    nu = _satterthwaite(variance, variance_of_sample_variance)
     statistic = nu * sample_variance / variance
-    p = float(min(1.0, 2.0 * min(stats.chi2.cdf(statistic, nu), stats.chi2.sf(statistic, nu))))
-    _finite(statistic, p)
+    _finite(statistic)
+    p = _two_sided(stats.chi2.cdf(statistic, nu), stats.chi2.sf(statistic, nu))
     return {"test": label, "sample_variance": float(sample_variance), "variance": float(variance),
             "variance_of_sample_variance": float(variance_of_sample_variance), "dof": nu, "statistic": statistic,
             "ratio": float(sample_variance / variance), "p_value": p}
@@ -62,10 +90,10 @@ def variance_ratio_f_check(sample_variance_a: float, sample_variance_b: float, v
     _finite(sample_variance_a, sample_variance_b, variance, variance_of_sample_variance)
     if not (sample_variance_a > 0 and sample_variance_b > 0 and variance > 0 and variance_of_sample_variance > 0):
         raise ValueError("variances must be positive")
-    nu = 2.0 * variance ** 2 / variance_of_sample_variance
+    nu = _satterthwaite(variance, variance_of_sample_variance)
     ratio = float(sample_variance_a) / float(sample_variance_b)
-    p = float(min(1.0, 2.0 * min(stats.f.cdf(ratio, nu, nu), stats.f.sf(ratio, nu, nu))))
-    _finite(ratio, p)
+    _finite(ratio)
+    p = _two_sided(stats.f.cdf(ratio, nu, nu), stats.f.sf(ratio, nu, nu))
     return {"test": label, "sample_a": float(sample_variance_a), "sample_b": float(sample_variance_b),
             "dof": nu, "statistic": ratio, "p_value": p}
 
@@ -123,9 +151,10 @@ def homogeneity_check(a: Sequence[int], b: Sequence[int], *, min_expected: float
     total. Columns that are empty in both rows are dropped. This rule depends
     on the observed margins.
     """
-    table = np.array([a, b], dtype=np.float64)
-    if table.ndim != 2 or table.shape[0] != 2 or np.any(table < 0) or not np.all(np.isfinite(table)):
+    a, b = _counts(a, "counts a"), _counts(b, "counts b")
+    if len(a) != len(b) or not a:
         raise ValueError("need two nonnegative count vectors of equal length")
+    table = np.array([a, b], dtype=np.float64)
     if cells is not None:
         return _homogeneity_fixed(table, cells, a, b)
     keep = np.flatnonzero(table.sum(axis=0) > 0)
@@ -214,20 +243,19 @@ def allocation_check(successes: Sequence[int], trials: Sequence[int], probabilit
     (conservative). It sees how successes are spread over time, which a test of
     the totals cannot.
     """
-    s = np.asarray(successes, dtype=np.int64)
-    n = np.asarray(trials, dtype=np.int64)
-    if s.shape != n.shape or s.ndim != 1 or np.any(s < 0) or np.any(s > n):
+    s, n = _counts(successes, "successes"), _counts(trials, "trials")
+    if len(s) != len(n) or any(x > m for x, m in zip(s, n)):
         raise ValueError("successes and trials must be matching vectors with 0 <= successes <= trials")
     _finite(probability)
     if not 0.0 < probability < 1.0:
         raise ValueError("probability must lie strictly between 0 and 1")
     members = sorted(int(i) for cell in cells for i in cell)
-    if len(cells) < 2 or members != list(range(s.size)):
+    if len(cells) < 2 or members != list(range(len(s))):
         raise ValueError("cells must partition the intervals into two or more parts")
     statistic = 0.0
     cell_successes, cell_trials = [], []
     for cell in cells:
-        sc, nc = float(s[list(cell)].sum()), float(n[list(cell)].sum())
+        sc, nc = sum(s[int(i)] for i in cell), sum(n[int(i)] for i in cell)  # Python integers: exact
         cell_successes.append(sc)
         cell_trials.append(nc)
         if nc > 0:
@@ -274,10 +302,10 @@ def fixed_cells_chisquare(observed: Sequence[int], probabilities: Sequence[float
     and count 0. Degrees of freedom: cells - 1. Returns the statistic and its
     degrees of freedom (no p-value: statistics of several intervals are summed).
     """
-    counts = np.asarray(observed, dtype=np.int64)
+    exact = _counts(observed, "observed counts")
+    counts = np.array(exact, dtype=object)
     probs = np.asarray(probabilities, dtype=np.float64)
-    if counts.shape != probs.shape or counts.ndim != 1 or np.any(counts < 0) or not np.all(np.isfinite(probs)) \
-            or np.any(probs < 0):
+    if counts.shape != probs.shape or counts.ndim != 1 or not np.all(np.isfinite(probs)) or np.any(probs < 0):
         raise ValueError("observed and probabilities must be matching finite nonnegative vectors")
     members = [int(i) for cell in cells for i in cell]
     if len(cells) < 2 or len(set(members)) != len(members) or any(not 0 <= i < probs.size for i in members):
@@ -286,13 +314,13 @@ def fixed_cells_chisquare(observed: Sequence[int], probabilities: Sequence[float
     outside[members] = False
     if np.any(probs[outside] > 0) or np.any(counts[outside] > 0):
         raise ValueError("a category outside the cells has positive probability or a nonzero count")
-    total = int(counts.sum())
+    total = sum(exact)
     if total <= 0:
         raise ValueError("no observations: the statistic is undefined")
     cell_probability = np.array([probs[list(cell)].sum() for cell in cells])
     if abs(float(cell_probability.sum()) - 1.0) > 1e-9 or np.any(cell_probability <= 0):
         raise ValueError("cell probabilities must be positive and sum to 1")
-    cell_observed = np.array([counts[list(cell)].sum() for cell in cells], dtype=np.float64)
+    cell_observed = np.array([float(sum(exact[int(i)] for i in cell)) for cell in cells])
     cell_expected = total * cell_probability / cell_probability.sum()
     statistic = float(((cell_observed - cell_expected) ** 2 / cell_expected).sum())
     _finite(statistic)

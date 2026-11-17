@@ -668,5 +668,17 @@
     "evaluation": "the planned tests of every battery, through the functions run_verification.py uses (battery, path_tests, ensemble_tests, comparison_tests, big_tests); a battery whose test names differ from design.json stops the calibration",
     "reported": "per family: batteries in which Holm rejects at least one test or a planned test cannot be computed, with the Clopper-Pearson 95% interval (batteries are independent, so this interval is valid); per test: rejections at 1e-2, 1e-3 and the Holm level with per-test Clopper-Pearson intervals; per test type: batteries with at least one rejection of the type, with a Clopper-Pearson interval, divided by instances x level (the type's share of the union bound), and the mean rejections per battery with an approximate interval only (tests within a battery are dependent, so pooled binomial intervals are not used)",
     "criterion": "C1 (reading_rules.R0)"
+  },
+  "record_procedure": {
+    "order": [
+      "after the freeze commit, from a clean tree: calibration.py (record) once",
+      "commit results/calibration.json and results/attempts/ (the verification needs a clean tree)",
+      "run_verification.py once",
+      "commit results/verification.json and results/attempts/"
+    ],
+    "threads": "OPENBLAS_NUM_THREADS, OMP_NUM_THREADS and MKL_NUM_THREADS exported as 1 before Python starts (in a SLURM batch script, before the srun line); calibration.py also sets them to 1 for its workers and records the inherited values",
+    "attempts": "each record run reserves results/attempts/<script>-<k>.json by exclusive creation before any random number is drawn and records how it ended (completed, failed, terminated; SIGTERM is caught); its files go to results/attempts/<script>-<k>/ (verification manifests; the SHA-256 of every finished calibration chunk); results are published by a hard link of a synced temporary file and never overwritten",
+    "recovery": "an attempt that did not complete is rerun from the start on the same commit with the same command; the seeds are fixed, so the rerun repeats the draws the interrupted attempt made; --previous-attempt-ended declares that an attempt left as 'started' is no longer running; a rerun on another commit is a protocol deviation and needs --deviation with its reason, recorded in the attempt and the results; calibration.py compares its chunk digests with those of earlier attempts on the same commit (replay_check) and reports any mismatch",
+    "statistics_before_completion": "none: the verification statistics and the calibration summary are written only when an attempt completes"
   }
 }

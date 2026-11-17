@@ -71,12 +71,18 @@ def worker(config: dict) -> dict:
                    populations_sum=int(pops[-1].sum()))
     else:
         intervals = config.get("intervals")
-        times = [12.0 * k / intervals for k in range(intervals + 1)] if config.get("uniform") else S2_TIMES
+        if config.get("distinct"):          # every interval length differs: one set of laws per interval
+            steps = np.arange(1, intervals + 1, dtype=np.float64)
+            times = (np.concatenate([[0.0], np.cumsum(steps)]) * (12.0 / steps.sum())).tolist()
+        else:
+            times = [12.0 * k / intervals for k in range(intervals + 1)] if config.get("uniform") else S2_TIMES
         plan_start = time.perf_counter()
         plan = AggregatePlan(s2, times, config["n"])
         out["plan_seconds"] = time.perf_counter() - plan_start
+        every = config.get("checkpoint_every", 0)
         run = simulate_aggregate(s2, {"Xa-400": config["n"]}, times, stream, plan=plan,
-                                 keep_outputs=config.get("keep", True))
+                                 keep_outputs=config.get("keep", True), checkpoint_every=every,
+                                 on_checkpoint=(lambda checkpoint: None) if every else None)
         out.update(parts=plan.parts, words_per_interval=plan.words_per_interval,
                    output_bytes=int(sum(getattr(run, k).nbytes for k in ("populations", "path_counts", "decays",
                                                                        "photons", "neutrons"))))
@@ -98,13 +104,17 @@ def measure(config: dict, repeats: int = 3, threads: str | None = None) -> dict:
         done = subprocess.run([sys.executable, __file__, "worker", json.dumps(cfg)], capture_output=True, text=True,
                               env=child_env(threads), check=True)
         samples.append(json.loads(done.stdout.strip().splitlines()[-1]))
-    keys = ("wall_seconds", "cpu_seconds", "max_rss_bytes")
-    summary = {k: statistics.median(s[k] for s in samples) for k in keys}
-    summary.update({k: v for k, v in samples[0].items() if k not in keys})
+    timed = [k for k in ("wall_seconds", "cpu_seconds", "plan_seconds", "max_rss_bytes") if k in samples[0]]
+    summary = {k: statistics.median(s[k] for s in samples) for k in timed}  # every timing is a median
+    constant = {k: v for k, v in samples[0].items() if k not in timed and k not in ("repeat", "traced_peak_bytes")}
+    varying = sorted(k for k in constant if any(s.get(k) != constant[k] for s in samples))
+    if varying:
+        raise RuntimeError(f"repeats disagree on {varying}; they must describe the same computation")
+    summary.update(constant)
+    summary["samples"] = {k: [s[k] for s in samples] for k in timed}
     traced = subprocess.run([sys.executable, __file__, "worker", json.dumps(dict(config, repeat=50, trace=True))],
                             capture_output=True, text=True, env=child_env(threads), check=True)
     summary["traced_peak_bytes"] = json.loads(traced.stdout.strip().splitlines()[-1])["traced_peak_bytes"]
-    summary["wall_seconds_all"] = [s["wall_seconds"] for s in samples]
     summary["cpu_utilisation"] = summary["cpu_seconds"] / summary["wall_seconds"]
     summary["words_per_second"] = summary["words"] / summary["wall_seconds"]
     summary["thread_setting"] = "default (unset)" if threads is None else f"{threads} thread(s)"
@@ -120,7 +130,10 @@ def parallel(config: dict, processes: int) -> dict:
     results = [json.loads(job.communicate()[0].strip().splitlines()[-1]) for job in jobs]
     wall = time.perf_counter() - start
     return {"processes": processes, "wall_seconds": wall, "runs_per_second": processes / wall,
-            "median_task_wall_seconds": statistics.median(r["wall_seconds"] for r in results)}
+            "median_task_wall_seconds": statistics.median(r["wall_seconds"] for r in results),
+            "timing_note": "wall_seconds spans process start to the last result, so it includes interpreter "
+                           "start-up and imports; median_task_wall_seconds is each worker's own timing, "
+                           "which excludes them"}
 
 
 def machine() -> dict:
@@ -162,6 +175,11 @@ def main() -> int:
             result["b2_intervals"].append(measure({"engine": "b2", "n": 10 ** 6, "intervals": intervals,
                                                    "uniform": True, "keep": keep}))
     print("B2 interval sweep done", flush=True)
+    result["b2_checkpoints"] = [measure({"engine": "b2", "n": 10 ** 6, "intervals": 2000, "uniform": True,
+                                         "keep": False, "checkpoint_every": every}) for every in (0, 100, 1)]
+    result["b2_plan_lengths"] = [measure({"engine": "b2", "n": 10 ** 6, "intervals": 200, "keep": False, **grid})
+                                 for grid in ({"uniform": True}, {"distinct": True})]
+    print("checkpoint and plan-length configurations done", flush=True)
     threads_config = {"engine": "b2", "n": 10 ** 6, "intervals": 1000, "uniform": True, "keep": False}
     result["threads"] = [dict(measure(threads_config), setting="default (unset)"),
                          dict(measure(threads_config, threads="1"), setting="1 thread")]

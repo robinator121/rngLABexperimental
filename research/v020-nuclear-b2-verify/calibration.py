@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import hashlib
 import importlib.util
 import json
 import os
@@ -272,13 +273,65 @@ def summarise(raw: dict, criterion_limit: float) -> dict:
     return out
 
 
+def allocated_cpus() -> int:
+    """CPUs this process may run on (its affinity mask, which SLURM and cgroups set), else the machine's count."""
+    try:
+        return len(os.sched_getaffinity(0))
+    except AttributeError:
+        return os.cpu_count() or 1
+
+
+def single_thread_environment() -> tuple[dict, dict]:
+    """One BLAS/OpenMP thread per worker, whatever was inherited: returns (inherited, applied).
+
+    Called before the pool starts, so the workers import numpy afresh under it."""
+    inherited = {name: os.environ.get(name) for name in THREAD_VARIABLES}
+    for name in THREAD_VARIABLES:
+        os.environ[name] = "1"
+    return inherited, {name: os.environ[name] for name in THREAD_VARIABLES}
+
+
+def chunk_digest(part: dict) -> str:
+    return hashlib.sha256(json.dumps(part, sort_keys=True).encode()).hexdigest()
+
+
+def _chunk_digests(path: Path) -> dict:
+    found = {}
+    for line in path.read_text().splitlines():
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:  # a line cut off by an interruption
+            continue
+        found[(entry["first_battery"], entry["batteries"])] = entry["sha256"]
+    return found
+
+
+def replay_check(attempt: dict) -> dict:
+    """Chunks that earlier attempts on the same commit completed must have the same digests in this attempt."""
+    current = _chunk_digests(attempt["dir"] / "chunks.jsonl")
+    commit = attempt["record"]["code"].get("git_commit")
+    compared, mismatches = 0, []
+    for entry in attempt["record"]["previous_attempts"]:
+        log = attempt["dir"].parent / f"calibration-{entry['attempt']}" / "chunks.jsonl"
+        if entry["git_commit"] != commit or not log.exists():
+            continue
+        for key, digest in _chunk_digests(log).items():
+            compared += 1
+            if current.get(key) != digest:
+                mismatches.append({"attempt": entry["attempt"], "first_battery": key[0], "batteries": key[1]})
+    return {"chunks_compared": compared, "mismatches": mismatches}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--development", action="store_true", help="development namespace; design evidence only")
     parser.add_argument("--batteries", type=int, default=None, help="development only (the record uses protocol.json)")
-    parser.add_argument("--workers", type=int, default=min(16, os.cpu_count() or 1))
+    parser.add_argument("--workers", type=int, default=None, help="default: the CPUs this process may use")
     parser.add_argument("--chunk", type=int, default=10)
     parser.add_argument("--out", type=Path, default=None, help="development only: another output file")
+    parser.add_argument("--previous-attempt-ended", action="store_true",
+                        help="declare that an attempt left as 'started' is no longer running")
+    parser.add_argument("--deviation", default=None, help="reason for a rerun on another commit (recorded)")
     args = parser.parse_args()
     if args.out is not None and not args.development:
         raise SystemExit("--out is for development runs only")
@@ -299,28 +352,61 @@ def main() -> int:
         out = HERE / "results" / "calibration.json"
     if out.exists():
         raise SystemExit(f"{out} exists; results are never overwritten")
+    workers = args.workers or allocated_cpus()
+    if args.development:
+        return calibrate(verify, namespace, batteries, out, frozen, args, workers, None)
+    attempt = verify.begin_attempt(out.parent, "calibration", code_identity(REPO),
+                                   previous_ended=args.previous_attempt_ended, deviation=args.deviation)
+    return verify.run_attempt(attempt, lambda: calibrate(verify, namespace, batteries, out, frozen, args, workers,
+                                                         attempt), out)
+
+
+def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, args, workers: int,
+              attempt: dict | None) -> int:
+    """Run the batteries in a process pool. With an attempt (the record run) every finished chunk's digest is
+    appended to the attempt's chunks.jsonl (kept if the attempt is interrupted) and the result is published
+    without overwriting; the replay check compares the digests with earlier attempts on the same commit."""
     started = datetime.datetime.now(datetime.timezone.utc).isoformat()
     clock = time.perf_counter()
     chunks = [list(range(s, min(s + args.chunk, batteries))) for s in range(0, batteries, args.chunk)]
-    for name in THREAD_VARIABLES:   # set before the pool starts: workers import numpy afresh and inherit them
-        os.environ.setdefault(name, "1")
-    threads = {name: os.environ.get(name) for name in THREAD_VARIABLES}
+    inherited, threads = single_thread_environment()
+    log = None if attempt is None else open(attempt["dir"] / "chunks.jsonl", "x")
     raw = None
-    with ProcessPoolExecutor(max_workers=args.workers, initializer=_init_worker) as pool:
-        for done, part in enumerate(pool.map(run_chunk, [namespace] * len(chunks), chunks), start=1):
-            raw = merge(raw, part)
-            if done % max(1, len(chunks) // 20) == 0:
-                print(f"{raw['batteries']} / {batteries} batteries, {time.perf_counter() - clock:.0f} s", flush=True)
+    try:
+        with ProcessPoolExecutor(max_workers=workers, initializer=_init_worker) as pool:
+            results = pool.map(run_chunk, [namespace] * len(chunks), chunks)
+            for done, (chunk, part) in enumerate(zip(chunks, results), start=1):
+                if log is not None:  # the digest first: merge() modifies the first part in place
+                    log.write(json.dumps({"first_battery": chunk[0], "batteries": len(chunk),
+                                          "sha256": chunk_digest(part)}) + "\n")
+                    log.flush()
+                    os.fsync(log.fileno())
+                raw = merge(raw, part)
+                if done % max(1, len(chunks) // 20) == 0:
+                    print(f"{raw['batteries']} / {batteries} batteries, {time.perf_counter() - clock:.0f} s",
+                          flush=True)
+    finally:
+        if log is not None:
+            log.close()
     summary = summarise(raw, 0.02)
     result = {"generated_by": "research/v020-nuclear-b2-verify/calibration.py", "development": args.development,
               "started_utc": started, "namespace": namespace, "batteries": batteries, "protocol_files": frozen,
               "code": code_identity(REPO), "environment": environment(), "criterion": "C1: false_fail_ci95[1] <= 0.02",
               "sampler": "numpy Generator.multinomial / binomial on the exact laws; no RNGLab sampler",
-              "workers": args.workers, "chunk": args.chunk, "thread_environment": threads,
+              "workers": workers, "allocated_cpus": allocated_cpus(), "chunk": args.chunk,
+              "thread_environment": threads, "inherited_thread_environment": inherited,
               "families": summary, "C1": all(f["C1_holds"] for f in summary.values()),
               "elapsed_seconds": time.perf_counter() - clock}
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(result, indent=1) + "\n")
+    if attempt is None:
+        out.write_text(json.dumps(result, indent=1) + "\n")
+    else:
+        result["attempt"] = {"number": attempt["record"]["attempt"], "record": f"attempts/{attempt['path'].name}",
+                             "chunk_log": f"attempts/{attempt['dir'].name}/chunks.jsonl",
+                             "previous_attempts": attempt["record"]["previous_attempts"],
+                             "deviation": attempt["record"]["deviation"]}
+        result["replay_check"] = replay_check(attempt)
+        verify.write_new(out, json.dumps(result, indent=1) + "\n")
     for family, f in summary.items():
         print(f"{family}: {f['failed_batteries']} / {batteries} batteries fail under the null "
               f"(rate {f['false_fail_rate']:.4f}, 95% CI [{f['false_fail_ci95'][0]:.4f}, {f['false_fail_ci95'][1]:.4f}]); "

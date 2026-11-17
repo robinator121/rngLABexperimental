@@ -1,0 +1,19 @@
+# v0.20 nuclear module, B2 after the third review (not frozen): test evidence
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-17T15:47:33Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+996 passed, 2 skipped, 3 warnings in 219.30s (0:03:39)
+
+## 2. Nuclear tests only (Layer A 115, B2 163 including 24 in test_b2_guards.py and 27 in test_b2_integrity.py): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider
+278 passed, 3 warnings in 33.21s
+
+The three warnings are RuntimeWarnings (overflow in the float64 matrix exponential) raised on purpose by
+test_b2_guards.py, which checks that a non-finite reference fails D8.
+
+## 3. Items 22-31 change no draw and no statistic
+run_verification.py --smoke (unfrozen; smoke namespace; output not in Git) on this tree and on an exported
+copy of db50f3f: the 13 run manifests have identical digests and word counts, and every NC1 and NC2 p-value
+is identical (R1 PASS in both; R2 NOT MET at the smoke scale in both, as before). design.py regenerates
+design.json byte-identically.
