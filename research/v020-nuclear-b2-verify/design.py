@@ -4,13 +4,18 @@
 
 Writes design.json: scheme digests (S1-S3 must equal the frozen Layer A
 schemes), the eligible states and pairs of the ensemble tests, the planned
-name of every test in each family, the expected applicability of the path
-tests, and the approximate power of the positive controls.
+name of every test in each family, the cells fixed before generation (path,
+per-interval photon and Layer A / B2 homogeneity tests, taken from the same
+functions run_verification.py uses), the approximate power of the positive
+controls, and the sensitivity of the variance tests (the variance ratios they
+detect), so that a non-rejection is read for what it is.
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -18,14 +23,42 @@ from scipy import stats
 
 from rnglab.nuclear import DecayScheme, decay_probabilities, state_probabilities
 from rnglab.nuclear.aggregate import AggregatePlan
+from rnglab.nuclear.binomial import PART_MAX
 from rnglab.nuclear.checks import multinomial_check
 from rnglab.nuclear.comparison import planned_path_cells
 from rnglab.nuclear.decay import Mode
+from rnglab.nuclear.moments import state_count_moments, state_sum_moments, two_time_sum_moments
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 ENS_TIMES = (2.0, 8.0)
 PATH_MIN_EXPECTED = 10.0
+SENSITIVITY_RATIOS = (1.1, 1.25, 1.5, 2.0)
+
+
+def load_verification():
+    """run_verification.py as a module (its main() is not run): the planned cells come from its functions."""
+    spec = importlib.util.spec_from_file_location("b2_verify_run_verification", HERE / "run_verification.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def variance_test_power(nu: float, level: float, ratio: float, kind: str) -> float:
+    """Approximate power of a two-sided variance test at ``level`` when the true variance is ``ratio`` times
+    the null one (scaled chi-square: ET-*) or B2's variance is ``ratio`` times Layer A's (F ratio: CT-*)."""
+    if kind == "scaled_chi2":
+        low, high = stats.chi2.ppf(level / 2, nu), stats.chi2.isf(level / 2, nu)
+        return float(stats.chi2.cdf(low / ratio, nu) + stats.chi2.sf(high / ratio, nu))
+    low, high = stats.f.ppf(level / 2, nu, nu), stats.f.isf(level / 2, nu, nu)
+    return float(stats.f.cdf(low * ratio, nu, nu) + stats.f.sf(high * ratio, nu, nu))
+
+
+def detectable_ratio(nu: float, level: float, power: float, kind: str) -> float:
+    """Smallest variance ratio above 1 detected with the given power."""
+    from scipy.optimize import brentq
+    return float(brentq(lambda r: variance_test_power(nu, level, r, kind) - power, 1.0 + 1e-9, 1e3))
 
 
 def naive_probabilities(scheme: DecayScheme, start: str, times) -> np.ndarray:
@@ -71,7 +104,7 @@ def single_start(case: dict) -> str | None:
     return next(iter(case["initial"])) if len(case["initial"]) == 1 else None
 
 
-def planned_battery(key: str, scheme: DecayScheme, case: dict, prefix: str) -> list[str]:
+def planned_battery(key: str, scheme: DecayScheme, case: dict, prefix: str, verify) -> list[str]:
     names = []
     times = case["times"]
     groups = groups_of(scheme, case)
@@ -105,6 +138,8 @@ def planned_battery(key: str, scheme: DecayScheme, case: dict, prefix: str) -> l
             q = decay_probabilities(scheme, start, times)[:, i]
             if chi2_applicable(n, np.append(pn * np.diff(q), 1.0 - pn * q[-1])):
                 names.append(f"{prefix} {key} BT-NEUTRON {start}")
+    for j, k, _ in verify.photon_interval_cells(scheme, case):
+        names.append(f"{prefix} {key} BT-PHOTON-T {verify.channel_label(scheme.nuclides[j], scheme.nuclides[j].channels[k])}")
     return names
 
 
@@ -141,6 +176,7 @@ def path_plan(scheme: DecayScheme, case: dict) -> dict:
 
 
 def main() -> None:
+    verify = load_verification()
     protocol = json.loads((HERE / "protocol.json").read_text())
     layer_a = json.loads((REPO / "research/v020-nuclear-a-verify/design.json").read_text())
     schemes = {k: DecayScheme.from_dict(v) for k, v in protocol["schemes"].items()}
@@ -169,17 +205,23 @@ def main() -> None:
     families = {"NC1": [], "NC2": []}
     for family in families:
         for key in ("S1", "S2", "S3", "S4", "S5"):
-            families[family] += planned_battery(key, schemes[key], cases[key], family)
+            families[family] += planned_battery(key, schemes[key], cases[key], family, verify)
         families[family] += [f"{family} S2 BT-PATH {name}" for name in path_cells]
+    photon_cells = {key: {verify.channel_label(schemes[key].nuclides[j], schemes[key].nuclides[j].channels[k]): cells
+                          for j, k, cells in verify.photon_interval_cells(schemes[key], cases[key])}
+                    for key in ("S1", "S2", "S3", "S4", "S5")}
+    reps = protocol["runs"]["ENS-B2"]["replicates"]
+    times2 = cases["S2"]["times"]
+    comp_cells = verify.comparison_cells(s2, times2, reps, n_ens)
     ens = ([f"ENS ET-MEAN {j} t={t}" for t in ("2.0", "8.0") for j in eligible[t]]
            + [f"ENS ET-VAR {j} t={t}" for t in ("2.0", "8.0") for j in eligible[t]]
            + [f"ENS ET-VARSUM {a}+{b} t=2.0" for a, b in pairs_t2]
            + [f"ENS ET-VARSUM2 {a}@2+{b}@8" for a, b in pairs_two_time])
-    comparison = ([f"COMP CT-HOMO t={t!r}" for t in cases["S2"]["times"][1:]]
+    comparison = ([f"COMP CT-HOMO t={t!r}" for t in times2[1:] if f"COMP CT-HOMO t={t!r}" in comp_cells]
                   + [f"COMP CT-VAR {j} t=2.0" for j in at2]
                   + [f"COMP CT-VARSUM {a}+{b} t=2.0" for a, b in pairs_t2]
-                  + [f"COMP CT-DECAY {j}" for j in unstable]
-                  + [f"COMP CT-PHOTON {c}" for c in yield_channels])
+                  + [f"COMP CT-DECAY {j}" for j in unstable if f"COMP CT-DECAY {j}" in comp_cells]
+                  + [f"COMP CT-PHOTON {c}" for c in yield_channels if f"COMP CT-PHOTON {c}" in comp_cells])
     big = []
     for size in protocol["runs"]["BIG"]["initial_sizes"]:
         p_big = state_probabilities(s2, "Xa-400", cases["S2"]["times"])
@@ -189,6 +231,44 @@ def main() -> None:
     families["NC1"] += ens + comparison + big
     alpha = protocol["families"]["alpha"]
     level = alpha / len(families["NC1"])
+    big_parts = [-(-size // PART_MAX) for size in protocol["runs"]["BIG"]["initial_sizes"]]
+    if big_parts != protocol["runs"]["BIG"]["parts"]:
+        raise SystemExit(f"BIG parts {big_parts} differ from protocol.json")
+
+    # Sensitivity of the variance tests at the Holm level (approximate: nu taken from the null moments).
+    index = {name: j for j, name in enumerate(names)}
+    nus = {"ET-VAR": [], "ET-VARSUM": [], "ET-VARSUM2": [], "CT-VAR": [], "CT-VARSUM": []}
+    for t in ENS_TIMES:
+        for j in eligible[repr(t)]:
+            m = state_count_moments(s2, "Xa-400", n_ens, t, index[j], index[j])
+            nu = 2.0 * m.sigma_ab ** 2 / m.sample_covariance_variance(reps)
+            nus["ET-VAR"].append(nu)
+            if t == 2.0:
+                nus["CT-VAR"].append(nu)
+    for a, b in pairs_t2:
+        m = state_sum_moments(s2, "Xa-400", n_ens, 2.0, index[a], index[b])
+        nu = 2.0 * m.sigma_ab ** 2 / m.sample_covariance_variance(reps)
+        nus["ET-VARSUM"].append(nu)
+        nus["CT-VARSUM"].append(nu)
+    for a, b in pairs_two_time:
+        m = two_time_sum_moments(s2, "Xa-400", n_ens, 2.0, 8.0, index[a], index[b])
+        nus["ET-VARSUM2"].append(2.0 * m.sigma_ab ** 2 / m.sample_covariance_variance(reps))
+    sensitivity = {"level": level, "replicates": reps, "method": (
+        "two-sided tests at the Holm level alpha / NC1 size; nu = 2 sigma^4 / Var(s^2) from the exact null moments, "
+        "kept under the alternative. ET-*: true variance = ratio x null variance (scaled chi-square). CT-*: B2's "
+        "variance = ratio x Layer A's (F(nu, nu)). Non-rejection does not establish equivalence: ratios below "
+        "'ratio_detected_with_power_0.5' are more likely missed than found."), "tests": {}}
+    for kind_name, values in nus.items():
+        kind = "f_ratio" if kind_name.startswith("CT") else "scaled_chi2"
+        sensitivity["tests"][kind_name] = {
+            "instances": len(values), "nu_min": min(values), "nu_max": max(values),
+            "power_at_ratio": {repr(r): [min(variance_test_power(nu, level, r, kind) for nu in values),
+                                         max(variance_test_power(nu, level, r, kind) for nu in values)]
+                               for r in SENSITIVITY_RATIOS},
+            "ratio_detected_with_power_0.5": [min(detectable_ratio(nu, level, 0.5, kind) for nu in values),
+                                              max(detectable_ratio(nu, level, 0.5, kind) for nu in values)],
+            "ratio_detected_with_power_0.9": [min(detectable_ratio(nu, level, 0.9, kind) for nu in values),
+                                              max(detectable_ratio(nu, level, 0.9, kind) for nu in values)]}
 
     # Positive controls.
     s1 = schemes["S1"]
@@ -205,11 +285,15 @@ def main() -> None:
     n_pc2 = protocol["runs"]["PC-B2"]["initial"]["Xa-400"]
     lam_single = float(n_pc2 * np.sum((naive12[keep] - exact12[keep]) ** 2 / exact12[keep]))
     pooled = protocol["runs"]["PC-B2"]["replicates"] * protocol["runs"]["PC-B2"]["replicate_initial"]["Xa-400"]
-    # Homogeneity of two samples of M nuclei each with laws a and b, m = (a + b) / 2:
-    # each row contributes M sum (a - m)^2 / m = (M / 4) sum (a - b)^2 / m, so the total is (M / 2) sum (a - b)^2 / m.
-    mid = (naive12 + exact12) / 2.0
-    keep2 = mid > 0
-    lam_comp = float(pooled / 2.0 * np.sum((naive12[keep2] - exact12[keep2]) ** 2 / mid[keep2]))
+    # Homogeneity of two samples of M nuclei each with laws a and b, m = (a + b) / 2, on the cells fixed for
+    # CT-HOMO at t = 12: each row contributes M sum (a - m)^2 / m = (M / 4) sum (a - b)^2 / m over cells,
+    # so the total is (M / 2) sum (a - b)^2 / m.
+    cells12 = comp_cells[f"COMP CT-HOMO t={times2[-1]!r}"]
+    naive_cells = np.array([naive12[c].sum() for c in cells12])
+    exact_cells = np.array([exact12[c].sum() for c in cells12])
+    mid = (naive_cells + exact_cells) / 2.0
+    lam_comp = float(pooled / 2.0 * np.sum((naive_cells - exact_cells) ** 2 / mid))
+    dof_comp = len(cells12) - 1
     dof = int(keep.sum()) - 1
 
     plans = {}
@@ -223,8 +307,12 @@ def main() -> None:
         "layer_a_schemes_identical": True,
         "ens": {"times": list(ENS_TIMES), "per_replicate": n_ens, "eligible": eligible, "pairs_t2": pairs_t2,
                 "pairs_two_time": pairs_two_time},
-        "comparison": {"unstable": unstable, "yield_channels": yield_channels},
+        "comparison": {"unstable": unstable, "yield_channels": yield_channels,
+                       "min_expected": verify.COMPARISON_MIN_EXPECTED, "cells": comp_cells},
         "path_tests": path_detail,
+        "photon_interval_tests": {"min_expected": verify.PHOTON_MIN_EXPECTED, "cells": photon_cells},
+        "big_parts": big_parts,
+        "sensitivity": sensitivity,
         "planned_tests": families,
         "family_sizes": {k: len(v) for k, v in families.items()},
         "positive_control_level": level,
@@ -233,8 +321,8 @@ def main() -> None:
             "PC-B2": {"exact_p12": exact12.tolist(), "naive_p12": naive12.tolist(), "dof": dof,
                       "noncentrality_single_run": lam_single,
                       "approximate_power_single_run": chi2_power(lam_single, dof, level),
-                      "noncentrality_comparison": lam_comp,
-                      "approximate_power_comparison": chi2_power(lam_comp, dof, level)},
+                      "noncentrality_comparison": lam_comp, "dof_comparison": dof_comp,
+                      "approximate_power_comparison": chi2_power(lam_comp, dof_comp, level)},
             "method": "normal (PC-B1) and noncentral chi-square (PC-B2) approximations at the level alpha / NC1 family size",
         },
         "plans": plans,
@@ -244,7 +332,11 @@ def main() -> None:
                       "pairs_t2": len(pairs_t2), "pairs_two_time": len(pairs_two_time),
                       "path_tests": {k: (len(v), path_detail["dof"][k]) for k, v in path_cells.items()},
                       "PC-B1 power": power_pc1, "PC-B2 power single": chi2_power(lam_single, dof, level),
-                      "PC-B2 power comparison": chi2_power(lam_comp, dof, level),
+                      "PC-B2 power comparison": chi2_power(lam_comp, dof_comp, level),
+                      "photon_interval_tests": sum(len(v) for v in photon_cells.values()),
+                      "big_parts": big_parts,
+                      "sensitivity_ratio_power_0.5": {k: v["ratio_detected_with_power_0.5"]
+                                                      for k, v in sensitivity["tests"].items()},
                       "plans": {k: v["layout"]["words_per_interval"] for k, v in plans.items()}}, indent=1))
 
 

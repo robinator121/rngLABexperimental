@@ -5,7 +5,14 @@
 The script refuses to draw if a frozen file differs from protocol.sha256. The
 main run also refuses on a dirty Git tree or when results/verification.json
 exists. --smoke uses the smoke namespace and reduced sizes, writes to smoke/
-(not in Git) and is excluded from every result.
+(not in Git) and is excluded from every result; before the freeze it runs on
+the files' current hashes and records that it was not frozen.
+
+Every test is a function of observations only (battery, path_tests,
+ensemble_tests, comparison_tests, big_tests). calibration.py evaluates the
+same functions on null data drawn from the exact laws. A test that cannot be
+computed is recorded with its error and listed as a failed item; it never
+reads as a passing test.
 """
 from __future__ import annotations
 
@@ -25,11 +32,12 @@ from rnglab.nuclear import (
     DecayScheme, NumpyPCG64Source, WordStream, decay_probabilities, simulate_decays, state_probabilities,
 )
 from rnglab.nuclear.aggregate import aggregate_manifest, simulate_aggregate, simulate_aggregate_reference
-from rnglab.nuclear.binomial import binomial_inverse
+from rnglab.nuclear.binomial import PART_MAX, binomial_inverse
 from rnglab.nuclear.checks import binomial_check, decay_invariants, holm, multinomial_check
 from rnglab.nuclear.comparison import (
-    fixed_cells_chisquare, homogeneity_check, planned_path_cells, sample_covariance,
-    scaled_chisquare_variance_check, summed_chisquare, variance_ratio_f_check, z_check,
+    allocation_check, consecutive_cells, fixed_cells_chisquare, homogeneity_check, planned_path_cells,
+    pooled_cells, sample_covariance, scaled_chisquare_variance_check, summed_chisquare, variance_ratio_f_check,
+    z_check,
 )
 from rnglab.nuclear.decay import Mode
 from rnglab.nuclear.manifest import code_identity, environment, file_sha256
@@ -40,11 +48,15 @@ from rnglab14.sources import Xoshiro256PlusPlusSource
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-FROZEN = ("protocol.json", "design.json", "design.py", "run_verification.py")
+FROZEN = ("protocol.json", "design.json", "design.py", "run_verification.py", "calibration.py")
+PHOTON_MIN_EXPECTED = 10.0      # per-interval photon cells: min(yield, 1 - yield) * expected decays
+COMPARISON_MIN_EXPECTED = 5.0   # cells of the Layer A / B2 homogeneity tests, per engine
 
 
-def frozen_hashes() -> dict[str, str]:
+def frozen_hashes(*, smoke: bool = False) -> dict:
     if not (HERE / "protocol.sha256").exists():
+        if smoke:
+            return {"frozen": False, "files": {name: file_sha256(HERE / name) for name in FROZEN}}
         raise SystemExit("protocol.sha256 is missing: the protocol is not frozen; refusing to draw")
     listed = {}
     for line in (HERE / "protocol.sha256").read_text().splitlines():
@@ -56,7 +68,35 @@ def frozen_hashes() -> dict[str, str]:
     for name in FROZEN:
         if file_sha256(HERE / name) != listed[name]:
             raise SystemExit(f"{name} differs from protocol.sha256; refusing to draw")
-    return listed
+    return {"frozen": True, "files": listed}
+
+
+_MEMO: dict = {}
+
+
+def memo(function, scheme, *args):
+    """Deterministic references (matrix-exponential laws, exact moments), computed once per argument set.
+
+    The battery runs once in the study and many times in calibration.py; the values are the same either
+    way. Arrays come back read-only.
+    """
+    key = (function.__module__, function.__qualname__, id(scheme), repr(args))
+    hit = _MEMO.get(key)
+    if hit is not None and hit[0] is scheme:
+        return hit[1]
+    value = function(scheme, *args)
+    if isinstance(value, np.ndarray):
+        value.setflags(write=False)
+    _MEMO[key] = (scheme, value)
+    return value
+
+
+def evaluate(function, *args, **kwargs) -> dict:
+    """A test's result, or {'error': ...} when it cannot be computed (a failed item, never a pass)."""
+    try:
+        return function(*args, **kwargs)
+    except (ValueError, ArithmeticError) as error:
+        return {"error": f"{type(error).__name__}: {error}"}
 
 
 def make_source(generator: str, seed: int, label: str):
@@ -120,41 +160,75 @@ def chi2(counts, probabilities) -> dict:
         raise
 
 
+def channel_label(nuclide, channel) -> str:
+    return f"{nuclide.name}/{channel.mode.value}->{channel.daughter}"
+
+
+def photon_interval_cells(ref: DecayScheme, case: dict) -> list[tuple[int, int, list[list[int]]]]:
+    """(nuclide, channel, cells) of the per-interval photon tests, from expected decays only.
+
+    For every channel with photon yield y strictly between 0 and 1, consecutive grid intervals are
+    pooled until min(y, 1 - y) times the expected decays of the cell reaches PHOTON_MIN_EXPECTED;
+    channels left with one cell get no per-interval test (the test of the totals covers them).
+    """
+    times = case["times"]
+    expected: dict[tuple[int, int], np.ndarray] = {}
+    for start, n in case["initial"].items():
+        q = memo(decay_probabilities, ref, start, times)
+        for j, nuclide in enumerate(ref.nuclides):
+            for k, (channel, branch) in enumerate(zip(nuclide.channels, nuclide.channel_probabilities())):
+                if 0.0 < channel.photon_yield < 1.0:
+                    expected[(j, k)] = expected.get((j, k), 0.0) + n * branch * np.diff(q[:, j])
+    out = []
+    for (j, k), decays in sorted(expected.items()):
+        y = ref.nuclides[j].channels[k].photon_yield
+        cells = consecutive_cells(min(y, 1.0 - y) * decays, PHOTON_MIN_EXPECTED)
+        if len(cells) >= 2:
+            out.append((j, k, cells))
+    return out
+
+
 def battery(key: str, run, ref: DecayScheme, case: dict, prefix: str) -> dict:
     out = {}
     times = case["times"]
     pops, decays, photons = run.populations, run.decays, run.photons
     for start, members in groups_of(ref, case["initial"]):
         n = case["initial"][start]
-        p = state_probabilities(ref, start, times)
+        p = memo(state_probabilities, ref, start, times)
         for it, t in enumerate(times[1:], start=1):
-            out[f"{prefix} {key} BT-STATE {start} t={t!r}"] = chi2(pops[it, members], p[it, members])
-        q_end = decay_probabilities(ref, start, times[-1])[0]
+            out[f"{prefix} {key} BT-STATE {start} t={t!r}"] = evaluate(chi2, pops[it, members], p[it, members])
+        q_end = memo(decay_probabilities, ref, start, times[-1])[0]
         for j in members:
             if not ref.nuclides[j].stable:
-                out[f"{prefix} {key} BT-DECAY {ref.nuclides[j].name}"] = binomial_check(
-                    decays[:, j, :].sum(), n, q_end[j])
+                out[f"{prefix} {key} BT-DECAY {ref.nuclides[j].name}"] = evaluate(
+                    binomial_check, decays[:, j, :].sum(), n, q_end[j])
         i = ref.index[start]
-        q = decay_probabilities(ref, start, times)[:, i]
+        q = memo(decay_probabilities, ref, start, times)[:, i]
         per_interval = decays[:, i, :].sum(axis=1)
-        out[f"{prefix} {key} BT-BINS {start}"] = chi2(
-            np.append(per_interval, n - per_interval.sum()), np.append(np.diff(q), 1.0 - q[-1]))
+        out[f"{prefix} {key} BT-BINS {start}"] = evaluate(
+            chi2, np.append(per_interval, n - per_interval.sum()), np.append(np.diff(q), 1.0 - q[-1]))
         if key == "S4":
             channels = ref.nuclides[i].channels
             k = next(c for c, ch in enumerate(channels) if ch.mode is Mode.BETA_DELAYED_NEUTRON)
             pn = ref.nuclides[i].channel_probabilities()[k]
             neutrons = decays[:, i, k]
             probabilities = np.append(pn * np.diff(q), 1.0 - pn * q[-1])
-            out[f"{prefix} {key} BT-NEUTRON {start}"] = chi2(np.append(neutrons, n - neutrons.sum()), probabilities)
+            out[f"{prefix} {key} BT-NEUTRON {start}"] = evaluate(
+                chi2, np.append(neutrons, n - neutrons.sum()), probabilities)
     for j, nuclide in enumerate(ref.nuclides):
         total_j = int(decays[:, j, :].sum())
         if len(nuclide.channels) >= 2:
-            out[f"{prefix} {key} BT-CHANNEL {nuclide.name}"] = binomial_check(
-                decays[:, j, 0].sum(), total_j, nuclide.channel_probabilities()[0])
+            out[f"{prefix} {key} BT-CHANNEL {nuclide.name}"] = evaluate(
+                binomial_check, decays[:, j, 0].sum(), total_j, nuclide.channel_probabilities()[0])
         for k, channel in enumerate(nuclide.channels):
             if 0.0 < channel.photon_yield < 1.0:
-                out[f"{prefix} {key} BT-PHOTON {nuclide.name}/{channel.mode.value}->{channel.daughter}"] = \
-                    binomial_check(photons[:, j, k].sum(), decays[:, j, k].sum(), channel.photon_yield)
+                out[f"{prefix} {key} BT-PHOTON {channel_label(nuclide, channel)}"] = evaluate(
+                    binomial_check, photons[:, j, k].sum(), decays[:, j, k].sum(), channel.photon_yield)
+    for j, k, cells in photon_interval_cells(ref, case):
+        nuclide = ref.nuclides[j]
+        channel = nuclide.channels[k]
+        out[f"{prefix} {key} BT-PHOTON-T {channel_label(nuclide, channel)}"] = evaluate(
+            allocation_check, photons[:, j, k], decays[:, j, k], channel.photon_yield, cells)
     return out
 
 
@@ -170,7 +244,7 @@ def path_tests(run, prefix: str, case: dict, min_expected: float) -> tuple[dict,
     plan = run.plan
     scheme = plan.scheme
     (start, n0), = case["initial"].items()
-    expected = [state_probabilities(scheme, start, t)[0] * n0 for t in case["times"][:-1]]
+    expected = [memo(state_probabilities, scheme, start, t)[0] * n0 for t in case["times"][:-1]]
     cells = planned_path_cells(plan, expected, min_expected=min_expected)
     out = {}
     for i, per_interval in cells.items():
@@ -184,8 +258,8 @@ def path_tests(run, prefix: str, case: dict, min_expected: float) -> tuple[dict,
             out[name] = summed_chisquare(parts)
             out[name]["intervals"] = sorted(per_interval)
             out[name]["interval_statistics"] = [part["statistic"] for part in parts]
-        except ValueError as error:
-            out[name] = {"error": str(error)}
+        except (ValueError, ArithmeticError) as error:
+            out[name] = {"error": f"{type(error).__name__}: {error}"}
     names = {scheme.nuclides[i].name: {str(k): c for k, c in per.items()} for i, per in cells.items()}
     return out, names
 
@@ -239,9 +313,11 @@ def layer_a_observations(run, times):
 
 
 def law_checks(schemes: dict, cases: dict) -> dict:
+    """D8. Every reference must be finite: a NaN would compare false and could never raise a maximum,
+    so a non-finite reference is recorded and fails the check instead of reading as agreement."""
     worst_tree = worst_layer_a = 0.0
     worst_sum = Decimal(0)
-    brackets, digits, laws, error = True, 0, 0, None
+    brackets, digits, laws, error, nonfinite = True, 0, 0, None, []
     try:
         for key, scheme in schemes.items():
             for delta in sorted(set(np.diff(cases[key]["times"]).tolist())):
@@ -250,22 +326,150 @@ def law_checks(schemes: dict, cases: dict) -> dict:
                     laws += 1
                     digits = max(digits, law.digits_used)
                     q = law.as_float()
-                    worst_tree = max(worst_tree, float(np.max(np.abs(q - tree_probabilities(scheme, i, delta)))))
+                    tree = tree_probabilities(scheme, i, delta)
+                    layer_a = state_probabilities(scheme, nuclide.name, delta)[0]
+                    if not (np.all(np.isfinite(q)) and np.all(np.isfinite(tree)) and np.all(np.isfinite(layer_a))):
+                        nonfinite.append(f"{key} {nuclide.name} delta={delta!r}")
+                        continue
+                    worst_tree = max(worst_tree, float(np.max(np.abs(q - tree))))
                     ends = np.zeros(len(scheme))
                     for category, value in zip(law.categories, q):
                         ends[category.end] += value
-                    worst_layer_a = max(worst_layer_a, float(np.max(np.abs(
-                        ends - state_probabilities(scheme, nuclide.name, delta)[0]))))
+                    worst_layer_a = max(worst_layer_a, float(np.max(np.abs(ends - layer_a))))
                     with localcontext(Context(prec=300)):
                         worst_sum = max(worst_sum, abs(sum(law.probabilities, Decimal(0)) - 1))
                     brackets &= bounds_hold(scheme, law)
-    except ValueError as caught:
-        error = str(caught)
-    ok = (error is None and worst_tree <= 1e-12 and worst_layer_a <= 1e-12 and worst_sum <= Decimal("1e-30")
-          and brackets)
+    except (ValueError, ArithmeticError) as caught:
+        error = f"{type(caught).__name__}: {caught}"
+    ok = (error is None and not nonfinite and worst_tree <= 1e-12 and worst_layer_a <= 1e-12
+          and worst_sum <= Decimal("1e-30") and brackets)
     return {"laws_checked": laws, "max_abs_decimal_minus_tree": worst_tree,
             "max_abs_end_state_minus_layer_a": worst_layer_a, "max_abs_sum_minus_one": float(worst_sum),
-            "brackets_hold": brackets, "max_digits": digits, "error": error, "ok": bool(ok)}
+            "brackets_hold": brackets, "max_digits": digits, "nonfinite_references": nonfinite, "error": error,
+            "ok": bool(ok)}
+
+
+def ensemble_tests(s2: DecayScheme, design: dict, reps: int, n_ens: int, times2, pop_b: np.ndarray) -> dict:
+    """ENS-B2 against exact moments: ET-MEAN, ET-VAR, ET-VARSUM, ET-VARSUM2."""
+    index_of_time = {repr(t): k for k, t in enumerate(times2)}
+    out = {}
+    for t in ("2.0", "8.0"):
+        it = index_of_time[t]
+        p = memo(state_probabilities, s2, "Xa-400", float(t))[0]
+        for name in design["ens"]["eligible"][t]:
+            j = s2.index[name]
+            out[f"ENS ET-MEAN {name} t={t}"] = evaluate(binomial_check, pop_b[:, it, j].sum(), reps * n_ens, p[j])
+            moments = memo(state_count_moments, s2, "Xa-400", n_ens, float(t), j, j)
+            out[f"ENS ET-VAR {name} t={t}"] = evaluate(
+                scaled_chisquare_variance_check, sample_covariance(pop_b[:, it, j], pop_b[:, it, j]),
+                moments.sigma_ab, moments.sample_covariance_variance(reps))
+    i2, i8 = index_of_time["2.0"], index_of_time["8.0"]
+    for a, b in design["ens"]["pairs_t2"]:
+        moments = memo(state_sum_moments, s2, "Xa-400", n_ens, 2.0, s2.index[a], s2.index[b])
+        total = pop_b[:, i2, s2.index[a]] + pop_b[:, i2, s2.index[b]]
+        out[f"ENS ET-VARSUM {a}+{b} t=2.0"] = evaluate(
+            scaled_chisquare_variance_check, sample_covariance(total, total), moments.sigma_ab,
+            moments.sample_covariance_variance(reps))
+    for a, b in design["ens"]["pairs_two_time"]:
+        moments = memo(two_time_sum_moments, s2, "Xa-400", n_ens, 2.0, 8.0, s2.index[a], s2.index[b])
+        total = pop_b[:, i2, s2.index[a]] + pop_b[:, i8, s2.index[b]]
+        out[f"ENS ET-VARSUM2 {a}@2+{b}@8"] = evaluate(
+            scaled_chisquare_variance_check, sample_covariance(total, total), moments.sigma_ab,
+            moments.sample_covariance_variance(reps))
+    return out
+
+
+def comparison_cells(s2: DecayScheme, times2, reps: int, n_ens: int) -> dict[str, list[list[int]]]:
+    """Cells of the Layer A / B2 homogeneity tests, fixed before any data from expected counts per engine.
+
+    Both engines draw reps * n_ens nuclei from the same law under the null, so the expected counts of
+    each row are known; pooling follows comparison.pooled_cells (minimum COMPARISON_MIN_EXPECTED). Tests
+    left with fewer than two cells are not applicable and are not planned.
+    """
+    pooled = reps * n_ens
+    out = {}
+    p = memo(state_probabilities, s2, "Xa-400", times2)
+    for it, t in enumerate(times2[1:], start=1):
+        out[f"COMP CT-HOMO t={t!r}"] = pooled_cells(pooled * p[it], COMPARISON_MIN_EXPECTED)
+    q = memo(decay_probabilities, s2, "Xa-400", times2)
+    for j, nuclide in enumerate(s2.nuclides):
+        if not nuclide.stable:
+            expected = pooled * np.append(np.diff(q[:, j]), 1.0 - q[-1, j])
+            out[f"COMP CT-DECAY {nuclide.name}"] = pooled_cells(expected, COMPARISON_MIN_EXPECTED)
+        for k, (channel, branch) in enumerate(zip(nuclide.channels, nuclide.channel_probabilities())):
+            if 0.0 < channel.photon_yield < 1.0:
+                decays = pooled * branch * q[-1, j]
+                out[f"COMP CT-PHOTON {channel_label(nuclide, channel)}"] = pooled_cells(
+                    [channel.photon_yield * decays, (1.0 - channel.photon_yield) * decays], COMPARISON_MIN_EXPECTED)
+    return {name: cells for name, cells in out.items() if len(cells) >= 2}
+
+
+def comparison_tests(s2: DecayScheme, design: dict, reps: int, n_ens: int, times2, pop_a, pop_b, dec_a, dec_b,
+                     pho_a, pho_b) -> dict:
+    """ENS-A against ENS-B2: CT-HOMO, CT-VAR, CT-VARSUM, CT-DECAY, CT-PHOTON."""
+    index_of_time = {repr(t): k for k, t in enumerate(times2)}
+    cells = comparison_cells(s2, times2, reps, n_ens)
+    out = {}
+    for t in times2[1:]:
+        it = index_of_time[repr(t)]
+        name = f"COMP CT-HOMO t={t!r}"
+        if name in cells:
+            out[name] = evaluate(homogeneity_check, pop_a[:, it, :].sum(axis=0), pop_b[:, it, :].sum(axis=0),
+                                 cells=cells[name])
+    i2 = index_of_time["2.0"]
+    for name in design["ens"]["eligible"]["2.0"]:
+        j = s2.index[name]
+        moments = memo(state_count_moments, s2, "Xa-400", n_ens, 2.0, j, j)
+        out[f"COMP CT-VAR {name} t=2.0"] = evaluate(
+            variance_ratio_f_check, sample_covariance(pop_a[:, i2, j], pop_a[:, i2, j]),
+            sample_covariance(pop_b[:, i2, j], pop_b[:, i2, j]), moments.sigma_ab,
+            moments.sample_covariance_variance(reps))
+    for a, b in design["ens"]["pairs_t2"]:
+        ja, jb = s2.index[a], s2.index[b]
+        moments = memo(state_sum_moments, s2, "Xa-400", n_ens, 2.0, ja, jb)
+        total_a, total_b = pop_a[:, i2, ja] + pop_a[:, i2, jb], pop_b[:, i2, ja] + pop_b[:, i2, jb]
+        out[f"COMP CT-VARSUM {a}+{b} t=2.0"] = evaluate(
+            variance_ratio_f_check, sample_covariance(total_a, total_a), sample_covariance(total_b, total_b),
+            moments.sigma_ab, moments.sample_covariance_variance(reps))
+    for name in design["comparison"]["unstable"]:
+        test = f"COMP CT-DECAY {name}"
+        if test in cells:
+            j = s2.index[name]
+            va = dec_a[:, :, j, :].sum(axis=(0, 2))
+            vb = dec_b[:, :, j, :].sum(axis=(0, 2))
+            out[test] = evaluate(homogeneity_check, np.append(va, reps * n_ens - va.sum()),
+                                 np.append(vb, reps * n_ens - vb.sum()), cells=cells[test])
+    for j, nuclide in enumerate(s2.nuclides):
+        for k, channel in enumerate(nuclide.channels):
+            test = f"COMP CT-PHOTON {channel_label(nuclide, channel)}"
+            if 0.0 < channel.photon_yield < 1.0 and test in cells:
+                pa, da = pho_a[:, :, j, k].sum(), dec_a[:, :, j, k].sum()
+                pb, db = pho_b[:, :, j, k].sum(), dec_b[:, :, j, k].sum()
+                out[test] = evaluate(homogeneity_check, [pa, da - pa], [pb, db - pb], cells=cells[test])
+    return out
+
+
+def big_tests(s2: DecayScheme, times2, size: int, populations: np.ndarray, decays: np.ndarray) -> dict:
+    """BIG-STATE (chi-square) and BIG-DECAY (normal approximation) of one huge-population run."""
+    out = {}
+    p_grid = memo(state_probabilities, s2, "Xa-400", times2)
+    q_end = memo(decay_probabilities, s2, "Xa-400", times2[-1])[0]
+    for it, t in enumerate(times2[1:], start=1):
+        out[f"BIG {size} BIG-STATE t={t!r}"] = evaluate(chi2, populations[it], p_grid[it])
+    for j, nuclide in enumerate(s2.nuclides):
+        if not nuclide.stable:
+            total_j = int(decays[:, j, :].sum())
+            out[f"BIG {size} BIG-DECAY {nuclide.name}"] = evaluate(
+                z_check, total_j, size * q_end[j], size * q_end[j] * (1 - q_end[j]), "binomial_normal_approximation")
+    return out
+
+
+def family_members(found: dict) -> dict:
+    return {name: value for name, value in found.items() if "p_value" in value}
+
+
+def errors_of(found: dict) -> list[str]:
+    return [name for name, value in found.items() if "error" in value]
 
 
 def scaled(initial: dict, scale: float) -> dict:
@@ -276,7 +480,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--smoke", action="store_true")
     args = parser.parse_args()
-    frozen = frozen_hashes()
+    frozen = frozen_hashes(smoke=args.smoke)
     protocol = json.loads((HERE / "protocol.json").read_text())
     design = json.loads((HERE / "design.json").read_text())
     code = code_identity(REPO)
@@ -322,6 +526,7 @@ def main() -> int:
     deterministic["D8 interval laws"] = result["laws"]["ok"]
 
     tests = {"NC1": {}, "NC2": {}}
+    errors: list[str] = []
     d1, d2 = True, True
     for family in ("NC1", "NC2"):
         generator = runs[family]["generator"]
@@ -341,7 +546,8 @@ def main() -> int:
                 if not args.smoke and path_cells != design["path_tests"]["cells"]:
                     raise SystemExit("BT-PATH cells differ from design.json")
             entry["tests"] = found
-            tests[family].update({k: v for k, v in found.items() if "p_value" in v})
+            tests[family].update(family_members(found))
+            errors += [f"{family}: {name}" for name in errors_of(found)]
             d1 &= entry["consumption"]["ok"]
             d2 &= all(entry["bookkeeping"].values())
             result["runs"][family][key] = entry
@@ -392,58 +598,9 @@ def main() -> int:
     deterministic["D7 ensemble streams"] = (all(len(set(v)) == reps for v in seeds.values())
                                             and all(len(set(v)) == reps for v in digests.values()) and a_zero == 0)
     names = [n.name for n in s2.nuclides]
-    index_of_time = {repr(t): k for k, t in enumerate(times2)}
-    ens_tests, comp_tests = {}, {}
-    for t in ("2.0", "8.0"):
-        it = index_of_time[t]
-        p = state_probabilities(s2, "Xa-400", float(t))[0]
-        for name in design["ens"]["eligible"][t]:
-            j = s2.index[name]
-            ens_tests[f"ENS ET-MEAN {name} t={t}"] = binomial_check(pop_b[:, it, j].sum(), reps * n_ens, p[j])
-            moments = state_count_moments(s2, "Xa-400", n_ens, float(t), j, j)
-            ens_tests[f"ENS ET-VAR {name} t={t}"] = scaled_chisquare_variance_check(
-                sample_covariance(pop_b[:, it, j], pop_b[:, it, j]), moments.sigma_ab,
-                moments.sample_covariance_variance(reps))
-    i2, i8 = index_of_time["2.0"], index_of_time["8.0"]
-    for a, b in design["ens"]["pairs_t2"]:
-        moments = state_sum_moments(s2, "Xa-400", n_ens, 2.0, s2.index[a], s2.index[b])
-        total = pop_b[:, i2, s2.index[a]] + pop_b[:, i2, s2.index[b]]
-        ens_tests[f"ENS ET-VARSUM {a}+{b} t=2.0"] = scaled_chisquare_variance_check(
-            sample_covariance(total, total), moments.sigma_ab, moments.sample_covariance_variance(reps))
-    for a, b in design["ens"]["pairs_two_time"]:
-        moments = two_time_sum_moments(s2, "Xa-400", n_ens, 2.0, 8.0, s2.index[a], s2.index[b])
-        total = pop_b[:, i2, s2.index[a]] + pop_b[:, i8, s2.index[b]]
-        ens_tests[f"ENS ET-VARSUM2 {a}@2+{b}@8"] = scaled_chisquare_variance_check(
-            sample_covariance(total, total), moments.sigma_ab, moments.sample_covariance_variance(reps))
-    for t in times2[1:]:
-        it = index_of_time[repr(t)]
-        comp_tests[f"COMP CT-HOMO t={t!r}"] = homogeneity_check(pop_a[:, it, :].sum(axis=0), pop_b[:, it, :].sum(axis=0))
-    for name in design["ens"]["eligible"]["2.0"]:
-        j = s2.index[name]
-        moments = state_count_moments(s2, "Xa-400", n_ens, 2.0, j, j)
-        comp_tests[f"COMP CT-VAR {name} t=2.0"] = variance_ratio_f_check(
-            sample_covariance(pop_a[:, i2, j], pop_a[:, i2, j]), sample_covariance(pop_b[:, i2, j], pop_b[:, i2, j]),
-            moments.sigma_ab, moments.sample_covariance_variance(reps))
-    for a, b in design["ens"]["pairs_t2"]:
-        ja, jb = s2.index[a], s2.index[b]
-        moments = state_sum_moments(s2, "Xa-400", n_ens, 2.0, ja, jb)
-        total_a, total_b = pop_a[:, i2, ja] + pop_a[:, i2, jb], pop_b[:, i2, ja] + pop_b[:, i2, jb]
-        comp_tests[f"COMP CT-VARSUM {a}+{b} t=2.0"] = variance_ratio_f_check(
-            sample_covariance(total_a, total_a), sample_covariance(total_b, total_b), moments.sigma_ab,
-            moments.sample_covariance_variance(reps))
-    for name in design["comparison"]["unstable"]:
-        j = s2.index[name]
-        va = dec_a[:, :, j, :].sum(axis=(0, 2))
-        vb = dec_b[:, :, j, :].sum(axis=(0, 2))
-        comp_tests[f"COMP CT-DECAY {name}"] = homogeneity_check(np.append(va, reps * n_ens - va.sum()),
-                                                                np.append(vb, reps * n_ens - vb.sum()))
-    for j, nuclide in enumerate(s2.nuclides):
-        for k, channel in enumerate(nuclide.channels):
-            if 0.0 < channel.photon_yield < 1.0:
-                pa, da = pho_a[:, :, j, k].sum(), dec_a[:, :, j, k].sum()
-                pb, db = pho_b[:, :, j, k].sum(), dec_b[:, :, j, k].sum()
-                comp_tests[f"COMP CT-PHOTON {nuclide.name}/{channel.mode.value}->{channel.daughter}"] = \
-                    homogeneity_check([pa, da - pa], [pb, db - pb])
+    ens_tests = ensemble_tests(s2, design, reps, n_ens, times2, pop_b)
+    comp_tests = comparison_tests(s2, design, reps, n_ens, times2, pop_a, pop_b, dec_a, dec_b, pho_a, pho_b)
+    errors += [f"NC1: {name}" for name in errors_of(ens_tests) + errors_of(comp_tests)]
     result["ensemble"] = {"replicates": reps, "per_replicate": n_ens, "nuclides": names, "times": times2,
                           "populations_b2": pop_b.tolist(), "populations_layer_a": pop_a.tolist(),
                           "populations_naive": pop_n.tolist(), "layer_a_decays_at_time_zero": a_zero,
@@ -451,35 +608,29 @@ def main() -> int:
     (out_dir / "manifests" / "ENSEMBLES_S2.json").write_text(json.dumps(
         {"schema": "rnglab-nuclear-ensemble-manifest-v1", "experiment": experiment, "code": code,
          "seed_recipe": protocol["seed_recipe"], "seeds": seeds, "stream_sha256": digests}, indent=1) + "\n")
-    tests["NC1"].update(ens_tests)
-    tests["NC1"].update(comp_tests)
+    tests["NC1"].update(family_members(ens_tests))
+    tests["NC1"].update(family_members(comp_tests))
 
     # Huge populations.
-    big_tests, result["big"] = {}, {}
-    q_end = decay_probabilities(s2, "Xa-400", times2[-1])[0]
-    p_grid = state_probabilities(s2, "Xa-400", times2)
+    all_big, result["big"] = {}, {}
     d9 = True
     for size in (smoke["big_sizes"] if args.smoke else runs["BIG"]["initial_sizes"]):
         run, stream, seconds, s, label = b2(s2, {"Xa-400": size}, times2, "numpy-pcg64", ("BIG", "S2", "physics", size))
         d1 &= b2_consumption(run, stream)["ok"]
         d2 &= all(bookkeeping(run).values())
-        d9 &= run.plan.parts == -(-size // 2 ** 53)
-        for it, t in enumerate(times2[1:], start=1):
-            big_tests[f"BIG {size} BIG-STATE t={t!r}"] = chi2(run.populations[it], p_grid[it])
-        for j, nuclide in enumerate(s2.nuclides):
-            if not nuclide.stable:
-                total_j = int(run.decays[:, j, :].sum())
-                big_tests[f"BIG {size} BIG-DECAY {nuclide.name}"] = z_check(
-                    total_j, size * q_end[j], size * q_end[j] * (1 - q_end[j]), "binomial_normal_approximation")
+        d9 &= run.plan.parts == -(-size // PART_MAX) and set(run.populations.sum(axis=1).tolist()) == {size}
+        found = big_tests(s2, times2, size, run.populations, run.decays)
+        all_big.update(found)
+        errors += [f"NC1: {name}" for name in errors_of(found)]
         result["big"][str(size)] = {"parts": run.plan.parts, "seconds": seconds, "summary": run.summary(),
                                     "populations": [[int(x) for x in row] for row in run.populations]}
         result["timings_seconds"][f"BIG {size}"] = seconds
         manifest(f"BIG_{size}", run, stream, label)
     if not args.smoke:
-        d9 &= [result["big"][str(s)]["parts"] for s in runs["BIG"]["initial_sizes"]] == [1, 129]
+        d9 &= [result["big"][str(s)]["parts"] for s in runs["BIG"]["initial_sizes"]] == runs["BIG"]["parts"]
     deterministic["D9 big populations"] = d9
-    tests["NC1"].update({k: v for k, v in big_tests.items() if "p_value" in v})
-    result["big_tests"] = big_tests
+    tests["NC1"].update(family_members(all_big))
+    result["big_tests"] = all_big
 
     # Positive controls.
     pc = runs["PC-B1"]
@@ -497,7 +648,8 @@ def main() -> int:
     p12 = state_probabilities(s2, "Xa-400", times2)
     pc2_tests = {f"PC-B2 S2 BT-STATE Xa-400 t={t!r}": chi2(naive[it], p12[it])
                  for it, t in enumerate(times2[1:], start=1)}
-    pc2_comp = homogeneity_check(pop_a[:, -1, :].sum(axis=0), pop_n[:, -1, :].sum(axis=0))
+    pc2_cells = comparison_cells(s2, times2, reps, n_ens)[f"COMP CT-HOMO t={times2[-1]!r}"]
+    pc2_comp = evaluate(homogeneity_check, pop_a[:, -1, :].sum(axis=0), pop_n[:, -1, :].sum(axis=0), cells=pc2_cells)
 
     # Software checks.
     xref = []
@@ -557,15 +709,16 @@ def main() -> int:
     level = alpha / len(tests["NC1"])
     t1 = pc1_tests["PC-B1 S1 BT-STATE Sa-400 t=2.0"]["p_value"]
     t2 = pc2_tests["PC-B2 S2 BT-STATE Xa-400 t=12.0"]["p_value"]
-    t3 = pc2_comp["p_value"]
+    t3 = pc2_comp.get("p_value", float("nan"))
     result["positive_controls"] = {
         "level": level,
         "PC-B1": {"target": "BT-STATE Sa-400 t=2.0", "p_value": t1, "rejected": t1 < level, "all_tests": pc1_tests},
         "PC-B2 single run": {"target": "BT-STATE Xa-400 t=12.0", "p_value": t2, "rejected": t2 < level,
                              "all_tests": pc2_tests},
         "PC-B2 comparison": {"target": "CT-HOMO t=12.0, ENS-A against ENS-NAIVE", "p_value": t3,
-                             "rejected": t3 < level, "test": pc2_comp}}
+                             "rejected": bool(t3 < level), "test": pc2_comp}}
     failed = [k for k, ok in deterministic.items() if not ok]
+    failed += [f"test could not be computed in {name}" for name in errors]
     failed += [f"Holm rejection in {f}: {n}" for f, v in result["families"].items() for n in v["rejected"]]
     result["verdicts"] = {"deterministic": deterministic, "R1": "PASS" if not failed else "FAIL",
                           "R1_failed_items": failed,

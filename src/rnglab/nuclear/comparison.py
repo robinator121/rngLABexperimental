@@ -107,17 +107,27 @@ def covariance_difference_check(xa, ya, xb, yb, label: str = "covariance_differe
     return result
 
 
-def homogeneity_check(a: Sequence[int], b: Sequence[int], *, min_expected: float = 5.0) -> dict[str, Any]:
+def homogeneity_check(a: Sequence[int], b: Sequence[int], *, min_expected: float = 5.0,
+                      cells: Sequence[Sequence[int]] | None = None) -> dict[str, Any]:
     """Chi-square test that two count vectors come from one multinomial law (2 x K table).
 
-    Columns with an expected count below ``min_expected`` in either row are
-    pooled into one column, in their original order; a pooled column still
-    below the limit joins the remaining column with the smallest total.
-    Columns that are empty in both rows are dropped.
+    With ``cells`` (the form the B2 verification uses), the columns are pooled
+    into cells declared before any data is seen, so the degrees of freedom
+    (cells - 1) and the applicability never depend on the data; a cell that is
+    empty in both rows contributes 0 and keeps its degree of freedom
+    (conservative), and a count outside the cells is an error.
+
+    Without ``cells``, columns with an expected count below ``min_expected`` in
+    either row are pooled into one column, in their original order; a pooled
+    column still below the limit joins the remaining column with the smallest
+    total. Columns that are empty in both rows are dropped. This rule depends
+    on the observed margins.
     """
     table = np.array([a, b], dtype=np.float64)
     if table.ndim != 2 or table.shape[0] != 2 or np.any(table < 0) or not np.all(np.isfinite(table)):
         raise ValueError("need two nonnegative count vectors of equal length")
+    if cells is not None:
+        return _homogeneity_fixed(table, cells, a, b)
     keep = np.flatnonzero(table.sum(axis=0) > 0)
     rows = table.sum(axis=1)
     if np.any(rows == 0):
@@ -138,6 +148,96 @@ def homogeneity_check(a: Sequence[int], b: Sequence[int], *, min_expected: float
     _finite(statistic, p)
     return {"test": "homogeneity_chisquare", "a": [int(v) for v in a], "b": [int(v) for v in b], "cells": cells,
             "statistic": float(statistic), "dof": int(dof), "p_value": float(p)}
+
+
+def _homogeneity_fixed(table: np.ndarray, cells: Sequence[Sequence[int]], a, b) -> dict[str, Any]:
+    columns = table.shape[1]
+    members = [int(i) for cell in cells for i in cell]
+    if len(cells) < 2 or len(set(members)) != len(members) or any(not 0 <= i < columns for i in members):
+        raise ValueError("need two or more disjoint cells of valid column indices")
+    outside = np.ones(columns, dtype=bool)
+    outside[members] = False
+    if np.any(table[:, outside] > 0):
+        raise ValueError("a count lies outside the declared cells")
+    pooled = np.array([[table[r, list(cell)].sum() for cell in cells] for r in range(2)])
+    rows = pooled.sum(axis=1)
+    if np.any(rows == 0):
+        raise ValueError("each row needs at least one count")
+    totals = pooled.sum(axis=0)
+    expected = np.outer(rows, totals) / rows.sum()
+    used = totals > 0
+    statistic = float((((pooled - expected) ** 2)[:, used] / expected[:, used]).sum())
+    dof = len(cells) - 1
+    p = float(stats.chi2.sf(statistic, dof))
+    _finite(statistic, p)
+    return {"test": "homogeneity_chisquare_fixed_cells", "a": [int(v) for v in a], "b": [int(v) for v in b],
+            "cells": [list(map(int, cell)) for cell in cells], "empty_cells": int((~used).sum()),
+            "statistic": statistic, "dof": dof, "p_value": p}
+
+
+def consecutive_cells(expected: Sequence[float], min_expected: float) -> list[list[int]]:
+    """Cells of consecutive indices (grid intervals), decided before any data is seen.
+
+    Walks from the left, closing a cell once its expected count reaches
+    ``min_expected``; a remainder below the limit joins the last closed cell.
+    Returns a single cell when no cell reaches the limit (then no per-interval
+    test is defined).
+    """
+    expected = np.asarray(expected, dtype=np.float64)
+    if expected.ndim != 1 or expected.size == 0 or not np.all(np.isfinite(expected)) or np.any(expected < 0):
+        raise ValueError("expected counts must be a finite nonnegative nonempty vector")
+    cells: list[list[int]] = []
+    current: list[int] = []
+    for i, value in enumerate(expected.tolist()):
+        current.append(i)
+        if float(expected[current].sum()) >= min_expected:
+            cells.append(current)
+            current = []
+    if current:
+        if cells:
+            cells[-1] += current
+        else:
+            cells.append(current)
+    return cells
+
+
+def allocation_check(successes: Sequence[int], trials: Sequence[int], probability: float,
+                     cells: Sequence[Sequence[int]]) -> dict[str, Any]:
+    """Allocation of successes over intervals, given the trials of each interval.
+
+    Under the null, successes of interval k are Binomial(trials_k, p), independent
+    across intervals given the trials (photons given decays). The Pearson
+    statistic sum_c (S_c - p T_c)^2 / (p (1 - p) T_c) over pre-declared cells of
+    intervals (S_c, T_c cell sums) is referred to chi-square(number of cells):
+    given the trials each term has mean 1 and is asymptotically chi-square(1).
+    A cell without trials contributes 0 and keeps its degree of freedom
+    (conservative). It sees how successes are spread over time, which a test of
+    the totals cannot.
+    """
+    s = np.asarray(successes, dtype=np.int64)
+    n = np.asarray(trials, dtype=np.int64)
+    if s.shape != n.shape or s.ndim != 1 or np.any(s < 0) or np.any(s > n):
+        raise ValueError("successes and trials must be matching vectors with 0 <= successes <= trials")
+    _finite(probability)
+    if not 0.0 < probability < 1.0:
+        raise ValueError("probability must lie strictly between 0 and 1")
+    members = sorted(int(i) for cell in cells for i in cell)
+    if len(cells) < 2 or members != list(range(s.size)):
+        raise ValueError("cells must partition the intervals into two or more parts")
+    statistic = 0.0
+    cell_successes, cell_trials = [], []
+    for cell in cells:
+        sc, nc = float(s[list(cell)].sum()), float(n[list(cell)].sum())
+        cell_successes.append(sc)
+        cell_trials.append(nc)
+        if nc > 0:
+            statistic += (sc - probability * nc) ** 2 / (probability * (1.0 - probability) * nc)
+    dof = len(cells)
+    p = float(stats.chi2.sf(statistic, dof))
+    _finite(statistic, p)
+    return {"test": "binomial_allocation_chisquare", "probability": float(probability),
+            "cells": [list(map(int, cell)) for cell in cells], "cell_successes": cell_successes,
+            "cell_trials": cell_trials, "statistic": statistic, "dof": dof, "p_value": p}
 
 
 def pooled_cells(expected: Sequence[float], min_expected: float) -> list[list[int]]:

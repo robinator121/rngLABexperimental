@@ -9,6 +9,11 @@ peaks come from one further process run under tracemalloc, whose times are
 discarded because tracing slows allocation-heavy code. Random numbers come from the
 engineering namespace rnglab-v020-nuclear-bench. Writes results/benchmark.json.
 Nothing here is an HPC measurement.
+
+Also measured: an import-only baseline (the resident memory of the interpreter
+and libraries, to read peak RSS against), the B2 time under the default BLAS /
+OpenMP thread settings and with one thread, and independent processes started
+together with one thread each (as array jobs would run them).
 """
 from __future__ import annotations
 
@@ -26,6 +31,16 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 NAMESPACE = "rnglab-v020-nuclear-bench"
 S2_TIMES = [0.0, 0.5, 1.0, 2.0, 4.0, 8.0, 12.0]
+THREAD_VARIABLES = ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS")
+
+
+def child_env(threads: str | None = None) -> dict:
+    env = dict(os.environ, PYTHONPATH=str(REPO / "src"))
+    for name in THREAD_VARIABLES:
+        env.pop(name, None)
+        if threads is not None:
+            env[name] = threads
+    return env
 
 
 def worker(config: dict) -> dict:
@@ -47,7 +62,9 @@ def worker(config: dict) -> dict:
         tracemalloc.start()
     cpu0, wall0 = time.process_time(), time.perf_counter()
     out: dict = {}
-    if config["engine"] == "layer_a":
+    if config["engine"] == "baseline":
+        out.update(parts=None, imported=["numpy", "scipy.special", "rnglab.nuclear", "rnglab.nuclear.aggregate"])
+    elif config["engine"] == "layer_a":
         run = simulate_decays(s2, {"Xa-400": config["n"]}, 12.0, stream)
         pops = run.populations(S2_TIMES)
         out.update(events=run.n_events, output_bytes=int(sum(v.nbytes for v in run.events.values())),
@@ -74,31 +91,31 @@ def worker(config: dict) -> dict:
     return out
 
 
-def measure(config: dict, repeats: int = 3) -> dict:
+def measure(config: dict, repeats: int = 3, threads: str | None = None) -> dict:
     samples = []
     for repeat in range(repeats):
         cfg = dict(config, repeat=repeat)
         done = subprocess.run([sys.executable, __file__, "worker", json.dumps(cfg)], capture_output=True, text=True,
-                              env=dict(os.environ, PYTHONPATH=str(REPO / "src")), check=True)
+                              env=child_env(threads), check=True)
         samples.append(json.loads(done.stdout.strip().splitlines()[-1]))
     keys = ("wall_seconds", "cpu_seconds", "max_rss_bytes")
     summary = {k: statistics.median(s[k] for s in samples) for k in keys}
     summary.update({k: v for k, v in samples[0].items() if k not in keys})
     traced = subprocess.run([sys.executable, __file__, "worker", json.dumps(dict(config, repeat=50, trace=True))],
-                            capture_output=True, text=True, env=dict(os.environ, PYTHONPATH=str(REPO / "src")),
-                            check=True)
+                            capture_output=True, text=True, env=child_env(threads), check=True)
     summary["traced_peak_bytes"] = json.loads(traced.stdout.strip().splitlines()[-1])["traced_peak_bytes"]
     summary["wall_seconds_all"] = [s["wall_seconds"] for s in samples]
     summary["cpu_utilisation"] = summary["cpu_seconds"] / summary["wall_seconds"]
     summary["words_per_second"] = summary["words"] / summary["wall_seconds"]
+    summary["thread_setting"] = "default (unset)" if threads is None else f"{threads} thread(s)"
     return {"config": config, **summary}
 
 
 def parallel(config: dict, processes: int) -> dict:
-    """Wall time for `processes` independent copies started together (independent-task throughput)."""
+    """Wall time for `processes` independent copies started together, one BLAS/OpenMP thread each."""
     start = time.perf_counter()
     jobs = [subprocess.Popen([sys.executable, __file__, "worker", json.dumps(dict(config, repeat=100 + k))],
-                             stdout=subprocess.PIPE, text=True, env=dict(os.environ, PYTHONPATH=str(REPO / "src")))
+                             stdout=subprocess.PIPE, text=True, env=child_env("1"))
             for k in range(processes)]
     results = [json.loads(job.communicate()[0].strip().splitlines()[-1]) for job in jobs]
     wall = time.perf_counter() - start
@@ -133,10 +150,11 @@ def main() -> int:
     result = {"generated_by": "research/v020-nuclear-b2-bench/benchmark.py", "started_utc": started,
               "code": code_identity(REPO), "machine": machine(), "namespace": NAMESPACE,
               "note": "single workstation, measured; projections are in the 'projections' block only"}
+    result["baseline"] = measure({"engine": "baseline", "n": 0})
     result["layer_a"] = [measure({"engine": "layer_a", "n": n}) for n in (10 ** 3, 10 ** 4, 10 ** 5, 10 ** 6, 2 * 10 ** 6)]
     print("layer A done", flush=True)
     result["b2_population"] = [measure({"engine": "b2", "n": n})
-                               for n in (10 ** 3, 10 ** 5, 10 ** 6, 10 ** 9, 10 ** 12, 2 ** 53, 2 ** 56, 2 ** 60)]
+                               for n in (10 ** 3, 10 ** 5, 10 ** 6, 10 ** 9, 10 ** 12, 2 ** 50, 2 ** 53, 2 ** 56, 2 ** 60)]
     print("B2 population sweep done", flush=True)
     result["b2_intervals"] = []
     for intervals in (10, 100, 1000, 10000):
@@ -144,6 +162,10 @@ def main() -> int:
             result["b2_intervals"].append(measure({"engine": "b2", "n": 10 ** 6, "intervals": intervals,
                                                    "uniform": True, "keep": keep}))
     print("B2 interval sweep done", flush=True)
+    threads_config = {"engine": "b2", "n": 10 ** 6, "intervals": 1000, "uniform": True, "keep": False}
+    result["threads"] = [dict(measure(threads_config), setting="default (unset)"),
+                         dict(measure(threads_config, threads="1"), setting="1 thread")]
+    print("thread settings done", flush=True)
     result["parallel"] = {"layer_a_n_1e5": [parallel({"engine": "layer_a", "n": 10 ** 5}, k) for k in (1, 2, 4, 8)],
                           "b2_n_1e6_1000_intervals": [parallel({"engine": "b2", "n": 10 ** 6, "intervals": 1000,
                                                                 "uniform": True, "keep": False}, k)

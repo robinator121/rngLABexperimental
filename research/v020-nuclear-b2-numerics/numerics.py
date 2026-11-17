@@ -8,11 +8,16 @@ the only random draws are B2 runs in the namespace rnglab-v020-nuclear-b2-numeri
 Sections:
   cdf_exact       Boost incomplete beta (used by B2) and cephes bdtr against exact sums, n <= 1e7
   cdf_small_mean  large n with small means: Boost F and S, the recurrence table and the sampler's CDF
-  cdf_large_n     n = 1e9 ... 2**53: exact centre anchor (odd n, p = 1/2) and an Edgeworth reference, error O(1/n)
-  cdf_huge_n_exact exact F at n = 1e12 + 1 ... 2**53 - 1 (p = 1/2) from the centre value and exact pmf sums
+  cdf_large_n     n = 1e9 ... PART_MAX - 1: exact centre anchor (odd n, p = 1/2) and an Edgeworth reference, error O(1/n)
+  cdf_huge_n_exact exact F at n = 1e12 + 1 ... PART_MAX - 1 (p = 1/2) from the centre value and exact pmf sums
+  cdf_finiteness  Boost's F and S at every point the bisection can reach, n up to PART_MAX (and the NaN region above)
+  table_truncation the mass beyond the recurrence table, exact (decimal), means 1e-3 ... 256
   inversion       B2 sampler against exact rational inversion, small n, every u of a grid and +-1e-12 around steps
+  table_boundaries the uniforms adjacent to every distribution-function step: floating-point CDF against exact inversion
   inversion_tails B2 sampler at extreme u (0 ... 1 - 2**-53) in both regimes, against exact decimal quantiles
-  midpoint_convention  the extreme cells: draws at u = 0 and u = 1 - 2**-53, and the variance cost of the alternative
+  inversion_anchor exact symmetry anchors up to PART_MAX - 1 and invariance of draws to the initial bracket
+  midpoint_convention  the discretisation bound with tails (exact), the exact variance of the midpoint law, and
+                  the variance cost of inverting at u itself
   small_p         P(X >= 1) = 1 - (1 - p)**n for tiny p, relative error against 80-digit decimal
   paths_close     close decay constants: digits used, decimal against matrix exponential, float closed form
   paths_extreme   decay constants spanning 24 orders of magnitude, intervals 1e-15 ... 1e15
@@ -30,6 +35,8 @@ import time
 from decimal import Context, Decimal, localcontext
 from fractions import Fraction
 from pathlib import Path
+
+import warnings
 
 import numpy as np
 from scipy import special
@@ -307,25 +314,204 @@ def inversion_tails_section() -> dict:
             "rows": rows, "total_mismatches": sum(r["mismatches"] for r in rows)}
 
 
-def midpoint_convention_section() -> dict:
-    """What the extreme cells of the 53-bit grid give, and what inverting at the cell's left end would cost.
+def _chernoff_tail(n: int, p: float, k: int, lower: bool) -> float:
+    """Chernoff bound on P(X <= k) (lower) or P(X >= k) (upper) for Binomial(n, p), k beyond the mean."""
+    x = k / n
+    if lower and x <= 0.0:
+        return (1.0 - p) ** n
+    if not lower and x >= 1.0:
+        return p ** n
+    kl = x * math.log(x / p) + (1.0 - x) * math.log((1.0 - x) / (1.0 - p))
+    return math.exp(-n * kl)
 
-    With inversion at u itself, u = 0 (probability 2**-53) returns x = 0, however unlikely. Its share of
-    the second moment about the mean, 2**-53 (n p)**2 / (n p (1 - p)), is reported as 'left_endpoint_share'.
-    Under the midpoint convention the extreme draws are the 2**-54 and 1 - 2**-54 quantiles, and the
-    variance error is bounded by 2**-54 (z_low**2 + z_high**2) relative to n p (1 - p) (summation by parts).
+
+def midpoint_convention_section() -> dict:
+    """The discretisation of the midpoint rule with exact F, evaluated exactly.
+
+    G(x) = clip(ceil(2**53 F(x) - 1/2), 0, 2**53) / 2**53 is the distribution function of the midpoint rule
+    with exact F. Bound: |Var_G - Var_F| <= B2 + B1**2 with B1 = sum_x e(x), B2 = sum_x |2 (x - mean) + 1| e(x),
+    e(x) = min(2**-54, F(x), 1 - F(x)) (summation by parts, tails included). F is exact (60-digit decimal) on
+    mean +- 60 sd; outside, e(x) <= F(a - 1) or 1 - F(b), bounded by Chernoff, contributes at most
+    a (2 mean + 1) F(a - 1) and (n - b) (2 (n - mean) + 1) (1 - F(b)) to B2. Var_G is computed exactly beside it.
+    'left_endpoint_share' is the variance that inverting at u = 0 itself (probability 2**-53 of x = 0) would add.
+    The old bound 2**-54 (z_low**2 + z_high**2) left out the tails and fails for tiny means (review finding).
     """
     rows = []
-    for n, p in ((10 ** 3, 0.5), (10 ** 6, 0.5), (10 ** 9, 0.5), (10 ** 12, 0.5), (PART_MAX, 0.5), (PART_MAX, 0.01),
-                 (10 ** 12, 1e-6)):
-        sd = math.sqrt(n * p * (1 - p))
+    cases = ((1, 2.0 ** -55), (1, 2.0 ** -50), (10, 1e-17), (10 ** 6, 1e-20), (10 ** 6, 1e-14), (10 ** 6, 1e-9),
+             (10 ** 3, 0.01), (10 ** 3, 0.5), (10 ** 6, 0.5), (10 ** 9, 1e-6), (10 ** 8, 0.5), (10 ** 9, 0.5))
+    for n, p in cases:
+        a, b, F, _ = exact_tail_tables(n, p)
+        with localcontext(Context(prec=60, Emin=-10 ** 9, Emax=10 ** 9)):
+            mean, var = Decimal(n) * Decimal(p), Decimal(n) * Decimal(p) * (1 - Decimal(p))
+            half, cells = Decimal(2) ** -54, Decimal(2) ** 53
+            b1 = b2 = Decimal(0)
+            g_prev, g_mean, g_second = Decimal(0), Decimal(0), Decimal(0)
+            for x in range(a, b + 1):
+                fx = F[x] if x < n else Decimal(1)
+                e = min(half, fx, 1 - fx)
+                if x < n:
+                    b1 += e
+                    b2 += abs(2 * (x - mean) + 1) * e
+                g = min(cells, max(Decimal(0), (cells * fx - Decimal("0.5")).to_integral_value(rounding="ROUND_CEILING"))) / cells
+                mass = g - g_prev
+                g_mean += x * mass
+                g_second += Decimal(x) * x * mass
+                g_prev = g
+            low_tail = Decimal(_chernoff_tail(n, p, a - 1, True)) if a > 0 else Decimal(0)
+            high_tail = Decimal(_chernoff_tail(n, p, b + 1, False)) if b < n else Decimal(0)
+            b1 += a * low_tail + (n - b) * high_tail
+            b2 += a * (2 * mean + 1) * low_tail + (n - b) * (2 * (n - mean) + 1) * high_tail
+            var_g = g_second - g_mean ** 2
+            bound = (b2 + b1 ** 2) / var
+            actual = abs(var_g - var) / var
         low = int(binomial_inverse(n, p, 0.0))
         high = int(binomial_inverse(n, p, 1.0 - 2.0 ** -53))
-        z_low, z_high = (low - n * p) / sd, (high - n * p) / sd
-        rows.append({"n": n, "p": p, "x_at_u_0": low, "x_at_u_max": high, "z_at_u_0": z_low, "z_at_u_max": z_high,
-                     "left_endpoint_share": 2.0 ** -53 * (n * p) ** 2 / (n * p * (1 - p)),
-                     "midpoint_variance_relative_error_bound": 2.0 ** -54 * (z_low ** 2 + z_high ** 2)})
-    return {"rows": rows}
+        sd = math.sqrt(n * p * (1 - p))
+        rows.append({"n": n, "p": p, "mean": n * p, "x_at_u_0": low, "x_at_u_max": high,
+                     "z_at_u_0": (low - n * p) / sd, "z_at_u_max": (high - n * p) / sd,
+                     "B1": float(b1), "B2": float(b2), "relative_variance_bound": float(bound),
+                     "relative_variance_error_exact": float(actual), "bound_holds": bool(actual <= bound),
+                     "old_bound_without_tails": 2.0 ** -54 * (((low - n * p) / sd) ** 2 + ((high - n * p) / sd) ** 2),
+                     "left_endpoint_share": 2.0 ** -53 * (n * p) ** 2 / (n * p * (1 - p))})
+    return {"rows": rows, "bound_holds_everywhere": all(r["bound_holds"] for r in rows)}
+
+
+def cdf_finiteness_section() -> dict:
+    """Boost's F and S at every point the bisection can reach, n up to PART_MAX, and the NaN region above it.
+
+    Points: mean + z sd for 73 values of z in [-9, 9] (draws stay within the quantiles of 2**-54 and
+    1 - 2**-54, about +-8.3 sd) and every k within 50 of the mean; only n p > TABLE_MEAN_MAX (Boost regime).
+    Rows with n > PART_MAX document why PART_MAX is 2**50: the sampler refuses those n.
+    """
+    rows = []
+    for n in (2 ** 30, 2 ** 36, 2 ** 40, 2 ** 44, 2 ** 46, 2 ** 48, 2 ** 49, PART_MAX - 1, PART_MAX,
+              2 ** 52, 2 ** 53 - 1, 2 ** 53):
+        for p in (0.5, 0.45, 0.4, 0.3, 0.2, 0.1, 1e-2, 1e-4, 1e-6):
+            if n * p <= TABLE_MEAN_MAX:
+                continue
+            mean, sd = n * p, math.sqrt(n * p * (1 - p))
+            ks = {int(math.floor(mean + sd * z)) for z in np.linspace(-9.0, 9.0, 73)}
+            centre = int(math.floor(mean))
+            ks.update(range(centre - 50, centre + 51))
+            ks = np.array(sorted(k for k in ks if 0 <= k < n), dtype=np.float64)
+            with warnings.catch_warnings(), np.errstate(all="ignore"):
+                warnings.simplefilter("ignore")
+                f = special.betaincc(ks + 1.0, n - ks, p)
+                s = special.betainc(ks + 1.0, n - ks, p)
+            rows.append({"n": n, "p": p, "within_domain": n <= PART_MAX, "points": int(ks.size),
+                         "nonfinite_F": int(np.sum(~np.isfinite(f))), "nonfinite_S": int(np.sum(~np.isfinite(s)))})
+    inside = [r for r in rows if r["within_domain"]]
+    outside = [r for r in rows if not r["within_domain"]]
+    return {"part_max": PART_MAX, "rows": rows,
+            "points_within_domain": sum(r["points"] for r in inside),
+            "nonfinite_within_domain": sum(r["nonfinite_F"] + r["nonfinite_S"] for r in inside),
+            "nonfinite_beyond_domain": sum(r["nonfinite_F"] + r["nonfinite_S"] for r in outside)}
+
+
+def table_truncation_section() -> dict:
+    """Mass beyond the recurrence table, P(X > L) with L = min(n, ceil(mean + 40 sqrt(mean) + 60)): exact decimal."""
+    rows = []
+    for n in (10 ** 3, 10 ** 6, 10 ** 9, PART_MAX):
+        for mean in (1e-3, 1e-2, 0.1, 0.3, 0.5, 0.8, 1.0, 1.3, 1.6, 2.0, 3.0, 5.0, 10.0, 30.0, 100.0, 256.0):
+            p = mean / n
+            if p > 0.5:
+                continue
+            length = int(min(n, math.ceil(mean + 40.0 * math.sqrt(mean) + 60.0)))
+            with localcontext(Context(prec=50, Emin=-10 ** 9, Emax=10 ** 9)):
+                P = Decimal(p)
+                Q = 1 - P
+                pmf = (Decimal(n) * Q.ln()).exp()
+                for x in range(min(length, n) + 1):
+                    if x < n:
+                        pmf = pmf * (n - x) / (x + 1) * P / Q
+                tail, x = Decimal(0), length + 1
+                while x <= n and pmf > 0:
+                    tail += pmf
+                    if pmf < tail * Decimal("1e-45"):
+                        break
+                    pmf = pmf * (n - x) / (x + 1) * P / Q
+                    x += 1
+                log10_tail = float(tail.log10()) if tail > 0 else None
+            rows.append({"n": n, "mean": mean, "table_length": length, "log10_omitted_mass": log10_tail})
+    values = [r["log10_omitted_mass"] for r in rows if r["log10_omitted_mass"] is not None]
+    return {"rows": rows, "max_log10_omitted_mass": max(values) if values else None}
+
+
+def table_boundaries_section() -> dict:
+    """The grid uniforms adjacent to every step F(x): the sampler (floating-point F) against exact inversion.
+
+    For every x with 2**-54 < F(x) < 1 - 2**-54, u- is the largest grid point with u + 2**-54 < F(x) and u+
+    the next one (exact inversion gives X <= x at u- and X > x at u+); 'far' points are 8 cells further out.
+    A mismatch at u-/u+ means the evaluated F put the step on the other side of the midpoint; the review
+    found one at n = 11, p = 1/2, u = 1/2.
+    """
+    rows = []
+    cases = [(n, p) for n in range(1, 101) for p in (0.5, 0.25, 0.1, 0.03)] + [(600, 0.5), (1000, 0.45), (3000, 0.3)]
+    for n, p in cases:
+        with localcontext(Context(prec=80, Emin=-10 ** 9, Emax=10 ** 9)):
+            P = Decimal(p)
+            Q = 1 - P
+            pmf, run, exact = Q ** n, Decimal(0), []
+            for x in range(n + 1):
+                run += pmf
+                exact.append(run)
+                if x < n:
+                    pmf = pmf * (n - x) / (x + 1) * P / Q
+            cells = Decimal(2) ** 53
+            near, far = [], []
+            for x in range(n):
+                fx = exact[x]
+                if not (Decimal(2) ** -54 < fx < 1 - Decimal(2) ** -54):
+                    continue
+                k = int((cells * fx - Decimal("0.5")).to_integral_value(rounding="ROUND_CEILING")) - 1
+                near += [k, k + 1]
+                far += [k - 8, k + 9]
+        def exact_draw(k: int) -> int:
+            v = (Decimal(k) + Decimal("0.5")) / Decimal(2) ** 53
+            return next(x for x in range(n + 1) if exact[x] > v)
+        out = {}
+        for label, ks in (("adjacent", near), ("far", far)):
+            ks = [k for k in ks if 0 <= k < 2 ** 53]
+            if not ks:
+                out[label] = (0, 0)
+                continue
+            us = np.array([k * 2.0 ** -53 for k in ks])
+            got = binomial_inverse(np.full(us.size, n), np.full(us.size, p), us)
+            with localcontext(Context(prec=80)):
+                want = [exact_draw(k) for k in ks]
+            out[label] = (len(ks), int(sum(int(g) != w for g, w in zip(got.tolist(), want))))
+        rows.append({"n": n, "p": p, "regime": "table" if n * p <= TABLE_MEAN_MAX else "boost",
+                     "adjacent_draws": out["adjacent"][0], "adjacent_mismatches": out["adjacent"][1],
+                     "far_draws": out["far"][0], "far_mismatches": out["far"][1]})
+    return {"rows": [r for r in rows if r["adjacent_mismatches"] or r["far_mismatches"] or r["n"] >= 100],
+            "cases": len(rows),
+            "adjacent_draws": sum(r["adjacent_draws"] for r in rows),
+            "adjacent_mismatches": sum(r["adjacent_mismatches"] for r in rows),
+            "far_draws": sum(r["far_draws"] for r in rows),
+            "far_mismatches": sum(r["far_mismatches"] for r in rows)}
+
+
+def inversion_anchor_section() -> dict:
+    """Exact anchors at huge n and invariance of draws to the bisection's initial bracket.
+
+    For odd n and p = 1/2, F(m) = 1/2 exactly (m = (n - 1) / 2) and pmf(m + 1) > 2**-54, so exact midpoint
+    inversion gives m + 1 at u = 1/2 and m at u = 1/2 - 2**-53. Draws must not depend on the initial
+    half-width (1, 4, 64): before the NaN guard, a NaN moved a draw by 3,842 at n = 2**53 - 1.
+    """
+    anchors = []
+    for n in (10 ** 9 + 1, 10 ** 12 + 1, 10 ** 15 + 1, PART_MAX - 1):
+        m = (n - 1) // 2
+        got = binomial_inverse(np.full(2, n), np.full(2, 0.5), np.array([0.5, 0.5 - 2.0 ** -53])).tolist()
+        anchors.append({"n": n, "draws": got, "exact": [m + 1, m], "ok": got == [m + 1, m]})
+    us = np.concatenate([[0.0, 2.0 ** -53, 1e-12], np.linspace(1e-6, 1 - 1e-6, 21), [1 - 1e-12, 1 - 2.0 ** -53]])
+    rows = []
+    for n in (10 ** 12, 10 ** 15, PART_MAX - 1, PART_MAX):
+        for p in (0.5, 0.3, 0.1, 1e-3, 1e-9):
+            draws = [binomial_inverse(np.full(us.size, n), np.full(us.size, p), us, half_width=w) for w in (1, 4, 64)]
+            rows.append({"n": n, "p": p, "uniforms": int(us.size),
+                         "differences": int(sum(int(np.sum(d != draws[1])) for d in draws))})
+    return {"anchors": anchors, "anchors_ok": all(a["ok"] for a in anchors), "bracket_rows": rows,
+            "bracket_differences": sum(r["differences"] for r in rows)}
 
 
 def _log_one_minus(p: Decimal) -> Decimal:
@@ -491,7 +677,9 @@ def main() -> None:
               "code": code_identity(REPO), "environment": environment(), "namespace": NAMESPACE}
     for name, section in (("cdf_exact", cdf_exact_section), ("cdf_small_mean", cdf_small_mean_section),
                           ("cdf_large_n", cdf_large_n_section), ("cdf_huge_n_exact", cdf_huge_n_exact_section),
-                          ("inversion", inversion_section), ("inversion_tails", inversion_tails_section),
+                          ("cdf_finiteness", cdf_finiteness_section), ("table_truncation", table_truncation_section),
+                          ("inversion", inversion_section), ("table_boundaries", table_boundaries_section),
+                          ("inversion_tails", inversion_tails_section), ("inversion_anchor", inversion_anchor_section),
                           ("midpoint_convention", midpoint_convention_section),
                           ("small_p", small_p_section),
                           ("paths_close", paths_close_section), ("paths_extreme", paths_extreme_section),

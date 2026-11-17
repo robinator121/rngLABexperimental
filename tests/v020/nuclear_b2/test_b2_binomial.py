@@ -134,8 +134,9 @@ def test_scalar_and_shaped_inputs_keep_their_shape():
 
 def test_a_zero_uniform_is_not_an_outlier():
     """u = 0 has probability 2**-53. Inverting at u itself would return x = 0, which at n = 2**53, p = 1/2
-    lies 9.5e7 sd below the mean and would by itself double the variance (an independent review's finding).
-    The midpoint convention returns the 2**-54 quantile instead."""
+    lies 9.5e7 sd below the mean and would by itself double the variance (an independent review's finding;
+    at the present part limit 2**50 it would still add 12.5%). The midpoint convention returns the 2**-54
+    quantile instead."""
     for n, p in ((PART_MAX, 0.5), (10 ** 12, 0.25), (10 ** 6, 0.5), (5000, 0.4)):
         sd = math.sqrt(n * p * (1 - p))
         low = (int(binomial_inverse(n, p, 0.0)) - n * p) / sd

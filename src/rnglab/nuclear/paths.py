@@ -156,8 +156,10 @@ def bateman_decimal(half_lives: Sequence[float], delta: Decimal, *, min_digits: 
         else:
             needed = 2 * digits
         if needed > MAX_DIGITS:
-            raise ValueError(f"closed form needs more than {MAX_DIGITS} digits here; rates too close")
-        digits = max(needed, digits + 10)
+            if digits >= MAX_DIGITS:
+                raise ValueError(f"closed form needs more than {MAX_DIGITS} digits here; rates too close")
+            needed = MAX_DIGITS  # the growth estimate can overshoot: try the maximum before refusing
+        digits = min(MAX_DIGITS, max(needed, digits + 10))
 
 
 @dataclass(frozen=True)

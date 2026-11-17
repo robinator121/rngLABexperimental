@@ -39,7 +39,8 @@ def main() -> None:
     lines += ["", f"D8: {laws['laws_checked']} interval laws; largest |decimal - path-tree expm| "
                   f"{fmt(laws['max_abs_decimal_minus_tree'])}; largest |end states - Layer A expm| "
                   f"{fmt(laws['max_abs_end_state_minus_layer_a'])}; largest |sum - 1| {fmt(laws['max_abs_sum_minus_one'])}; "
-                  f"brackets hold: {laws['brackets_hold']}; most digits used: {laws['max_digits']}.", ""]
+                  f"brackets hold: {laws['brackets_hold']}; most digits used: {laws['max_digits']}; non-finite "
+                  f"references: {', '.join(laws.get('nonfinite_references', [])) or 'none'}.", ""]
     lines += ["| XREF case | Parts | Digests equal | Arrays equal | Streams equal | Reference engine seconds |",
               "|---|---:|---|---|---|---:|"]
     for x in r["xref"]:
@@ -64,7 +65,29 @@ def main() -> None:
             d = members[test]
             lines.append(f"| {test} | {fmt(d.get('statistic', d.get('z')))} | {fmt(p)} | {fmt(adjusted)} |")
     not_run = [name for name, d in members.items() if "not_applicable" in d]
-    lines += ["", f"Tests not applicable (fewer than two cells after pooling): {', '.join(not_run) or 'none'}."]
+    errored = [f"{name} ({d['error']})" for name, d in members.items() if "error" in d]
+    lines += ["", f"Tests not applicable (fewer than two cells after pooling): {', '.join(not_run) or 'none'}.",
+              "", f"Planned tests that could not be computed (failed items): {', '.join(errored) or 'none'}."]
+    calibration = folder / "calibration.json"
+    if calibration.exists():
+        c = json.loads(calibration.read_text())
+        lines += ["", "## R0: calibration (complete null batteries)", "",
+                  f"`{folder.name}/calibration.json`: {c['batteries']} batteries, namespace `{c['namespace']}`, "
+                  f"code `{c['code']['git_commit']}` (dirty: {c['code']['git_dirty']}). C1 holds: **{c['C1']}**.", "",
+                  "| Family | Tests | Batteries that FAIL under the null | Rate | 95% interval | C1 |",
+                  "|---|---:|---:|---:|---|---|"]
+        for name, f in c["families"].items():
+            lines.append(f"| {name} | {f['tests']} | {f['failed_batteries']} | {f['false_fail_rate']:.4f} | "
+                         f"{f['false_fail_ci95'][0]:.4f} to {f['false_fail_ci95'][1]:.4f} | {f['C1_holds']} |")
+        for name, f in c["families"].items():
+            lines += ["", f"### {name}: test types at the Holm level ({fmt(f['levels'][-1])})", "",
+                      "| Type | Tests | Batteries with a rejection | Share of the union bound | 95% interval |",
+                      "|---|---:|---:|---:|---|"]
+            for kind, row in sorted(f["types"].items()):
+                level = row["levels"][-1]
+                low, high = level["battery_rate_ci95_over_union_bound"]
+                lines.append(f"| {kind} | {row['instances']} | {level['batteries_with_rejection']} | "
+                             f"{level['battery_rate_over_union_bound']:.2f} | {low:.2f} to {high:.2f} |")
     pc = r["positive_controls"]
     lines += ["", "## Positive controls", "", f"Level: p < {fmt(pc['level'])}.", "",
               "| Control | Target | p | Rejected |", "|---|---|---:|---|"]

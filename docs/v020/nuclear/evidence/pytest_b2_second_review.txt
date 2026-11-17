@@ -1,0 +1,13 @@
+# v0.20 nuclear module, B2 after the second review (not frozen): test evidence
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-17T13:46:51Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+969 passed, 2 skipped, 3 warnings in 208.63s (0:03:28)
+
+## 2. Nuclear tests only (Layer A 115, B2 136 including 24 in test_b2_guards.py): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider
+251 passed, 3 warnings in 28.75s
+
+The three warnings are RuntimeWarnings (overflow in the float64 matrix exponential) raised on purpose by
+test_b2_guards.py, which checks that a non-finite reference fails D8.

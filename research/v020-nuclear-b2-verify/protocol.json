@@ -12,7 +12,8 @@
   },
   "layouts": {
     "B2": "nuclear-aggregate-layout-v1",
-    "Layer A": "nuclear-decay-layout-v1"
+    "Layer A": "nuclear-decay-layout-v1",
+    "B2 part size": "Counts above 2**50 = 1125899906842624 are split into parts of at most 2**50 trials, one uniform each (rnglab.nuclear.binomial.PART_MAX; Boost's incomplete beta returns NaN near n = 2**53)"
   },
   "schemes": {
     "S1": {
@@ -525,7 +526,11 @@
         1000000000000,
         1152921504606859321
       ],
-      "role": "huge populations: one part (1e12) and 129 parts (2**60 + 12345)"
+      "role": "huge populations: one part (1e12) and 1025 parts (2**60 + 12345)",
+      "parts": [
+        1,
+        1025
+      ]
     },
     "PC-B1": {
       "generator": "numpy-pcg64",
@@ -565,7 +570,7 @@
           "initial": {
             "Xa-400": 1000000
           },
-          "part_max": 9007199254740992
+          "part_max": 1125899906842624
         },
         {
           "scheme": "S4",
@@ -605,15 +610,18 @@
     "ET-VAR": "ENS-B2: sample variance of each eligible state at t = 2 and t = 8 against its exact variance, two-sided, with s^2 referred to a scaled chi-square whose degrees of freedom match the exact mean and variance of s^2 (rnglab.nuclear.moments, comparison.scaled_chisquare_variance_check)",
     "ET-VARSUM": "ENS-B2: sample variance of N_j(2) + N_k(2) for every pair of states eligible at t = 2 (it carries Cov(N_j, N_k) given the ET-VAR tests), same method as ET-VAR",
     "ET-VARSUM2": "ENS-B2: sample variance of N_j(2) + N_k(8) for j = k eligible at both times and for j = Xa-400 with every k eligible at t = 8 (it carries the two-time covariance), same method as ET-VAR",
-    "CT-HOMO": "ENS-A against ENS-B2: pooled state counts at every grid time t > 0, 2 x K homogeneity chi-square, pooling rule",
+    "CT-HOMO": "ENS-A against ENS-B2: pooled state counts at every grid time t > 0, 2 x C homogeneity chi-square on cells fixed before generation from the expected counts of either engine (minimum 5; design.json, comparison.cells); a cell empty in both rows contributes 0 and keeps its degree of freedom",
     "CT-VAR": "ENS-A against ENS-B2: ratio of the two sample variances of each state eligible at t = 2 against F(nu, nu), two-sided, nu = 2 variance^2 / Var(s^2) from the exact moments (comparison.variance_ratio_f_check); the common scale cancels",
     "CT-VARSUM": "ENS-A against ENS-B2: ratio of the two sample variances of N_j(2) + N_k(2) for every pair eligible at t = 2 (it carries the covariance given the CT-VAR tests), same method as CT-VAR",
-    "CT-DECAY": "ENS-A against ENS-B2: pooled decays of each unstable nuclide in every grid interval plus 'none', homogeneity chi-square",
-    "CT-PHOTON": "ENS-A against ENS-B2: pooled photons and photon-less decays of every channel with yield strictly between 0 and 1, 2 x 2 homogeneity chi-square",
+    "CT-DECAY": "ENS-A against ENS-B2: pooled decays of each unstable nuclide in every grid interval plus 'none', homogeneity chi-square on fixed cells as for CT-HOMO",
+    "CT-PHOTON": "ENS-A against ENS-B2: pooled photons and photon-less decays of every channel with yield strictly between 0 and 1, 2 x 2 homogeneity chi-square on fixed cells as for CT-HOMO",
     "BIG-STATE": "BIG: counts at every grid time against Multinomial(N, p(t)), chi-square",
     "BIG-DECAY": "BIG: decays of each unstable nuclide over the grid, z-test against N q_j(T) (normal approximation; Berry-Esseen distance below 1e-5 at these sizes)",
     "eligibility": "a state is eligible at t when 2000 p_j(t) (1 - p_j(t)) >= 20 (design.json)",
-    "applicability": "a chi-square test with fewer than two cells after pooling is not applicable and is not run. Applicability never depends on the data: for every test it follows from fixed totals and probabilities (and, for BT-PATH, from cells fixed in design.json), so design.json lists exactly the tests that run"
+    "applicability": "a chi-square test with fewer than two cells after pooling is not applicable and is not run. Applicability never depends on the data: pooling of the goodness-of-fit tests uses fixed totals and exact probabilities, and the cells of BT-PATH, BT-PHOTON-T and the homogeneity tests are fixed in design.json from expected counts, so design.json lists exactly the tests that run. A planned test that cannot be computed is recorded with its error and is a failed item of R1",
+    "BT-PHOTON-T": "photons per interval given the channel's decays per interval, for every channel with photon yield y strictly between 0 and 1: Pearson statistic sum_c (P_c - y D_c)^2 / (y (1 - y) D_c) over cells of consecutive grid intervals fixed before generation (min(y, 1 - y) times the expected decays of a cell at least 10; design.json, photon_interval_tests), referred to chi-square(number of cells); a cell without decays contributes 0 (conservative). It tests the time allocation of photons, which BT-PHOTON (totals) cannot see. Channels left with one cell have no such test",
+    "coverage": "Tested second moments: the variance of every eligible state at t = 2 and t = 8 (ET-VAR), the covariances of every eligible pair at t = 2 through the variances of their sums (ET-VARSUM), and the two-time covariances of the 15 pairs in design.json (t = 2 with t = 8) through sums (ET-VARSUM2); against Layer A, the variances of eligible states and of eligible pair sums at t = 2 (CT-VAR, CT-VARSUM). Not tested: any other feature of the joint law across times. A deviation that keeps every marginal law and the tested sums (for example moving probability between cells of the two-time law of t = 2 and t = 8 in a pattern that leaves those sums unchanged) passes the battery; BT-PATH constrains each interval's law given its start counts, which covers dependence carried by the counts but not dependence carried by anything else (such as reused uniforms)",
+    "sensitivity": "Non-rejection is not equivalence. design.json (sensitivity) gives, for each variance test type, its power at variance ratios 1.1, 1.25, 1.5 and 2 and the ratios detected with power 0.5 and 0.9 at the Holm level; for example a 10% variance error is detected with probability below 0.01"
   },
   "families": {
     "NC1": "every test on NC1 runs, ENS-B2, the comparison ENS-A / ENS-B2 and BIG",
@@ -629,15 +637,16 @@
     "D5": "CHECKPOINT: a run resumed from the JSON checkpoint after interval 3 reproduces the digest and the remaining outputs",
     "D6": "SINK: keep_outputs=False with a sink reproduces the digest and the sink records the populations",
     "D7": "ENS-B2, ENS-A and ENS-NAIVE: 400 distinct seeds and stream digests each; no Layer A decay at time 0",
-    "D8": "no random numbers: for every scheme, start nuclide and distinct interval length, the decimal interval law and the matrix exponential on the path tree agree within 1e-12, the end-state probabilities agree with the Layer A matrix exponential within 1e-12 (the float64 matrix exponential itself errs by up to 1.6e-13 on the stiff, close-rate scheme S5, confirmed against a 150-digit evaluation before the freeze), the probabilities sum to 1 within 1e-30 and every probability lies in its mean-value bracket",
-    "D9": "BIG: 1 part for 1e12 and 129 parts for 2**60 + 12345; populations conserved",
-    "D10": "exactly the tests named in design.json (planned_tests) ran in each family: no planned test was skipped or failed to compute, and no other test entered a family"
+    "D8": "no random numbers: for every scheme, start nuclide and distinct interval length, the decimal interval law and the matrix exponential on the path tree agree within 1e-12, the end-state probabilities agree with the Layer A matrix exponential within 1e-12 (the float64 matrix exponential itself errs by up to 1.6e-13 on the stiff, close-rate scheme S5, confirmed against a 150-digit evaluation before the freeze), the probabilities sum to 1 within 1e-30 and every probability lies in its mean-value bracket; every reference is finite (a non-finite decimal, path-tree or Layer A value fails D8)",
+    "D9": "BIG: 1 part for 1e12 and 1025 parts for 2**60 + 12345 (parts of at most 2**50); populations conserved",
+    "D10": "exactly the tests named in design.json (planned_tests) ran in each family: no planned test was skipped or failed to compute, and no other test entered a family; every test that could not be computed is also listed as a failed item"
   },
   "reading_rules": {
-    "R1": "B2 agreement with the analytic laws and with Layer A: PASS iff D1 to D10 hold and Holm at family-wise alpha 0.01 rejects no test in NC1 and none in NC2. Otherwise FAIL, listing each failed item. The chance of a false FAIL is at most about 2%.",
+    "R1": "B2 agreement with the analytic laws and with Layer A: PASS iff D1 to D10 hold and Holm at family-wise alpha 0.01 rejects no test in NC1 and none in NC2. Otherwise FAIL, listing each failed item. The nominal family-wise error is 1% per family; it is a bound only if every p-value is valid. The exact binomial tests are valid; the chi-square, scaled chi-square, F and normal tests are approximations, so the actual false-FAIL rate is estimated by the calibration (R0), not bounded",
     "R2": "Sensitivity: PC-B1 rejects its target, and PC-B2 rejects both of its targets, each at p < 0.01 / (size of the NC1 family). If not, R1 is reported with the statement that the battery lacked the declared sensitivity. The other tests on the positive controls are reported descriptively, outside any family.",
     "R3": "Descriptive, no verdict: run times, digits used by the decimal laws, largest decimal-versus-matrix-exponential difference, parts and times of the BIG runs.",
-    "general": "The study runs once from a clean committed tree. Every outcome is reported whichever way it falls. No threshold, size or test changes after generation; a code change after the freeze is an amendment written before any affected number is regenerated."
+    "general": "The study runs once from a clean committed tree. Every outcome is reported whichever way it falls. No threshold, size or test changes after generation; a code change after the freeze is an amendment written before any affected number is regenerated.",
+    "R0": "Calibration, run once after the freeze and before run_verification.py, in its own namespace (calibration). Criterion C1: for NC1 and for NC2, the Clopper-Pearson 95% upper bound of the probability that Holm rejects at least one test under the null, from the independent null batteries, is at most 0.02. R0 is reported with R1 whichever way it falls. If C1 fails, an R1 FAIL caused only by approximate tests is reported together with the statement that the battery's false-FAIL rate exceeds its declared limit; an R1 PASS is unaffected, and no verdict is changed"
   },
   "smoke": {
     "scale": 0.05,
@@ -648,5 +657,16 @@
     ],
     "xref_scale": 0.05,
     "output": "research/v020-nuclear-b2-verify/smoke/ (not in Git, excluded from every result)"
+  },
+  "calibration": {
+    "script": "research/v020-nuclear-b2-verify/calibration.py (frozen with the protocol)",
+    "namespace": "rnglab-v020-nuclear-b2-calibration-record",
+    "development_namespace": "rnglab-v020-nuclear-b2-calibration-dev",
+    "batteries": 50000,
+    "seed_recipe": "numpy.random.default_rng(rnglab.seeds.namespace_seed(namespace, 'battery', b)) for battery b",
+    "null": "every run of NC1 and NC2 (S1-S5 single runs, ENS-B2 and ENS-A with 400 replicates of 2,000 nuclei, both BIG runs) drawn from the exact laws with numpy's Generator: multinomial over the decimal path categories of each interval, binomial photons given decays; no RNGLab sampler is involved",
+    "evaluation": "the planned tests of every battery, through the functions run_verification.py uses (battery, path_tests, ensemble_tests, comparison_tests, big_tests); a battery whose test names differ from design.json stops the calibration",
+    "reported": "per family: batteries in which Holm rejects at least one test or a planned test cannot be computed, with the Clopper-Pearson 95% interval (batteries are independent, so this interval is valid); per test: rejections at 1e-2, 1e-3 and the Holm level with per-test Clopper-Pearson intervals; per test type: batteries with at least one rejection of the type, with a Clopper-Pearson interval, divided by instances x level (the type's share of the union bound), and the mean rejections per battery with an approximate interval only (tests within a battery are dependent, so pooled binomial intervals are not used)",
+    "criterion": "C1 (reading_rules.R0)"
   }
 }

@@ -11,8 +11,10 @@ beta-delayed-neutron decays.
 
 The multinomials are sampled as conditional binomials, p_k = q_k / T_k with
 T_k = sum_{j >= k} q_j (decimal, ``IntervalLaw.conditional``); each binomial by
-exact inversion with one uniform per part (``binomial``). A binomial whose
-probability exceeds 1/2 is sampled through its complement, computed in decimal.
+inversion at the midpoint of its uniform's 2**-53 cell, one uniform per part of
+at most 2**50 trials (``binomial`` states which law that realises). A binomial
+whose probability exceeds 1/2 is sampled through its complement, computed in
+decimal.
 
 Conventions and limits
 ----------------------
@@ -37,9 +39,9 @@ Nucleus identities and lineage, event timestamps within an interval (only the
 interval of each decay is known), the order of decays within an interval, and
 per-nucleus histories. It also changes how random numbers enter: a fixed
 number of uniforms per interval, independent of the population, instead of
-3*D words per nucleus. Equivalence with Layer A is statistical, for healthy
-generators; it does not carry over to how a defective generator distorts each
-engine.
+3*D words per nucleus. Agreement with Layer A is statistical (tests that do not
+reject, with a stated sensitivity), for healthy generators; it does not carry
+over to how a defective generator distorts each engine.
 
 Random-number layout "nuclear-aggregate-layout-v1"
 --------------------------------------------------
@@ -160,7 +162,10 @@ class AggregatePlan:
         for array in (self.first_category, self.category_end, self.category_steps, self.deltas):
             array.setflags(write=False)
         self.interval_plans: dict[float, dict[int, SourcePlan]] = {}
-        self.diagnostics: dict[str, Any] = {"max_abs_decimal_minus_tree": 0.0, "max_digits": 0}
+        # The path-tree matrix exponential is a cross-check only; where it is not finite (rates near the float
+        # limits) the comparison is counted as unavailable, never as agreement.
+        self.diagnostics: dict[str, Any] = {"max_abs_decimal_minus_tree": 0.0, "tree_comparisons": 0,
+                                            "tree_comparisons_unavailable": 0, "max_digits": 0}
         for delta in sorted(set(self.deltas.tolist())):
             plans = {}
             for i in self.sources:
@@ -172,8 +177,12 @@ class AggregatePlan:
                 flip.setflags(write=False)
                 plans[i] = SourcePlan(i, law, p_small, flip, int(self.first_category[i]))
                 tree = tree_probabilities(scheme, i, delta)
-                self.diagnostics["max_abs_decimal_minus_tree"] = max(
-                    self.diagnostics["max_abs_decimal_minus_tree"], float(np.max(np.abs(law.as_float() - tree))))
+                if np.all(np.isfinite(tree)):
+                    self.diagnostics["tree_comparisons"] += 1
+                    self.diagnostics["max_abs_decimal_minus_tree"] = max(
+                        self.diagnostics["max_abs_decimal_minus_tree"], float(np.max(np.abs(law.as_float() - tree))))
+                else:
+                    self.diagnostics["tree_comparisons_unavailable"] += 1
                 self.diagnostics["max_digits"] = max(self.diagnostics["max_digits"], law.digits_used)
             self.interval_plans[delta] = plans
 

@@ -13,6 +13,7 @@ from rnglab.nuclear import NumpyPCG64Source, WordStream, labelled_source, simula
 from rnglab.nuclear.aggregate import (
     INT64_MAX, AggregatePlan, simulate_aggregate, simulate_aggregate_reference,
 )
+from rnglab.nuclear.binomial import PART_MAX
 from rnglab.nuclear.checks import multinomial_check
 from rnglab.nuclear.decay import Mode
 
@@ -25,8 +26,8 @@ def _run(scheme, ns, label, initial, times=TIMES, engine=simulate_aggregate, **k
 
 
 @pytest.mark.parametrize("name, initial, part_max", [
-    ("branching", {"Xa-400": 50000}, 2 ** 53), ("branching", {"Xa-400": 3000, "Xe-396": 70}, 997),
-    ("competing", {"Pa-300": 20000}, 2 ** 53), ("precursors", {"G1": 4000, "G2": 4000, "G3": 50}, 1500)])
+    ("branching", {"Xa-400": 50000}, PART_MAX), ("branching", {"Xa-400": 3000, "Xe-396": 70}, 997),
+    ("competing", {"Pa-300": 20000}, PART_MAX), ("precursors", {"G1": 4000, "G2": 4000, "G3": 50}, 1500)])
 def test_vectorised_equals_reference(request, ns, name, initial, part_max):
     scheme = request.getfixturevalue(name)
     fast, fs = _run(scheme, ns, f"xref-{name}-{part_max}", initial, part_max=part_max)
@@ -66,11 +67,11 @@ def test_bookkeeping_invariants(branching, competing, precursors, ns):
 
 
 def test_consumption_does_not_depend_on_the_population(branching, ns):
-    plans = [AggregatePlan(branching, TIMES, n) for n in (0, 1, 10 ** 6, 2 ** 53)]
+    plans = [AggregatePlan(branching, TIMES, n) for n in (0, 1, 10 ** 6, PART_MAX)]
     assert len({p.words_per_interval for p in plans}) == 1 and plans[0].parts == 1
     run, stream = _run(branching, ns, "empty", {"Xa-400": 0})
     assert stream.words_read == 6 * plans[0].words_per_interval and np.all(run.populations == 0)
-    assert AggregatePlan(branching, TIMES, 2 ** 53 + 1).parts == 2
+    assert AggregatePlan(branching, TIMES, PART_MAX + 1).parts == 2
 
 
 def test_replay_and_seed_sensitivity(branching, ns):
@@ -201,7 +202,7 @@ def test_regression_against_the_exact_multinomial_law(branching, ns):
 def test_huge_populations_are_split_and_conserved(branching, ns):
     n0 = 2 ** 56 + 12345
     run, _ = _run(branching, ns, "huge", {"Xa-400": n0})
-    assert run.plan.parts == 9 and set(run.populations.sum(axis=1).tolist()) == {n0}
+    assert run.plan.parts == -(-n0 // PART_MAX) == 65 and set(run.populations.sum(axis=1).tolist()) == {n0}
     p = state_probabilities(branching, "Xa-400", 12.0)[0]
     z = (run.populations[-1] - n0 * p) / np.sqrt(n0 * p * (1 - p))
     assert np.all(np.abs(z[p > 0]) < 5)

@@ -3,8 +3,9 @@
 1. State aliasing: nothing a caller, a sink or a checkpoint callback does to the objects it holds
    may change a run, its outputs or a later run.
 2. Checkpoint integrity: a corrupted, edited or misplaced checkpoint is refused, never repaired.
-3. Floating-point boundaries: the binomial inversion is exact at the edges of its domain (extreme
-   uniforms, distribution-function steps, regime switches, 2**53, vanishing probabilities).
+3. Floating-point boundaries: the binomial inversion agrees with exact midpoint inversion at the edges
+   of its domain (extreme uniforms, regime switches, the part limit, vanishing probabilities). Next to a
+   step of F, where the evaluated F may err by a few ulps, see test_b2_guards.
 
 Fixed seeds of the B2 test namespace; exact references are rational arithmetic.
 """
@@ -164,9 +165,9 @@ def _resume(scheme, ns, label, initial, checkpoint, times=TIMES, stream=None, **
 
 
 def test_resume_is_bit_identical_through_json_at_every_interval_with_huge_counts(branching, ns):
-    initial = {"Xa-400": 2 ** 54 + 3}           # three parts; counts beyond 2**53 must survive JSON exactly
+    initial = {"Xa-400": 2 ** 54 + 3}           # 17 parts; counts beyond 2**53 must survive JSON exactly
     full, checkpoints = _checkpointed(branching, ns, "huge", initial)
-    assert full.plan.parts == 3 and len(checkpoints) == 6
+    assert full.plan.parts == -(-(2 ** 54 + 3) // PART_MAX) == 17 and len(checkpoints) == 6
     for cut, checkpoint in enumerate(checkpoints, start=1):
         assert sum(checkpoint["populations"]) == 2 ** 54 + 3
         rest, stream = _resume(branching, ns, "huge", initial, checkpoint)
@@ -399,7 +400,7 @@ def test_the_population_limit_of_the_upper_tail_is_continuous():
     assert 7.0 < z[0][3] < 9.5 and 7.0 < z[1][3] < 9.5
 
 
-def test_counts_at_and_around_two_to_the_53():
+def test_counts_at_and_around_the_part_limit():
     us = np.array([0.0, 0.25, 0.5, 0.75, 1.0 - ULP])
     for n in (PART_MAX - 1, PART_MAX):
         x = binomial_inverse(np.full(us.size, n), np.full(us.size, 0.25), us)
@@ -416,8 +417,9 @@ def test_vanishing_probabilities():
     us = [0.0, 0.5, 1.0 - ULP]
     for p in (5e-324, 1e-320, 1e-300, 2.0 ** -108):
         assert _draws(PART_MAX, p, us) == [0, 0, 0]
-    # P(X >= 1) = 1 - (1 - p)**n: just above 2**-54 for p = 2**-106, so only the last cell gives 1.
-    assert _draws(PART_MAX, 2.0 ** -106, us) == [0, 0, 1]
+    # P(X >= 1) = 1 - (1 - p)**n is about 2**-53 > 2**-54 for n = 2**50, p = 2**-103: only the last cell gives 1.
+    assert _draws(PART_MAX, 2.0 ** -103, us) == [0, 0, 1]
+    assert _draws(PART_MAX, 2.0 ** -106, us) == [0, 0, 0]   # about 2**-56 < 2**-54: below the grid's resolution
     assert _draws(1, 2.0 ** -53, [1.0 - 2 * ULP, 1.0 - ULP]) == [0, 1]
     assert _draws(7, 0.0, us) == [0, 0, 0] and _draws(0, 0.3, us) == [0, 0, 0]
 

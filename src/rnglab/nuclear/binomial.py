@@ -1,26 +1,38 @@
-"""RNGLab v0.20 nuclear module, milestone B2: exact binomial sampling by inversion.
+"""RNGLab v0.20 nuclear module, milestone B2: binomial sampling by inversion, one uniform per draw.
 
-One uniform per draw. A word gives u = k * 2**-53 in [0, 1), which stands for
-the cell [u, u + 2**-53) of a continuous uniform; the draw inverts at the cell's
-midpoint v = u + 2**-54 (RNGLab's convention since Stage C, Phi^-1(u + 2**-54)):
+A word gives u = k * 2**-53 in [0, 1), which stands for the cell [u, u + 2**-53)
+of a continuous uniform; the draw inverts at the cell's midpoint v = u + 2**-54
+(RNGLab's convention since Stage C, Phi^-1(u + 2**-54)):
 
-    X = min{x in 0..n : F(x) > v},   F the Binomial(n, p) distribution function,
+    X = min{x in 0..n : F(x) > v},   F the Binomial(n, p) distribution function.
 
-so X has the Binomial(n, p) law up to the accuracy with which F is evaluated
-and the 2**-53 resolution of u. The midpoint matters at the ends: inverting at
-u = 0 itself would return x = 0 with probability 2**-53 even when that outcome
-is astronomically unlikely (at n = 2**53, about 7e7 standard deviations below
-the mean, enough to double the variance); the midpoint keeps the extreme cells
-at the 2**-54 and 1 - 2**-54 quantiles. v itself is not representable above
-1/2, so the comparisons use exact forms: F(x) - u > 2**-54 (the subtraction is
-exact for F within a factor 2 of u) and S(x) < (1 - u) - 2**-54 (exact).
-
-Discretisation bound: with exact F, the sampled distribution function equals
-(number of midpoints below F(x)) * 2**-53, within 2**-54 of F(x) at every x,
-and the support is [Q(2**-54), Q(1 - 2**-54)], about +-8.3 standard deviations
-for large n. Summation by parts then bounds the error of the variance by
-2**-54 * sum_x |2 (x - mean) + 1| over that range, a relative error of order
-1e-14 (research/v020-nuclear-b2-numerics, midpoint_convention).
+What the draw's law is, and what it is not
+------------------------------------------
+- Discretisation. With exact F, the sampled distribution function G satisfies
+  |G(x) - F(x)| <= e(x) = min(2**-54, F(x), 1 - F(x)) at every x, a Kolmogorov
+  distance of at most 2**-54. Outcomes much less likely than 2**-53 can be lost
+  altogether (n = 1, p = 2**-55 gives 0 for every u), so no bound on the
+  relative error of moments holds in general. Summation by parts gives
+  |Var_G - Var_F| <= B2 + B1**2 with B1 = sum_x e(x) and
+  B2 = sum_x |2 (x - mean) + 1| e(x); research/v020-nuclear-b2-numerics
+  (midpoint_convention) evaluates it exactly for means from 2**-55 to 5e8: of
+  order 1e-14 relative for large means, and up to 1 when the mean is near 2**-54.
+- Floating point. F is evaluated in floating point, so the sampler inverts the
+  evaluated F, not the exact one. A draw differs from exact midpoint inversion
+  only when v lies within the evaluation error of a step F(x); at n = 11,
+  p = 1/2, u = 1/2 (exact F(5) = 1/2, evaluated upper tail 1/2 - 2**-53) it
+  returns 5 where exact arithmetic gives 6. The realised law is within
+  2**-54 + eps_F of F in Kolmogorov distance, eps_F the largest evaluation error
+  over the support (numerics sections cdf_exact, cdf_small_mean, cdf_huge_n_exact
+  and table_boundaries measure it: about 1e-16 to 1e-15 up to n = 1e9, about
+  1e-13 near n = 1e15 at p = 1/2).
+- The midpoint matters at the ends: inverting at u = 0 itself would return 0
+  with probability 2**-53 however unlikely that outcome is (at n = 2**50,
+  p = 1/2, 3.4e7 standard deviations below the mean, enough to add 12.5% to the
+  variance). Under the midpoint rule the extreme draws are the 2**-54 and
+  1 - 2**-54 quantiles. v itself is not representable above 1/2, so the
+  comparisons use exact forms: F(x) - u > 2**-54 (the subtraction is exact for F
+  within a factor 2 of u) and S(x) < (1 - u) - 2**-54 (exact).
 
 Evaluation of F, in two regimes (research/v020-nuclear-b2-numerics measures both)
 -------------------------------------------------------------------------------
@@ -29,41 +41,52 @@ S(x) < 1 - v on the upper tail S = 1 - F; ``uses_upper_tail`` says which.
 Extreme u needs the upper tail: placing u = 1 - 2**-53 correctly needs S near
 1e-16 to relative, not absolute, accuracy.
 - Small mean, n p <= TABLE_MEAN_MAX: F decides u < 1/2 and S decides u >= 1/2.
-  Both tails are built from the exact
-  recurrence w_0 = 1, w_{x+1} = w_x (n - x) / (x + 1) * p / (1 - p), normalised by
-  its own sum (no exp or log of n p is needed), up to n p + 40 sd + 60 (the mass
-  beyond is below 1e-300): F by summing from the left, S from the right.
+  Both tails are built in float64 from the recurrence
+  w_0 = 1, w_{x+1} = w_x (n - x) / (x + 1) * p / (1 - p), normalised by its own
+  sum (no exp or log of n p is needed), up to n p + 40 sd + 60: F by summing
+  from the left, S from the right. The mass beyond the table is below 1e-150
+  (numerics: table_truncation; it is about 4e-163 at mean 1), far below the
+  2**-53 resolution of u.
 - Otherwise: F(k) = betaincc(k + 1, n - k, p) and S(k) = betainc(k + 1, n - k, p)
   (scipy.special, Boost), which take p itself, never 1 - p.
 Why two regimes: Boost's incomplete beta loses accuracy for small means at
 1e6 <= n <= 1e9 (absolute error up to 7.4e-12 for F and 2.3e-8 for S at
 n = 1e9, mean 10-30), while the recurrence table is accurate to about 1e-15
 there. Above mean 256, Boost's F is accurate to about 1e-16 absolute up to
-n = 1e9 and about 1e-13 at n = 1e15; its S is weaker near the centre (up to
-4.8e-13 at n = 1e9, 7.8e-12 at n = 1e12, 2.8e-10 at n = 2**53) but accurate to
-about 4e-13 relative in the far upper tail up to n = 1e9. So in the Boost
-regime F decides every u except the far upper tail, 1 - u < UPPER_TAIL_SWITCH
-= 2**-10, where S is consulted up to n = UPPER_TAIL_MAX_N = 1e9. Above 1e9, F
-decides every u, and uniforms within about 1e-13 of 1 are resolved only to F's
-absolute accuracy (a total-variation error below about 1e-13).
+n = 1e9, 1e-15 at n = 1e12 and 1e-13 at n = 1e15 (p = 1/2, exact anchors);
+its S is weaker near the centre (up to 4.8e-13 at n = 1e9 and 7.8e-12 at
+n = 1e12) but accurate to about 4e-13 relative in the far upper tail up to
+n = 1e9. So in the Boost regime F decides every u except the far upper tail,
+1 - u < UPPER_TAIL_SWITCH = 2**-10, where S is consulted up to
+n = UPPER_TAIL_MAX_N = 1e9. Above 1e9, F decides every u, and uniforms within
+about 1e-13 of 1 are resolved only to F's absolute accuracy.
 scipy.special.bdtr is not used at all: it is wrong by 0.34 at n = 1e9,
 p = 1/2 and returns NaN from n = 1e12.
+
+Domain: why PART_MAX is 2**50
+-----------------------------
+Boost's incomplete beta returns NaN near the centre of the distribution for
+n close to 2**53 (seen at n = 2**53 - 1 and 2**53 for p >= 0.2, where
+a + b = n + 1 reaches the end of the exactly representable integers); a NaN
+made every comparison false and moved draws by thousands (review finding).
+A scan found no non-finite value up to n = 2**52.5 (numerics: cdf_finiteness
+covers the supported domain). PART_MAX = 2**50 keeps a factor 4 below the
+NaN region and limits F's error to about 1e-13. Whatever the cause, a
+non-finite value of F or S raises FloatingPointError; it never steers a draw.
+0 <= n <= PART_MAX per draw and 0 <= p <= 1/2. Callers sample min(p, 1 - p) and
+flip (x -> n - x) when p > 1/2, with the complement computed accurately by
+them. Larger n is handled by ``split_counts``: Binomial(n, p) is the sum of
+independent binomials over parts of at most PART_MAX trials, one uniform each.
 
 Search (Boost regime)
 ---------------------
 A quantile guess (normal approximation with skewness and continuity
 corrections) gives a bracket that is verified by evaluating the predicate at
 both ends; a side that fails falls back to the global bound (-1 or n). Integer
-bisection then finds X. The guess changes the amount of work, never the answer:
-any valid bracket leads to the same X, because the predicate is monotone in k.
-
-Domain
-------
-0 <= n <= PART_MAX = 2**53 per draw (every integer up to it is exact in double
-precision) and 0 <= p <= 1/2. Callers sample min(p, 1 - p) and flip
-(x -> n - x) when p > 1/2, with the complement computed accurately by them.
-Larger n is handled by ``split_counts``: Binomial(n, p) is the sum of
-independent binomials over parts of at most PART_MAX trials, one uniform each.
+bisection then finds X. The guess changes the amount of work, never the answer,
+as long as the evaluated predicate is monotone in k, which holds where the
+evaluation error is below the probability of each step (tests check that
+brackets of width 1, 4 and 64 give the same draws up to PART_MAX).
 """
 from __future__ import annotations
 
@@ -72,7 +95,7 @@ import math
 import numpy as np
 from scipy import special
 
-PART_MAX = 2 ** 53
+PART_MAX = 2 ** 50  # per draw; see 'Domain' above
 TABLE_MEAN_MAX = 256.0
 UPPER_TAIL_MAX_N = 10 ** 9  # above it Boost's upper tail S loses accuracy; F is used for every u
 UPPER_TAIL_SWITCH = 2.0 ** -10  # Boost regime: S is consulted only when 1 - u < this (far upper tail)
@@ -80,10 +103,10 @@ _INITIAL_HALF_WIDTH = 4
 
 
 def table_tails(n: int, p: float) -> tuple[np.ndarray, np.ndarray]:
-    """(F(0..L), S(0..L)) of Binomial(n, p) from the normalised exact recurrence (small means only).
+    """(F(0..L), S(0..L)) of Binomial(n, p) from the normalised recurrence in float64 (small means only).
 
     F is summed from the left and S = P(X > k) from the right, so each tail
-    keeps relative accuracy; beyond L both are 1 and 0 to within 1e-300.
+    keeps relative accuracy; beyond L both are 1 and 0 to within 1e-150.
     """
     mean = n * p
     if not mean <= TABLE_MEAN_MAX:
@@ -94,6 +117,8 @@ def table_tails(n: int, p: float) -> tuple[np.ndarray, np.ndarray]:
     weights[0] = 1.0
     weights[1:] = np.cumprod((n - x) / (x + 1.0) * (p / (1.0 - p)))
     total = weights.sum()
+    if not (np.isfinite(total) and total > 0.0):
+        raise FloatingPointError(f"recurrence table not finite at n={n}, p={p!r}")
     lower = np.cumsum(weights) / total
     upper = np.zeros(length + 1)
     upper[:-1] = np.cumsum(weights[::-1])[::-1][1:] / total
@@ -142,12 +167,24 @@ def _predicate(k: np.ndarray, n: np.ndarray, p: np.ndarray, u: np.ndarray) -> np
     if lower.any():
         kl = k[lower]
         f = special.betaincc(kl + 1.0, n[lower] - kl, p[lower])
+        _require_finite(f, kl, n[lower], p[lower], "F")
         out[lower] = f - u[lower] > HALF_CELL  # exact when f is within a factor 2 of u; decisive otherwise
     upper = ~lower
     if upper.any():
         ku = k[upper]
-        out[upper] = special.betainc(ku + 1.0, n[upper] - ku, p[upper]) < (1.0 - u[upper]) - HALF_CELL
+        s = special.betainc(ku + 1.0, n[upper] - ku, p[upper])
+        _require_finite(s, ku, n[upper], p[upper], "S")
+        out[upper] = s < (1.0 - u[upper]) - HALF_CELL
     return out
+
+
+def _require_finite(values: np.ndarray, k: np.ndarray, n: np.ndarray, p: np.ndarray, tail: str) -> None:
+    """A NaN compares false and would silently steer the bisection: refuse instead."""
+    bad = ~np.isfinite(values)
+    if bad.any():
+        i = int(np.flatnonzero(bad)[0])
+        raise FloatingPointError(f"{tail} not finite at k={int(k[i])}, n={int(n[i])}, p={float(p[i])!r} "
+                                 f"({int(bad.sum())} of {bad.size} evaluations); no draw is made")
 
 
 def _predicate_full(k: np.ndarray, n: np.ndarray, p: np.ndarray, u: np.ndarray) -> np.ndarray:
@@ -163,7 +200,7 @@ def _predicate_full(k: np.ndarray, n: np.ndarray, p: np.ndarray, u: np.ndarray) 
 
 
 def binomial_inverse(n, p, u, *, half_width: int = _INITIAL_HALF_WIDTH) -> np.ndarray:
-    """Exact inversion of Binomial(n, p) at uniforms u (vectorised; int64 result).
+    """Inversion of Binomial(n, p) at the cell midpoints u + 2**-54 (vectorised; int64 result).
 
     ``half_width`` only sets the initial bracket around the quantile guess; it
     never changes the result (tests rely on that).
