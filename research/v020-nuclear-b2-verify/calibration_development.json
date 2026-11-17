@@ -1,0 +1,8059 @@
+{
+ "generated_by": "research/v020-nuclear-b2-verify/calibration.py",
+ "development": true,
+ "started_utc": "2026-11-17T13:47:57.891762+00:00",
+ "namespace": "rnglab-v020-nuclear-b2-calibration-dev",
+ "batteries": 4000,
+ "protocol_files": {
+  "frozen": false,
+  "files": {
+   "protocol.json": "c9ebc2a88e59989d370a889608bb9167615b81de4c2173b9c1e3470ad68b2779",
+   "design.json": "607996ceef5d81295f638e261393e3ddd78a4ec8d4ea4cb5b159dfcd3a2ad964",
+   "design.py": "97e1481c4ecd3f8c8a8248344d8360e5075ddb116c65a73e93bc93a9975cd1ea",
+   "run_verification.py": "eab8796a93d106ec675425699e9d23fcae5ed018f55676db009373fb5ed2cfe5",
+   "calibration.py": "61bbf642fde11262ece5b208f95ad08f2ab3a3608966ba10d5633c9e0c5e09cd"
+  }
+ },
+ "code": {
+  "module_files_sha256": {
+   "__init__.py": "1a2efc3f54e1c9f5dc7d2ffee49d88af0dde7d59f72fea11792a961542a0151e",
+   "aggregate.py": "4da6a1e7f7b1ed8d017899e0dfd59508abc68be65746120b9481b998788f7685",
+   "bateman.py": "26433bfeba4aaff869415ce6def31631d2085d3baa01a929720bd845f47e16cc",
+   "binomial.py": "6d4f7d259a4d3cd7927c9a8e6e53b1fca3a991c22f8dd5af43c1014d7c30d619",
+   "checks.py": "0977931ab30382b05b764ee55b3a234e6ba46b39bbce30c89c6255b962fa631e",
+   "comparison.py": "9f77b54024adda92a352c7c8c31fe5493ab20820c15353df71c001f79651c4da",
+   "decay.py": "dd564553f991cf57aa4e5055a26d612394262bcc13dd8e96c56b64992d5bbc2a",
+   "manifest.py": "2885abf0d2ac416da648ac7f7e9ad65c8a3973bd9ae9f32b2eae7aaffd5c36e5",
+   "moments.py": "e6cca5d483fcead20e7c2976ed3a25ff5b757de8f1fd1d9d9849f4c03cccafae",
+   "paths.py": "b02394b7546595a3fa4044e200435c6d78967ffa0280724016ab0e15b5a6d7be",
+   "precursors.py": "af13c1a0ad6f10652868bba275f5599805273a964ab91dbed49ad0d35c412715",
+   "streams.py": "27048bbfbde80f15350fa08c5df64f100ba18899407aac460093056def3d994b"
+  },
+  "git_commit": "6ab5ad371424627c385e3cc26ea3aeb5015835e6",
+  "git_dirty": false
+ },
+ "environment": {
+  "python": "3.14.9",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "platform": "Linux-7.2.14-arch1-1-x86_64-with-glibc2.44",
+  "machine": "x86_64"
+ },
+ "criterion": "C1: false_fail_ci95[1] <= 0.02",
+ "sampler": "numpy Generator.multinomial / binomial on the exact laws; no RNGLab sampler",
+ "families": {
+  "NC1": {
+   "tests": 222,
+   "levels": [
+    0.01,
+    0.001,
+    4.5045045045045046e-05
+   ],
+   "batteries": 4000,
+   "failed_batteries": 34,
+   "false_fail_rate": 0.0085,
+   "false_fail_ci95": [
+    0.005893474404454062,
+    0.011857818818291902
+   ],
+   "C1_holds": true,
+   "batteries_with_errors": 0,
+   "errors": {},
+   "types": {
+    "BIG-DECAY": {
+     "instances": 12,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 275,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.5729166666666667,
+       "battery_rate_ci95_over_union_bound": [
+        0.509174564515942,
+        0.641966579330646
+       ],
+       "rejections": 481,
+       "trials": 48000,
+       "mean_rejections_over_nominal": 1.0020833333333334,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8640231974889303,
+        1.1401434691777361
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 34,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7083333333333334,
+       "battery_rate_ci95_over_union_bound": [
+        0.49112286703783853,
+        0.9881515681909918
+       ],
+       "rejections": 51,
+       "trials": 48000,
+       "mean_rejections_over_nominal": 1.0625,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.674369017535818,
+        1.4506309824641819
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 0,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.0,
+       "battery_rate_ci95_over_union_bound": [
+        0.0,
+        1.7053202865436525
+       ],
+       "rejections": 0,
+       "trials": 48000,
+       "mean_rejections_over_nominal": 0.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.0,
+        0.0
+       ]
+      }
+     ]
+    },
+    "BIG-STATE": {
+     "instances": 12,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 400,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.8333333333333334,
+       "battery_rate_ci95_over_union_bound": [
+        0.7572728976306734,
+        0.9143012643198893
+       ],
+       "rejections": 456,
+       "trials": 48000,
+       "mean_rejections_over_nominal": 0.9500000000000001,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8565268006324808,
+        1.0434731993675195
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 44,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9166666666666666,
+       "battery_rate_ci95_over_union_bound": [
+        0.6669731635479725,
+        1.2282612178272514
+       ],
+       "rejections": 47,
+       "trials": 48000,
+       "mean_rejections_over_nominal": 0.9791666666666666,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.6834483231110499,
+        1.2748850102222835
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 3,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.3875,
+       "battery_rate_ci95_over_union_bound": [
+        0.2861852776173821,
+        4.051941526319139
+       ],
+       "rejections": 3,
+       "trials": 48000,
+       "mean_rejections_over_nominal": 1.3875,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.1820151576004292,
+        2.9570151576004293
+       ]
+      }
+     ]
+    },
+    "BT-BINS": {
+     "instances": 7,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 290,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.0357142857142856,
+       "battery_rate_ci95_over_union_bound": [
+        0.9236206933102005,
+        1.1568234148998968
+       ],
+       "rejections": 299,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.0678571428571426,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9476995889955565,
+        1.188014696718729
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 33,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.1785714285714286,
+       "battery_rate_ci95_over_union_bound": [
+        0.8122186165216153,
+        1.6523892709860903
+       ],
+       "rejections": 33,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.1785714285714286,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.7781142211197459,
+        1.5790286360231114
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 3,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 2.3785714285714286,
+       "battery_rate_ci95_over_union_bound": [
+        0.4906033330583693,
+        6.946185473689952
+       ],
+       "rejections": 3,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 2.3785714285714286,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.3120259844578786,
+        5.069168841600736
+       ]
+      }
+     ]
+    },
+    "BT-CHANNEL": {
+     "instances": 5,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 186,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9299999999999999,
+       "battery_rate_ci95_over_union_bound": [
+        0.8036612359989811,
+        1.0697895344096682
+       ],
+       "rejections": 190,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 0.95,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8152811854268306,
+        1.0847188145731694
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 17,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.8500000000000001,
+       "battery_rate_ci95_over_union_bound": [
+        0.4955342983800273,
+        1.3591937319467402
+       ],
+       "rejections": 17,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 0.8500000000000001,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.44679519968135306,
+        1.2532048003186471
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 1,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.11,
+       "battery_rate_ci95_over_union_bound": [
+        0.02810267792519252,
+        6.180991141530357
+       ],
+       "rejections": 1,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 1.11,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -1.0653280330009998,
+        3.285328033001
+       ]
+      }
+     ]
+    },
+    "BT-DECAY": {
+     "instances": 16,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 328,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.5125,
+       "battery_rate_ci95_over_union_bound": [
+        0.4605010274116028,
+        0.5683514169836235
+       ],
+       "rejections": 547,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 0.8546875,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.7467502207994804,
+        0.9626247792005197
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 39,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.609375,
+       "battery_rate_ci95_over_union_bound": [
+        0.43388321594274293,
+        0.8315434502866431
+       ],
+       "rejections": 58,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 0.90625,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.5747649660476737,
+        1.2377350339523263
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 1,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.346875,
+       "battery_rate_ci95_over_union_bound": [
+        0.008782086851622663,
+        1.9315597317282365
+       ],
+       "rejections": 1,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 0.346875,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.33291501031281245,
+        1.0266650103128125
+       ]
+      }
+     ]
+    },
+    "BT-NEUTRON": {
+     "instances": 3,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 132,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.1,
+       "battery_rate_ci95_over_union_bound": [
+        0.922750303245113,
+        1.300434662492161
+       ],
+       "rejections": 134,
+       "trials": 12000,
+       "mean_rejections_over_nominal": 1.1166666666666667,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9279399650876669,
+        1.3053933682456667
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 23,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.9166666666666665,
+       "battery_rate_ci95_over_union_bound": [
+        1.2161315562623747,
+        2.8718012064935676
+       ],
+       "rejections": 23,
+       "trials": 12000,
+       "mean_rejections_over_nominal": 1.9166666666666665,
+       "mean_rejections_approx_ci95_over_nominal": [
+        1.1356028070637672,
+        2.697730526269566
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 5,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 9.25,
+       "battery_rate_ci95_over_union_bound": [
+        3.004342501759575,
+        21.568426110304344
+       ],
+       "rejections": 5,
+       "trials": 12000,
+       "mean_rejections_over_nominal": 9.25,
+       "mean_rejections_approx_ci95_over_nominal": [
+        1.1470865872206184,
+        17.352913412779383
+       ]
+      }
+     ]
+    },
+    "BT-PATH": {
+     "instances": 6,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 231,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9625000000000001,
+       "battery_rate_ci95_over_union_bound": [
+        0.845353952466985,
+        1.0905511658857288
+       ],
+       "rejections": 238,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 0.9916666666666667,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8657200908012538,
+        1.1176132425320795
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 22,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9166666666666666,
+       "battery_rate_ci95_over_union_bound": [
+        0.5749891129504742,
+        1.3858818922213942
+       ],
+       "rejections": 22,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 0.9166666666666666,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.534670887894178,
+        1.298662445439155
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 0,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.0,
+       "battery_rate_ci95_over_union_bound": [
+        0.0,
+        3.410640573087305
+       ],
+       "rejections": 0,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 0.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.0,
+        0.0
+       ]
+      }
+     ]
+    },
+    "BT-PHOTON": {
+     "instances": 7,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 268,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9571428571428571,
+       "battery_rate_ci95_over_union_bound": [
+        0.8492198137416773,
+        1.074204160534243
+       ],
+       "rejections": 280,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8819508576905364,
+        1.1180491423094636
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 24,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.8571428571428571,
+       "battery_rate_ci95_over_union_bound": [
+        0.5497120457618067,
+        1.273492980304903
+       ],
+       "rejections": 24,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.8571428571428571,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.5152446266706887,
+        1.1990410876150257
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 0,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.0,
+       "battery_rate_ci95_over_union_bound": [
+        0.0,
+        2.923406205503404
+       ],
+       "rejections": 0,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.0,
+        0.0
+       ]
+      }
+     ]
+    },
+    "BT-PHOTON-T": {
+     "instances": 7,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 288,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.0285714285714285,
+       "battery_rate_ci95_over_union_bound": [
+        0.9168487218934859,
+        1.1493207890887618
+       ],
+       "rejections": 299,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.0678571428571426,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.946482360674022,
+        1.1892319250402634
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 23,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.8214285714285714,
+       "battery_rate_ci95_over_union_bound": [
+        0.5211992383981606,
+        1.2307719456401005
+       ],
+       "rejections": 23,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.8214285714285714,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.4866869173130431,
+        1.1561702255440998
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 0,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.0,
+       "battery_rate_ci95_over_union_bound": [
+        0.0,
+        2.923406205503404
+       ],
+       "rejections": 0,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.0,
+        0.0
+       ]
+      }
+     ]
+    },
+    "BT-STATE": {
+     "instances": 34,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 1044,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7676470588235293,
+       "battery_rate_ci95_over_union_bound": [
+        0.7277748438569863,
+        0.8085485041237064
+       ],
+       "rejections": 1389,
+       "trials": 136000,
+       "mean_rejections_over_nominal": 1.0213235294117646,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9592245455443809,
+        1.0834225132791484
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 130,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9558823529411764,
+       "battery_rate_ci95_over_union_bound": [
+        0.8006930022695837,
+        1.1315552158776274
+       ],
+       "rejections": 149,
+       "trials": 136000,
+       "mean_rejections_over_nominal": 1.0955882352941175,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8941069453786861,
+        1.297069525209549
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 6,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9794117647058824,
+       "battery_rate_ci95_over_union_bound": [
+        0.3595526483982022,
+        2.1298864063854914
+       ],
+       "rejections": 6,
+       "trials": 136000,
+       "mean_rejections_over_nominal": 0.9794117647058824,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.1963071246987554,
+        1.7625164047130093
+       ]
+      }
+     ]
+    },
+    "CT-DECAY": {
+     "instances": 6,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 237,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9874999999999999,
+       "battery_rate_ci95_over_union_bound": [
+        0.8688782730239976,
+        1.1169870041594707
+       ],
+       "rejections": 252,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 1.05,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9167746558145436,
+        1.1832253441854566
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 18,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7499999999999999,
+       "battery_rate_ci95_over_union_bound": [
+        0.4448499558318208,
+        1.1837750632873265
+       ],
+       "rejections": 18,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 0.7499999999999999,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.404298141457122,
+        1.0957018585428777
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 2,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.85,
+       "battery_rate_ci95_over_union_bound": [
+        0.22406480875590384,
+        6.678473050176995
+       ],
+       "rejections": 2,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 1.85,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.7133281161412011,
+        4.4133281161412015
+       ]
+      }
+     ]
+    },
+    "CT-HOMO": {
+     "instances": 6,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 232,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9666666666666668,
+       "battery_rate_ci95_over_union_bound": [
+        0.8492731044269075,
+        1.0949586978717596
+       ],
+       "rejections": 252,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 1.05,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9138040908592822,
+        1.186195909140718
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 22,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9166666666666666,
+       "battery_rate_ci95_over_union_bound": [
+        0.5749891129504742,
+        1.3858818922213942
+       ],
+       "rejections": 22,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 0.9166666666666666,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.534670887894178,
+        1.298662445439155
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 0,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.0,
+       "battery_rate_ci95_over_union_bound": [
+        0.0,
+        3.410640573087305
+       ],
+       "rejections": 0,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 0.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.0,
+        0.0
+       ]
+      }
+     ]
+    },
+    "CT-PHOTON": {
+     "instances": 5,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 197,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.985,
+       "battery_rate_ci95_over_union_bound": [
+        0.8550111439544463,
+        1.128349345500492
+       ],
+       "rejections": 200,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 1.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8628,
+        1.1372
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 23,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.15,
+       "battery_rate_ci95_over_union_bound": [
+        0.7296789337574249,
+        1.7230807238961408
+       ],
+       "rejections": 23,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 1.15,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.6813616842382604,
+        1.6186383157617397
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 0,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.0,
+       "battery_rate_ci95_over_union_bound": [
+        0.0,
+        4.092768687704766
+       ],
+       "rejections": 0,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 0.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.0,
+        0.0
+       ]
+      }
+     ]
+    },
+    "CT-VAR": {
+     "instances": 7,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 284,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.014285714285714,
+       "battery_rate_ci95_over_union_bound": [
+        0.9033096027118915,
+        1.1343107364743488
+       ],
+       "rejections": 294,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.0499999999999998,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9303038889520631,
+        1.1696961110479367
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 31,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.1071428571428572,
+       "battery_rate_ci95_over_union_bound": [
+        0.7530925423164965,
+        1.5689448859181485
+       ],
+       "rejections": 31,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.1071428571428572,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.718912545343276,
+        1.495373168942438
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 1,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7928571428571428,
+       "battery_rate_ci95_over_union_bound": [
+        0.020073341375137513,
+        4.414993672521683
+       ],
+       "rejections": 1,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.7928571428571428,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.7609485950007141,
+        2.346662880715
+       ]
+      }
+     ]
+    },
+    "CT-VARSUM": {
+     "instances": 21,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 641,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7630952380952382,
+       "battery_rate_ci95_over_union_bound": [
+        0.7095621357635915,
+        0.8190027292102079
+       ],
+       "rejections": 814,
+       "trials": 84000,
+       "mean_rejections_over_nominal": 0.969047619047619,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.891366505226791,
+        1.0467287328684471
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 69,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.8214285714285714,
+       "battery_rate_ci95_over_union_bound": [
+        0.6402705037222493,
+        1.0371829849722471
+       ],
+       "rejections": 74,
+       "trials": 84000,
+       "mean_rejections_over_nominal": 0.8809523809523808,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.6662971276326036,
+        1.0956076342721581
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 3,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7928571428571429,
+       "battery_rate_ci95_over_union_bound": [
+        0.16353444435278977,
+        2.315395157896651
+       ],
+       "rejections": 3,
+       "trials": 84000,
+       "mean_rejections_over_nominal": 0.7928571428571429,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.10400866148595955,
+        1.6897229472002455
+       ]
+      }
+     ]
+    },
+    "ET-MEAN": {
+     "instances": 16,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 622,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9718749999999999,
+       "battery_rate_ci95_over_union_bound": [
+        0.9024974741174753,
+        1.0444130327160028
+       ],
+       "rejections": 697,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 1.0890624999999998,
+       "mean_rejections_approx_ci95_over_nominal": [
+        1.0060044878058207,
+        1.1721205121941791
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 69,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.078125,
+       "battery_rate_ci95_over_union_bound": [
+        0.8403550361354521,
+        1.3613026677760744
+       ],
+       "rejections": 70,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 1.09375,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8361083710182399,
+        1.3513916289817602
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 2,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.69375,
+       "battery_rate_ci95_over_union_bound": [
+        0.08402430328346394,
+        2.5044273938163735
+       ],
+       "rejections": 2,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 0.69375,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.26749804355295037,
+        1.6549980435529503
+       ]
+      }
+     ]
+    },
+    "ET-VAR": {
+     "instances": 16,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 608,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.95,
+       "battery_rate_ci95_over_union_bound": [
+        0.8812889805123733,
+        1.021904065216097
+       ],
+       "rejections": 657,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 1.0265625,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9485385731873008,
+        1.1045864268126993
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 62,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.96875,
+       "battery_rate_ci95_over_union_bound": [
+        0.7439916379882692,
+        1.2391738390799198
+       ],
+       "rejections": 63,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 0.984375,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.7393601664646735,
+        1.2293898335353264
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 6,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 2.08125,
+       "battery_rate_ci95_over_union_bound": [
+        0.7640493778461797,
+        4.52600861356917
+       ],
+       "rejections": 6,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 2.08125,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.4171526399848552,
+        3.7453473600151446
+       ]
+      }
+     ]
+    },
+    "ET-VARSUM": {
+     "instances": 21,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 661,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.786904761904762,
+       "battery_rate_ci95_over_union_bound": [
+        0.7326803561285147,
+        0.8434682046941655
+       ],
+       "rejections": 861,
+       "trials": 84000,
+       "mean_rejections_over_nominal": 1.0250000000000001,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9421857381109858,
+        1.107814261889014
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 64,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7619047619047619,
+       "battery_rate_ci95_over_union_bound": [
+        0.5877705726824153,
+        0.9707743597280223
+       ],
+       "rejections": 72,
+       "trials": 84000,
+       "mean_rejections_over_nominal": 0.857142857142857,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.6373829881949529,
+        1.076902726090761
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 4,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.0571428571428572,
+       "battery_rate_ci95_over_union_bound": [
+        0.28810465050701217,
+        2.704594437282372
+       ],
+       "rejections": 4,
+       "trials": 84000,
+       "mean_rejections_over_nominal": 1.0571428571428572,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.02166098670764767,
+        2.092624727578067
+       ]
+      }
+     ]
+    },
+    "ET-VARSUM2": {
+     "instances": 15,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 445,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7416666666666667,
+       "battery_rate_ci95_over_union_bound": [
+        0.6777806806415411,
+        0.8093652057458776
+       ],
+       "rejections": 634,
+       "trials": 60000,
+       "mean_rejections_over_nominal": 1.0566666666666666,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9389074790373735,
+        1.17442585429596
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 48,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.8,
+       "battery_rate_ci95_over_union_bound": [
+        0.5907162811319535,
+        1.0586068853609045
+       ],
+       "rejections": 54,
+       "trials": 60000,
+       "mean_rejections_over_nominal": 0.9,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.5983484931985992,
+        1.2016515068014009
+       ]
+      },
+      {
+       "level": 4.5045045045045046e-05,
+       "batteries_with_rejection": 1,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.37,
+       "battery_rate_ci95_over_union_bound": [
+        0.009367559308397506,
+        2.060330380510119
+       ],
+       "rejections": 1,
+       "trials": 60000,
+       "mean_rejections_over_nominal": 0.37,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.3551093443336666,
+        1.0951093443336666
+       ]
+      }
+     ]
+    }
+   },
+   "per_test": {
+    "BIG 1000000000000 BIG-DECAY Xa-400": {
+     "rejections": [
+      41,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-DECAY Xb-396": {
+     "rejections": [
+      36,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-DECAY Xc-400": {
+     "rejections": [
+      39,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-DECAY Xc-400m": {
+     "rejections": [
+      35,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-DECAY Xd-396": {
+     "rejections": [
+      38,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-DECAY Xe-396": {
+     "rejections": [
+      32,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.005478244460750934,
+       0.011274999645515872
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-STATE t=0.5": {
+     "rejections": [
+      41,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-STATE t=1.0": {
+     "rejections": [
+      32,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.005478244460750934,
+       0.011274999645515872
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-STATE t=12.0": {
+     "rejections": [
+      36,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-STATE t=2.0": {
+     "rejections": [
+      40,
+      2,
+      1
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-STATE t=4.0": {
+     "rejections": [
+      50,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.009291587489802085,
+       0.016446844532148508
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1000000000000 BIG-STATE t=8.0": {
+     "rejections": [
+      37,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-DECAY Xa-400": {
+     "rejections": [
+      40,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-DECAY Xb-396": {
+     "rejections": [
+      41,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-DECAY Xc-400": {
+     "rejections": [
+      39,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-DECAY Xc-400m": {
+     "rejections": [
+      47,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-DECAY Xd-396": {
+     "rejections": [
+      44,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-DECAY Xe-396": {
+     "rejections": [
+      49,
+      10,
+      0
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.0011994778920505907,
+       0.00459276768011424
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-STATE t=0.5": {
+     "rejections": [
+      49,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-STATE t=1.0": {
+     "rejections": [
+      29,
+      7,
+      1
+     ],
+     "ci95": [
+      [
+       0.004860658769457783,
+       0.010395735594979914
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-STATE t=12.0": {
+     "rejections": [
+      34,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-STATE t=2.0": {
+     "rejections": [
+      32,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.005478244460750934,
+       0.011274999645515872
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-STATE t=4.0": {
+     "rejections": [
+      47,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "BIG 1152921504606859321 BIG-STATE t=8.0": {
+     "rejections": [
+      29,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.004860658769457783,
+       0.010395735594979914
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-DECAY Xa-400": {
+     "rejections": [
+      47,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-DECAY Xb-396": {
+     "rejections": [
+      43,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-DECAY Xc-400": {
+     "rejections": [
+      45,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-DECAY Xc-400m": {
+     "rejections": [
+      39,
+      5,
+      2
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ]
+     ]
+    },
+    "COMP CT-DECAY Xd-396": {
+     "rejections": [
+      34,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-DECAY Xe-396": {
+     "rejections": [
+      44,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-HOMO t=0.5": {
+     "rejections": [
+      40,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-HOMO t=1.0": {
+     "rejections": [
+      39,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-HOMO t=12.0": {
+     "rejections": [
+      44,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-HOMO t=2.0": {
+     "rejections": [
+      36,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-HOMO t=4.0": {
+     "rejections": [
+      53,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.009940486760908312,
+       0.01729589408057713
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-HOMO t=8.0": {
+     "rejections": [
+      40,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-PHOTON Xa-400/alpha->Xb-396": {
+     "rejections": [
+      40,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-PHOTON Xa-400/beta-->Xc-400m": {
+     "rejections": [
+      45,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-PHOTON Xb-396/ec->Xd-396": {
+     "rejections": [
+      37,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-PHOTON Xc-400m/it->Xc-400": {
+     "rejections": [
+      42,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-PHOTON Xe-396/beta-->Xg-396": {
+     "rejections": [
+      36,
+      8,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.0008638411024434884,
+       0.003936973885950875
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VAR Xa-400 t=2.0": {
+     "rejections": [
+      47,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VAR Xb-396 t=2.0": {
+     "rejections": [
+      41,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VAR Xc-400 t=2.0": {
+     "rejections": [
+      40,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VAR Xc-400m t=2.0": {
+     "rejections": [
+      36,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VAR Xd-396 t=2.0": {
+     "rejections": [
+      45,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "COMP CT-VAR Xe-396 t=2.0": {
+     "rejections": [
+      50,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.009291587489802085,
+       0.016446844532148508
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VAR Xf-392 t=2.0": {
+     "rejections": [
+      35,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xa-400+Xb-396 t=2.0": {
+     "rejections": [
+      30,
+      7,
+      1
+     ],
+     "ci95": [
+      [
+       0.005065773800099425,
+       0.010689537416458008
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xa-400+Xc-400 t=2.0": {
+     "rejections": [
+      39,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xa-400+Xc-400m t=2.0": {
+     "rejections": [
+      46,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xa-400+Xd-396 t=2.0": {
+     "rejections": [
+      41,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xa-400+Xe-396 t=2.0": {
+     "rejections": [
+      35,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xa-400+Xf-392 t=2.0": {
+     "rejections": [
+      46,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xb-396+Xc-400 t=2.0": {
+     "rejections": [
+      36,
+      3,
+      1
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xb-396+Xc-400m t=2.0": {
+     "rejections": [
+      34,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xb-396+Xd-396 t=2.0": {
+     "rejections": [
+      42,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xb-396+Xe-396 t=2.0": {
+     "rejections": [
+      32,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.005478244460750934,
+       0.011274999645515872
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xb-396+Xf-392 t=2.0": {
+     "rejections": [
+      42,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xc-400+Xd-396 t=2.0": {
+     "rejections": [
+      29,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.004860658769457783,
+       0.010395735594979914
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xc-400+Xe-396 t=2.0": {
+     "rejections": [
+      48,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xc-400+Xf-392 t=2.0": {
+     "rejections": [
+      43,
+      0,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xc-400m+Xc-400 t=2.0": {
+     "rejections": [
+      42,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xc-400m+Xd-396 t=2.0": {
+     "rejections": [
+      37,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xc-400m+Xe-396 t=2.0": {
+     "rejections": [
+      43,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xc-400m+Xf-392 t=2.0": {
+     "rejections": [
+      38,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xd-396+Xe-396 t=2.0": {
+     "rejections": [
+      33,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xd-396+Xf-392 t=2.0": {
+     "rejections": [
+      42,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "COMP CT-VARSUM Xe-396+Xf-392 t=2.0": {
+     "rejections": [
+      36,
+      8,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.0008638411024434884,
+       0.003936973885950875
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xa-400 t=2.0": {
+     "rejections": [
+      44,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xa-400 t=8.0": {
+     "rejections": [
+      47,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xb-396 t=2.0": {
+     "rejections": [
+      39,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xb-396 t=8.0": {
+     "rejections": [
+      39,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xc-400 t=2.0": {
+     "rejections": [
+      47,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xc-400 t=8.0": {
+     "rejections": [
+      42,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xc-400m t=2.0": {
+     "rejections": [
+      51,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.009507546277687308,
+       0.01673019287523458
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xc-400m t=8.0": {
+     "rejections": [
+      54,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.010157449354282574,
+       0.01757826520944963
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xd-396 t=2.0": {
+     "rejections": [
+      43,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xd-396 t=8.0": {
+     "rejections": [
+      43,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xe-396 t=2.0": {
+     "rejections": [
+      45,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xe-396 t=8.0": {
+     "rejections": [
+      46,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xf-392 t=2.0": {
+     "rejections": [
+      34,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xf-392 t=8.0": {
+     "rejections": [
+      45,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xg-396 t=8.0": {
+     "rejections": [
+      45,
+      6,
+      2
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ]
+     ]
+    },
+    "ENS ET-MEAN Xh-395 t=8.0": {
+     "rejections": [
+      33,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xa-400 t=2.0": {
+     "rejections": [
+      50,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.009291587489802085,
+       0.016446844532148508
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xa-400 t=8.0": {
+     "rejections": [
+      47,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xb-396 t=2.0": {
+     "rejections": [
+      48,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xb-396 t=8.0": {
+     "rejections": [
+      33,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xc-400 t=2.0": {
+     "rejections": [
+      38,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xc-400 t=8.0": {
+     "rejections": [
+      36,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VAR Xc-400m t=2.0": {
+     "rejections": [
+      26,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.004250280354683754,
+       0.009509598060023655
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xc-400m t=8.0": {
+     "rejections": [
+      39,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VAR Xd-396 t=2.0": {
+     "rejections": [
+      37,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xd-396 t=8.0": {
+     "rejections": [
+      38,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xe-396 t=2.0": {
+     "rejections": [
+      35,
+      3,
+      1
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VAR Xe-396 t=8.0": {
+     "rejections": [
+      55,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.010374728183106249,
+       0.017860328175099128
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VAR Xf-392 t=2.0": {
+     "rejections": [
+      39,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xf-392 t=8.0": {
+     "rejections": [
+      48,
+      3,
+      1
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VAR Xg-396 t=8.0": {
+     "rejections": [
+      40,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VAR Xh-395 t=8.0": {
+     "rejections": [
+      48,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xa-400+Xb-396 t=2.0": {
+     "rejections": [
+      46,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xa-400+Xc-400 t=2.0": {
+     "rejections": [
+      40,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xa-400+Xc-400m t=2.0": {
+     "rejections": [
+      32,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.005478244460750934,
+       0.011274999645515872
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xa-400+Xd-396 t=2.0": {
+     "rejections": [
+      47,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xa-400+Xe-396 t=2.0": {
+     "rejections": [
+      41,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xa-400+Xf-392 t=2.0": {
+     "rejections": [
+      50,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.009291587489802085,
+       0.016446844532148508
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xb-396+Xc-400 t=2.0": {
+     "rejections": [
+      47,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xb-396+Xc-400m t=2.0": {
+     "rejections": [
+      44,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xb-396+Xd-396 t=2.0": {
+     "rejections": [
+      44,
+      0,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xb-396+Xe-396 t=2.0": {
+     "rejections": [
+      45,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xb-396+Xf-392 t=2.0": {
+     "rejections": [
+      34,
+      3,
+      2
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xc-400+Xd-396 t=2.0": {
+     "rejections": [
+      35,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xc-400+Xe-396 t=2.0": {
+     "rejections": [
+      42,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xc-400+Xf-392 t=2.0": {
+     "rejections": [
+      33,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xc-400m+Xc-400 t=2.0": {
+     "rejections": [
+      45,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xc-400m+Xd-396 t=2.0": {
+     "rejections": [
+      52,
+      8,
+      1
+     ],
+     "ci95": [
+      [
+       0.009723849294906512,
+       0.01701320627502293
+      ],
+      [
+       0.0008638411024434884,
+       0.003936973885950875
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xc-400m+Xe-396 t=2.0": {
+     "rejections": [
+      31,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.0052716477962154755,
+       0.01098261420142704
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xc-400m+Xf-392 t=2.0": {
+     "rejections": [
+      38,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xd-396+Xe-396 t=2.0": {
+     "rejections": [
+      34,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xd-396+Xf-392 t=2.0": {
+     "rejections": [
+      35,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VARSUM Xe-396+Xf-392 t=2.0": {
+     "rejections": [
+      46,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xa-400@8": {
+     "rejections": [
+      46,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xb-396@8": {
+     "rejections": [
+      43,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xc-400@8": {
+     "rejections": [
+      44,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xc-400m@8": {
+     "rejections": [
+      55,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.010374728183106249,
+       0.017860328175099128
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xd-396@8": {
+     "rejections": [
+      45,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xe-396@8": {
+     "rejections": [
+      39,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xf-392@8": {
+     "rejections": [
+      54,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.010157449354282574,
+       0.01757826520944963
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xg-396@8": {
+     "rejections": [
+      40,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xa-400@2+Xh-395@8": {
+     "rejections": [
+      43,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xb-396@2+Xb-396@8": {
+     "rejections": [
+      39,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xc-400@2+Xc-400@8": {
+     "rejections": [
+      38,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xc-400m@2+Xc-400m@8": {
+     "rejections": [
+      26,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.004250280354683754,
+       0.009509598060023655
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xd-396@2+Xd-396@8": {
+     "rejections": [
+      39,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xe-396@2+Xe-396@8": {
+     "rejections": [
+      42,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "ENS ET-VARSUM2 Xf-392@2+Xf-392@8": {
+     "rejections": [
+      41,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-BINS Sa-400": {
+     "rejections": [
+      46,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-DECAY Sa-400": {
+     "rejections": [
+      46,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-PHOTON Sa-400/beta-->Sb-400": {
+     "rejections": [
+      43,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-PHOTON-T Sa-400/beta-->Sb-400": {
+     "rejections": [
+      43,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-STATE Sa-400 t=0.5": {
+     "rejections": [
+      49,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-STATE Sa-400 t=1.0": {
+     "rejections": [
+      43,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-STATE Sa-400 t=2.0": {
+     "rejections": [
+      34,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-STATE Sa-400 t=4.0": {
+     "rejections": [
+      40,
+      8,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.0008638411024434884,
+       0.003936973885950875
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S1 BT-STATE Sa-400 t=6.0": {
+     "rejections": [
+      46,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-BINS Xa-400": {
+     "rejections": [
+      34,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-CHANNEL Xa-400": {
+     "rejections": [
+      40,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-CHANNEL Xe-396": {
+     "rejections": [
+      41,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-DECAY Xa-400": {
+     "rejections": [
+      34,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S2 BT-DECAY Xb-396": {
+     "rejections": [
+      43,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-DECAY Xc-400": {
+     "rejections": [
+      37,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-DECAY Xc-400m": {
+     "rejections": [
+      32,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.005478244460750934,
+       0.011274999645515872
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-DECAY Xd-396": {
+     "rejections": [
+      37,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-DECAY Xe-396": {
+     "rejections": [
+      38,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PATH Xa-400": {
+     "rejections": [
+      42,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PATH Xb-396": {
+     "rejections": [
+      49,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PATH Xc-400": {
+     "rejections": [
+      37,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PATH Xc-400m": {
+     "rejections": [
+      46,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PATH Xd-396": {
+     "rejections": [
+      31,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.0052716477962154755,
+       0.01098261420142704
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PATH Xe-396": {
+     "rejections": [
+      33,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON Xa-400/alpha->Xb-396": {
+     "rejections": [
+      44,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON Xa-400/beta-->Xc-400m": {
+     "rejections": [
+      34,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON Xb-396/ec->Xd-396": {
+     "rejections": [
+      41,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON Xc-400m/it->Xc-400": {
+     "rejections": [
+      34,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON Xe-396/beta-->Xg-396": {
+     "rejections": [
+      43,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON-T Xa-400/alpha->Xb-396": {
+     "rejections": [
+      44,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON-T Xa-400/beta-->Xc-400m": {
+     "rejections": [
+      48,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON-T Xb-396/ec->Xd-396": {
+     "rejections": [
+      42,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON-T Xc-400m/it->Xc-400": {
+     "rejections": [
+      44,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-PHOTON-T Xe-396/beta-->Xg-396": {
+     "rejections": [
+      42,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-STATE Xa-400 t=0.5": {
+     "rejections": [
+      41,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-STATE Xa-400 t=1.0": {
+     "rejections": [
+      44,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-STATE Xa-400 t=12.0": {
+     "rejections": [
+      35,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-STATE Xa-400 t=2.0": {
+     "rejections": [
+      42,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-STATE Xa-400 t=4.0": {
+     "rejections": [
+      52,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.009723849294906512,
+       0.01701320627502293
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S2 BT-STATE Xa-400 t=8.0": {
+     "rejections": [
+      43,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S3 BT-BINS Ya-410": {
+     "rejections": [
+      39,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S3 BT-DECAY Ya-410": {
+     "rejections": [
+      38,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S3 BT-DECAY Yb-410": {
+     "rejections": [
+      37,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S3 BT-STATE Ya-410 t=1.0": {
+     "rejections": [
+      37,
+      7,
+      1
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S3 BT-STATE Ya-410 t=10.0": {
+     "rejections": [
+      41,
+      7,
+      1
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S3 BT-STATE Ya-410 t=20.0": {
+     "rejections": [
+      29,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.004860658769457783,
+       0.010395735594979914
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S3 BT-STATE Ya-410 t=40.0": {
+     "rejections": [
+      43,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S3 BT-STATE Ya-410 t=5.0": {
+     "rejections": [
+      34,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-BINS G1": {
+     "rejections": [
+      46,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-BINS G2": {
+     "rejections": [
+      47,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-BINS G3": {
+     "rejections": [
+      47,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-CHANNEL G1": {
+     "rejections": [
+      34,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-CHANNEL G2": {
+     "rejections": [
+      41,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-DECAY G1": {
+     "rejections": [
+      0,
+      0,
+      0
+     ],
+     "ci95": [
+      [
+       0.0,
+       0.0009217947494830555
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-DECAY G2": {
+     "rejections": [
+      46,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-DECAY G3": {
+     "rejections": [
+      37,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-NEUTRON G1": {
+     "rejections": [
+      48,
+      10,
+      4
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.0011994778920505907,
+       0.00459276768011424
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ]
+     ]
+    },
+    "NC1 S4 BT-NEUTRON G2": {
+     "rejections": [
+      39,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-NEUTRON G3": {
+     "rejections": [
+      47,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G1 t=0.5": {
+     "rejections": [
+      36,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G1 t=1.0": {
+     "rejections": [
+      42,
+      3,
+      1
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G1 t=13.0": {
+     "rejections": [
+      34,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G1 t=2.0": {
+     "rejections": [
+      38,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G1 t=5.0": {
+     "rejections": [
+      46,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G2 t=0.5": {
+     "rejections": [
+      46,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G2 t=1.0": {
+     "rejections": [
+      42,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G2 t=13.0": {
+     "rejections": [
+      36,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G2 t=2.0": {
+     "rejections": [
+      43,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G2 t=5.0": {
+     "rejections": [
+      39,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G3 t=0.5": {
+     "rejections": [
+      46,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G3 t=1.0": {
+     "rejections": [
+      48,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G3 t=13.0": {
+     "rejections": [
+      39,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G3 t=2.0": {
+     "rejections": [
+      36,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S4 BT-STATE G3 t=5.0": {
+     "rejections": [
+      35,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-BINS Za-450": {
+     "rejections": [
+      40,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-CHANNEL Zd-446": {
+     "rejections": [
+      34,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-DECAY Za-450": {
+     "rejections": [
+      30,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.005065773800099425,
+       0.010689537416458008
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-DECAY Zb-450": {
+     "rejections": [
+      30,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.005065773800099425,
+       0.010689537416458008
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-DECAY Zc-446": {
+     "rejections": [
+      31,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.0052716477962154755,
+       0.01098261420142704
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-DECAY Zd-446": {
+     "rejections": [
+      31,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.0052716477962154755,
+       0.01098261420142704
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-PHOTON Zb-450/alpha->Zc-446": {
+     "rejections": [
+      41,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-PHOTON-T Zb-450/alpha->Zc-446": {
+     "rejections": [
+      36,
+      0,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-STATE Za-450 t=1.0": {
+     "rejections": [
+      35,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-STATE Za-450 t=1000.0": {
+     "rejections": [
+      49,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC1 S5 BT-STATE Za-450 t=3000.0": {
+     "rejections": [
+      46,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    }
+   },
+   "most_rejections_at_holm_level": {
+    "test": "NC1 S4 BT-NEUTRON G1",
+    "rejections": 4
+   }
+  },
+  "NC2": {
+   "tests": 85,
+   "levels": [
+    0.01,
+    0.001,
+    0.00011764705882352942
+   ],
+   "batteries": 4000,
+   "failed_batteries": 39,
+   "false_fail_rate": 0.00975,
+   "false_fail_ci95": [
+    0.006942131455083887,
+    0.01330469520458629
+   ],
+   "C1_holds": true,
+   "batteries_with_errors": 0,
+   "errors": {},
+   "types": {
+    "BT-BINS": {
+     "instances": 7,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 274,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9785714285714285,
+       "battery_rate_ci95_over_union_bound": [
+        0.8694906874430787,
+        1.0967568607232103
+       ],
+       "rejections": 279,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.9964285714285714,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8815049108968951,
+        1.1113522319602478
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 17,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.6071428571428572,
+       "battery_rate_ci95_over_union_bound": [
+        0.3539530702714481,
+        0.970852665676243
+       ],
+       "rejections": 17,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.6071428571428572,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.3191394283438236,
+        0.8951462859418907
+       ]
+      },
+      {
+       "level": 0.00011764705882352942,
+       "batteries_with_rejection": 1,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.30357142857142855,
+       "battery_rate_ci95_over_union_bound": [
+        0.007685738814804904,
+        1.6904255052447887
+       ],
+       "rejections": 1,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.30357142857142855,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.2913541917795527,
+        0.8984970489224098
+       ]
+      }
+     ]
+    },
+    "BT-CHANNEL": {
+     "instances": 5,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 199,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.995,
+       "battery_rate_ci95_over_union_bound": [
+        0.8643602052620023,
+        1.1389839599039249
+       ],
+       "rejections": 204,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 1.0199999999999998,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8801666712117601,
+        1.1598333287882396
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 20,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.0,
+       "battery_rate_ci95_over_union_bound": [
+        0.6113448908504722,
+        1.5423163055670814
+       ],
+       "rejections": 20,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 1.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.562827722745369,
+        1.4371722772546311
+       ]
+      },
+      {
+       "level": 0.00011764705882352942,
+       "batteries_with_rejection": 3,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.275,
+       "battery_rate_ci95_over_union_bound": [
+        0.2629810659186754,
+        3.723405726887857
+       ],
+       "rejections": 3,
+       "trials": 20000,
+       "mean_rejections_over_nominal": 1.275,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.16725717184904304,
+        2.717257171849043
+       ]
+      }
+     ]
+    },
+    "BT-DECAY": {
+     "instances": 16,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 308,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.48125,
+       "battery_rate_ci95_over_union_bound": [
+        0.4307791772569759,
+        0.5356214857844108
+       ],
+       "rejections": 527,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 0.8234375,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.7171035594858188,
+        0.9297714405141813
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 30,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.46875,
+       "battery_rate_ci95_over_union_bound": [
+        0.31661086250621406,
+        0.6680960885286255
+       ],
+       "rejections": 48,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 0.75,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.4446332737510519,
+        1.0553667262489481
+       ]
+      },
+      {
+       "level": 0.00011764705882352942,
+       "batteries_with_rejection": 3,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.3984375,
+       "battery_rate_ci95_over_union_bound": [
+        0.08218158309958608,
+        1.1635642896524554
+       ],
+       "rejections": 4,
+       "trials": 64000,
+       "mean_rejections_over_nominal": 0.53125,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.10617021896616596,
+        1.168670218966166
+       ]
+      }
+     ]
+    },
+    "BT-NEUTRON": {
+     "instances": 3,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 114,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9500000000000001,
+       "battery_rate_ci95_over_union_bound": [
+        0.7855072181857331,
+        1.1379497934540348
+       ],
+       "rejections": 116,
+       "trials": 12000,
+       "mean_rejections_over_nominal": 0.9666666666666668,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.7902696913839571,
+        1.1430636419493765
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 9,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7499999999999999,
+       "battery_rate_ci95_over_union_bound": [
+        0.3431144377662136,
+        1.4222950215533892
+       ],
+       "rejections": 9,
+       "trials": 12000,
+       "mean_rejections_over_nominal": 0.7499999999999999,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.2605515604274542,
+        1.2394484395725456
+       ]
+      },
+      {
+       "level": 0.00011764705882352942,
+       "batteries_with_rejection": 1,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.7083333333333333,
+       "battery_rate_ci95_over_union_bound": [
+        0.01793339056787811,
+        3.944326178904507
+       ],
+       "rejections": 1,
+       "trials": 12000,
+       "mean_rejections_over_nominal": 0.7083333333333333,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.6798264474856229,
+        2.0964931141522896
+       ]
+      }
+     ]
+    },
+    "BT-PATH": {
+     "instances": 6,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 236,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9833333333333333,
+       "battery_rate_ci95_over_union_bound": [
+        0.8649559973275982,
+        1.1125825776529132
+       ],
+       "rejections": 241,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 1.0041666666666667,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8785804988430918,
+        1.1297528344902417
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 21,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.875,
+       "battery_rate_ci95_over_union_bound": [
+        0.5421136981915109,
+        1.3356739257368853
+       ],
+       "rejections": 21,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 0.875,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.5017400006921003,
+        1.2482599993078998
+       ]
+      },
+      {
+       "level": 0.00011764705882352942,
+       "batteries_with_rejection": 3,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.0625,
+       "battery_rate_ci95_over_union_bound": [
+        0.21915088826556287,
+        3.102838105739881
+       ],
+       "rejections": 3,
+       "trials": 24000,
+       "mean_rejections_over_nominal": 1.0625,
+       "mean_rejections_approx_ci95_over_nominal": [
+        -0.1393809765408692,
+        2.264380976540869
+       ]
+      }
+     ]
+    },
+    "BT-PHOTON": {
+     "instances": 7,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 261,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.932142857142857,
+       "battery_rate_ci95_over_union_bound": [
+        0.825590646560561,
+        1.0478725938355502
+       ],
+       "rejections": 265,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 0.9464285714285714,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8345503172859543,
+        1.0583068255711885
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 31,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.1071428571428572,
+       "battery_rate_ci95_over_union_bound": [
+        0.7530925423164965,
+        1.5689448859181485
+       ],
+       "rejections": 31,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.1071428571428572,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.718912545343276,
+        1.495373168942438
+       ]
+      },
+      {
+       "level": 0.00011764705882352942,
+       "batteries_with_rejection": 4,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.2142857142857142,
+       "battery_rate_ci95_over_union_bound": [
+        0.3309310174742707,
+        3.1066287455270483
+       ],
+       "rejections": 4,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.2142857142857142,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.024880863110135838,
+        2.403690565461293
+       ]
+      }
+     ]
+    },
+    "BT-PHOTON-T": {
+     "instances": 7,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 281,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.0035714285714286,
+       "battery_rate_ci95_over_union_bound": [
+        0.8931595458906867,
+        1.123048934794947
+       ],
+       "rejections": 299,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.0678571428571426,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9436885568540799,
+        1.1920257288602056
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 39,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.3928571428571428,
+       "battery_rate_ci95_over_union_bound": [
+        0.9917330650119839,
+        1.9006707435123271
+       ],
+       "rejections": 39,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 1.3928571428571428,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9578436085849319,
+        1.8278706771293538
+       ]
+      },
+      {
+       "level": 0.00011764705882352942,
+       "batteries_with_rejection": 11,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 3.339285714285714,
+       "battery_rate_ci95_over_union_bound": [
+        1.6678999322744894,
+        5.968420828022444
+       ],
+       "rejections": 11,
+       "trials": 28000,
+       "mean_rejections_over_nominal": 3.339285714285714,
+       "mean_rejections_approx_ci95_over_nominal": [
+        1.3686092457221908,
+        5.309962182849238
+       ]
+      }
+     ]
+    },
+    "BT-STATE": {
+     "instances": 34,
+     "levels": [
+      {
+       "level": 0.01,
+       "batteries_with_rejection": 1073,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.788970588235294,
+       "battery_rate_ci95_over_union_bound": [
+        0.7487303445532554,
+        0.8302087369976227
+       ],
+       "rejections": 1439,
+       "trials": 136000,
+       "mean_rejections_over_nominal": 1.0580882352941177,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.9952469957784398,
+        1.1209294748097953
+       ]
+      },
+      {
+       "level": 0.001,
+       "batteries_with_rejection": 129,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 0.9485294117647058,
+       "battery_rate_ci95_over_union_bound": [
+        0.7939476038800811,
+        1.1236078675160992
+       ],
+       "rejections": 139,
+       "trials": 136000,
+       "mean_rejections_over_nominal": 1.0220588235294117,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.8408084638471532,
+        1.2033091832116702
+       ]
+      },
+      {
+       "level": 0.00011764705882352942,
+       "batteries_with_rejection": 16,
+       "batteries": 4000,
+       "battery_rate_over_union_bound": 1.0,
+       "battery_rate_ci95_over_union_bound": [
+        0.5720053480680939,
+        1.621910672422163
+       ],
+       "rejections": 16,
+       "trials": 136000,
+       "mean_rejections_over_nominal": 1.0,
+       "mean_rejections_approx_ci95_over_nominal": [
+        0.5109809819649137,
+        1.4890190180350862
+       ]
+      }
+     ]
+    }
+   },
+   "per_test": {
+    "NC2 S1 BT-BINS Sa-400": {
+     "rejections": [
+      40,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S1 BT-DECAY Sa-400": {
+     "rejections": [
+      42,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S1 BT-PHOTON Sa-400/beta-->Sb-400": {
+     "rejections": [
+      52,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.009723849294906512,
+       0.01701320627502293
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S1 BT-PHOTON-T Sa-400/beta-->Sb-400": {
+     "rejections": [
+      43,
+      8,
+      2
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.0008638411024434884,
+       0.003936973885950875
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ]
+     ]
+    },
+    "NC2 S1 BT-STATE Sa-400 t=0.5": {
+     "rejections": [
+      44,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.008003677962575671,
+       0.014739134613927016
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S1 BT-STATE Sa-400 t=1.0": {
+     "rejections": [
+      43,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S1 BT-STATE Sa-400 t=2.0": {
+     "rejections": [
+      36,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S1 BT-STATE Sa-400 t=4.0": {
+     "rejections": [
+      40,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S1 BT-STATE Sa-400 t=6.0": {
+     "rejections": [
+      43,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-BINS Xa-400": {
+     "rejections": [
+      39,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-CHANNEL Xa-400": {
+     "rejections": [
+      39,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-CHANNEL Xe-396": {
+     "rejections": [
+      34,
+      0,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-DECAY Xa-400": {
+     "rejections": [
+      38,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-DECAY Xb-396": {
+     "rejections": [
+      33,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-DECAY Xc-400": {
+     "rejections": [
+      34,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-DECAY Xc-400m": {
+     "rejections": [
+      37,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-DECAY Xd-396": {
+     "rejections": [
+      36,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-DECAY Xe-396": {
+     "rejections": [
+      34,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-PATH Xa-400": {
+     "rejections": [
+      31,
+      2,
+      1
+     ],
+     "ci95": [
+      [
+       0.0052716477962154755,
+       0.01098261420142704
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-PATH Xb-396": {
+     "rejections": [
+      38,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-PATH Xc-400": {
+     "rejections": [
+      33,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-PATH Xc-400m": {
+     "rejections": [
+      49,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-PATH Xd-396": {
+     "rejections": [
+      50,
+      3,
+      1
+     ],
+     "ci95": [
+      [
+       0.009291587489802085,
+       0.016446844532148508
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-PATH Xe-396": {
+     "rejections": [
+      40,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON Xa-400/alpha->Xb-396": {
+     "rejections": [
+      38,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON Xa-400/beta-->Xc-400m": {
+     "rejections": [
+      36,
+      3,
+      2
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON Xb-396/ec->Xd-396": {
+     "rejections": [
+      33,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON Xc-400m/it->Xc-400": {
+     "rejections": [
+      33,
+      5,
+      0
+     ],
+     "ci95": [
+      [
+       0.0056855303156513074,
+       0.011566724896902632
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON Xe-396/beta-->Xg-396": {
+     "rejections": [
+      31,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.0052716477962154755,
+       0.01098261420142704
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON-T Xa-400/alpha->Xb-396": {
+     "rejections": [
+      39,
+      5,
+      3
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON-T Xa-400/beta-->Xc-400m": {
+     "rejections": [
+      41,
+      5,
+      3
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON-T Xb-396/ec->Xd-396": {
+     "rejections": [
+      39,
+      3,
+      1
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON-T Xc-400m/it->Xc-400": {
+     "rejections": [
+      48,
+      6,
+      2
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ]
+     ]
+    },
+    "NC2 S2 BT-PHOTON-T Xe-396/beta-->Xg-396": {
+     "rejections": [
+      47,
+      9,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.0010293433132986408,
+       0.004266885064660168
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-STATE Xa-400 t=0.5": {
+     "rejections": [
+      42,
+      3,
+      1
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S2 BT-STATE Xa-400 t=1.0": {
+     "rejections": [
+      36,
+      4,
+      2
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ]
+     ]
+    },
+    "NC2 S2 BT-STATE Xa-400 t=12.0": {
+     "rejections": [
+      51,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.009507546277687308,
+       0.01673019287523458
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-STATE Xa-400 t=2.0": {
+     "rejections": [
+      37,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-STATE Xa-400 t=4.0": {
+     "rejections": [
+      38,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S2 BT-STATE Xa-400 t=8.0": {
+     "rejections": [
+      40,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007153487302456116,
+       0.013592504781029774
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S3 BT-BINS Ya-410": {
+     "rejections": [
+      43,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S3 BT-DECAY Ya-410": {
+     "rejections": [
+      41,
+      7,
+      1
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S3 BT-DECAY Yb-410": {
+     "rejections": [
+      38,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S3 BT-STATE Ya-410 t=1.0": {
+     "rejections": [
+      41,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007365337198050927,
+       0.0138798371354831
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S3 BT-STATE Ya-410 t=10.0": {
+     "rejections": [
+      37,
+      7,
+      1
+     ],
+     "ci95": [
+      [
+       0.006520979136559786,
+       0.012727571546592042
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S3 BT-STATE Ya-410 t=20.0": {
+     "rejections": [
+      43,
+      6,
+      1
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S3 BT-STATE Ya-410 t=40.0": {
+     "rejections": [
+      49,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S3 BT-STATE Ya-410 t=5.0": {
+     "rejections": [
+      39,
+      6,
+      4
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ]
+     ]
+    },
+    "NC2 S4 BT-BINS G1": {
+     "rejections": [
+      42,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-BINS G2": {
+     "rejections": [
+      42,
+      0,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-BINS G3": {
+     "rejections": [
+      39,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-CHANNEL G1": {
+     "rejections": [
+      36,
+      8,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.0008638411024434884,
+       0.003936973885950875
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-CHANNEL G2": {
+     "rejections": [
+      49,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S4 BT-DECAY G1": {
+     "rejections": [
+      1,
+      1,
+      1
+     ],
+     "ci95": [
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S4 BT-DECAY G2": {
+     "rejections": [
+      23,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.0036483946687871243,
+       0.008615403619480703
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-DECAY G3": {
+     "rejections": [
+      27,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.00445286700822728,
+       0.009805807463547695
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-NEUTRON G1": {
+     "rejections": [
+      35,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-NEUTRON G2": {
+     "rejections": [
+      42,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S4 BT-NEUTRON G3": {
+     "rejections": [
+      39,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G1 t=0.5": {
+     "rejections": [
+      49,
+      2,
+      1
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G1 t=1.0": {
+     "rejections": [
+      47,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.008645881895211871,
+       0.01559468923349446
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G1 t=13.0": {
+     "rejections": [
+      36,
+      8,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.0008638411024434884,
+       0.003936973885950875
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G1 t=2.0": {
+     "rejections": [
+      48,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.008860744216979303,
+       0.015879103280413566
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G1 t=5.0": {
+     "rejections": [
+      43,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G2 t=0.5": {
+     "rejections": [
+      46,
+      6,
+      0
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.0005506662182675169,
+       0.003261988189959762
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G2 t=1.0": {
+     "rejections": [
+      36,
+      5,
+      2
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G2 t=13.0": {
+     "rejections": [
+      51,
+      4,
+      1
+     ],
+     "ci95": [
+      [
+       0.009507546277687308,
+       0.01673019287523458
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G2 t=2.0": {
+     "rejections": [
+      49,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.009075983203284121,
+       0.016163151435332004
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G2 t=5.0": {
+     "rejections": [
+      43,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.007790448826946372,
+       0.014453136623644256
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G3 t=0.5": {
+     "rejections": [
+      53,
+      7,
+      0
+     ],
+     "ci95": [
+      [
+       0.009940486760908312,
+       0.01729589408057713
+      ],
+      [
+       0.0007038711375845041,
+       0.0036023241133821843
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G3 t=1.0": {
+     "rejections": [
+      45,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G3 t=13.0": {
+     "rejections": [
+      28,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.004656342164423743,
+       0.010101172191990634
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G3 t=2.0": {
+     "rejections": [
+      42,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S4 BT-STATE G3 t=5.0": {
+     "rejections": [
+      35,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.006102048034040283,
+       0.012148308215230108
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S5 BT-BINS Za-450": {
+     "rejections": [
+      34,
+      2,
+      0
+     ],
+     "ci95": [
+      [
+       0.005893474404454062,
+       0.011857818818291902
+      ],
+      [
+       6.055805642051455e-05,
+       0.001804992716264053
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S5 BT-CHANNEL Zd-446": {
+     "rejections": [
+      46,
+      3,
+      1
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S5 BT-DECAY Za-450": {
+     "rejections": [
+      36,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S5 BT-DECAY Zb-450": {
+     "rejections": [
+      36,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.006311224549424426,
+       0.012438218035892686
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S5 BT-DECAY Zc-446": {
+     "rejections": [
+      39,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.006942131455083887,
+       0.01330469520458629
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S5 BT-DECAY Zd-446": {
+     "rejections": [
+      32,
+      1,
+      0
+     ],
+     "ci95": [
+      [
+       0.005478244460750934,
+       0.011274999645515872
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S5 BT-PHOTON Zb-450/alpha->Zc-446": {
+     "rejections": [
+      42,
+      4,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00027253142615528175,
+       0.0025584001433752164
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S5 BT-PHOTON-T Zb-450/alpha->Zc-446": {
+     "rejections": [
+      42,
+      3,
+      0
+     ],
+     "ci95": [
+      [
+       0.007577663300982257,
+       0.014166709123621585
+      ],
+      [
+       0.00015469474465804438,
+       0.00219023866287521
+      ],
+      [
+       0.0,
+       0.0009217947494830555
+      ]
+     ]
+    },
+    "NC2 S5 BT-STATE Za-450 t=1.0": {
+     "rejections": [
+      45,
+      8,
+      1
+     ],
+     "ci95": [
+      [
+       0.008217335788517875,
+       0.015024717242916501
+      ],
+      [
+       0.0008638411024434884,
+       0.003936973885950875
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S5 BT-STATE Za-450 t=1000.0": {
+     "rejections": [
+      38,
+      5,
+      1
+     ],
+     "ci95": [
+      [
+       0.006731288649015192,
+       0.013016390486508884
+      ],
+      [
+       0.00040599222996751013,
+       0.0029146521770681546
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    },
+    "NC2 S5 BT-STATE Za-450 t=3000.0": {
+     "rejections": [
+      46,
+      1,
+      1
+     ],
+     "ci95": [
+      [
+       0.008431408210178225,
+       0.015309897892191998
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ],
+      [
+       6.329431965133451e-06,
+       0.0013921151219662966
+      ]
+     ]
+    }
+   },
+   "most_rejections_at_holm_level": {
+    "test": "NC2 S3 BT-STATE Ya-410 t=5.0",
+    "rejections": 4
+   }
+  }
+ },
+ "C1": true,
+ "elapsed_seconds": 87.017910184004
+}

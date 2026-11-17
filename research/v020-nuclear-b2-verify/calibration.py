@@ -53,6 +53,7 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 LEVELS = (1e-2, 1e-3)  # the family's Holm level alpha / m is added per family
 TYPE_PREFIXES = ("BT-", "ET-", "CT-", "BIG-")
+THREAD_VARIABLES = ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS")
 
 
 def load_verification():
@@ -164,7 +165,6 @@ _CONTEXT: Context | None = None
 
 def _init_worker() -> None:
     global _CONTEXT
-    os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
     _CONTEXT = Context()
 
 
@@ -302,6 +302,9 @@ def main() -> int:
     started = datetime.datetime.now(datetime.timezone.utc).isoformat()
     clock = time.perf_counter()
     chunks = [list(range(s, min(s + args.chunk, batteries))) for s in range(0, batteries, args.chunk)]
+    for name in THREAD_VARIABLES:   # set before the pool starts: workers import numpy afresh and inherit them
+        os.environ.setdefault(name, "1")
+    threads = {name: os.environ.get(name) for name in THREAD_VARIABLES}
     raw = None
     with ProcessPoolExecutor(max_workers=args.workers, initializer=_init_worker) as pool:
         for done, part in enumerate(pool.map(run_chunk, [namespace] * len(chunks), chunks), start=1):
@@ -313,6 +316,7 @@ def main() -> int:
               "started_utc": started, "namespace": namespace, "batteries": batteries, "protocol_files": frozen,
               "code": code_identity(REPO), "environment": environment(), "criterion": "C1: false_fail_ci95[1] <= 0.02",
               "sampler": "numpy Generator.multinomial / binomial on the exact laws; no RNGLab sampler",
+              "workers": args.workers, "chunk": args.chunk, "thread_environment": threads,
               "families": summary, "C1": all(f["C1_holds"] for f in summary.values()),
               "elapsed_seconds": time.perf_counter() - clock}
     out.parent.mkdir(parents=True, exist_ok=True)
