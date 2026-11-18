@@ -1171,7 +1171,7 @@
     1025
   ],
   "calibration_null_lattice": {
-    "note": "numpy's binomial and multinomial at counts above 2**53 return integers on a lattice of spacing at most np.spacing(2 * count); the BIG null of calibration.py is exact up to that lattice",
+    "note": "numpy's binomial is not exact above 2**53: its results lie on a lattice of spacing at most np.spacing(2 * count), and for small expected counts its mean and variance are wrong (numerics.py numpy_binomial). The BIG null of calibration.py stays where neither matters: the lattice spacing is at most 'worst' standard deviations of a BIG state count, and every numpy binomial call above 2**53 has an expected count of at least numpy_calls_above_2_53 (asserted here to be at least 1e12); numerics.py measures numpy at that count",
     "cells_above_2_53": 42,
     "worst": {
       "size": 1152921504606859321,
@@ -1180,6 +1180,20 @@
       "mean": 9.694875602928269e+17,
       "spacing": 256.0,
       "spacing_over_sd": 6.51821771812329e-07
+    },
+    "numpy_calls_above_2_53": {
+      "calls": 109,
+      "smallest_expected_count": 60033334876570.25,
+      "smallest": {
+        "size": 1152921504606859321,
+        "interval": 6,
+        "nuclide": "Xb-396",
+        "call": "multinomial",
+        "category": 0,
+        "n": 1.5368533728401984e+16,
+        "p": 0.00390625,
+        "expected": 60033334876570.25
+      }
     }
   },
   "sensitivity": {

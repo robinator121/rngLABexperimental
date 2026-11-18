@@ -377,46 +377,80 @@ def test_a_record_run_may_start_with_files_of_earlier_attempts_and_nothing_else(
 
 
 def test_r0_never_reads_an_upper_bound_above_the_limit_as_an_excess():
-    """The review's probe: 950 of 50,000 (1.9%, interval 1.78% to 2.02%) was to be reported as an excess."""
+    """The review's probe: 950 of 50,000 (1.9%, interval 1.78% to 2.02%) was to be reported as an excess.
+    Fifth review: R0 trusted the stored interval (950 failures with a stored [0.001, 0.005] read as C1 holding),
+    and R1's own false-FAIL rate (a FAIL in either family) was never reported."""
     rv = _verification()
-    from scipy import stats
 
-    def family(k, n=50000):
-        ci = stats.binomtest(k, n).proportion_ci(method="exact")
-        return {"false_fail_rate": k / n, "false_fail_ci95": [ci.low, ci.high]}
-    reading = rv.r0_reading({"inconclusive": family(950), "holds": family(500), "excess": family(1300)})
+    def family(k):
+        return {"failed_batteries": k, "false_fail_ci95": [0.001, 0.005]}     # a stored interval is not read
+    reading = rv.r0_reading({"inconclusive": family(950), "holds": family(500), "excess": family(1300)}, 50000,
+                            {"failed_batteries": 1800})
+    assert reading["inconclusive"]["false_fail_ci95"] == rv.clopper_pearson(950, 50000)
+    assert reading["R1_event"]["false_fail_ci95"][0] > 0.03 and "NC1 or NC2" in reading["R1_event"]["statement"]
     assert not reading["inconclusive"]["C1_holds"] and not reading["inconclusive"]["excess_established"]
     assert "did not establish" in reading["inconclusive"]["statement"]
     assert reading["holds"]["C1_holds"] and "C1 holds" in reading["holds"]["statement"]
     assert reading["excess"]["excess_established"] and "exceeds" in reading["excess"]["statement"]
 
 
+def _calibration_record(rv, repo, results, protocol, frozen, **change):
+    """A record calibration and its completed attempt record, as the record procedure leaves them."""
+    spec, batteries = protocol["calibration"], protocol["calibration"]["batteries"]
+    code = rv.record_code(repo)
+    data = {"development": False, "namespace": spec["namespace"], "batteries": batteries, "protocol_files": frozen,
+            "code": code, "environment": rv.environment(),
+            "attempt": {"number": 1, "record": "attempts/calibration-1.json", "deviation": None},
+            "families": {"NC1": {"failed_batteries": 500, "false_fail_ci95": rv.clopper_pearson(500, batteries)}},
+            "R1_event": {"failed_batteries": 900}, "replay_check": {"chunks_compared": 0, "mismatches": []}}
+    data.update(change)
+    (results / "attempts").mkdir(parents=True, exist_ok=True)
+    (results / "calibration.json").write_text(json.dumps(data))
+    record = {"status": "completed", "result_sha256": rv.file_sha256(results / "calibration.json")}
+    (results / "attempts" / "calibration-1.json").write_text(json.dumps(record))
+    return data
+
+
 def test_the_verification_needs_a_matching_completed_record_calibration(tmp_path):
-    """The review's probe: the verification reached the study without results/calibration.json."""
+    """The review's probe: the verification reached the study without results/calibration.json. Fifth review:
+    an uncommitted or ignored calibration, an uncommitted attempt record, other rnglab14 or seed code, a stored
+    interval that its counts contradict and a failed replay check were all accepted."""
     rv = _verification()
     protocol = json.loads((REPO / "research/v020-nuclear-b2-verify/protocol.json").read_text())
-    spec = protocol["calibration"]
     frozen = {"frozen": True, "files": {"protocol.json": "0" * 64}}
-    code = {"module_files_sha256": {"aggregate.py": "1" * 64}, "git_commit": "c"}
+    repo, results = tmp_path / "repo", tmp_path / "repo" / rv.RESULTS
+    (repo / "src").mkdir(parents=True)
+    (repo / "src" / "seeds.py").write_text("x = 1\n")
+    _git(repo, "init", "-q")
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "frozen")
+    code = rv.record_code(repo)
     with pytest.raises(SystemExit, match="missing"):
-        rv.record_calibration(protocol, frozen, code, tmp_path)
-    data = {"development": False, "namespace": spec["namespace"], "batteries": spec["batteries"],
-            "protocol_files": frozen, "code": code, "environment": rv.environment(),
-            "attempt": {"number": 1, "record": "attempts/calibration-1.json"},
-            "families": {"NC1": {"false_fail_rate": 0.01, "false_fail_ci95": [0.009, 0.011]}}}
-    (tmp_path / "attempts").mkdir()
-    (tmp_path / "calibration.json").write_text(json.dumps(data))
-    record = {"status": "completed", "result_sha256": rv.file_sha256(tmp_path / "calibration.json")}
-    (tmp_path / "attempts" / "calibration-1.json").write_text(json.dumps(record))
-    info = rv.record_calibration(protocol, frozen, code, tmp_path)
-    assert info["R0"]["NC1"]["C1_holds"] and info["attempt"] == 1
+        rv.record_calibration(protocol, frozen, code, results, repo)
+    data = _calibration_record(rv, repo, results, protocol, frozen)
+    with pytest.raises(SystemExit, match="not committed"):
+        rv.record_calibration(protocol, frozen, code, results, repo)
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "calibration")
+    info = rv.record_calibration(protocol, frozen, code, results, repo)
+    assert info["R0"]["NC1"]["C1_holds"] and info["attempt"] == 1 and "R1_event" in info["R0"]
     for change, message in ((dict(data, development=True), "development"),
                              (dict(data, protocol_files={"frozen": True, "files": {}}), "frozen files"),
-                             (dict(data, code={"module_files_sha256": {}}), "module files"),
-                             (dict(data, environment=dict(data["environment"], numpy="0.0")), "numpy")):
-        (tmp_path / "calibration.json").write_text(json.dumps(change))   # the attempt record no longer matches
+                             (dict(data, code=dict(data["code"], module_files_sha256={})), "module files"),
+                             (dict(data, code=dict(data["code"], source_files_sha256="0")), "source files"),
+                             (dict(data, code=dict(data["code"], git_commit="0" * 40)), "not an ancestor"),
+                             (dict(data, environment=dict(data["environment"], numpy="0.0")), "numpy"),
+                             (dict(data, replay_check={"mismatches": [{"attempt": 1}]}), "replay check"),
+                             (dict(data, families={"NC1": {"failed_batteries": 950,
+                                                            "false_fail_ci95": [0.001, 0.005]}}), "counts")):
+        (results / "calibration.json").write_text(json.dumps(change))   # uncommitted, and no longer the record's
         with pytest.raises(SystemExit, match=message):
-            rv.record_calibration(protocol, frozen, code, tmp_path)
+            rv.record_calibration(protocol, frozen, code, results, repo)
+    _git(repo, "checkout", "-q", "--", ".")
+    (repo / "src" / "seeds.py").write_text("x = 2\n")                   # committed after the calibration
+    _git(repo, "commit", "-q", "-am", "another seed derivation")
+    with pytest.raises(SystemExit, match="outside results"):
+        rv.record_calibration(protocol, frozen, rv.record_code(repo), results, repo)
 
 
 def test_results_are_published_atomically_and_never_overwritten(tmp_path):
@@ -644,12 +678,14 @@ def test_a_stream_given_another_source_during_the_run_is_refused(ns):
     scheme, t = _simple(), [0.0, 1.0, 2.0]
     stream = _stream(ns, "swap-a")
     other = labelled_source(ns, "integrity", "swap-b")
+    words = AggregatePlan(scheme, t, 10000).words_per_interval
+    other.read_bytes(8 * words)        # as in the review: the other source's counters match the layout's
 
     def swap(interval, record):
         stream.source = other
     with pytest.raises(RuntimeError, match="another source"):
         simulate_aggregate(scheme, {"P": 10000}, t, stream, sink=swap)
-    assert other.consumed_bytes == 0
+    assert other.consumed_bytes == 8 * words
 
 
 def test_unaligned_sources_cannot_publish_checkpoints(ns):
@@ -717,3 +753,387 @@ def test_the_design_bounds_the_calibration_null_lattice():
     design = json.loads((REPO / "research/v020-nuclear-b2-verify/design.json").read_text())
     lattice = design["calibration_null_lattice"]
     assert lattice["cells_above_2_53"] > 0 and lattice["worst"]["spacing_over_sd"] < 1e-6
+
+
+# --- 11. Fifth review ------------------------------------------------------------------------------------------
+
+class _Grab:
+    """Receives the dict a mapping proxy hands to the other operand of == or |."""
+
+    __hash__ = None
+
+    def __eq__(self, other):
+        self.got = other
+        return NotImplemented
+
+    def __ror__(self, other):
+        self.got = other
+        return NotImplemented
+
+
+def _leak(mapping):
+    grabs = []
+    for take in (lambda g: mapping == g, lambda g: mapping | g):
+        grab = _Grab()
+        try:
+            take(grab)
+        except TypeError:
+            pass
+        grabs.append(grab.got)
+    return grabs
+
+
+def test_a_source_given_another_manifest_or_first_byte_during_the_run_is_refused(ns):
+    """The review's probe: st.source.manifest = other.manifest in a sink; the run completed and its provenance
+    named the other source (seed and start word included)."""
+    scheme, t = _simple(), [0.0, 1.0, 2.0]
+    other = labelled_source(ns, "integrity", "someone-else")
+    vandals = {"manifest": lambda stream: setattr(stream.source, "manifest", other.manifest),
+               "first byte": lambda stream: setattr(stream, "first_source_byte", 4242)}
+    for name, vandal in vandals.items():
+        stream = _stream(ns, "manifest", name)
+        with pytest.raises(RuntimeError, match="another manifest"):
+            simulate_aggregate(scheme, {"P": 10000}, t, stream, sink=lambda i, r, s=stream, v=vandal: v(s))
+
+
+def test_a_manifest_edited_in_place_fails_the_run_and_checkpoints_keep_the_recorded_identity(ns):
+    """The review's probe: metadata['start_word'] = 999 in a sink put a false start word into the run's
+    provenance; checkpoints read the live manifest too."""
+    scheme, t = _simple(), [0.0, 1.0, 2.0, 3.0]
+    plan = AggregatePlan(scheme, t, 10000)
+    stream = _stream(ns, "manifest", "in-place")
+    seed, published = stream.source.manifest.seed, []
+
+    def vandal(interval, record):
+        if interval == 0:
+            stream.source.manifest.metadata["start_word"] = 999
+            stream.source.manifest.metadata["seed_label"] = "forged"
+    with pytest.raises(RuntimeError, match="edited"):
+        simulate_aggregate(scheme, {"P": 10000}, t, stream, plan=plan, sink=vandal, checkpoint_every=1,
+                           on_checkpoint=published.append)
+    assert [c["stream"] for c in published] == [
+        {"generator": REPLAYABLE[0], "parameters": {"seed": seed}, "word_position": (k + 1) * plan.words_per_interval,
+         "byte_aligned": True} for k in range(3)]
+
+
+def test_a_mapping_leaked_through_comparison_or_union_is_a_throwaway_copy(ns):
+    """The review's probe: a mapping proxy hands its dict to the other operand of == and |; editing it in a
+    sink changed the slots the engine read, and editing run.initial's changed the manifest's populations."""
+    scheme, t = _simple(), [0.0, 1.0, 2.0]
+    reference = simulate_aggregate(scheme, {"P": 10000}, t, _stream(ns, "leak"))
+    plan = AggregatePlan(scheme, t, 10000)
+
+    def vandal(interval, record):
+        for mapping in (plan.slot_offset, plan.diagnostics, plan.interval_plans, plan.interval_plans[1.0]):
+            for leaked in _leak(mapping):
+                key = next(iter(leaked))
+                leaked[key] = 5
+    run = simulate_aggregate(scheme, {"P": 10000}, t, _stream(ns, "leak"), plan=plan, sink=vandal)
+    assert run.digest == reference.digest and dict(plan.slot_offset) == {0: 0}
+    assert dict(plan.diagnostics) == dict(reference.plan.diagnostics)
+    for leaked in _leak(run.initial):
+        leaked["P"] = 5
+    assert dict(run.initial) == {"P": 10000, "D": 0}
+    manifest = aggregate_manifest(experiment="integrity", run_id="leak", run=run, code={"commit": "test"})
+    assert json.dumps(manifest).count('"P": 5') == 0
+
+
+def test_source_plans_of_every_interval_length_are_taken_when_the_run_begins(ns):
+    """The review's probe on the grid [0, 1, 3]: replacing the second length's source plan in a sink after
+    interval 0 changed the second interval's draws, because views were taken lazily, per length."""
+    scheme, t = _simple(), [0.0, 1.0, 3.0]
+    reference = simulate_aggregate(scheme, {"P": 10000}, t, _stream(ns, "lengths"))
+    plan = AggregatePlan(scheme, t, 10000)
+
+    def vandal(interval, record):
+        if interval == 0:          # a deliberate bypass of the plan's protections, after the run has begun
+            later = plan.interval_plans[2.0][0]
+            later.__dict__["_p_small_array"] = (np.array([0.5]).tobytes(), "<f8", (1,))
+    run = simulate_aggregate(scheme, {"P": 10000}, t, _stream(ns, "lengths"), plan=plan, sink=vandal)
+    assert run.digest == reference.digest
+
+
+_CHILD = """
+import importlib.util, sys, time
+from pathlib import Path
+spec = importlib.util.spec_from_file_location("child_run_verification", sys.argv[1])
+rv = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(rv)
+attempt = rv.begin_attempt(Path(sys.argv[2]), "calibration", {"git_commit": "c"})   # holds the lock
+print("ready", flush=True)
+time.sleep(120)
+"""
+
+
+def test_a_deleted_or_replaced_lock_file_does_not_let_a_second_attempt_start(tmp_path):
+    """The review's probe: with attempt 1 alive, rm (or cp + mv) of the lock file let attempt 2 start and
+    list attempt 1 as interrupted."""
+    rv = _verification()
+    out, script = tmp_path / "results", tmp_path / "calibration.py"
+    script.write_text(_CHILD)
+    child = subprocess.Popen([sys.executable, str(script), str(REPO / rv.STUDY / "run_verification.py"), str(out)],
+                             stdout=subprocess.PIPE, text=True, env=dict(os.environ, PYTHONPATH=str(REPO / "src")))
+    try:
+        assert child.stdout.readline().strip() == "ready"
+        lock = out / "attempts" / "calibration.lock"
+        with pytest.raises(SystemExit, match="another calibration attempt is running"):
+            rv.begin_attempt(out, "calibration", {"git_commit": "c"})
+        lock.unlink()
+        with pytest.raises(SystemExit, match="still runs on this host"):
+            rv.begin_attempt(out, "calibration", {"git_commit": "c"})
+        copy = lock.with_name("copy")
+        copy.write_text(lock.read_text())
+        os.replace(copy, lock)
+        with pytest.raises(SystemExit, match="still runs on this host"):
+            rv.begin_attempt(out, "calibration", {"git_commit": "c"})
+        assert sorted(p.name for p in (out / "attempts").glob("calibration-*.json")) == ["calibration-1.json"]
+    finally:
+        child.kill()
+        child.wait()
+
+
+def test_a_lock_taken_on_a_file_replaced_meanwhile_is_dropped_and_taken_again(tmp_path, monkeypatch):
+    rv = _verification()
+    real, answers = rv._same_file, iter([False])            # the first lock is on a file replaced meanwhile
+    monkeypatch.setattr(rv, "_same_file", lambda handle, path: next(answers, None) is None and real(handle, path))
+    attempt = rv.begin_attempt(tmp_path, "calibration", {"git_commit": "c"})
+    assert attempt["record"]["attempt"] == 1
+    rv.release_attempt(attempt)
+    monkeypatch.setattr(rv, "_same_file", lambda handle, path: False)
+    with pytest.raises(SystemExit, match="keeps being deleted or replaced"):
+        rv.begin_attempt(tmp_path, "calibration", {"git_commit": "c"})
+
+
+def test_a_result_published_before_its_record_was_finished_is_completed_on_the_next_launch(tmp_path):
+    """The review's probe: a kill between publishing calibration.json and recording 'completed' left a
+    published result that no later step could use."""
+    rv = _verification()
+    code = {"git_commit": "c"}
+    attempt = rv.begin_attempt(tmp_path, "calibration", code)
+    result = tmp_path / "calibration.json"
+    rv.write_new(result, json.dumps({"attempt": {"number": 1}, "code": code}))
+    rv.release_attempt(attempt)                                   # killed before end_attempt
+    assert rv.complete_published_attempt(tmp_path, "calibration", result)
+    record = json.loads(attempt["path"].read_text())
+    assert record["status"] == "completed" and record["result_sha256"] == rv.file_sha256(result)
+    assert record["completed_after_interruption"]["status_before"] == "started"
+    assert not rv.complete_published_attempt(tmp_path, "calibration", result)       # nothing left to finish
+    other = tmp_path / "other"
+    attempt = rv.begin_attempt(other, "calibration", code)
+    rv.end_attempt(attempt, "failed", error="x")
+    rv.release_attempt(attempt)
+    rv.write_new(other / "calibration.json", json.dumps({"attempt": {"number": 1}, "code": code}))
+    with pytest.raises(SystemExit, match="does not describe"):
+        rv.complete_published_attempt(other, "calibration", other / "calibration.json")
+
+
+def test_a_record_calibration_whose_code_changed_while_it_ran_publishes_nothing(tmp_path, monkeypatch):
+    """The review's probe: comparison.py edited and committed 5 s into a record calibration; the result carried
+    the end identity and was accepted."""
+    from types import SimpleNamespace
+    cal, rv = _calibration(), _verification()
+    monkeypatch.setattr(cal, "ProcessPoolExecutor", _InlineExecutor)
+    for name in cal.THREAD_VARIABLES:
+        monkeypatch.setenv(name, "1")
+    start = rv.record_code(REPO)
+    monkeypatch.setattr(rv, "record_code", lambda repo: dict(start, source_files_sha256="changed"))
+    attempt = rv.begin_attempt(tmp_path, "calibration", start)
+    with pytest.raises(RuntimeError, match="changed while it ran"):
+        cal.calibrate(rv, f"{B2_TEST_NAMESPACE}-code-change", 2, tmp_path / "c.json", {},
+                      SimpleNamespace(chunk=2, development=False), 1, attempt, code=start)
+    assert not (tmp_path / "c.json").exists()
+    rv.release_attempt(attempt)
+    with pytest.raises(RuntimeError, match="source_files_sha256"):
+        rv.require_same_code(start, REPO, "verification")
+
+
+def test_record_runs_refuse_ignored_modules_beside_the_code_and_bytecode_from_the_tree(tmp_path, monkeypatch):
+    rv = _verification()
+    _git(tmp_path, "init", "-q")
+    (tmp_path / ".gitignore").write_text("__pycache__/\nsitecustomize.py\nsmoke/\n")
+    (tmp_path / "src" / "pkg" / "__pycache__").mkdir(parents=True)
+    (tmp_path / "src" / "pkg" / "__pycache__" / "m.cpython-314.pyc").write_bytes(b"x")
+    (tmp_path / rv.STUDY / "smoke").mkdir(parents=True)
+    (tmp_path / rv.STUDY / "smoke" / "verification.json").write_text("{}")
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-q", "-m", "c")
+    assert rv.require_record_tree(tmp_path, "verification")["other_changes"] == []
+    (tmp_path / "src" / "sitecustomize.py").write_text("import os\n")
+    with pytest.raises(SystemExit, match="sitecustomize.py"):
+        rv.require_record_tree(tmp_path, "verification")
+    for prefix in (None, str(tmp_path / "cache")):
+        monkeypatch.setattr(sys, "pycache_prefix", prefix)
+        with pytest.raises(SystemExit, match="PYTHONPYCACHEPREFIX"):
+            rv.require_pycache_outside(tmp_path)
+    monkeypatch.setattr(sys, "pycache_prefix", str(tmp_path.parent / "elsewhere"))
+    rv.require_pycache_outside(tmp_path)
+
+
+class _ScriptedContext:
+    """Stands in for the calibration's context: NC1 fails in batteries 0 and 1, NC2 in 1 and 2."""
+
+    alpha = 0.01
+    planned = {"NC1": {"BT-STATE a", "BT-STATE b"}, "NC2": {"BT-STATE c"}}
+
+    def __init__(self):
+        self.calls = 0
+
+    def battery(self, rng):
+        k, self.calls = self.calls, self.calls + 1
+        fail = {"NC1": k in (0, 1), "NC2": k in (1, 2)}
+        return {f: {n: {"p_value": 1e-12 if fail[f] else 0.5} for n in sorted(self.planned[f])}
+                for f in ("NC1", "NC2")}
+
+
+def test_the_calibration_counts_the_event_r1_fails_on(monkeypatch):
+    """The review's point: C1 is per family, R1 fails when either family fails, and the union was never counted."""
+    cal = _calibration()
+    monkeypatch.setattr(cal, "_CONTEXT", _ScriptedContext())
+    raw = cal.merge(cal.run_chunk(f"{B2_TEST_NAMESPACE}-union", [0, 1]), cal.run_chunk(f"{B2_TEST_NAMESPACE}-union",
+                                                                                       [2, 3]))
+    assert [raw["families"][f]["failed_batteries"] for f in ("NC1", "NC2")] == [2, 2]
+    event = cal.r1_event(raw)
+    assert event["failed_batteries"] == 3 and event["false_fail_ci95"] == cal.clopper_pearson(3, 4)
+
+
+def _record_repo(tmp_path, rv, monkeypatch):
+    """A Git repository holding the study's protocol.json and design.json, with the scripts pointed at it."""
+    repo = tmp_path / "repo"
+    study = repo / rv.STUDY
+    study.mkdir(parents=True)
+    for name in ("protocol.json", "design.json"):
+        (study / name).write_bytes((REPO / rv.STUDY / name).read_bytes())
+    _git(repo, "init", "-q")
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "frozen")
+    monkeypatch.setattr(rv, "HERE", study)
+    monkeypatch.setattr(rv, "REPO", repo)
+    monkeypatch.setattr(rv, "frozen_hashes", lambda smoke=False: {"frozen": True, "files": {}})
+    monkeypatch.setattr(sys, "pycache_prefix", str(tmp_path / "pycache"))
+    return repo, study
+
+
+def test_the_verification_main_needs_the_committed_record_calibration_and_passes_it_on(tmp_path, monkeypatch):
+    """The review's mutation: with main() back on the old guards and no calibration passed on, the suite passed."""
+    rv = _verification()
+    repo, study = _record_repo(tmp_path, rv, monkeypatch)
+    protocol, results, calls = json.loads((study / "protocol.json").read_text()), study / "results", []
+
+    def fake_study(args, frozen, protocol, design, code, out_dir, manifests, attempt, calibration, tree):
+        calls.append({"code": code, "attempt": attempt, "calibration": calibration, "tree": tree})
+        rv.write_new(out_dir / "verification.json", json.dumps({"attempt": {"number": 1}, "code": code}))
+        return 0
+    monkeypatch.setattr(rv, "study", fake_study)
+    monkeypatch.setattr(sys, "argv", ["run_verification.py"])
+    with pytest.raises(SystemExit, match="missing"):
+        rv.main()
+    _calibration_record(rv, repo, results, protocol, {"frozen": True, "files": {}}, development=True)
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "a development calibration")
+    with pytest.raises(SystemExit, match="development"):
+        rv.main()
+    assert not calls and not (results / "attempts" / "verification-1.json").exists()
+    _calibration_record(rv, repo, results, protocol, {"frozen": True, "files": {}})
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "the record calibration")
+    assert rv.main() == 0
+    (call,) = calls
+    assert call["calibration"]["R0"]["NC1"]["C1_holds"] and call["attempt"]["record"]["attempt"] == 1
+    assert call["tree"] == {"attempt_files": [], "other_changes": []} and call["code"]["git_dirty"] is False
+    assert json.loads((results / "attempts" / "verification-1.json").read_text())["status"] == "completed"
+
+
+def test_the_calibration_main_needs_a_committed_tree_and_takes_its_code_when_it_starts(tmp_path, monkeypatch):
+    rv, cal = _verification(), _calibration()
+    repo, study = _record_repo(tmp_path, rv, monkeypatch)
+    monkeypatch.setattr(cal, "HERE", study)
+    monkeypatch.setattr(cal, "REPO", repo)
+    seen = []
+
+    def fake_calibrate(verify, namespace, batteries, out, frozen, args, workers, attempt, tree=None, *, code=None):
+        seen.append({"attempt": attempt, "tree": tree, "code": code})
+        verify.write_new(out, json.dumps({"attempt": {"number": attempt["record"]["attempt"]}, "code": code}))
+        return 0
+    monkeypatch.setattr(cal, "calibrate", fake_calibrate)
+    monkeypatch.setattr(sys, "argv", ["calibration.py", "--workers", "1"])
+    (repo / "notes.txt").write_text("x")
+    with pytest.raises(SystemExit, match="committed tree"):
+        cal.main()
+    (repo / "notes.txt").unlink()
+    assert cal.main() == 0
+    (call,) = seen
+    assert call["code"]["git_dirty"] is False and call["code"] == call["attempt"]["record"]["code"]
+    assert call["tree"] == {"attempt_files": [], "other_changes": []}
+    with pytest.raises(SystemExit, match="committed tree"):           # its result is not committed yet
+        cal.main()
+
+
+def test_benchmark_repeats_must_agree_on_every_field_their_configuration_fixes(monkeypatch):
+    """The review's probe: B2 output_bytes [6072, 9999, 6072] was summarised as 6072 without an error."""
+    bench = _load("b2_integrity_benchmark", "research/v020-nuclear-b2-bench/benchmark.py")
+    sample = {"wall_seconds": 1.0, "cpu_seconds": 1.0, "words": 10, "output_bytes": 6072}
+    outputs = iter([sample, dict(sample, output_bytes=9999), sample, dict(sample, traced_peak_bytes=1)])
+    monkeypatch.setattr(bench.subprocess, "run", lambda *args, **kw: subprocess.CompletedProcess(
+        args, 0, stdout=json.dumps(next(outputs)) + "\n", stderr=""))
+    with pytest.raises(RuntimeError, match="output_bytes"):
+        bench.measure({"engine": "b2", "n": 10}, repeats=3, threads="1")
+    assert "populations_sum" in bench.fixed_fields({"engine": "layer_a"})
+    assert "output_bytes" not in bench.fixed_fields({"engine": "layer_a"})
+
+
+def test_the_binomial_z_test_subtracts_exactly():
+    """The review's probe: z_check rounds S and T p before subtracting; at T = 2**60 + 12345, p = 1 - 2**-53,
+    S = T - 200 it gave z = 0 (p = 1) where the exact z is -6.36 (BIG-DECAY now uses binomial_z_check)."""
+    from decimal import Decimal, localcontext
+    from rnglab.nuclear.comparison import binomial_z_check, z_check
+    size, p = 2 ** 60 + 12345, 1.0 - 2.0 ** -53
+    a, b = p.as_integer_ratio()
+    with localcontext() as context:
+        context.prec = 60
+        exact = Decimal((size - 200) * b - size * a) / Decimal(size * a * (b - a)).sqrt()
+    assert binomial_z_check(size - 200, size, p)["z"] == float(exact) and abs(float(exact) + 6.364) < 1e-3
+    assert z_check(size - 200, size * p, size * p * (1 - p))["z"] == 0.0           # the cancellation it replaces
+    assert binomial_z_check(520, 1000, 0.5)["z"] == z_check(520, 500.0, 250.0)["z"]
+    for bad in ((5, 4, 0.5), (1, 2, 1.0), (1, 2, float("nan")), (-1, 2, 0.5), (0, 0, 0.5)):
+        with pytest.raises(ValueError):
+            binomial_z_check(*bad)
+
+
+def test_traced_draws_reach_both_tail_paths_and_count_refusals():
+    """The review's probe: every traced draw had n >= 2**30, above UPPER_TAIL_MAX_N, so S was never evaluated,
+    and a non-finite value would have aborted the section instead of being counted."""
+    numerics = _load("b2_integrity_numerics", "research/v020-nuclear-b2-numerics/numerics.py")
+    traced = numerics._traced_draws()
+    assert traced["evaluations"]["F"] > 0 and traced["evaluations"]["S"] > 0
+    assert traced["nonfinite"] == {"F": 0, "S": 0} and traced["refused_draws"] == 0
+
+
+def test_numpy_binomial_is_measured_where_it_fails_and_where_the_big_null_calls_it(ns, monkeypatch):
+    """The review's probe: numpy's binomial at n = 2**60 + 12345 has a variance 1.22 times too large at mean 115;
+    the design's note said the BIG null was exact up to the lattice."""
+    numerics = _load("b2_integrity_numerics", "research/v020-nuclear-b2-numerics/numerics.py")
+    monkeypatch.setattr(numerics, "NAMESPACE", f"{ns}-numpy-binomial")
+    rows = numerics.numpy_binomial_section(draws=100_000)["rows"]
+    assert rows[0]["mean"] == pytest.approx(115.0) and rows[0]["variance_ratio"] > 1.1
+    design = json.loads((REPO / "research/v020-nuclear-b2-verify/design.json").read_text())
+    calls = design["calibration_null_lattice"]["numpy_calls_above_2_53"]
+    assert calls["calls"] > 0 and calls["smallest_expected_count"] >= 1e12
+    assert rows[-1]["mean"] == pytest.approx(calls["smallest_expected_count"])
+
+
+def test_withdrawn_claims_are_gone_from_the_docstrings():
+    """The review's probe: three docstrings still claimed what items 34-35 withdrew."""
+    for path in ("research/v020-nuclear-b2-numerics/numerics.py", "src/rnglab/nuclear/binomial.py"):
+        text = (REPO / path).read_text()
+        for claim in ("every point the bisection can reach", "evaluates it exactly", "tails (exact)"):
+            assert claim not in text, (path, claim)
+
+
+def test_the_tail_probe_draws_the_study_statistics(ns):
+    """The review's request: per-test null tail rates from a script, with each test's own statistic."""
+    probe = _load("b2_integrity_tail_probe", "research/v020-nuclear-b2-verify/tail_probe.py")
+    probe._init_worker()
+    neutron = probe.neutron_chunk(f"{ns}-tail-probe", "G1", 0, 500)        # checks 100 draws against chi2
+    assert neutron["draws"] == 500 and neutron["checked"] == 100 and neutron["missing"] == 0
+    photons = probe.photon_chunk(f"{ns}-tail-probe", "S1", 0, 50)
+    assert photons and all(c["draws"] == 50 and c["missing"] == 0 for c in photons.values())

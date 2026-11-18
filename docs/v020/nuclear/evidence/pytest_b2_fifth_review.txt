@@ -1,0 +1,25 @@
+# v0.20 nuclear module, B2 after the fifth review (not frozen): test evidence
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-18T17:19:52Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+1026 passed, 2 skipped, 3 warnings in 333.84s (0:05:33)
+
+## 2. Nuclear tests only (Layer A 115, B2 193 including 24 in test_b2_guards.py and 57 in test_b2_integrity.py): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider -W error::DeprecationWarning
+308 passed, 3 warnings in 59.41s
+
+The three warnings are RuntimeWarnings (overflow in the float64 matrix exponential) raised on purpose by
+test_b2_guards.py, which checks that a non-finite reference fails D8. test_b2_integrity.py expects NumPy's
+deprecation warnings for dtype and shape assignment explicitly. Layer A (src/rnglab/nuclear/{decay,bateman,
+checks,streams,manifest,__init__}.py, tests/v020/nuclear/, research/v020-nuclear-a-verify/) is byte-identical
+to 526e9f7.
+
+## 3. Items 41-54 change no draw
+run_verification.py --smoke (unfrozen; smoke namespace; output not in Git) on this tree, against the smoke
+output of the previous revision: the 16 digest fields (13 run manifests and the chained digests) are
+identical. Of the 934 p-value fields, the 22 that change are the 11 BIG-DECAY tests (each recorded twice),
+now computed with an exact numerator (binomial_z_check): at most 5.4e-7 relative at the 2**56-sized smoke
+run and about 1e-12 at 1e9. R1 PASS; R2 NOT MET at the smoke scale, as before (PC-B1 p = 0.15 at that
+scale). design.py regenerates design.json with only its calibration_null_lattice block changed (the note,
+and numpy_calls_above_2_53: 109 calls above 2**53, smallest expected count 6.003e13).

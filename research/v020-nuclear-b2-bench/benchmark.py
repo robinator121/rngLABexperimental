@@ -98,6 +98,13 @@ def worker(config: dict) -> dict:
 
 
 DETERMINISTIC = ("words", "bytes", "parts", "words_per_interval", "imported")  # fixed by the configuration
+DETERMINISTIC_BY_ENGINE = {"layer_a": ("populations_sum",),   # conserved; its output_bytes follow the events
+                           "b2": ("output_bytes",)}           # array sizes fixed by the grid and the scheme
+
+
+def fixed_fields(config: dict) -> tuple[str, ...]:
+    """Fields that every repeat of a configuration must reproduce exactly."""
+    return DETERMINISTIC + DETERMINISTIC_BY_ENGINE.get(config.get("engine"), ())
 
 
 def measure(config: dict, repeats: int = 3, threads: str | None = None) -> dict:
@@ -116,7 +123,7 @@ def measure(config: dict, repeats: int = 3, threads: str | None = None) -> dict:
         values = [s.get(key) for s in samples]
         if all(value == values[0] for value in values):
             summary[key] = values[0]
-        elif key in DETERMINISTIC:      # fixed by the configuration: a difference means another computation
+        elif key in fixed_fields(config):   # fixed by the configuration: a difference means another computation
             raise RuntimeError(f"repeats disagree on {key} ({values}); they must describe the same computation")
         else:                           # stochastic (each repeat has its own seed): median, samples kept
             summary[key] = statistics.median(values)

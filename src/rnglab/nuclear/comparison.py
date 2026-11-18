@@ -6,6 +6,7 @@ and p-value, and raises ValueError on a non-finite input or result.
 from __future__ import annotations
 
 import math
+from decimal import Decimal, localcontext
 from fractions import Fraction
 from typing import Any, Sequence
 
@@ -38,6 +39,27 @@ def _satterthwaite(variance: float, variance_of_sample_variance: float) -> float
     if not (math.isfinite(nu) and nu > 0):
         raise ValueError(f"degrees of freedom {nu!r} are not positive and finite (an input underflowed or overflowed)")
     return nu
+
+
+def binomial_z_check(successes: int, trials: int, probability: float, label: str = "z") -> dict[str, Any]:
+    """Two-sided normal test of a binomial count against its mean, with an exact numerator.
+
+    With p = a / b (the float's exact ratio), z = (S b - T a) / sqrt(T a (b - a)) is computed from exact
+    integers, so the subtraction cannot cancel. z_check rounds S and T p to 53 bits first: at T = 2**60 + 12345,
+    p = 1 - 2**-53 and S = T - 200 it gives z = 0 (p = 1), where the exact z is -6.36.
+    """
+    s, t = _counts([successes, trials], "successes and trials")
+    _finite(probability)
+    if not 0.0 < probability < 1.0 or s > t or t == 0:
+        raise ValueError("need 0 < probability < 1 and 0 <= successes <= trials, trials > 0")
+    a, b = float(probability).as_integer_ratio()
+    with localcontext() as context:
+        context.prec = 40
+        z = float(Decimal(s * b - t * a) / Decimal(t * a * (b - a)).sqrt())
+    p = float(2.0 * stats.norm.sf(abs(z)))
+    _finite(z, p)
+    return {"test": label, "estimate": float(s), "expected": t * float(probability),
+            "variance": t * float(probability) * (1.0 - float(probability)), "z": z, "p_value": p}
 
 
 def _two_sided(lower: float, upper: float) -> float:

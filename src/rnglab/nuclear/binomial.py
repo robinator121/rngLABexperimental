@@ -15,7 +15,8 @@ What the draw's law is, and what it is not
   relative error of moments holds in general. Summation by parts gives
   |Var_G - Var_F| <= B2 + B1**2 with B1 = sum_x e(x) and
   B2 = sum_x |2 (x - mean) + 1| e(x); research/v020-nuclear-b2-numerics
-  (midpoint_convention) evaluates it exactly for means from 2**-55 to 5e8: of
+  (midpoint_convention) evaluates it in high precision (decimal arithmetic,
+  not certified interval arithmetic) for means from 2**-55 to 5e8: of
   order 1e-14 relative for large means, and up to 1 when the mean is near 2**-54.
 - Floating point. F is evaluated in floating point, so the sampler inverts the
   evaluated F, not the exact one. A draw differs from exact midpoint inversion

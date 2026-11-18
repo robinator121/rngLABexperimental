@@ -25,22 +25,37 @@ Conventions and limits
   also fit (schemes with several beta-delayed-neutron steps on one path lower
   the limit accordingly). Both are checked before any random number is read.
 - No state is shared with callers. A plan is immutable once built: its
-  attributes cannot be rebound, its containers are tuples and read-only
-  mappings, and its arrays are read-only views of immutable bytes (their
-  WRITEABLE flag cannot be set again). It keeps its own snapshot of the
-  scheme's nuclides and the scheme's SHA-256; a run refuses a scheme that no
-  longer matches that digest and reads nothing else of the caller's while it
-  runs. Results are immutable in the same way; a sink receives detached,
-  writable copies of every interval's outputs; a checkpoint is built from
-  fresh Python objects. Conservation of the total population is checked after
-  every interval.
+  attributes cannot be rebound, its containers are tuples, every read of a
+  mapping attribute returns a fresh read-only copy (so a dict that a
+  mapping proxy hands to the other operand of == or | is a throwaway), and
+  every read of an array attribute returns a fresh read-only view of
+  immutable bytes. It keeps its own snapshot of the scheme's nuclides and
+  the scheme's SHA-256; a run refuses a scheme that no longer matches that
+  digest, takes its own views of the plan's arrays and offsets for every
+  interval length when it begins, and reads nothing else of the caller's
+  while it runs. Results are immutable in the same way; a sink receives
+  detached, writable copies of every interval's outputs; a checkpoint is
+  built from fresh Python objects. Conservation of the total population is
+  checked after every interval.
+- These protections cover every public path: assignment or deletion of an
+  attribute, writes to returned arrays, dtype or shape reassignment of a
+  returned view, mutation of a returned mapping, a sink or callback reading
+  the run's source, replacing the stream's source or the source's manifest.
+  They do not cover deliberate bypasses of Python's object model (writing
+  into an instance's __dict__, object.__setattr__, replacing a stream's or
+  source's methods or byte counters, gc or ctypes); no code in the
+  verification study does any of these.
 - A run owns its stream's source. After every interval and every callback the
   engine checks that the source has emitted exactly the layout's words, all
   through this stream; a read by anyone else (another WordStream on the same
   source, a sink drawing numbers) stops the run with RuntimeError. Reads of a
   source that this source wraps cannot be seen and are the caller's to avoid.
-  The run records its stream's provenance when it ends; manifests are built
-  from that record, never from a live stream.
+  When the run begins it records its source's manifest (the object and a
+  copy of its contents), replay identity and first byte; another manifest
+  or first byte fails the next check, a manifest edited in place fails the
+  last one, and checkpoints and the run's provenance are built from that
+  record and the final counters. Manifests are built from the run's
+  record, never from a live stream.
 - Checkpoint and resume need a replayable generator: exactly one of
   NumpyPCG64Source, rnglab14's PCG64Source or Xoshiro256PlusPlusSource, whose
   output is fixed by the parameters a checkpoint records (generator, seed and,
@@ -142,6 +157,38 @@ class _Array:
         object.__setattr__(obj, self.private, (array.tobytes(), array.dtype.str, array.shape))
 
 
+class _Map:
+    """A mapping attribute that nothing a caller does to what it returns can change.
+
+    The instance keeps the mapping's items as a tuple; every read builds a fresh read-only mapping
+    (and fresh inner mappings when nested). A mapping proxy hands the dict it wraps to the other
+    operand of == and |; here that dict is a copy made for this read alone.
+    """
+
+    def __init__(self, nested: bool = False) -> None:
+        self.nested = nested
+
+    def __set_name__(self, owner: type, name: str) -> None:
+        self.private = f"_{name}_items"
+
+    def __get__(self, obj: Any, owner: type | None = None) -> Any:
+        if obj is None:
+            return self
+        items = obj.__dict__[self.private]
+        if self.nested:
+            return MappingProxyType({key: MappingProxyType(dict(inner)) for key, inner in items})
+        return MappingProxyType(dict(items))
+
+    def __set__(self, obj: Any, value: Mapping) -> None:
+        if obj._sealed:
+            raise AttributeError(f"{type(obj).__name__} is immutable")
+        if self.nested:
+            stored = tuple((key, tuple(dict(inner).items())) for key, inner in dict(value).items())
+        else:
+            stored = tuple(dict(value).items())
+        object.__setattr__(obj, self.private, stored)
+
+
 class _Sealed:
     """Attributes are set while __init__ runs and never again: no rebinding, no deletion."""
 
@@ -226,6 +273,9 @@ class AggregatePlan(_Sealed):
     first_category = _Array()
     category_end = _Array()
     category_steps = _Array()
+    slot_offset = _Map()
+    interval_plans = _Map(nested=True)
+    diagnostics = _Map()
 
     def __init__(self, scheme: DecayScheme, times: Sequence[float], total: int, *, part_max: int = PART_MAX,
                  max_categories: int = MAX_CATEGORIES):
@@ -283,7 +333,7 @@ class AggregatePlan(_Sealed):
         for i in self.sources:
             slot_offset[i] = slot
             slot += len(self.categories[i]) - 1
-        self.slot_offset = MappingProxyType(slot_offset)
+        self.slot_offset = slot_offset
         self.photon_slot_offset = slot
         self.slots = slot + len(self.yield_channels)
         self.words_per_interval = self.slots * self.parts
@@ -308,9 +358,9 @@ class AggregatePlan(_Sealed):
                 else:
                     diagnostics["tree_comparisons_unavailable"] += 1
                 diagnostics["max_digits"] = max(diagnostics["max_digits"], law.digits_used)
-            interval_plans[delta] = MappingProxyType(plans)
-        self.interval_plans = MappingProxyType(interval_plans)
-        self.diagnostics = MappingProxyType(diagnostics)
+            interval_plans[delta] = plans
+        self.interval_plans = interval_plans
+        self.diagnostics = diagnostics
         self._sealed = True
 
     def layout(self) -> dict[str, Any]:
@@ -334,7 +384,8 @@ def _vector_binomials(n: np.ndarray, p_small: np.ndarray, flip: np.ndarray, unif
 
 
 class _Views:
-    """Private views of a plan's arrays for one run, read once from the plan and never handed out."""
+    """Private views of a plan's arrays and slot offsets for one run, all taken when the run begins (every
+    interval length) and never handed out: nothing done to the plan while the run lasts reaches the run."""
 
     def __init__(self, plan: AggregatePlan):
         self.plan = plan
@@ -342,12 +393,12 @@ class _Views:
         self.category_end = plan.category_end
         self.category_steps = plan.category_steps
         self.deltas = plan.deltas.tolist()
-        self._sources: dict[float, dict[int, tuple[np.ndarray, np.ndarray]]] = {}
+        self.slot_offset = dict(plan.slot_offset)
+        self._sources = {delta: {i: (s.p_small, s.flip) for i, s in plans.items()}
+                         for delta, plans in plan.interval_plans.items()}
 
     def sources(self, delta: float) -> dict[int, tuple[np.ndarray, np.ndarray]]:
-        """(p_small, flip) of every source nuclide for one interval length."""
-        if delta not in self._sources:
-            self._sources[delta] = {i: (s.p_small, s.flip) for i, s in self.plan.interval_plans[delta].items()}
+        """(p_small, flip) of every source nuclide for one interval length, as taken when the run began."""
         return self._sources[delta]
 
 
@@ -407,12 +458,13 @@ class AggregateRun(_Sealed):
     photons = _Array()
     neutrons = _Array()
     final_populations = _Array()
+    initial = _Map()
 
     def __init__(self, plan: AggregatePlan, initial: Mapping[str, int], first_interval: int, first_word: int,
                  engine: str, arrays: Mapping[str, np.ndarray], final_populations: np.ndarray, digest: str,
                  words_read: int, provenance: str):
         self.plan = plan
-        self.initial = MappingProxyType(dict(initial))
+        self.initial = dict(initial)
         self.first_interval = int(first_interval)
         self.first_word = int(first_word)
         self.engine = engine
@@ -619,7 +671,7 @@ def simulate_aggregate(scheme: DecayScheme, initial: Mapping[str, int], times: S
             n = np.array([remaining[i] for i in active], dtype=np.int64)
             p_small = np.array([sources[i][0][stage] for i in active])
             flip = np.array([sources[i][1][stage] for i in active])
-            slots = [plan.slot_offset[i] + stage for i in active]
+            slots = [views.slot_offset[i] + stage for i in active]
             x = _vector_binomials(n, p_small, flip, u[slots], plan.parts, plan.part_max)
             for i, value in zip(active, x):
                 counts[first_category[i] + stage] = value
@@ -648,9 +700,9 @@ def simulate_aggregate(scheme: DecayScheme, initial: Mapping[str, int], times: S
                 kept[key].append(record[key])
         if checkpoint_every and (interval + 1) % checkpoint_every == 0:
             on_checkpoint(make_checkpoint(plan, initial, interval + 1, populations, running,
-                                          (interval + 1) * plan.words_per_interval, stream_identity(stream)))
+                                          (interval + 1) * plan.words_per_interval, ledger.position()))
             ledger.check(expected_words, f"by the checkpoint callback after interval {interval}")
-    ledger.check((len(views.deltas) - first_interval) * plan.words_per_interval, "before the run ended")
+    ledger.check((len(views.deltas) - first_interval) * plan.words_per_interval, "before the run ended", last=True)
     return _finish(plan, initial, first_interval, first_word, "vectorised", kept, populations, running, ledger,
                    keep_outputs)
 
@@ -658,25 +710,51 @@ def simulate_aggregate(scheme: DecayScheme, initial: Mapping[str, int], times: S
 class _Ledger:
     """The words a run has read against the bytes its source has emitted since the run began.
 
-    It pins the stream's source object: a stream whose source was replaced while the run lasted
-    fails the next check, and the run's provenance is taken from the pinned source."""
+    It pins the stream's source object and records, when the run begins, what the run's provenance
+    says about that source: its manifest (the object, and a copy of its contents), its replay identity
+    and the stream's first source byte. A stream given another source, or a source given another
+    manifest or first byte, fails the next check; a manifest edited in place fails the last one.
+    Checkpoints and the run's provenance are built from the record and the final counters."""
 
     def __init__(self, stream: WordStream):
         self.stream = stream
         self.source = stream.source
+        self.manifest = stream.source.manifest
+        self.manifest_contents = self.manifest.to_dict()
+        self.identity = replay_identity(self.source)
+        self.first_source_byte = int(stream.first_source_byte)
         self.words = stream.words_read
         self.emitted = int(stream.source.consumed_bytes)
 
-    def check(self, expected_words: int, where: str) -> None:
+    def check(self, expected_words: int, where: str, *, last: bool = False) -> None:
         if self.stream.source is not self.source:
             raise RuntimeError(f"the run's stream was given another source {where}; the run's random numbers "
                                "no longer come from one source")
+        if self.source.manifest is not self.manifest or self.stream.first_source_byte != self.first_source_byte:
+            raise RuntimeError(f"the run's source was given another manifest, or its stream another first byte, "
+                               f"{where}; the run's provenance would no longer describe its random numbers")
         words = self.stream.words_read - self.words
         emitted = int(self.source.consumed_bytes) - self.emitted
         if words != expected_words or emitted != 8 * expected_words:
             raise RuntimeError(f"the run's source was read outside its layout {where}: the layout accounts for "
                                f"{expected_words} words, the run's stream has read {words} and the source has "
                                f"emitted {emitted} bytes; the run's random numbers are no longer the layout's")
+        if last and (self.manifest.to_dict() != self.manifest_contents
+                     or replay_identity(self.source) != self.identity):
+            raise RuntimeError(f"the run's source manifest was edited {where}; the run's provenance would no "
+                               "longer describe its random numbers")
+
+    def position(self) -> dict[str, Any]:
+        """stream_identity as recorded when the run began, at the source's current byte count (fresh objects)."""
+        consumed = int(self.source.consumed_bytes)
+        return {"generator": self.identity["generator"], "parameters": dict(self.identity["parameters"]),
+                "word_position": self.identity["start_word"] + consumed // 8, "byte_aligned": consumed % 8 == 0}
+
+    def provenance(self, first_word: int) -> dict[str, Any]:
+        """The stream's final counters and digest, with the source's identity as recorded when the run began."""
+        return {**self.stream.provenance(), "source": self.manifest_contents,
+                "first_source_byte": self.first_source_byte, "replay_identity": self.identity,
+                "first_word_of_run": first_word, "words_read_by_run": self.stream.words_read - first_word}
 
 
 def _check_interval(plan: AggregatePlan, interval: int, record: Mapping[str, np.ndarray]) -> None:
@@ -702,8 +780,7 @@ def _finish(plan, initial, first_interval, first_word, engine, kept, populations
                   "decays": np.zeros((0, *width), dtype=np.int64), "photons": np.zeros((0, *width), dtype=np.int64),
                   "neutrons": np.zeros(0, dtype=np.int64)}
     stream = ledger.stream                 # its source is the pinned one: the ledger's last check passed
-    provenance = {**stream.provenance(), "replay_identity": replay_identity(ledger.source),
-                  "first_word_of_run": first_word, "words_read_by_run": stream.words_read - first_word}
+    provenance = ledger.provenance(first_word)
     return AggregateRun(plan, initial, first_interval, first_word, engine, arrays, populations, running.hex(),
                         stream.words_read - first_word, json.dumps(provenance, sort_keys=True, default=str))
 
@@ -779,7 +856,7 @@ def simulate_aggregate_reference(scheme: DecayScheme, initial: Mapping[str, int]
         populations = record["populations"]
         for key in kept:
             kept[key].append(record[key])
-    ledger.check(len(views.deltas) * plan.words_per_interval, "before the run ended")
+    ledger.check(len(views.deltas) * plan.words_per_interval, "before the run ended", last=True)
     return _finish(plan, initial, 0, first_word, "reference", kept, populations, running, ledger, True)
 
 

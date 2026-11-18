@@ -8,6 +8,7 @@ writes tables.md next to it. Computes nothing new: it formats recorded values.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -23,6 +24,16 @@ def fmt(value) -> str:
     return f"{value:.3g}" if 1e-3 <= abs(value) < 1e4 else f"{value:.2e}"
 
 
+def tree_note(tree) -> str:
+    """How the tree stood when a record run started (record_tree), in place of Git's dirty flag, which counts
+    the files of earlier attempts that the record procedure allows."""
+    if not tree:
+        return "tree not checked: not a record run"
+    other = tree.get("other_changes") or []
+    return (f"committed tree; files of earlier attempts: {len(tree.get('attempt_files') or [])}; "
+            f"other uncommitted or ignored files: {', '.join(other) if other else 'none'}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--smoke", action="store_true")
@@ -30,13 +41,13 @@ def main() -> None:
     r = json.loads((folder / "verification.json").read_text())
     v = r["verdicts"]
     lines = [f"# B2 verification: tables from `{folder.name}/verification.json`", "",
-             f"Namespace `{r['namespace']}`; code `{r['code']['git_commit']}` (dirty: {r['code']['git_dirty']}); "
+             f"Namespace `{r['namespace']}`; code `{r['code']['git_commit']}` ({tree_note(r.get('tree'))}); "
              f"started {r['started_utc']}; {r['elapsed_seconds']:.1f} s in total.", "", "## Verdicts", "",
              f"- R1: **{v['R1']}**" + (f" (failed: {', '.join(v['R1_failed_items'])})" if v["R1_failed_items"] else ""),
              f"- R2: **{v['R2']}**"]
     r0 = v.get("R0")
     if isinstance(r0, dict):
-        lines += [f"- R0, {family}: {entry['statement']}" for family, entry in r0.items()]
+        lines += [f"- R0: {entry['statement']}" for entry in r0.values()]
     else:
         lines.append(f"- R0: {r0 or 'missing from verification.json (a deviation)'}")
     lines += ["", "| Deterministic check | Holds |", "|---|---|"]
@@ -75,16 +86,28 @@ def main() -> None:
     lines += ["", f"Tests not applicable (fewer than two cells after pooling): {', '.join(not_run) or 'none'}.",
               "", f"Planned tests that could not be computed (failed items): {', '.join(errored) or 'none'}."]
     calibration = folder / "calibration.json"
+    read = r.get("calibration") or {}
     if calibration.exists():
+        if read and hashlib.sha256(calibration.read_bytes()).hexdigest() != read.get("sha256"):
+            raise SystemExit(f"{calibration} is not the file the verification read (sha256 {read.get('sha256')})")
         c = json.loads(calibration.read_text())
+        replay = c.get("replay_check") or {}
+        deviation = (c.get("attempt") or {}).get("deviation")
         lines += ["", "## R0: calibration (complete null batteries)", "",
                   f"`{folder.name}/calibration.json`: {c['batteries']} batteries, namespace `{c['namespace']}`, "
-                  f"code `{c['code']['git_commit']}` (dirty: {c['code']['git_dirty']}). C1 holds: **{c['C1']}**.", "",
+                  f"code `{c['code']['git_commit']}` ({tree_note(c.get('tree'))}); attempt "
+                  f"{(c.get('attempt') or {}).get('number', 'none')}, deviation: {deviation or 'none'}; replay check: "
+                  f"{replay.get('chunks_compared', 0)} chunks of earlier attempts compared, "
+                  f"{len(replay.get('mismatches') or [])} mismatches. C1 (per family) holds: **{c['C1']}**.", "",
                   "| Family | Tests | Batteries that FAIL under the null | Rate | 95% interval | C1 |",
                   "|---|---:|---:|---:|---|---|"]
         for name, f in c["families"].items():
             lines.append(f"| {name} | {f['tests']} | {f['failed_batteries']} | {f['false_fail_rate']:.4f} | "
                          f"{f['false_fail_ci95'][0]:.4f} to {f['false_fail_ci95'][1]:.4f} | {f['C1_holds']} |")
+        if c.get("R1_event"):
+            e = c["R1_event"]
+            lines.append(f"| R1 (NC1 or NC2) | | {e['failed_batteries']} | {e['false_fail_rate']:.4f} | "
+                         f"{e['false_fail_ci95'][0]:.4f} to {e['false_fail_ci95'][1]:.4f} | reported, not a criterion |")
         for name, f in c["families"].items():
             lines += ["", f"### {name}: test types at the Holm level ({fmt(f['levels'][-1])})", "",
                       "| Type | Tests | Batteries with a rejection | Share of the union bound | 95% interval |",

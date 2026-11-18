@@ -13,8 +13,10 @@ comparison_tests, big_tests), so the calibration measures the study's own tests.
 
 Batteries are independent (battery b uses default_rng(namespace_seed(namespace, 'battery', b))), so:
 - per family, the number of batteries in which Holm rejects at least one test (or a planned test cannot
-  be computed: R1 would FAIL) is binomial, and its Clopper-Pearson interval is valid. Criterion C1: the
-  95% upper bound is at most 0.02 for NC1 and for NC2;
+  be computed: the family's part of R1 fails) is binomial, and its Clopper-Pearson interval is valid.
+  Criterion C1 is per family: the 95% upper bound is at most 0.02 for NC1 and for NC2. R1 fails when
+  either family fails, so the number of batteries in which NC1 or NC2 fails (R1_event: R1's own
+  false-FAIL rate) is counted too and reported beside C1;
 - per test, rejections at 1e-2, 1e-3 and the Holm level have valid per-test Clopper-Pearson intervals;
 - per test type, the tests of one battery are dependent, so no pooled binomial interval is used. The
   number of batteries with at least one rejection of the type is binomial, with a valid Clopper-Pearson
@@ -22,8 +24,11 @@ Batteries are independent (battery b uses default_rng(namespace_seed(namespace, 
   error (1 at nominal calibration if the type's tests rarely reject together). The mean number of
   rejections per battery is reported beside it, with only an approximate (normal) interval.
 
-The record run refuses unless protocol.sha256 matches the frozen files, the Git tree is clean and
-results/calibration.json does not exist. --development uses the development namespace and writes
+The record run refuses unless protocol.sha256 matches the frozen files, the tree is committed (only
+files of earlier attempts in results/attempts/ may be uncommitted; see run_verification.record_tree),
+PYTHONPYCACHEPREFIX names a directory outside the repository and results/calibration.json does not
+exist. It records its code identity when it starts and refuses to publish if the commit or the code
+changed while it ran. --development uses the development namespace and writes
 calibration_development.json next to this script (design evidence before the freeze, never results).
 """
 from __future__ import annotations
@@ -47,7 +52,7 @@ from rnglab.nuclear import DecayScheme
 from rnglab.nuclear.aggregate import AggregatePlan
 from rnglab.nuclear.checks import holm
 from rnglab.nuclear.decay import Mode
-from rnglab.nuclear.manifest import code_identity, environment
+from rnglab.nuclear.manifest import environment
 from rnglab.seeds import namespace_seed
 
 HERE = Path(__file__).resolve().parent
@@ -58,6 +63,9 @@ THREAD_VARIABLES = ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"
 
 
 def load_verification():
+    """run_verification.py as a module (loaded once per process)."""
+    if "b2_verify_run_verification" in sys.modules:
+        return sys.modules["b2_verify_run_verification"]
     spec = importlib.util.spec_from_file_location("b2_verify_run_verification", HERE / "run_verification.py")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
@@ -171,7 +179,7 @@ def _init_worker() -> None:
 
 def run_chunk(namespace: str, batteries: list[int]) -> dict:
     ctx = _CONTEXT
-    out = {"batteries": 0, "families": {}}
+    out = {"batteries": 0, "r1_failed_batteries": 0, "families": {}}
     for family in ("NC1", "NC2"):
         holm_level = ctx.alpha / len(ctx.planned[family])
         levels = (*LEVELS, holm_level)
@@ -185,6 +193,7 @@ def run_chunk(namespace: str, batteries: list[int]) -> dict:
         rng = np.random.default_rng(namespace_seed(namespace, "battery", b))
         found = ctx.battery(rng)
         out["batteries"] += 1
+        failed_here = False
         for family, results in found.items():
             agg = out["families"][family]
             members = {n: r["p_value"] for n, r in results.items() if "p_value" in r}
@@ -198,6 +207,7 @@ def run_chunk(namespace: str, batteries: list[int]) -> dict:
             names = sorted(members)
             rejected_any = bool(holm([members[n] for n in names], ctx.alpha)["rejected"]) if names else False
             agg["failed_batteries"] += int(rejected_any or bool(errors))
+            failed_here = failed_here or rejected_any or bool(errors)
             agg["batteries_with_errors"] += int(bool(errors))
             per_type = {t: [0] * len(agg["levels"]) for t in agg["type_sum"]}
             for n in names:
@@ -210,6 +220,7 @@ def run_chunk(namespace: str, batteries: list[int]) -> dict:
                     agg["type_sum"][t][li] += c
                     agg["type_sum_squares"][t][li] += c * c
                     agg["type_batteries"][t][li] += int(c > 0)
+        out["r1_failed_batteries"] += int(failed_here)
     return out
 
 
@@ -217,6 +228,7 @@ def merge(total: dict | None, part: dict) -> dict:
     if total is None:
         return part
     total["batteries"] += part["batteries"]
+    total["r1_failed_batteries"] += part["r1_failed_batteries"]
     for family, agg in part["families"].items():
         t = total["families"][family]
         t["failed_batteries"] += agg["failed_batteries"]
@@ -232,6 +244,12 @@ def merge(total: dict | None, part: dict) -> dict:
 def clopper_pearson(k: int, n: int) -> list[float]:
     interval = stats.binomtest(int(k), int(n)).proportion_ci(confidence_level=0.95, method="exact")
     return [float(interval.low), float(interval.high)]
+
+
+def r1_event(raw: dict) -> dict:
+    """Batteries in which NC1 or NC2 fails: the event R1 FAILs on, with its Clopper-Pearson interval."""
+    k, m = raw["r1_failed_batteries"], raw["batteries"]
+    return {"failed_batteries": k, "batteries": m, "false_fail_rate": k / m, "false_fail_ci95": clopper_pearson(k, m)}
 
 
 def summarise(raw: dict, criterion_limit: float) -> dict:
@@ -345,23 +363,31 @@ def main() -> int:
             raise SystemExit("the record run uses the number of batteries in protocol.json")
         frozen = verify.frozen_hashes()
         namespace, batteries = spec["namespace"], spec["batteries"]
-        tree = verify.require_record_tree(REPO, "calibration")
         out = HERE / "results" / "calibration.json"
+        verify.require_pycache_outside(REPO)
+        if verify.complete_published_attempt(out.parent, "calibration", out):
+            raise SystemExit("the last calibration attempt published results/calibration.json but ended before its "
+                             "record said so; the record now shows it completed: commit results/ "
+                             "(record_procedure.recovery)")
+        tree = verify.require_record_tree(REPO, "calibration")
     if out.exists():
         raise SystemExit(f"{out} exists; results are never overwritten")
     workers = args.workers or allocated_cpus()
+    code = verify.record_code(REPO)              # when the run starts: the code its workers load
     if args.development:
-        return calibrate(verify, namespace, batteries, out, frozen, args, workers, None)
-    attempt = verify.begin_attempt(out.parent, "calibration", code_identity(REPO), deviation=args.deviation)
+        return calibrate(verify, namespace, batteries, out, frozen, args, workers, None, code=code)
+    attempt = verify.begin_attempt(out.parent, "calibration", code, deviation=args.deviation)
     return verify.run_attempt(attempt, lambda: calibrate(verify, namespace, batteries, out, frozen, args, workers,
-                                                         attempt, tree), out)
+                                                         attempt, tree, code=code), out)
 
 
 def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, args, workers: int,
-              attempt: dict | None, tree: dict | None = None) -> int:
+              attempt: dict | None, tree: dict | None = None, *, code: dict | None = None) -> int:
     """Run the batteries in a process pool. With an attempt (the record run) every finished chunk's digest is
     appended to the attempt's chunks.jsonl (kept if the attempt is interrupted) and the result is published
-    without overwriting; the replay check compares the digests with earlier attempts on the same commit."""
+    without overwriting, after checking that the code is still the code taken when the run started; the replay
+    check compares the digests with earlier attempts on the same commit."""
+    code = code if code is not None else verify.record_code(REPO)
     started = datetime.datetime.now(datetime.timezone.utc).isoformat()
     clock = time.perf_counter()
     chunks = [list(range(s, min(s + args.chunk, batteries))) for s in range(0, batteries, args.chunk)]
@@ -387,11 +413,12 @@ def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, a
     summary = summarise(raw, 0.02)
     result = {"generated_by": "research/v020-nuclear-b2-verify/calibration.py", "development": args.development,
               "started_utc": started, "namespace": namespace, "batteries": batteries, "protocol_files": frozen,
-              "code": code_identity(REPO), "environment": environment(), "criterion": "C1: false_fail_ci95[1] <= 0.02",
+              "code": code, "environment": environment(), "pycache_prefix": sys.pycache_prefix,
+              "criterion": "C1, per family: false_fail_ci95[1] <= 0.02",
               "sampler": "numpy Generator.multinomial / binomial on the exact laws; no RNGLab sampler",
               "workers": workers, "allocated_cpus": allocated_cpus(), "chunk": args.chunk,
               "thread_environment": threads, "inherited_thread_environment": inherited,
-              "families": summary, "C1": all(f["C1_holds"] for f in summary.values()),
+              "families": summary, "C1": all(f["C1_holds"] for f in summary.values()), "R1_event": r1_event(raw),
               "elapsed_seconds": time.perf_counter() - clock}
     out.parent.mkdir(parents=True, exist_ok=True)
     if attempt is None:
@@ -403,6 +430,7 @@ def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, a
                              "deviation": attempt["record"]["deviation"]}
         result["replay_check"] = replay_check(attempt)
         result["tree"] = tree
+        verify.require_same_code(code, REPO, "calibration")
         verify.write_new(out, json.dumps(result, indent=1) + "\n")
     for family, f in summary.items():
         print(f"{family}: {f['failed_batteries']} / {batteries} batteries fail under the null "
@@ -414,6 +442,9 @@ def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, a
                   f"rate / union bound {r['battery_rate_over_union_bound']:.2f} "
                   f"[{r['battery_rate_ci95_over_union_bound'][0]:.2f}, {r['battery_rate_ci95_over_union_bound'][1]:.2f}]"
                   f"   1e-2 mean/nominal {row['levels'][0]['mean_rejections_over_nominal']:.2f}")
+    r1 = result["R1_event"]
+    print(f"R1 event (NC1 or NC2 fails): {r1['failed_batteries']} / {batteries} batteries "
+          f"(rate {r1['false_fail_rate']:.4f}, 95% CI [{r1['false_fail_ci95'][0]:.4f}, {r1['false_fail_ci95'][1]:.4f}])")
     print(f"wrote {out} in {result['elapsed_seconds']:.0f} s")
     return 0
 
