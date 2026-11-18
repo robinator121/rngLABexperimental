@@ -391,6 +391,9 @@ def run_attempt(attempt: dict, body, result_file: Path) -> int:
 
 
 def clopper_pearson(k: int, n: int) -> list[float]:
+    """The exact 95% interval of k successes in n trials; an impossible count is refused (scipy would return NaN)."""
+    if not 0 <= int(k) <= int(n) or int(n) <= 0:
+        raise ValueError(f"{k} of {n} is not a binomial count")
     interval = binomtest(int(k), int(n)).proportion_ci(confidence_level=0.95, method="exact")
     return [float(interval.low), float(interval.high)]
 
@@ -429,82 +432,120 @@ def _committed(repo: Path, path: Path) -> bool:
             and _git(repo, "diff", "--quiet", "HEAD", "--", relative, check=False).returncode == 0)
 
 
+def _mapping(value) -> dict:
+    return value if isinstance(value, dict) else {}
+
+
+def _count(value) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
 def record_calibration(protocol: dict, frozen: dict, code: dict, results: Path = HERE / "results",
-                       repo: Path = REPO) -> dict:
+                       repo: Path = REPO, design: dict | None = None) -> dict:
     """The completed record calibration that R0 reads. The verification refuses to start without one that ran
-    on the same frozen files, module and source files and numerical libraries; whose attempt record shows it
-    completed with this file; that is committed, with its attempt record, exactly as it is; whose commit is an
-    ancestor of this one, with nothing but results/ changed since; whose replay check found no mismatch; and
-    whose stored intervals follow from its counts."""
+    on the same frozen files, module and source files and numerical libraries; whose attempt record (named as
+    the record procedure names it) shows it completed with this file; that is committed, with its attempt
+    record, exactly as it is; whose commit is an ancestor of this one, with nothing but results/ changed since;
+    whose replay check found no mismatch; with exactly the families NC1 and NC2, each with the planned number of
+    tests (design.json) and an interval, rate and C1 flag that follow from its count; a C1 that follows from
+    them; and an R1 event whose count, rate and interval fit the family counts and the batteries. A malformed
+    file is refused with a message, never raised on."""
     path = results / "calibration.json"
     if not path.exists():
         raise SystemExit("results/calibration.json is missing: run the record calibration first and commit it "
                          "(protocol.json record_procedure)")
-    data = json.loads(path.read_text())
+    try:
+        data = json.loads(path.read_text())
+    except ValueError as error:
+        raise SystemExit(f"results/calibration.json cannot serve R0: it is not JSON ({error})") from None
+    if not isinstance(data, dict):
+        raise SystemExit("results/calibration.json cannot serve R0: it is not a JSON object")
     spec, now, problems = protocol["calibration"], environment(), []
+    recorded = _mapping(data.get("code"))
     if data.get("development") is not False:
         problems.append("it is a development run")
     if data.get("namespace") != spec["namespace"] or data.get("batteries") != spec["batteries"]:
         problems.append("its namespace or number of batteries differs from protocol.json")
     if data.get("protocol_files") != frozen:
         problems.append("it ran with other frozen files")
-    if data.get("code", {}).get("module_files_sha256") != code.get("module_files_sha256"):
+    if recorded.get("module_files_sha256") != code.get("module_files_sha256"):
         problems.append("it ran with other module files")
-    if data.get("code", {}).get("source_files_sha256") != code.get("source_files_sha256"):
+    if recorded.get("source_files_sha256") != code.get("source_files_sha256"):
         problems.append("it ran with other source files")
-    commit = data.get("code", {}).get("git_commit")
-    if not commit or _git(repo, "merge-base", "--is-ancestor", str(commit), "HEAD", check=False).returncode != 0:
+    commit = recorded.get("git_commit")
+    if (not isinstance(commit, str) or not commit
+            or _git(repo, "merge-base", "--is-ancestor", commit, "HEAD", check=False).returncode != 0):
         problems.append(f"its commit {commit} is not an ancestor of this one")
     else:
-        changed = [n for n in _git(repo, "diff", "--name-only", "--no-renames", "-z", str(commit),
+        changed = [n for n in _git(repo, "diff", "--name-only", "--no-renames", "-z", commit,
                                    "HEAD").stdout.decode().split("\0")
                    if n and not n.startswith(RESULTS)]
         if changed:
             problems.append("files outside results/ changed since it ran: " + ", ".join(changed[:5]))
-    if (data.get("replay_check") or {}).get("mismatches"):
+    if _mapping(data.get("replay_check")).get("mismatches"):
         problems.append("its replay check found mismatches")
-    batteries = data.get("batteries") or 0
-    families = data.get("families") or {}
+    batteries = data.get("batteries")
+    if not _count(batteries) or batteries <= 0:
+        problems.append("its number of batteries is not a positive integer")
+        batteries = 0
+    families = data.get("families")
+    if not isinstance(families, dict) or not all(isinstance(f, dict) for f in families.values()):
+        problems.append("its families are not a mapping of family records")
+        families = {}
     if set(families) != {"NC1", "NC2"}:
         problems.append(f"its families are {sorted(families)}, not NC1 and NC2")
+    planned = {f: len(t) for f, t in _mapping(_mapping(design).get("planned_tests")).items()}
+    counts = []
     for family, f in families.items():
         k = f.get("failed_batteries")
-        if not batteries or isinstance(k, bool) or not isinstance(k, int) or not 0 <= k <= batteries:
+        if not batteries or not _count(k) or not 0 <= k <= batteries:
             problems.append(f"its count for {family} is missing or impossible")
             continue
+        counts.append(k)
         interval = clopper_pearson(k, batteries)
         if f.get("false_fail_ci95") != interval:
             problems.append(f"its stored interval for {family} does not follow from its counts")
         if f.get("false_fail_rate") != k / batteries or f.get("C1_holds") != (interval[1] <= C1_LIMIT):
             problems.append(f"its stored rate or C1 for {family} does not follow from its counts")
+        if planned and f.get("tests") != planned.get(family):
+            problems.append(f"its number of tests for {family} ({f.get('tests')}) differs from design.json "
+                            f"({planned.get(family)})")
     if data.get("C1") is not all(f.get("C1_holds") is True for f in families.values()):
         problems.append("its C1 does not follow from its families")
-    r1, counts = data.get("R1_event") or {}, [f.get("failed_batteries") for f in families.values()]
+    r1 = _mapping(data.get("R1_event"))
     k = r1.get("failed_batteries")
-    if (not counts or not all(isinstance(c, int) for c in counts) or not isinstance(k, int)
-            or not batteries or r1.get("batteries") != batteries
+    if (len(counts) != 2 or not _count(k) or r1.get("batteries") != batteries
             or not max(counts) <= k <= min(sum(counts), batteries)
-            or r1.get("false_fail_ci95") != clopper_pearson(k, batteries)):
-        problems.append("its R1 event count is missing, or inconsistent with its family counts and batteries")
+            or r1.get("false_fail_ci95") != clopper_pearson(k, batteries) or r1.get("false_fail_rate") != k / batteries):
+        problems.append("its R1 event is missing, or its count, rate or interval does not fit its family counts "
+                        "and batteries")
+    environment_recorded = _mapping(data.get("environment"))
     for key in ("python", "numpy", "scipy"):
-        if data.get("environment", {}).get(key) != now.get(key):
-            problems.append(f"it ran with {key} {data.get('environment', {}).get(key)}, this run has {now.get(key)}")
-    attempt = data.get("attempt") or {}
-    record_path = results / str(attempt.get("record", "attempts/missing"))
-    if not record_path.is_file():
-        problems.append("its attempt record is missing")
+        if environment_recorded.get(key) != now.get(key):
+            problems.append(f"it ran with {key} {environment_recorded.get(key)}, this run has {now.get(key)}")
+    attempt = _mapping(data.get("attempt"))
+    number, record_path = attempt.get("number"), None
+    if not _count(number) or attempt.get("record") != f"attempts/calibration-{number}.json":
+        problems.append("its attempt record is not named as the record procedure names it")
     else:
-        record = json.loads(record_path.read_text())
-        if record.get("status") != "completed" or record.get("result_sha256") != file_sha256(path):
+        record_path = results / "attempts" / f"calibration-{number}.json"
+        try:
+            record = json.loads(record_path.read_text()) if record_path.is_file() else None
+        except ValueError:
+            record = {}
+        if record is None:
+            problems.append("its attempt record is missing")
+        elif (not isinstance(record, dict) or record.get("status") != "completed"
+              or record.get("result_sha256") != file_sha256(path)):
             problems.append("its attempt record does not show it completed with this file")
     for item in (path, record_path):
-        if item.is_file() and not _committed(repo, item):
+        if item is not None and item.is_file() and not _committed(repo, item):
             problems.append(f"{item.name} is not committed as it is")
     if problems:
         raise SystemExit("results/calibration.json cannot serve R0: " + "; ".join(problems))
-    return {"file": "results/calibration.json", "sha256": file_sha256(path), "attempt": attempt.get("number"),
+    return {"file": "results/calibration.json", "sha256": file_sha256(path), "attempt": number,
             "commit": commit, "deviation": attempt.get("deviation"), "replay_check": data.get("replay_check"),
-            "tree": data.get("tree"), "R0": r0_reading(data["families"], batteries, data.get("R1_event"))}
+            "tree": data.get("tree"), "R0": r0_reading(families, batteries, r1)}
 
 
 _MEMO: dict = {}
@@ -949,7 +990,7 @@ def main() -> int:
     code = record_code(REPO)
     if (out_dir / "verification.json").exists():
         raise SystemExit("results/verification.json exists; results are never overwritten")
-    calibration = record_calibration(protocol, frozen, code, out_dir, REPO)
+    calibration = record_calibration(protocol, frozen, code, out_dir, REPO, design)
     attempt = begin_attempt(out_dir, "verification", code, deviation=args.deviation)
 
     def body() -> int:
@@ -967,14 +1008,22 @@ def r1_status(result: dict) -> int:
 
 
 def quiet_print(*lines: str) -> None:
-    """Print and flush. A closed standard output (a broken pipe) is ignored, and the stream is pointed at
-    /dev/null so that the interpreter's flush at exit cannot fail either: a completed attempt stays completed
-    and its exit status is the study's."""
+    """Print and flush. An output error (a closed pipe, a full disk) is ignored, and the stream is pointed at
+    /dev/null so that later prints and the interpreter's flush at exit cannot fail either: no record run is
+    stopped by its output, a completed attempt stays completed, and its exit status is the study's."""
     try:
         for line in lines:
             print(line, flush=True)
-    except BrokenPipeError:
-        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+    except OSError:                     # a closed pipe, a full disk, an output over quota
+        try:
+            target = sys.stdout.fileno()
+        except (OSError, ValueError):
+            return
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        try:
+            os.dup2(devnull, target)
+        finally:
+            os.close(devnull)
 
 
 def print_summary(result: dict) -> None:

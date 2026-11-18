@@ -242,6 +242,9 @@ def merge(total: dict | None, part: dict) -> dict:
 
 
 def clopper_pearson(k: int, n: int) -> list[float]:
+    """The exact 95% interval of k successes in n trials; an impossible count is refused (scipy would return NaN)."""
+    if not 0 <= int(k) <= int(n) or int(n) <= 0:
+        raise ValueError(f"{k} of {n} is not a binomial count")
     interval = stats.binomtest(int(k), int(n)).proportion_ci(confidence_level=0.95, method="exact")
     return [float(interval.low), float(interval.high)]
 
@@ -408,8 +411,8 @@ def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, a
                     os.fsync(log.fileno())
                 raw = merge(raw, part)
                 if done % max(1, len(chunks) // 20) == 0:
-                    print(f"{raw['batteries']} / {batteries} batteries, {time.perf_counter() - clock:.0f} s",
-                          flush=True)
+                    verify.quiet_print(f"{raw['batteries']} / {batteries} batteries, "
+                                       f"{time.perf_counter() - clock:.0f} s")      # an output error cannot stop it
     finally:
         if log is not None:
             log.close()

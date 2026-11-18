@@ -1,0 +1,25 @@
+# v0.20 nuclear module, B2 after the eighth review (not frozen): test evidence
+tree: the commit that contains this file (code, tests and protocol text as committed with it)
+date: 2026-11-18T23:27:52Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+1035 passed, 2 skipped, 3 warnings in 336.14s (0:05:36)
+
+## 2. Nuclear tests only (Layer A 115, B2 202 including 24 in test_b2_guards.py and 66 in test_b2_integrity.py): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider -W error::DeprecationWarning
+317 passed, 3 warnings in 63.72s
+
+The three warnings are RuntimeWarnings (overflow in the float64 matrix exponential) raised on purpose by
+test_b2_guards.py. The closed-output test also passes with --capture=sys. Layer A is byte-identical to 526e9f7.
+
+## 3. The review's surviving mutations now fail a test
+Each applied alone to a scratch clone of this tree, tests/v020/nuclear_b2/test_b2_integrity.py run with -x:
+verification summary printed inside the attempt: 1 failed; calibration summary printed inside the attempt:
+1 failed; family rate comparison removed: 1 failed; R1 bound without the number of batteries: 1 failed (after
+the Clopper-Pearson helpers were made to refuse an impossible count); family count guard removed: 1 failed;
+allowed ignored entries not recorded: 1 failed; /proc start time read as text: 1 failed.
+
+## 4. Items 70-73 change no draw and no p-value
+run_verification.py --smoke on this tree against the smoke output of 44288ea: the 16 digest fields and all 934
+p-value fields are identical; no field added or removed. (The seventh-review evidence file names items 63-70;
+the items are 63-69.)

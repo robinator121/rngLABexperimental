@@ -401,15 +401,17 @@ def _calibration_record(rv, repo, results, protocol, frozen, **change):
     """A record calibration and its completed attempt record, as the record procedure leaves them."""
     spec, batteries = protocol["calibration"], protocol["calibration"]["batteries"]
     code = rv.record_code(repo)
-    def family(k):
+    planned = json.loads((REPO / rv.STUDY / "design.json").read_text())["planned_tests"]
+
+    def family(name, k):
         interval = rv.clopper_pearson(k, batteries)
-        return {"failed_batteries": k, "false_fail_rate": k / batteries, "false_fail_ci95": interval,
-                "C1_holds": interval[1] <= rv.C1_LIMIT}
+        return {"tests": len(planned[name]), "failed_batteries": k, "false_fail_rate": k / batteries,
+                "false_fail_ci95": interval, "C1_holds": interval[1] <= rv.C1_LIMIT}
     data = {"development": False, "namespace": spec["namespace"], "batteries": batteries, "protocol_files": frozen,
             "code": code, "environment": rv.environment(),
             "attempt": {"number": 1, "record": "attempts/calibration-1.json", "deviation": None},
-            "families": {"NC1": family(500), "NC2": family(400)}, "C1": True,
-            "R1_event": {"failed_batteries": 900, "batteries": batteries,
+            "families": {"NC1": family("NC1", 500), "NC2": family("NC2", 400)}, "C1": True,
+            "R1_event": {"failed_batteries": 900, "batteries": batteries, "false_fail_rate": 900 / batteries,
                          "false_fail_ci95": rv.clopper_pearson(900, batteries)},
             "replay_check": {"chunks_compared": 0, "mismatches": []}}
     data.update(change)
@@ -444,6 +446,13 @@ def test_the_verification_needs_a_matching_completed_record_calibration(tmp_path
     _git(repo, "commit", "-q", "-m", "calibration")
     info = rv.record_calibration(protocol, frozen, code, results, repo)
     assert info["R0"]["NC1"]["C1_holds"] and info["attempt"] == 1 and "R1_event" in info["R0"]
+    design = json.loads((REPO / rv.STUDY / "design.json").read_text())
+    assert rv.record_calibration(protocol, frozen, code, results, repo, design)["attempt"] == 1
+    short = {"planned_tests": dict(design["planned_tests"], NC1=design["planned_tests"]["NC1"][:3])}
+    with pytest.raises(SystemExit, match="number of tests for NC1"):
+        rv.record_calibration(protocol, frozen, code, results, repo, short)
+    nc1, r1 = data["families"]["NC1"], data["R1_event"]
+    big = {"NC1": dict(nc1, failed_batteries=30000), "NC2": dict(nc1, failed_batteries=30000)}
     for change, message in ((dict(data, development=True), "development"),
                              (dict(data, protocol_files={"frozen": True, "files": {}}), "frozen files"),
                              (dict(data, code=dict(data["code"], module_files_sha256={})), "module files"),
@@ -457,7 +466,23 @@ def test_the_verification_needs_a_matching_completed_record_calibration(tmp_path
                              (dict(data, families={"NC1": data["families"]["NC1"]}), "not NC1 and NC2"),
                              (dict(data, families=dict(data["families"], NC2=dict(data["families"]["NC2"],
                                                                                  C1_holds=False))), "rate or C1"),
-                             (dict(data, C1=False), "its C1")):
+                             (dict(data, C1=False), "its C1"),
+                             (dict(data, families=dict(data["families"], NC1=dict(nc1, false_fail_rate=0.5))),
+                              "rate or C1"),
+                             (dict(data, families=dict(data["families"], NC1=dict(nc1, failed_batteries=-1))),
+                              "missing or impossible"),
+                             (dict(data, families=dict(data["families"], NC1=dict(nc1, failed_batteries=True))),
+                              "missing or impossible"),
+                             (dict(data, families=big, R1_event=dict(r1, failed_batteries=55000)), "R1 event"),
+                             (dict(data, R1_event=dict(r1, failed_batteries=True)), "R1 event"),
+                             (dict(data, R1_event=dict(r1, false_fail_rate=0.5)), "R1 event"),
+                             (dict(data, R1_event=[1, 2]), "R1 event"),
+                             (dict(data, families=["NC1", "NC2"]), "not a mapping"),
+                             (dict(data, families={"NC1": 3, "NC2": None}), "not a mapping"),
+                             (dict(data, batteries="50000"), "positive integer"),
+                             (dict(data, code=[1]), "module files"),
+                             (dict(data, attempt=dict(data["attempt"], record="../calibration-1.json")),
+                              "named as")):
         (results / "calibration.json").write_text(json.dumps(change))   # uncommitted, and no longer the record's
         with pytest.raises(SystemExit, match=message):
             rv.record_calibration(protocol, frozen, code, results, repo)
@@ -986,7 +1011,9 @@ def test_record_runs_refuse_ignored_modules_beside_the_code_and_bytecode_from_th
     (tmp_path / rv.STUDY / "smoke" / "verification.json").write_text("{}")
     _git(tmp_path, "add", "-A")
     _git(tmp_path, "commit", "-q", "-m", "c")
-    assert rv.require_record_tree(tmp_path, "verification")["other_changes"] == []
+    tree = rv.require_record_tree(tmp_path, "verification")
+    assert tree["other_changes"] == [] and len(tree["ignored_allowed"]) == 3      # recorded in the result
+    assert all(any(kind in entry for entry in tree["ignored_allowed"]) for kind in ("egg-info", "__pycache__", "smoke/"))
     (tmp_path / "src" / "sitecustomize.py").write_text("import os\n")
     with pytest.raises(SystemExit, match="sitecustomize.py"):
         rv.require_record_tree(tmp_path, "verification")
@@ -1052,6 +1079,9 @@ def test_the_verification_main_needs_the_committed_record_calibration_and_passes
         calls.append({"code": code, "attempt": attempt, "calibration": calibration, "tree": tree})
         return {"verdicts": {"R1": "PASS"}, "code": code}, {"m.json": "{}"}      # main() publishes it
     monkeypatch.setattr(rv, "study", fake_study)
+    printed = []                                   # the summary comes after the completed record (item 63)
+    monkeypatch.setattr(rv, "print_summary", lambda result: printed.append(json.loads(
+        (results / "attempts" / "verification-1.json").read_text())["status"]))
     monkeypatch.setattr(sys, "argv", ["run_verification.py"])
     with pytest.raises(SystemExit, match="missing"):
         rv.main()
@@ -1064,7 +1094,7 @@ def test_the_verification_main_needs_the_committed_record_calibration_and_passes
     _calibration_record(rv, repo, results, protocol, {"frozen": True, "files": {}})
     _git(repo, "add", "-A")
     _git(repo, "commit", "-q", "-m", "the record calibration")
-    assert rv.main() == 0
+    assert rv.main() == 0 and printed == ["completed"]
     (call,) = calls
     assert call["calibration"]["R0"]["NC1"]["C1_holds"] and call["attempt"]["record"]["attempt"] == 1
     assert call["tree"] == {"attempt_files": [], "other_changes": [], "ignored_allowed": []}
@@ -1087,12 +1117,15 @@ def test_the_calibration_main_needs_a_committed_tree_and_takes_its_code_when_it_
         verify.write_new(out, json.dumps({"attempt": {"number": attempt["record"]["attempt"]}, "code": code}))
         return 0
     monkeypatch.setattr(cal, "calibrate", fake_calibrate)
+    printed = []                                   # the summary comes after the completed record (item 63)
+    monkeypatch.setattr(cal, "print_summary", lambda verify, result, out: printed.append(json.loads(
+        (out.parent / "attempts" / "calibration-1.json").read_text())["status"]))
     monkeypatch.setattr(sys, "argv", ["calibration.py", "--workers", "1"])
     (repo / "notes.txt").write_text("x")
     with pytest.raises(SystemExit, match="committed tree"):
         cal.main()
     (repo / "notes.txt").unlink()
-    assert cal.main() == 0
+    assert cal.main() == 0 and printed == ["completed"]
     (call,) = seen
     assert call["code"]["git_dirty"] is False and call["code"] == call["attempt"]["record"]["code"]
     assert call["tree"] == {"attempt_files": [], "other_changes": [], "ignored_allowed": []}
@@ -1241,10 +1274,16 @@ def test_summaries_follow_completion_and_a_closed_output_cannot_fail_an_attempt(
                                                          SimpleNamespace(chunk=2, development=False), 1, attempt),
                           result) == 0
     assert result.exists() and json.loads(attempt["path"].read_text())["status"] == "completed"
+    output = open(tmp_path / "stdout.txt", "w")      # a real file, whatever pytest's capture mode
+    monkeypatch.setattr(sys, "stdout", output)
     redirected = []
     monkeypatch.setattr(rv.os, "dup2", lambda fd, target: redirected.append(target))
     cal.print_summary(rv, json.loads(result.read_text()), result)     # the "NC1:" line hits a broken pipe
-    assert redirected == [sys.stdout.fileno()]
+    import errno
+    monkeypatch.setattr(builtins, "print", lambda *a, **k: (_ for _ in ()).throw(OSError(errno.ENOSPC, "full")))
+    rv.quiet_print("a full disk")                                     # not only a broken pipe
+    assert redirected == [output.fileno(), output.fileno()]
+    output.close()
 
 
 def test_the_verification_publishes_last_and_only_with_the_code_it_started_with(tmp_path, monkeypatch):
@@ -1307,3 +1346,21 @@ def test_the_report_refuses_a_calibration_other_than_the_one_the_verification_re
     (tmp_path / "results" / "calibration.json").write_text("{}\n")
     with pytest.raises(SystemExit, match="not the file the verification read"):
         rt.main()                                                     # another calibration.json
+
+
+# --- 13. Eighth review -----------------------------------------------------------------------------------------
+
+def test_the_start_time_of_a_process_whose_name_is_not_utf8_is_read():
+    """The review's probe: a process named b"\\xff\\xfe) z" gave no start time, so the live-attempt check fell
+    back to its cautious answer."""
+    rv = _verification()
+    code = ("import ctypes, time; ctypes.CDLL(None).prctl(15, bytes([255, 254, 41, 32, 122]), 0, 0, 0); "
+            "print('ready', flush=True); time.sleep(60)")
+    child = subprocess.Popen([sys.executable, "-c", code], stdout=subprocess.PIPE, text=True)
+    try:
+        assert child.stdout.readline().strip() == "ready"
+        assert bytes([255, 254, 41]) in Path(f"/proc/{child.pid}/stat").read_bytes()
+        assert isinstance(rv._process_start(child.pid), int)
+    finally:
+        child.kill()
+        child.wait()
