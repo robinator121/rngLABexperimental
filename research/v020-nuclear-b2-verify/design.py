@@ -248,11 +248,13 @@ def main() -> None:
                     null_lattice.append({"size": size, "t": t, "nuclide": names[j], "mean": mean, "spacing": spacing,
                                          "spacing_over_sd": spacing / math.sqrt(size * q * (1.0 - q))})
     null_lattice_worst = max(null_lattice, key=lambda row: row["spacing_over_sd"]) if null_lattice else None
-    # numpy's binomial is also wrong at n above 2**53 when the expected count is small (numerics.py
-    # numpy_binomial: at n = 2**60 + 12345 the variance is 1.2 times too large at mean 115, the mean is biased at
-    # 1,000 and 10,000, and the variance is still slightly inflated at 1e6). The BIG null calls it inside multinomial (categories in order, each a binomial in the count
-    # still unassigned with the conditional probability) and for photons (a binomial in the decay count). With
-    # expected counts in place of draws, the smallest expected count min(n p, n (1 - p)) of a call with n > 2**53:
+    # numpy's binomial is also wrong at large n when the expected count is small, below 2**53 as well (numerics.py
+    # numpy_binomial: at n = 1e15, 2**53 - 1 and 2**60 + 12345 the mean or the variance is off at means up to 1e4;
+    # at n = 1e12 and 1e14 no error is visible). The BIG null calls it inside multinomial (categories in order,
+    # each a binomial in the count still unassigned with the conditional probability) and for photons (a
+    # binomial in the decay count). With expected counts in place of draws, the smallest expected count
+    # min(n p, n (1 - p)) of a call with n > NUMPY_LARGE_N:
+    NUMPY_LARGE_N = 1e13
     numpy_calls = []
     for size in protocol["runs"]["BIG"]["initial_sizes"]:
         plan = AggregatePlan(s2, cases["S2"]["times"], size)
@@ -265,26 +267,26 @@ def main() -> None:
                 if len(categories) == 1:
                     expected[first] = start
                     continue
-                q = plan.interval_plans[delta][i].law.as_float()
+                q = plan.source_plan(delta, i).law.as_float()
                 law = q / q.sum()
                 expected[first:first + len(law)] = start * law
                 left, remaining_p = start, 1.0
                 for c in range(len(law) - 1):
                     p = min(float(law[c] / remaining_p), 1.0)
-                    if left > 2.0 ** 53:
+                    if left > NUMPY_LARGE_N:
                         numpy_calls.append({"size": size, "interval": k + 1, "nuclide": names[i], "call": "multinomial",
                                             "category": c, "n": left, "p": p, "expected": left * min(p, 1.0 - p)})
                     left -= start * law[c]
                     remaining_p -= law[c]
             decays = (expected @ steps).reshape(plan.n_nuclides, plan.n_channels)
             for j, channel, y in plan.yield_channels:
-                if decays[j, channel] > 2.0 ** 53:
+                if decays[j, channel] > NUMPY_LARGE_N:
                     numpy_calls.append({"size": size, "interval": k + 1, "nuclide": names[j], "call": "photons",
                                         "channel": channel, "n": float(decays[j, channel]), "p": y,
                                         "expected": float(decays[j, channel]) * min(y, 1.0 - y)})
     numpy_smallest = min(numpy_calls, key=lambda row: row["expected"]) if numpy_calls else None
     if numpy_smallest is not None and numpy_smallest["expected"] < 1e12:
-        raise SystemExit(f"the BIG null calls numpy's binomial above 2**53 with an expected count of "
+        raise SystemExit(f"the BIG null calls numpy's binomial above n = {NUMPY_LARGE_N:g} with an expected count of "
                          f"{numpy_smallest['expected']:.3g}, where numpy is not reliable; see numerics.py")
 
     # Sensitivity of the variance tests at the Holm level (approximate: nu taken from the null moments).
@@ -365,14 +367,16 @@ def main() -> None:
         "photon_interval_tests": {"min_expected": verify.PHOTON_MIN_EXPECTED, "cells": photon_cells},
         "big_parts": big_parts,
         "calibration_null_lattice": {
-            "note": "numpy's binomial is not exact above 2**53: its results lie on a lattice of spacing at most "
-                    "np.spacing(2 * count), and for small expected counts its mean and variance are wrong "
-                    "(numerics.py numpy_binomial). The BIG null of calibration.py stays where neither matters: the "
-                    "lattice spacing is at most 'worst' standard deviations of a BIG state count, and every numpy "
-                    "binomial call above 2**53 has an expected count of at least numpy_calls_above_2_53 "
-                    "(asserted here to be at least 1e12); numerics.py measures numpy at that count",
+            "note": "numpy's binomial is not exact at large n: above 2**53 its results lie on a lattice of spacing "
+                    "at most np.spacing(2 * count), and for small expected counts its mean and variance are wrong, "
+                    "below 2**53 too (numerics.py numpy_binomial: at n = 1e15, 2**53 - 1 and 2**60 + 12345; not at "
+                    "1e12 or 1e14). The BIG null of calibration.py stays where neither matters: the lattice spacing "
+                    "is at most 'worst' standard deviations of a BIG state count, and every numpy binomial call with "
+                    "n above numpy_calls_large_n.n_above has an expected count of at least its "
+                    "smallest_expected_count (asserted here to be at least 1e12); numerics.py measures numpy at that "
+                    "call's own n and p",
             "cells_above_2_53": len(null_lattice), "worst": null_lattice_worst,
-            "numpy_calls_above_2_53": {"calls": len(numpy_calls),
+            "numpy_calls_large_n": {"n_above": NUMPY_LARGE_N, "calls": len(numpy_calls),
                                        "smallest_expected_count": numpy_smallest["expected"] if numpy_smallest else None,
                                        "smallest": numpy_smallest}},
         "sensitivity": sensitivity,

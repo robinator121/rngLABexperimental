@@ -1171,7 +1171,7 @@
     1025
   ],
   "calibration_null_lattice": {
-    "note": "numpy's binomial is not exact above 2**53: its results lie on a lattice of spacing at most np.spacing(2 * count), and for small expected counts its mean and variance are wrong (numerics.py numpy_binomial). The BIG null of calibration.py stays where neither matters: the lattice spacing is at most 'worst' standard deviations of a BIG state count, and every numpy binomial call above 2**53 has an expected count of at least numpy_calls_above_2_53 (asserted here to be at least 1e12); numerics.py measures numpy at that count",
+    "note": "numpy's binomial is not exact at large n: above 2**53 its results lie on a lattice of spacing at most np.spacing(2 * count), and for small expected counts its mean and variance are wrong, below 2**53 too (numerics.py numpy_binomial: at n = 1e15, 2**53 - 1 and 2**60 + 12345; not at 1e12 or 1e14). The BIG null of calibration.py stays where neither matters: the lattice spacing is at most 'worst' standard deviations of a BIG state count, and every numpy binomial call with n above numpy_calls_large_n.n_above has an expected count of at least its smallest_expected_count (asserted here to be at least 1e12); numerics.py measures numpy at that call's own n and p",
     "cells_above_2_53": 42,
     "worst": {
       "size": 1152921504606859321,
@@ -1181,18 +1181,19 @@
       "spacing": 256.0,
       "spacing_over_sd": 6.51821771812329e-07
     },
-    "numpy_calls_above_2_53": {
-      "calls": 109,
-      "smallest_expected_count": 60033334876570.25,
+    "numpy_calls_large_n": {
+      "n_above": 10000000000000.0,
+      "calls": 138,
+      "smallest_expected_count": 2268069727228.5967,
       "smallest": {
         "size": 1152921504606859321,
-        "interval": 6,
-        "nuclide": "Xb-396",
+        "interval": 2,
+        "nuclide": "Xa-400",
         "call": "multinomial",
-        "category": 0,
-        "n": 1.5368533728401984e+16,
-        "p": 0.00390625,
-        "expected": 60033334876570.25
+        "category": 7,
+        "n": 22680697271812.625,
+        "p": 0.899999999997913,
+        "expected": 2268069727228.5967
       }
     }
   },

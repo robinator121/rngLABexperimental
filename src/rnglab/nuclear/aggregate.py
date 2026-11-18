@@ -361,7 +361,14 @@ class AggregatePlan(_Sealed):
             interval_plans[delta] = plans
         self.interval_plans = interval_plans
         self.diagnostics = diagnostics
+        self._source_plans = {(delta, i): source for delta, plans in interval_plans.items()
+                              for i, source in plans.items()}
         self._sealed = True
+
+    def source_plan(self, delta: float, i: int) -> SourcePlan:
+        """The source plan of nuclide i for intervals of length delta, without copying interval_plans (whose
+        every read copies the whole nested mapping)."""
+        return self._source_plans[(float(delta), int(i))]
 
     def layout(self) -> dict[str, Any]:
         return {"layout": LAYOUT, "parts": self.parts, "part_max": self.part_max, "slots": self.slots,
@@ -394,8 +401,9 @@ class _Views:
         self.category_steps = plan.category_steps
         self.deltas = plan.deltas.tolist()
         self.slot_offset = dict(plan.slot_offset)
-        self._sources = {delta: {i: (s.p_small, s.flip) for i, s in plans.items()}
-                         for delta, plans in plan.interval_plans.items()}
+        self._sources: dict[float, dict[int, tuple[np.ndarray, np.ndarray]]] = {}
+        for (delta, i), source in plan._source_plans.items():
+            self._sources.setdefault(delta, {})[i] = (source.p_small, source.flip)
 
     def sources(self, delta: float) -> dict[int, tuple[np.ndarray, np.ndarray]]:
         """(p_small, flip) of every source nuclide for one interval length, as taken when the run began."""

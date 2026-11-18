@@ -5,7 +5,7 @@
 The script refuses to draw if a frozen file differs from protocol.sha256. The
 main run refuses unless the tree is committed (only files of earlier attempts in
 results/attempts/ may be uncommitted, and no ignored file other than bytecode
-caches and smoke/ may sit in src/ or in this folder), PYTHONPYCACHEPREFIX names
+caches, egg-info metadata and smoke/ may sit in src/ or in this folder), PYTHONPYCACHEPREFIX names
 a directory outside the repository, results/verification.json is absent and the
 committed record calibration matches (record_calibration). It runs as a recorded
 attempt (begin_attempt: reserved atomically before any draw, finished as
@@ -175,9 +175,10 @@ def require_pycache_outside(repo: Path) -> None:
 def record_tree(repo: Path) -> dict:
     """Every change in the tree, split into files of earlier attempts (untracked, inside ATTEMPTS) and the rest.
 
-    The rest includes ignored files in src/ and in this folder, other than bytecode caches and smoke/: an
-    ignored module beside the code (a sitecustomize.py, a module shadowing one of the study's) could change
-    what a record run computes without appearing anywhere in Git."""
+    The rest includes ignored files in src/ and in this folder, other than bytecode caches, the egg-info
+    metadata of an editable install (src/<name>.egg-info/, which cannot be imported) and smoke/: an ignored
+    module beside the code (a sitecustomize.py, a module shadowing one of the study's) could change what a
+    record run computes without appearing anywhere in Git."""
     out = _git(repo, "status", "--porcelain=v1", "-z", "--untracked-files=all", "--ignored=matching").stdout.decode()
     attempt_files, other = [], []
     for entry in out.split("\0"):
@@ -186,7 +187,8 @@ def record_tree(repo: Path) -> dict:
         if entry.startswith("!! "):
             path = entry[3:]
             if (not path.startswith(("src/", STUDY)) or "__pycache__/" in path
-                    or path.startswith(STUDY + "smoke/")):
+                    or path.startswith(STUDY + "smoke/")
+                    or (path.startswith("src/") and path.split("/")[1].endswith(".egg-info"))):
                 continue
         (attempt_files if entry.startswith("?? " + ATTEMPTS) else other).append(entry)
     return {"attempt_files": attempt_files, "other_changes": other}
@@ -234,8 +236,18 @@ def _lock(folder: Path, script: str):
     raise SystemExit(f"{lock_path} keeps being deleted or replaced; never touch the lock file of a record run")
 
 
+def _process_start(pid: int) -> int | None:
+    """A process's start time in clock ticks since boot (field 22 of /proc/<pid>/stat), or None."""
+    try:
+        stat = Path(f"/proc/{pid}/stat").read_text()
+        return int(stat[stat.rindex(")") + 2:].split()[19])     # fields after the command name start at field 3
+    except (OSError, ValueError, IndexError):
+        return None
+
+
 def _alive_here(record: dict) -> bool:
-    """Whether a record names another process of the same script that still runs on this host."""
+    """Whether a record names a process that still runs on this host: the same process id and, where /proc
+    gives it, the same start time (a process id reused by another program is not the attempt)."""
     try:
         pid = int(record["pid"])
     except (KeyError, TypeError, ValueError):
@@ -247,12 +259,11 @@ def _alive_here(record: dict) -> bool:
     except ProcessLookupError:
         return False
     except PermissionError:
-        return True
-    try:  # a process id may have been reused by another program
-        command = Path(f"/proc/{pid}/cmdline").read_bytes().replace(b"\0", b" ").decode(errors="replace")
-    except OSError:
-        return True
-    return Path(str((record.get("argv") or [""])[0])).name in command
+        pass
+    start = _process_start(pid)
+    if start is None or record.get("process_start") is None:
+        return True                     # cannot tell a reused process id apart: the safe answer
+    return start == record["process_start"]
 
 
 def begin_attempt(out_dir: Path, script: str, code: dict, *, deviation: str | None = None) -> dict:
@@ -291,7 +302,8 @@ def begin_attempt(out_dir: Path, script: str, code: dict, *, deviation: str | No
                                  "another commit is a protocol deviation: give --deviation '<reason>'")
         number = 1 + max((n for n, _, _ in previous), default=0)
         record = {"schema": ATTEMPT_SCHEMA, "script": script, "attempt": number, "status": "started",
-                  "started_utc": _utc(), "host": socket.gethostname(), "pid": os.getpid(), "argv": sys.argv,
+                  "started_utc": _utc(), "host": socket.gethostname(), "pid": os.getpid(),
+                  "process_start": _process_start(os.getpid()), "argv": sys.argv,
                   "code": code, "previous_attempts": [{"attempt": n, "status": r["status"],
                                                        "git_commit": r["code"].get("git_commit")}
                                                       for n, _, r in previous],
@@ -439,13 +451,20 @@ def record_calibration(protocol: dict, frozen: dict, code: dict, results: Path =
     if not commit or _git(repo, "merge-base", "--is-ancestor", str(commit), "HEAD", check=False).returncode != 0:
         problems.append(f"its commit {commit} is not an ancestor of this one")
     else:
-        changed = [n for n in _git(repo, "diff", "--name-only", "-z", str(commit), "HEAD").stdout.decode().split("\0")
+        changed = [n for n in _git(repo, "diff", "--name-only", "--no-renames", "-z", str(commit),
+                                   "HEAD").stdout.decode().split("\0")
                    if n and not n.startswith(RESULTS)]
         if changed:
             problems.append("files outside results/ changed since it ran: " + ", ".join(changed[:5]))
     if (data.get("replay_check") or {}).get("mismatches"):
         problems.append("its replay check found mismatches")
     batteries = data.get("batteries") or 0
+    r1, counts = data.get("R1_event") or {}, [f.get("failed_batteries") for f in (data.get("families") or {}).values()]
+    k = r1.get("failed_batteries")
+    if (not counts or not all(isinstance(c, int) for c in counts) or not isinstance(k, int)
+            or r1.get("batteries") != batteries or not max(counts) <= k <= sum(counts)
+            or r1.get("false_fail_ci95") != clopper_pearson(k, batteries)):
+        problems.append("its R1 event count is missing, or inconsistent with its family counts and batteries")
     for family, f in (data.get("families") or {}).items():
         if not batteries or f.get("false_fail_ci95") != clopper_pearson(f.get("failed_batteries", -1), batteries):
             problems.append(f"its stored interval for {family} does not follow from its counts")
@@ -664,7 +683,7 @@ def path_tests(run, prefix: str, case: dict, min_expected: float) -> tuple[dict,
         name = f"{prefix} S2 BT-PATH {scheme.nuclides[i].name}"
         try:
             parts = [fixed_cells_chisquare(run.path_counts[k, first:first + width],
-                                           plan.interval_plans[float(plan.deltas[k])][i].law.as_float(),
+                                           plan.source_plan(plan.deltas[k], i).law.as_float(),
                                            interval_cells)
                      for k, interval_cells in per_interval.items()]
             out[name] = summed_chisquare(parts)
@@ -1159,24 +1178,32 @@ def study(args, frozen: dict, protocol: dict, design: dict, code: dict, out_dir:
     result["verdicts"]["R0"] = calibration["R0"] if calibration else "not read: smoke run"
     result["finished_utc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     result["elapsed_seconds"] = time.perf_counter() - clock
+    print(json.dumps({"namespace": ns, "R1": result["verdicts"]["R1"], "failed": failed,
+                      "R2": result["verdicts"]["R2"], "PC p-values": [t1, t2, t3], "level": level,
+                      "family sizes": {f: len(v) for f, v in tests.items()},
+                      "smallest p": {f: min(v["p_values"]) for f, v in result["families"].items()},
+                      "elapsed_seconds": round(result["elapsed_seconds"], 1)}, indent=1))
+    publish_verification(result, pending, out_dir, manifests, attempt, code)
+    return 0 if result["verdicts"]["R1"] == "PASS" else 1
+
+
+def publish_verification(result: dict, pending: dict, out_dir: Path, manifests: Path, attempt: dict | None,
+                         code: dict) -> None:
+    """The study's last act: write the manifests and publish verification.json (nothing is printed after it, so
+    no failure can follow a publication). A record run first checks that its code is still the code it took
+    when it started."""
     if attempt is not None:
         require_same_code(code, REPO, "verification")
     for name, text in pending.items():
         (manifests / name).write_text(text)
     if attempt is None:
         (out_dir / "verification.json").write_text(json.dumps(result, indent=1, default=str) + "\n")
-    else:
-        result["attempt"] = {"number": attempt["record"]["attempt"], "record": f"attempts/{attempt['path'].name}",
-                             "manifests": f"attempts/{attempt['dir'].name}/manifests",
-                             "previous_attempts": attempt["record"]["previous_attempts"],
-                             "deviation": attempt["record"]["deviation"]}
-        write_new(out_dir / "verification.json", json.dumps(result, indent=1, default=str) + "\n")
-    print(json.dumps({"namespace": ns, "R1": result["verdicts"]["R1"], "failed": failed,
-                      "R2": result["verdicts"]["R2"], "PC p-values": [t1, t2, t3], "level": level,
-                      "family sizes": {f: len(v) for f, v in tests.items()},
-                      "smallest p": {f: min(v["p_values"]) for f, v in result["families"].items()},
-                      "elapsed_seconds": round(result["elapsed_seconds"], 1)}, indent=1))
-    return 0 if result["verdicts"]["R1"] == "PASS" else 1
+        return
+    result["attempt"] = {"number": attempt["record"]["attempt"], "record": f"attempts/{attempt['path'].name}",
+                         "manifests": f"attempts/{attempt['dir'].name}/manifests",
+                         "previous_attempts": attempt["record"]["previous_attempts"],
+                         "deviation": attempt["record"]["deviation"]}
+    write_new(out_dir / "verification.json", json.dumps(result, indent=1, default=str) + "\n")
 
 
 if __name__ == "__main__":

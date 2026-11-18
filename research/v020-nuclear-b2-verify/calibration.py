@@ -420,18 +420,13 @@ def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, a
               "thread_environment": threads, "inherited_thread_environment": inherited,
               "families": summary, "C1": all(f["C1_holds"] for f in summary.values()), "R1_event": r1_event(raw),
               "elapsed_seconds": time.perf_counter() - clock}
-    out.parent.mkdir(parents=True, exist_ok=True)
-    if attempt is None:
-        out.write_text(json.dumps(result, indent=1) + "\n")
-    else:
+    if attempt is not None:
         result["attempt"] = {"number": attempt["record"]["attempt"], "record": f"attempts/{attempt['path'].name}",
                              "chunk_log": f"attempts/{attempt['dir'].name}/chunks.jsonl",
                              "previous_attempts": attempt["record"]["previous_attempts"],
                              "deviation": attempt["record"]["deviation"]}
         result["replay_check"] = replay_check(attempt)
         result["tree"] = tree
-        verify.require_same_code(code, REPO, "calibration")
-        verify.write_new(out, json.dumps(result, indent=1) + "\n")
     for family, f in summary.items():
         print(f"{family}: {f['failed_batteries']} / {batteries} batteries fail under the null "
               f"(rate {f['false_fail_rate']:.4f}, 95% CI [{f['false_fail_ci95'][0]:.4f}, {f['false_fail_ci95'][1]:.4f}]); "
@@ -445,7 +440,13 @@ def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, a
     r1 = result["R1_event"]
     print(f"R1 event (NC1 or NC2 fails): {r1['failed_batteries']} / {batteries} batteries "
           f"(rate {r1['false_fail_rate']:.4f}, 95% CI [{r1['false_fail_ci95'][0]:.4f}, {r1['false_fail_ci95'][1]:.4f}])")
-    print(f"wrote {out} in {result['elapsed_seconds']:.0f} s")
+    print(f"publishing {out} ({result['elapsed_seconds']:.0f} s)", flush=True)
+    out.parent.mkdir(parents=True, exist_ok=True)       # publication is the last act: nothing is printed after it
+    if attempt is None:
+        out.write_text(json.dumps(result, indent=1) + "\n")
+    else:
+        verify.require_same_code(code, REPO, "calibration")
+        verify.write_new(out, json.dumps(result, indent=1) + "\n")
     return 0
 
 

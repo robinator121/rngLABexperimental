@@ -20,8 +20,8 @@ Sections:
   midpoint_convention  the discretisation bound with tails and the variance of the midpoint law, evaluated in high
                   precision (not interval arithmetic), and the variance cost of inverting at u itself
   small_p         P(X >= 1) = 1 - (1 - p)**n for tiny p, relative error against 80-digit decimal
-  numpy_binomial  numpy's binomial at n = 2**60 + 12345: mean and variance at small means, where it is wrong, and
-                  at the smallest expected count of any call the calibration's BIG null makes above 2**53
+  numpy_binomial  numpy's binomial at large n (1e12 ... 2**60 + 12345): mean and variance at small means, where it
+                  is wrong (below 2**53 too), and at the BIG null's call with the smallest expected count
   paths_close     close decay constants: digits used, decimal against matrix exponential, float closed form
   paths_extreme   decay constants spanning 24 orders of magnitude, intervals 1e-15 ... 1e15
   paths_tiny      tiny intervals: relative error of the matrix exponential for tiny path probabilities
@@ -444,29 +444,36 @@ def _traced_draws() -> dict:
 
 
 def numpy_binomial_section(draws: int = 4_000_000) -> dict:
-    """numpy's binomial at n = 2**60 + 12345, as the calibration's BIG null calls it (calibration.NullModel).
+    """numpy's binomial at large n, as the calibration's BIG null calls it (calibration.NullModel).
 
-    Per row, 4,000,000 draws at mean n p: the sample mean's z and the sample variance over the exact binomial
-    variance (its standard error is about sqrt(2 / draws) = 0.0007). Small means are wrong at this n. The
-    last row is the smallest expected count min(n p, n (1 - p)) of any binomial call with n > 2**53 that the
-    BIG null makes (design.json calibration_null_lattice numpy_calls_above_2_53).
+    Per row, 4,000,000 draws: the sample mean's z and the sample variance over the exact binomial variance
+    (its standard error is about sqrt(2 / draws) = 0.0007). Rows at n = 1e12, 1e14, 1e15, 2**53 - 1 and
+    2**60 + 12345 with means 115, 1e3 and 1e4 show where small expected counts go wrong (below 2**53 too);
+    rows at 2**60 + 12345 with larger means show where the error fades. The last row is the BIG null's call
+    with the smallest expected count among those with n above design.json's numpy_calls_large_n.n_above, at
+    that call's own n (rounded to an integer: the replay uses expected counts) and p. Draws are centred on an
+    integer near the mean before conversion to float, so large counts lose no precision.
     """
-    n = 2 ** 60 + 12345
     design = json.loads((REPO / "research/v020-nuclear-b2-verify/design.json").read_text())
-    smallest = design["calibration_null_lattice"]["numpy_calls_above_2_53"]["smallest_expected_count"]
+    smallest = design["calibration_null_lattice"]["numpy_calls_large_n"]["smallest"]
+    cases = [(n, mean / n) for n in (10 ** 12, 10 ** 14, 10 ** 15, 2 ** 53 - 1, 2 ** 60 + 12345)
+             for mean in (115.0, 1e3, 1e4)]
+    cases += [(2 ** 60 + 12345, mean / (2 ** 60 + 12345)) for mean in (1e6, 1e8, 1e10)]
+    cases.append((int(round(smallest["n"])), float(smallest["p"])))
     rows = []
-    for mean in (115.0, 1e3, 1e4, 1e6, 1e8, 1e10, float(smallest)):
-        p = mean / n
+    for n, p in cases:
         exact_mean = Fraction(n) * Fraction(p)
         exact_variance = exact_mean * (1 - Fraction(p))
-        rng = np.random.default_rng(namespace_seed(NAMESPACE, "numpy-binomial", repr(mean)))
-        x = rng.binomial(n, p, size=draws).astype(np.float64)
-        sample_mean, sample_variance = float(x.mean()), float(x.var(ddof=1))
-        rows.append({"n": n, "p": p, "mean": float(exact_mean), "draws": draws,
-                     "mean_z": (sample_mean - float(exact_mean)) / math.sqrt(float(exact_variance) / draws),
-                     "variance_ratio": sample_variance / float(exact_variance)})
+        centre = round(exact_mean)
+        rng = np.random.default_rng(namespace_seed(NAMESPACE, "numpy-binomial", n, repr(p)))
+        x = (rng.binomial(n, p, size=draws) - np.int64(centre)).astype(np.float64)
+        offset = float(exact_mean - centre)
+        rows.append({"n": n, "p": p, "mean": float(exact_mean),
+                     "expected_count": float(min(exact_mean, n - exact_mean)), "draws": draws,
+                     "mean_z": (float(x.mean()) - offset) / math.sqrt(float(exact_variance) / draws),
+                     "variance_ratio": float(x.var(ddof=1)) / float(exact_variance)})
     return {"rows": rows, "variance_ratio_standard_error": math.sqrt(2.0 / (draws - 1)),
-            "smallest_expected_count_of_the_big_null": smallest}
+            "smallest_call_of_the_big_null": smallest}
 
 
 def cdf_finiteness_section() -> dict:

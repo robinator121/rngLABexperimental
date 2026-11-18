@@ -1,0 +1,26 @@
+# v0.20 nuclear module, B2 after the sixth review (not frozen): test evidence
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-18T18:26:21Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+1 failed, 1033 passed, 2 skipped, 3 warnings in 359.54s (0:05:59)
+
+The failure is tests/v019/test_audit_integrity.py::test_killed_writer_never_leaves_a_run_that_passes_as_complete
+(AssertionError: (12, {'COMPLETE': 40, ...})), a v0.19 test that kills a writer process after 0.25-0.45 s of
+wall-clock time. It imports nothing that B2 changed (it loads research/v019-audit through its own loader; last
+changed in 5af87c9). Run alone four times on this tree it passed three times and failed once with the same
+assertion. The test was not modified. All other 1,033 tests passed.
+
+## 2. Nuclear tests only (Layer A 115, B2 201 including 24 in test_b2_guards.py and 65 in test_b2_integrity.py): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider -W error::DeprecationWarning
+316 passed, 3 warnings in 63.94s
+
+The three warnings are RuntimeWarnings (overflow in the float64 matrix exponential) raised on purpose by
+test_b2_guards.py. Layer A (src/rnglab/nuclear/{decay,bateman,checks,streams,manifest,__init__}.py,
+tests/v020/nuclear/, research/v020-nuclear-a-verify/) is byte-identical to 526e9f7.
+
+## 3. Items 55-62 change no draw and no p-value
+run_verification.py --smoke on this tree against the smoke output of 43c0b7e: the 16 digest fields and all
+934 p-value fields are identical; the BIG-DECAY records gain their exact successes, trials and probability.
+R1 PASS; R2 NOT MET at the smoke scale, as before. design.py regenerates design.json with only its numpy block
+changed (numpy_calls_large_n: 138 calls with n above 1e13, smallest expected count 2.27e12).

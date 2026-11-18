@@ -39,6 +39,9 @@ def main() -> None:
     parser.add_argument("--smoke", action="store_true")
     folder = HERE / ("smoke" if parser.parse_args().smoke else "results")
     r = json.loads((folder / "verification.json").read_text())
+    calibration, read = folder / "calibration.json", r.get("calibration") or {}
+    if read and (not calibration.exists() or hashlib.sha256(calibration.read_bytes()).hexdigest() != read.get("sha256")):
+        raise SystemExit(f"{calibration} is not the file the verification read (sha256 {read.get('sha256')})")
     v = r["verdicts"]
     lines = [f"# B2 verification: tables from `{folder.name}/verification.json`", "",
              f"Namespace `{r['namespace']}`; code `{r['code']['git_commit']}` ({tree_note(r.get('tree'))}); "
@@ -85,11 +88,7 @@ def main() -> None:
     errored = [f"{name} ({d['error']})" for name, d in members.items() if "error" in d]
     lines += ["", f"Tests not applicable (fewer than two cells after pooling): {', '.join(not_run) or 'none'}.",
               "", f"Planned tests that could not be computed (failed items): {', '.join(errored) or 'none'}."]
-    calibration = folder / "calibration.json"
-    read = r.get("calibration") or {}
     if calibration.exists():
-        if read and hashlib.sha256(calibration.read_bytes()).hexdigest() != read.get("sha256"):
-            raise SystemExit(f"{calibration} is not the file the verification read (sha256 {read.get('sha256')})")
         c = json.loads(calibration.read_text())
         replay = c.get("replay_check") or {}
         deviation = (c.get("attempt") or {}).get("deviation")

@@ -58,8 +58,9 @@ def binomial_z_check(successes: int, trials: int, probability: float, label: str
         z = float(Decimal(s * b - t * a) / Decimal(t * a * (b - a)).sqrt())
     p = float(2.0 * stats.norm.sf(abs(z)))
     _finite(z, p)
-    return {"test": label, "estimate": float(s), "expected": t * float(probability),
-            "variance": t * float(probability) * (1.0 - float(probability)), "z": z, "p_value": p}
+    return {"test": label, "successes": s, "trials": t, "probability": float(probability), "estimate": float(s),
+            "expected": t * float(probability), "variance": t * float(probability) * (1.0 - float(probability)),
+            "z": z, "p_value": p}
 
 
 def _two_sided(lower: float, upper: float) -> float:
@@ -374,7 +375,7 @@ def planned_path_cells(plan, expected_start_counts: Sequence[Sequence[float]], *
     for i in plan.sources:
         per_interval = {}
         for k, delta in enumerate(plan.deltas.tolist()):
-            q = plan.interval_plans[delta][i].law.as_float()
+            q = plan.source_plan(delta, i).law.as_float()
             cells = pooled_cells(float(expected_start_counts[k][i]) * q, min_expected)
             if len(cells) >= 2:
                 per_interval[k] = cells

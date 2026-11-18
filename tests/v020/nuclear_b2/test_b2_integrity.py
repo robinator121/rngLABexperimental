@@ -402,7 +402,9 @@ def _calibration_record(rv, repo, results, protocol, frozen, **change):
             "code": code, "environment": rv.environment(),
             "attempt": {"number": 1, "record": "attempts/calibration-1.json", "deviation": None},
             "families": {"NC1": {"failed_batteries": 500, "false_fail_ci95": rv.clopper_pearson(500, batteries)}},
-            "R1_event": {"failed_batteries": 900}, "replay_check": {"chunks_compared": 0, "mismatches": []}}
+            "R1_event": {"failed_batteries": 500, "batteries": batteries,
+                         "false_fail_ci95": rv.clopper_pearson(500, batteries)},
+            "replay_check": {"chunks_compared": 0, "mismatches": []}}
     data.update(change)
     (results / "attempts").mkdir(parents=True, exist_ok=True)
     (results / "calibration.json").write_text(json.dumps(data))
@@ -421,6 +423,7 @@ def test_the_verification_needs_a_matching_completed_record_calibration(tmp_path
     repo, results = tmp_path / "repo", tmp_path / "repo" / rv.RESULTS
     (repo / "src").mkdir(parents=True)
     (repo / "src" / "seeds.py").write_text("x = 1\n")
+    (repo / "README").write_text("r\n")
     _git(repo, "init", "-q")
     _git(repo, "add", "-A")
     _git(repo, "commit", "-q", "-m", "frozen")
@@ -442,11 +445,18 @@ def test_the_verification_needs_a_matching_completed_record_calibration(tmp_path
                              (dict(data, environment=dict(data["environment"], numpy="0.0")), "numpy"),
                              (dict(data, replay_check={"mismatches": [{"attempt": 1}]}), "replay check"),
                              (dict(data, families={"NC1": {"failed_batteries": 950,
-                                                            "false_fail_ci95": [0.001, 0.005]}}), "counts")):
+                                                            "false_fail_ci95": [0.001, 0.005]}}), "counts"),
+                             (dict(data, R1_event=dict(data["R1_event"], failed_batteries=5)), "R1 event")):
         (results / "calibration.json").write_text(json.dumps(change))   # uncommitted, and no longer the record's
         with pytest.raises(SystemExit, match=message):
             rv.record_calibration(protocol, frozen, code, results, repo)
     _git(repo, "checkout", "-q", "--", ".")
+    _git(repo, "mv", "README", rv.RESULTS + "README")      # the review's probe: rename detection hid the deletion
+    _git(repo, "commit", "-q", "-m", "moved")
+    with pytest.raises(SystemExit, match="outside results.*README"):
+        rv.record_calibration(protocol, frozen, rv.record_code(repo), results, repo)
+    _git(repo, "mv", rv.RESULTS + "README", "README")
+    _git(repo, "commit", "-q", "-m", "moved back")
     (repo / "src" / "seeds.py").write_text("x = 2\n")                   # committed after the calibration
     _git(repo, "commit", "-q", "-am", "another seed derivation")
     with pytest.raises(SystemExit, match="outside results"):
@@ -950,7 +960,9 @@ def test_a_record_calibration_whose_code_changed_while_it_ran_publishes_nothing(
 def test_record_runs_refuse_ignored_modules_beside_the_code_and_bytecode_from_the_tree(tmp_path, monkeypatch):
     rv = _verification()
     _git(tmp_path, "init", "-q")
-    (tmp_path / ".gitignore").write_text("__pycache__/\nsitecustomize.py\nsmoke/\n")
+    (tmp_path / ".gitignore").write_text("__pycache__/\nsitecustomize.py\nsmoke/\n*.egg-info/\n")
+    (tmp_path / "src" / "pkg.egg-info").mkdir(parents=True)                  # left by pip install -e .
+    (tmp_path / "src" / "pkg.egg-info" / "PKG-INFO").write_text("Name: pkg\n")
     (tmp_path / "src" / "pkg" / "__pycache__").mkdir(parents=True)
     (tmp_path / "src" / "pkg" / "__pycache__" / "m.cpython-314.pyc").write_bytes(b"x")
     (tmp_path / rv.STUDY / "smoke").mkdir(parents=True)
@@ -1113,12 +1125,15 @@ def test_numpy_binomial_is_measured_where_it_fails_and_where_the_big_null_calls_
     the design's note said the BIG null was exact up to the lattice."""
     numerics = _load("b2_integrity_numerics", "research/v020-nuclear-b2-numerics/numerics.py")
     monkeypatch.setattr(numerics, "NAMESPACE", f"{ns}-numpy-binomial")
-    rows = numerics.numpy_binomial_section(draws=100_000)["rows"]
-    assert rows[0]["mean"] == pytest.approx(115.0) and rows[0]["variance_ratio"] > 1.1
+    rows = {(r["n"], round(r["mean"])): r for r in numerics.numpy_binomial_section(draws=100_000)["rows"]}
+    assert rows[(2 ** 60 + 12345, 115)]["variance_ratio"] > 1.1
+    assert rows[(2 ** 53 - 1, 115)]["variance_ratio"] > 1.02          # the fifth review's check: below 2**53 too
     design = json.loads((REPO / "research/v020-nuclear-b2-verify/design.json").read_text())
-    calls = design["calibration_null_lattice"]["numpy_calls_above_2_53"]
-    assert calls["calls"] > 0 and calls["smallest_expected_count"] >= 1e12
-    assert rows[-1]["mean"] == pytest.approx(calls["smallest_expected_count"])
+    calls = design["calibration_null_lattice"]["numpy_calls_large_n"]
+    assert calls["n_above"] == 1e13 and calls["calls"] > 0 and calls["smallest_expected_count"] >= 1e12
+    last = numerics.numpy_binomial_section(draws=1000)["rows"][-1]
+    assert last["n"] == round(calls["smallest"]["n"]) and last["p"] == calls["smallest"]["p"]
+    assert last["expected_count"] == pytest.approx(calls["smallest_expected_count"], rel=1e-9)
 
 
 def test_withdrawn_claims_are_gone_from_the_docstrings():
@@ -1137,3 +1152,130 @@ def test_the_tail_probe_draws_the_study_statistics(ns):
     assert neutron["draws"] == 500 and neutron["checked"] == 100 and neutron["missing"] == 0
     photons = probe.photon_chunk(f"{ns}-tail-probe", "S1", 0, 50)
     assert photons and all(c["draws"] == 50 and c["missing"] == 0 for c in photons.values())
+
+
+# --- 12. Sixth review ------------------------------------------------------------------------------------------
+
+def test_source_plans_are_read_without_copying_the_nested_mapping():
+    """The review's probe: every read of plan.interval_plans copies the whole nested mapping, so the loops that
+    indexed it per interval and nuclide were quadratic in the number of distinct lengths."""
+    plan = AggregatePlan(_simple(), [0.0, 1.0, 3.0, 3.5], 100)
+    pairs = [(delta, i, source) for delta, plans in plan.interval_plans.items() for i, source in plans.items()]
+    assert len(pairs) == 3 and all(plan.source_plan(delta, i) is source for delta, i, source in pairs)
+    with pytest.raises(KeyError):
+        plan.source_plan(0.25, 0)
+
+
+def test_binomial_z_check_records_its_exact_inputs():
+    """The review's probe: the record held estimate, expected and variance as floats, from which the z of a
+    BIG-DECAY result could not be recomputed (0.0 against the recorded -6.36)."""
+    from rnglab.nuclear.comparison import binomial_z_check
+    size, p = 2 ** 60 + 12345, 1.0 - 2.0 ** -53
+    result = json.loads(json.dumps(binomial_z_check(size - 200, size, p)))
+    assert (result["successes"], result["trials"], result["probability"]) == (size - 200, size, p)
+    assert binomial_z_check(result["successes"], result["trials"], result["probability"])["z"] == result["z"]
+
+
+def test_a_live_process_is_an_earlier_attempt_only_if_its_start_time_matches(tmp_path):
+    """The review's probe: a dead attempt's record carrying the pid of an unrelated live process whose command
+    line contained the script's name refused the launch, with a message about a deleted lock file."""
+    rv = _verification()
+    out = tmp_path / "results"
+    attempt = rv.begin_attempt(out, "calibration", {"git_commit": "c"})
+    rv.release_attempt(attempt)                                         # as if its process had died
+    other = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)", "calibration.py"])
+    try:
+        record = dict(json.loads(attempt["path"].read_text()), pid=other.pid)
+        attempt["path"].write_text(json.dumps(record))
+        assert record["process_start"] is not None and not rv._alive_here(record)
+        second = rv.begin_attempt(out, "calibration", {"git_commit": "c"})
+        assert second["record"]["interrupted_attempts"] == [1]
+        rv.release_attempt(second)
+        assert rv._alive_here(dict(record, process_start=rv._process_start(other.pid)))
+    finally:
+        other.kill()
+        other.wait()
+
+
+def test_publication_is_the_last_act_of_a_record_calibration(tmp_path, monkeypatch):
+    """The review's probe: a broken pipe while printing the summary, after the result had been published, left
+    the attempt 'failed' beside a published result that no later step could use."""
+    import builtins
+    from types import SimpleNamespace
+    cal, rv = _calibration(), _verification()
+    monkeypatch.setattr(cal, "ProcessPoolExecutor", _InlineExecutor)
+    for name in cal.THREAD_VARIABLES:
+        monkeypatch.setenv(name, "1")
+    real_print = builtins.print
+
+    def broken(*args, **kwargs):
+        if args and str(args[0]).startswith("NC1:"):
+            raise BrokenPipeError(32, "Broken pipe")
+        real_print(*args, **kwargs)
+    monkeypatch.setattr(builtins, "print", broken)
+    attempt = rv.begin_attempt(tmp_path, "calibration", {"git_commit": "c"})
+    result = tmp_path / "c.json"
+    with pytest.raises(BrokenPipeError):
+        rv.run_attempt(attempt, lambda: cal.calibrate(rv, f"{B2_TEST_NAMESPACE}-publish-last", 2, result, {},
+                                                      SimpleNamespace(chunk=2, development=False), 1, attempt),
+                       result)
+    assert not result.exists() and json.loads(attempt["path"].read_text())["status"] == "failed"
+
+
+def test_the_verification_publishes_last_and_only_with_the_code_it_started_with(tmp_path, monkeypatch):
+    """The review's mutation: removing require_same_code from the study went unnoticed by the suite."""
+    rv = _verification()
+    start = rv.record_code(REPO)
+    attempt = rv.begin_attempt(tmp_path, "verification", start)
+    manifests = tmp_path / "manifests"
+    manifests.mkdir()
+    monkeypatch.setattr(rv, "record_code", lambda repo: dict(start, git_commit="changed"))
+    with pytest.raises(RuntimeError, match="changed while it ran"):
+        rv.publish_verification({"verdicts": {}}, {"m.json": "{}"}, tmp_path, manifests, attempt, start)
+    assert not (tmp_path / "verification.json").exists() and not (manifests / "m.json").exists()
+    monkeypatch.setattr(rv, "record_code", lambda repo: start)
+    rv.publish_verification({"verdicts": {}}, {"m.json": "{}"}, tmp_path, manifests, attempt, start)
+    assert json.loads((tmp_path / "verification.json").read_text())["attempt"]["number"] == 1
+    rv.release_attempt(attempt)
+
+
+def test_both_main_functions_finish_a_published_but_unrecorded_attempt(tmp_path, monkeypatch):
+    """The review's mutation: disabling complete_published_attempt in either main() went unnoticed."""
+    rv, cal = _verification(), _calibration()
+    repo, study = _record_repo(tmp_path, rv, monkeypatch)
+    monkeypatch.setattr(cal, "HERE", study)
+    monkeypatch.setattr(cal, "REPO", repo)
+    for script, main, argv in (("calibration", cal.main, ["calibration.py", "--workers", "1"]),
+                               ("verification", rv.main, ["run_verification.py"])):
+        results, code = study / "results", rv.record_code(repo)
+        attempt = rv.begin_attempt(results, script, code)
+        rv.write_new(results / f"{script}.json",
+                     json.dumps({"attempt": {"number": attempt["record"]["attempt"]}, "code": code}))
+        rv.release_attempt(attempt)                                      # killed before its record said so
+        monkeypatch.setattr(sys, "argv", argv)
+        with pytest.raises(SystemExit, match="now shows it completed"):
+            main()
+        assert json.loads(attempt["path"].read_text())["status"] == "completed"
+
+
+def test_the_verification_main_refuses_an_untracked_module_beside_the_code(tmp_path, monkeypatch):
+    """The review's mutation: require_record_tree replaced by an empty tree went unnoticed."""
+    rv = _verification()
+    repo, study = _record_repo(tmp_path, rv, monkeypatch)
+    (repo / "src").mkdir()
+    (repo / "src" / "sitecustomize.py").write_text("import os\n")
+    monkeypatch.setattr(sys, "argv", ["run_verification.py"])
+    with pytest.raises(SystemExit, match="committed tree.*sitecustomize.py"):
+        rv.main()
+
+
+def test_the_report_refuses_a_calibration_other_than_the_one_the_verification_read(tmp_path, monkeypatch):
+    """The review's mutation: disabling the report's sha256 check went unnoticed."""
+    rt = _load("b2_integrity_report_tables", "research/v020-nuclear-b2-verify/report_tables.py")
+    (tmp_path / "results").mkdir()
+    (tmp_path / "results" / "calibration.json").write_text("{}\n")
+    (tmp_path / "results" / "verification.json").write_text(json.dumps({"calibration": {"sha256": "0" * 64}}))
+    monkeypatch.setattr(rt, "HERE", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["report_tables.py"])
+    with pytest.raises(SystemExit, match="not the file the verification read"):
+        rt.main()
