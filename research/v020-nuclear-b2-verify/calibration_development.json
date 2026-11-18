@@ -1,27 +1,27 @@
 {
  "generated_by": "research/v020-nuclear-b2-verify/calibration.py",
  "development": true,
- "started_utc": "2026-11-17T13:47:57.891762+00:00",
+ "started_utc": "2026-11-18T17:20:36.464509+00:00",
  "namespace": "rnglab-v020-nuclear-b2-calibration-dev",
  "batteries": 4000,
  "protocol_files": {
   "frozen": false,
   "files": {
-   "protocol.json": "c9ebc2a88e59989d370a889608bb9167615b81de4c2173b9c1e3470ad68b2779",
-   "design.json": "607996ceef5d81295f638e261393e3ddd78a4ec8d4ea4cb5b159dfcd3a2ad964",
-   "design.py": "97e1481c4ecd3f8c8a8248344d8360e5075ddb116c65a73e93bc93a9975cd1ea",
-   "run_verification.py": "eab8796a93d106ec675425699e9d23fcae5ed018f55676db009373fb5ed2cfe5",
-   "calibration.py": "61bbf642fde11262ece5b208f95ad08f2ab3a3608966ba10d5633c9e0c5e09cd"
+   "protocol.json": "7c325dcc788d71fdf99b23ec394bd460a009568db90c1c7c475d2fc3e6b8f925",
+   "design.json": "66d6f445bc1bd8cc3a0469f02730d3bc5751c7394a9af8283bfa0e0131141aaf",
+   "design.py": "6eb7649cba5707e2906048debcafad5f566ad787bd5b4b9a429a9409cd42ce1f",
+   "run_verification.py": "8fc5aef805f0c1c2969b0ee4c50b0b96a779fcb886e8c5a356f5cf6d5b5396d1",
+   "calibration.py": "f91e6898ad8d10891f04c0058878a7d17ca71298c209923b336451dfae217115"
   }
  },
  "code": {
   "module_files_sha256": {
    "__init__.py": "1a2efc3f54e1c9f5dc7d2ffee49d88af0dde7d59f72fea11792a961542a0151e",
-   "aggregate.py": "4da6a1e7f7b1ed8d017899e0dfd59508abc68be65746120b9481b998788f7685",
+   "aggregate.py": "59b9a3c828bff0af43f41d5fb44bfcaa4fa890821d1a7965c41c4d9a44d0ddc4",
    "bateman.py": "26433bfeba4aaff869415ce6def31631d2085d3baa01a929720bd845f47e16cc",
-   "binomial.py": "6d4f7d259a4d3cd7927c9a8e6e53b1fca3a991c22f8dd5af43c1014d7c30d619",
+   "binomial.py": "d151f401367ba0f78c8a801407f8fd5002073a203111def6638ff7ba5cee17e8",
    "checks.py": "0977931ab30382b05b764ee55b3a234e6ba46b39bbce30c89c6255b962fa631e",
-   "comparison.py": "9f77b54024adda92a352c7c8c31fe5493ab20820c15353df71c001f79651c4da",
+   "comparison.py": "87378b97a82d6a48d17e3fccbd04568027a18ded2a31009f59353cab03f20a48",
    "decay.py": "dd564553f991cf57aa4e5055a26d612394262bcc13dd8e96c56b64992d5bbc2a",
    "manifest.py": "2885abf0d2ac416da648ac7f7e9ad65c8a3973bd9ae9f32b2eae7aaffd5c36e5",
    "moments.py": "e6cca5d483fcead20e7c2976ed3a25ff5b757de8f1fd1d9d9849f4c03cccafae",
@@ -29,8 +29,9 @@
    "precursors.py": "af13c1a0ad6f10652868bba275f5599805273a964ab91dbed49ad0d35c412715",
    "streams.py": "27048bbfbde80f15350fa08c5df64f100ba18899407aac460093056def3d994b"
   },
-  "git_commit": "6ab5ad371424627c385e3cc26ea3aeb5015835e6",
-  "git_dirty": false
+  "git_commit": "43c0b7e36e82de54c0725e433cd4f91d4c83bb6c",
+  "git_dirty": false,
+  "source_files_sha256": "c528df8dc5c10126b97ff95f70ee1ff271eab5aa5f6bfb9f1ac4b95279887379"
  },
  "environment": {
   "python": "3.14.9",
@@ -39,8 +40,22 @@
   "platform": "Linux-7.2.14-arch1-1-x86_64-with-glibc2.44",
   "machine": "x86_64"
  },
- "criterion": "C1: false_fail_ci95[1] <= 0.02",
+ "pycache_prefix": null,
+ "criterion": "C1, per family: false_fail_ci95[1] <= 0.02",
  "sampler": "numpy Generator.multinomial / binomial on the exact laws; no RNGLab sampler",
+ "workers": 16,
+ "allocated_cpus": 16,
+ "chunk": 10,
+ "thread_environment": {
+  "OPENBLAS_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "inherited_thread_environment": {
+  "OPENBLAS_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
  "families": {
   "NC1": {
    "tests": 222,
@@ -8055,5 +8070,14 @@
   }
  },
  "C1": true,
- "elapsed_seconds": 87.017910184004
+ "R1_event": {
+  "failed_batteries": 73,
+  "batteries": 4000,
+  "false_fail_rate": 0.01825,
+  "false_fail_ci95": [
+   0.014331673076610147,
+   0.022892594739265176
+  ]
+ },
+ "elapsed_seconds": 104.23647425801028
 }

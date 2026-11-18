@@ -1,0 +1,571 @@
+{
+ "generated_by": "research/v020-nuclear-b2-verify/tail_probe.py",
+ "development": true,
+ "started_utc": "2026-11-18T17:23:53.802686+00:00",
+ "namespace": "rnglab-v020-nuclear-b2-tail-probe",
+ "code": {
+  "module_files_sha256": {
+   "__init__.py": "1a2efc3f54e1c9f5dc7d2ffee49d88af0dde7d59f72fea11792a961542a0151e",
+   "aggregate.py": "59b9a3c828bff0af43f41d5fb44bfcaa4fa890821d1a7965c41c4d9a44d0ddc4",
+   "bateman.py": "26433bfeba4aaff869415ce6def31631d2085d3baa01a929720bd845f47e16cc",
+   "binomial.py": "d151f401367ba0f78c8a801407f8fd5002073a203111def6638ff7ba5cee17e8",
+   "checks.py": "0977931ab30382b05b764ee55b3a234e6ba46b39bbce30c89c6255b962fa631e",
+   "comparison.py": "87378b97a82d6a48d17e3fccbd04568027a18ded2a31009f59353cab03f20a48",
+   "decay.py": "dd564553f991cf57aa4e5055a26d612394262bcc13dd8e96c56b64992d5bbc2a",
+   "manifest.py": "2885abf0d2ac416da648ac7f7e9ad65c8a3973bd9ae9f32b2eae7aaffd5c36e5",
+   "moments.py": "e6cca5d483fcead20e7c2976ed3a25ff5b757de8f1fd1d9d9849f4c03cccafae",
+   "paths.py": "b02394b7546595a3fa4044e200435c6d78967ffa0280724016ab0e15b5a6d7be",
+   "precursors.py": "af13c1a0ad6f10652868bba275f5599805273a964ab91dbed49ad0d35c412715",
+   "streams.py": "27048bbfbde80f15350fa08c5df64f100ba18899407aac460093056def3d994b"
+  },
+  "git_commit": "43c0b7e36e82de54c0725e433cd4f91d4c83bb6c",
+  "git_dirty": false,
+  "source_files_sha256": "c528df8dc5c10126b97ff95f70ee1ff271eab5aa5f6bfb9f1ac4b95279887379"
+ },
+ "environment": {
+  "python": "3.14.9",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "platform": "Linux-7.2.14-arch1-1-x86_64-with-glibc2.44",
+  "machine": "x86_64"
+ },
+ "workers": 16,
+ "thread_environment": {
+  "OPENBLAS_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "inherited_thread_environment": {
+  "OPENBLAS_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "scale": 1.0,
+ "draws": {
+  "BT-NEUTRON per test": 20000000,
+  "BT-PHOTON-T NullModel replicates per scheme": 1000000
+ },
+ "levels": [
+  0.01,
+  0.001,
+  0.00011764705882352942,
+  4.5045045045045046e-05
+ ],
+ "holm_levels": {
+  "NC1": 4.5045045045045046e-05,
+  "NC2": 0.00011764705882352942
+ },
+ "tests": {
+  "S1 BT-PHOTON-T Sa-400/beta-->Sb-400": {
+   "draws": 1000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 1000000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 10013,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0012999999999999,
+     "ci95_over_level": [
+      0.981878076551701,
+      1.0210065207049204
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 927,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.9269999999999999,
+     "ci95_over_level": [
+      0.8683034059321826,
+      0.988617519382156
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 102,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.867,
+     "ci95_over_level": [
+      0.7069411895948325,
+      1.0524673618888236
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 38,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.8436,
+     "ci95_over_level": [
+      0.5969845859882122,
+      1.157898713168903
+     ]
+    }
+   ]
+  },
+  "S2 BT-PHOTON-T Xa-400/alpha->Xb-396": {
+   "draws": 1000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 1000000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 10082,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0082,
+     "ci95_over_level": [
+      0.988711618230191,
+      1.0279729356862923
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 985,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.985,
+     "ci95_over_level": [
+      0.9244671986073921,
+      1.0484524367191452
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 127,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0795,
+     "ci95_over_level": [
+      0.8999395680090554,
+      1.2843847117662741
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 50,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.11,
+     "ci95_over_level": [
+      0.8238682925253109,
+      1.463384972135917
+     ]
+    }
+   ]
+  },
+  "S2 BT-PHOTON-T Xa-400/beta-->Xc-400m": {
+   "draws": 1000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 1000000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 10047,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0047,
+     "ci95_over_level": [
+      0.9852452995816546,
+      1.0244392763146297
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 1054,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.054,
+     "ci95_over_level": [
+      0.991352016067637,
+      1.119566188439562
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 127,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0795,
+     "ci95_over_level": [
+      0.8999395680090554,
+      1.2843847117662741
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 49,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0877999999999999,
+     "ci95_over_level": [
+      0.8047651562809772,
+      1.4381179414188259
+     ]
+    }
+   ]
+  },
+  "S2 BT-PHOTON-T Xb-396/ec->Xd-396": {
+   "draws": 1000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 1000000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 10048,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0048,
+     "ci95_over_level": [
+      0.9853443364190226,
+      1.024540238849144
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 1014,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.014,
+     "ci95_over_level": [
+      0.9525694360975185,
+      1.0783495851099842
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 106,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.901,
+     "ci95_over_level": [
+      0.7376716943519095,
+      1.089721447073419
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 34,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.7548,
+     "ci95_over_level": [
+      0.5227234130720431,
+      1.0547502187645212
+     ]
+    }
+   ]
+  },
+  "S2 BT-PHOTON-T Xc-400m/it->Xc-400": {
+   "draws": 1000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 1000000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 10007,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0007,
+     "ci95_over_level": [
+      0.981283866672504,
+      1.0204007343544668
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 995,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.995,
+     "ci95_over_level": [
+      0.9341561462005109,
+      1.0587632751681226
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 119,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0115,
+     "ci95_over_level": [
+      0.8379520180582369,
+      1.2103963930426258
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 46,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.0211999999999999,
+     "ci95_over_level": [
+      0.7476509798555209,
+      1.3621272327621026
+     ]
+    }
+   ]
+  },
+  "S2 BT-PHOTON-T Xe-396/beta-->Xg-396": {
+   "draws": 1000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 1000000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 9658,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.9658,
+     "ci95_over_level": [
+      0.94672379044125,
+      0.9851610303627782
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 901,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.901,
+     "ci95_over_level": [
+      0.8431452121657362,
+      0.961776320902302
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 114,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.969,
+     "ci95_over_level": [
+      0.7993130876841263,
+      1.1640516432526762
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 50,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 1.11,
+     "ci95_over_level": [
+      0.8238682925253109,
+      1.463384972135917
+     ]
+    }
+   ]
+  },
+  "S4 BT-NEUTRON G1": {
+   "draws": 20000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 10000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 202677,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.013385,
+     "ci95_over_level": [
+      1.0090001569003038,
+      1.0177840320379197
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 21263,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.0631499999999998,
+     "ci95_over_level": [
+      1.0489149231188368,
+      1.0775298196263936
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 2797,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.188725,
+     "ci95_over_level": [
+      1.1450780353969865,
+      1.233609552845562
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 1123,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.2465300000000001,
+     "ci95_over_level": [
+      1.174683228916697,
+      1.3216214077729027
+     ]
+    }
+   ]
+  },
+  "S4 BT-NEUTRON G2": {
+   "draws": 20000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 10000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 200700,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.0035,
+     "ci95_over_level": [
+      0.999136400939867,
+      1.0078777909136387
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 20187,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.00935,
+     "ci95_over_level": [
+      0.9954806231038408,
+      1.023364144048399
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 2406,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.0225499999999998,
+     "ci95_over_level": [
+      0.982097603307971,
+      1.0642406454936795
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 968,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.0744799999999999,
+     "ci95_over_level": [
+      1.0078513399172009,
+      1.1443558264169889
+     ]
+    }
+   ]
+  },
+  "S4 BT-NEUTRON G3": {
+   "draws": 20000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 10000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 199704,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 0.99852,
+     "ci95_over_level": [
+      0.9941671444108067,
+      1.002887048911701
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 20131,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.0065499999999998,
+     "ci95_over_level": [
+      0.9926999203491026,
+      1.0205448480926576
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 2372,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.0081,
+     "ci95_over_level": [
+      0.9679372853586949,
+      1.0495010279170054
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 965,
+     "draws_with_p_value": 20000000,
+     "rate_over_level": 1.07115,
+     "ci95_over_level": [
+      1.0046263111764366,
+      1.1409209099165498
+     ]
+    }
+   ]
+  },
+  "S5 BT-PHOTON-T Zb-450/alpha->Zc-446": {
+   "draws": 1000000,
+   "without_p_value": 0,
+   "draws_evaluated_by_the_study_function": 1000000,
+   "levels": [
+    {
+     "level": 0.01,
+     "level_name": null,
+     "rejections": 9810,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.9809999999999999,
+     "ci95_over_level": [
+      0.9617749787776807,
+      1.0005097461916748
+     ]
+    },
+    {
+     "level": 0.001,
+     "level_name": null,
+     "rejections": 948,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.948,
+     "ci95_over_level": [
+      0.8886320922247724,
+      1.0102883559684872
+     ]
+    },
+    {
+     "level": 0.00011764705882352942,
+     "level_name": "NC2 Holm level",
+     "rejections": 106,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.901,
+     "ci95_over_level": [
+      0.7376716943519095,
+      1.089721447073419
+     ]
+    },
+    {
+     "level": 4.5045045045045046e-05,
+     "level_name": "NC1 Holm level",
+     "rejections": 36,
+     "draws_with_p_value": 1000000,
+     "rate_over_level": 0.7992,
+     "ci95_over_level": [
+      0.5597525935668876,
+      1.1064220175937562
+     ]
+    }
+   ]
+  }
+ },
+ "elapsed_seconds": 92.6443273529876
+}
