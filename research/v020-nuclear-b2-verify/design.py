@@ -249,8 +249,9 @@ def main() -> None:
                                          "spacing_over_sd": spacing / math.sqrt(size * q * (1.0 - q))})
     null_lattice_worst = max(null_lattice, key=lambda row: row["spacing_over_sd"]) if null_lattice else None
     # numpy's binomial is also wrong at large n when the expected count is small, below 2**53 as well (numerics.py
-    # numpy_binomial: at n = 1e15, 2**53 - 1 and 2**60 + 12345 the mean or the variance is off at means up to 1e4;
-    # at n = 1e12 and 1e14 no error is visible). The BIG null calls it inside multinomial (categories in order,
+    # numpy_binomial, 4,000,000 draws per row: at n = 1e15, 2**53 - 1 and 2**60 + 12345 the mean or the variance is
+    # off for small expected counts, up to 1e4, and to 1e6 at 2**60 + 12345; at n = 1e12 and 1e14 no error is
+    # visible with that many draws). The BIG null calls it inside multinomial (categories in order,
     # each a binomial in the count still unassigned with the conditional probability) and for photons (a
     # binomial in the decay count). With expected counts in place of draws, the smallest expected count
     # min(n p, n (1 - p)) of a call with n > NUMPY_LARGE_N:
@@ -369,8 +370,9 @@ def main() -> None:
         "calibration_null_lattice": {
             "note": "numpy's binomial is not exact at large n: above 2**53 its results lie on a lattice of spacing "
                     "at most np.spacing(2 * count), and for small expected counts its mean and variance are wrong, "
-                    "below 2**53 too (numerics.py numpy_binomial: at n = 1e15, 2**53 - 1 and 2**60 + 12345; not at "
-                    "1e12 or 1e14). The BIG null of calibration.py stays where neither matters: the lattice spacing "
+                    "below 2**53 too (numerics.py numpy_binomial, 4,000,000 draws per row: wrong at n = 1e15, "
+                    "2**53 - 1 and 2**60 + 12345; no error visible with that many draws at 1e12 or 1e14). The BIG "
+                    "null of calibration.py stays where neither matters: the lattice spacing "
                     "is at most 'worst' standard deviations of a BIG state count, and every numpy binomial call with "
                     "n above numpy_calls_large_n.n_above has an expected count of at least its "
                     "smallest_expected_count (asserted here to be at least 1e12); numerics.py measures numpy at that "

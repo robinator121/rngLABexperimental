@@ -29,9 +29,11 @@ def tree_note(tree) -> str:
     the files of earlier attempts that the record procedure allows."""
     if not tree:
         return "tree not checked: not a record run"
-    other = tree.get("other_changes") or []
-    return (f"committed tree; files of earlier attempts: {len(tree.get('attempt_files') or [])}; "
-            f"other uncommitted or ignored files: {', '.join(other) if other else 'none'}")
+    other, allowed = tree.get("other_changes") or [], tree.get("ignored_allowed") or []
+    eggs = [entry for entry in allowed if ".egg-info" in entry]
+    return (f"committed tree; files of earlier attempts: {len(tree.get('attempt_files') or [])}; ignored files "
+            f"allowed (bytecode caches, smoke/, egg-info): {len(allowed)}" + (f" ({', '.join(eggs)})" if eggs else "")
+            + f"; other uncommitted or ignored files: {', '.join(other) if other else 'none'}")
 
 
 def main() -> None:

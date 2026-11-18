@@ -168,8 +168,9 @@ def require_pycache_outside(repo: Path) -> None:
     """Record runs read no bytecode from the tree: PYTHONPYCACHEPREFIX must name a directory outside it."""
     prefix = sys.pycache_prefix
     if not prefix or Path(prefix).resolve().is_relative_to(repo.resolve()):
-        raise SystemExit("record runs need PYTHONPYCACHEPREFIX set to a new directory outside the repository "
-                         "(protocol.json record_procedure.threads), so that no bytecode in the tree is used")
+        raise SystemExit("record runs need PYTHONPYCACHEPREFIX set to a directory outside the repository (a new, "
+                         "empty one is recommended; protocol.json record_procedure.threads), so that no bytecode "
+                         "in the tree is used")
 
 
 def record_tree(repo: Path) -> dict:
@@ -180,18 +181,20 @@ def record_tree(repo: Path) -> dict:
     module beside the code (a sitecustomize.py, a module shadowing one of the study's) could change what a
     record run computes without appearing anywhere in Git."""
     out = _git(repo, "status", "--porcelain=v1", "-z", "--untracked-files=all", "--ignored=matching").stdout.decode()
-    attempt_files, other = [], []
+    attempt_files, other, allowed = [], [], []
     for entry in out.split("\0"):
         if not entry:
             continue
         if entry.startswith("!! "):
             path = entry[3:]
-            if (not path.startswith(("src/", STUDY)) or "__pycache__/" in path
-                    or path.startswith(STUDY + "smoke/")
+            if not path.startswith(("src/", STUDY)):
+                continue
+            if ("__pycache__/" in path or path.startswith(STUDY + "smoke/")
                     or (path.startswith("src/") and path.split("/")[1].endswith(".egg-info"))):
+                allowed.append(entry)       # recorded, so that a result shows what was there
                 continue
         (attempt_files if entry.startswith("?? " + ATTEMPTS) else other).append(entry)
-    return {"attempt_files": attempt_files, "other_changes": other}
+    return {"attempt_files": attempt_files, "other_changes": other, "ignored_allowed": allowed}
 
 
 def require_record_tree(repo: Path, script: str) -> dict:
@@ -239,8 +242,8 @@ def _lock(folder: Path, script: str):
 def _process_start(pid: int) -> int | None:
     """A process's start time in clock ticks since boot (field 22 of /proc/<pid>/stat), or None."""
     try:
-        stat = Path(f"/proc/{pid}/stat").read_text()
-        return int(stat[stat.rindex(")") + 2:].split()[19])     # fields after the command name start at field 3
+        stat = Path(f"/proc/{pid}/stat").read_bytes()          # a command name need not be valid UTF-8
+        return int(stat[stat.rindex(b")") + 2:].split()[19])    # fields after the command name start at field 3
     except (OSError, ValueError, IndexError):
         return None
 
@@ -325,9 +328,11 @@ def begin_attempt(out_dir: Path, script: str, code: dict, *, deviation: str | No
 
 
 def complete_published_attempt(out_dir: Path, script: str, result_file: Path) -> bool:
-    """Finish the record of an attempt that published its result but ended (killed) before recording that it
-    completed. The result names its attempt; that attempt's record must show it started (or was terminated)
-    on the result's commit. Done under the attempt lock. Returns True when a record was finished."""
+    """Finish the record of an attempt that published its result but ended before recording that it completed
+    (killed, or failed in the last steps of publication). The result names its attempt, and only that attempt
+    can have published it (under the lock, after its code check); that attempt's record must show it started,
+    terminated or failed on the result's commit. Done under the attempt lock. Returns True when a record was
+    finished."""
     if not result_file.exists():
         return False
     data = json.loads(result_file.read_text())
@@ -341,7 +346,7 @@ def complete_published_attempt(out_dir: Path, script: str, result_file: Path) ->
         record = json.loads(path.read_text())
         if record.get("status") == "completed":
             return False
-        if (record.get("status") not in ("started", "terminated")
+        if (record.get("status") not in ("started", "terminated", "failed")
                 or record["code"].get("git_commit") != (data.get("code") or {}).get("git_commit")):
             raise SystemExit(f"{path} ({record.get('status')}) does not describe {result_file}; inspect both")
         _replace(path, json.dumps({**record, "status": "completed", "exit_status": None, "result": result_file.name,
@@ -459,15 +464,28 @@ def record_calibration(protocol: dict, frozen: dict, code: dict, results: Path =
     if (data.get("replay_check") or {}).get("mismatches"):
         problems.append("its replay check found mismatches")
     batteries = data.get("batteries") or 0
-    r1, counts = data.get("R1_event") or {}, [f.get("failed_batteries") for f in (data.get("families") or {}).values()]
+    families = data.get("families") or {}
+    if set(families) != {"NC1", "NC2"}:
+        problems.append(f"its families are {sorted(families)}, not NC1 and NC2")
+    for family, f in families.items():
+        k = f.get("failed_batteries")
+        if not batteries or isinstance(k, bool) or not isinstance(k, int) or not 0 <= k <= batteries:
+            problems.append(f"its count for {family} is missing or impossible")
+            continue
+        interval = clopper_pearson(k, batteries)
+        if f.get("false_fail_ci95") != interval:
+            problems.append(f"its stored interval for {family} does not follow from its counts")
+        if f.get("false_fail_rate") != k / batteries or f.get("C1_holds") != (interval[1] <= C1_LIMIT):
+            problems.append(f"its stored rate or C1 for {family} does not follow from its counts")
+    if data.get("C1") is not all(f.get("C1_holds") is True for f in families.values()):
+        problems.append("its C1 does not follow from its families")
+    r1, counts = data.get("R1_event") or {}, [f.get("failed_batteries") for f in families.values()]
     k = r1.get("failed_batteries")
     if (not counts or not all(isinstance(c, int) for c in counts) or not isinstance(k, int)
-            or r1.get("batteries") != batteries or not max(counts) <= k <= sum(counts)
+            or not batteries or r1.get("batteries") != batteries
+            or not max(counts) <= k <= min(sum(counts), batteries)
             or r1.get("false_fail_ci95") != clopper_pearson(k, batteries)):
         problems.append("its R1 event count is missing, or inconsistent with its family counts and batteries")
-    for family, f in (data.get("families") or {}).items():
-        if not batteries or f.get("false_fail_ci95") != clopper_pearson(f.get("failed_batteries", -1), batteries):
-            problems.append(f"its stored interval for {family} does not follow from its counts")
     for key in ("python", "numpy", "scipy"):
         if data.get("environment", {}).get(key) != now.get(key):
             problems.append(f"it ran with {key} {data.get('environment', {}).get(key)}, this run has {now.get(key)}")
@@ -917,8 +935,11 @@ def main() -> int:
     design = json.loads((HERE / "design.json").read_text())
     out_dir = HERE / ("smoke" if args.smoke else "results")
     if args.smoke:
-        return study(args, frozen, protocol, design, record_code(REPO), out_dir, out_dir / "manifests", None, None,
-                     None)
+        code, manifests = record_code(REPO), out_dir / "manifests"
+        result, pending = study(args, frozen, protocol, design, code, out_dir, manifests, None, None, None)
+        publish_verification(result, pending, out_dir, manifests, None, code)
+        print_summary(result)
+        return r1_status(result)
     require_pycache_outside(REPO)
     if complete_published_attempt(out_dir, "verification", out_dir / "verification.json"):
         raise SystemExit("the last verification attempt published results/verification.json but ended before its "
@@ -930,14 +951,42 @@ def main() -> int:
         raise SystemExit("results/verification.json exists; results are never overwritten")
     calibration = record_calibration(protocol, frozen, code, out_dir, REPO)
     attempt = begin_attempt(out_dir, "verification", code, deviation=args.deviation)
-    return run_attempt(attempt, lambda: study(args, frozen, protocol, design, code, out_dir, attempt["dir"] / "manifests",
-                                              attempt, calibration, tree), out_dir / "verification.json")
+
+    def body() -> int:
+        manifests = attempt["dir"] / "manifests"
+        result, pending = study(args, frozen, protocol, design, code, out_dir, manifests, attempt, calibration, tree)
+        publish_verification(result, pending, out_dir, manifests, attempt, code)       # its last act
+        return r1_status(result)
+    status = run_attempt(attempt, body, out_dir / "verification.json")
+    print_summary(json.loads((out_dir / "verification.json").read_text()))          # after the completed record
+    return status
+
+
+def r1_status(result: dict) -> int:
+    return 0 if result["verdicts"]["R1"] == "PASS" else 1
+
+
+def quiet_print(*lines: str) -> None:
+    """Print and flush. A closed standard output (a broken pipe) is ignored, and the stream is pointed at
+    /dev/null so that the interpreter's flush at exit cannot fail either: a completed attempt stays completed
+    and its exit status is the study's."""
+    try:
+        for line in lines:
+            print(line, flush=True)
+    except BrokenPipeError:
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+
+
+def print_summary(result: dict) -> None:
+    """The verification's summary, printed only after publication (for the record run, after its attempt is
+    recorded as completed), so nothing the study computes is shown before it completes."""
+    quiet_print(json.dumps(result.get("summary", {"verdicts": result.get("verdicts")}), indent=1))
 
 
 def study(args, frozen: dict, protocol: dict, design: dict, code: dict, out_dir: Path, manifests: Path,
-          attempt: dict | None, calibration: dict | None, tree: dict | None) -> int:
-    """The study itself. Nothing is written before it ends: manifests and results are published together at
-    the end; with an attempt (the record run) results are published without overwriting."""
+          attempt: dict | None, calibration: dict | None, tree: dict | None) -> tuple[dict, dict]:
+    """The study itself. It writes and prints nothing: it returns the result and the manifests, which main()
+    publishes together (publish_verification) and only then summarises."""
     manifests.mkdir(parents=True, exist_ok=True)
     pending: dict[str, str] = {}
     ns = protocol["smoke_namespace"] if args.smoke else protocol["namespace"]
@@ -1178,22 +1227,22 @@ def study(args, frozen: dict, protocol: dict, design: dict, code: dict, out_dir:
     result["verdicts"]["R0"] = calibration["R0"] if calibration else "not read: smoke run"
     result["finished_utc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     result["elapsed_seconds"] = time.perf_counter() - clock
-    print(json.dumps({"namespace": ns, "R1": result["verdicts"]["R1"], "failed": failed,
-                      "R2": result["verdicts"]["R2"], "PC p-values": [t1, t2, t3], "level": level,
-                      "family sizes": {f: len(v) for f, v in tests.items()},
-                      "smallest p": {f: min(v["p_values"]) for f, v in result["families"].items()},
-                      "elapsed_seconds": round(result["elapsed_seconds"], 1)}, indent=1))
-    publish_verification(result, pending, out_dir, manifests, attempt, code)
-    return 0 if result["verdicts"]["R1"] == "PASS" else 1
+    result["summary"] = {"namespace": ns, "R1": result["verdicts"]["R1"], "failed": failed,
+                         "R2": result["verdicts"]["R2"], "PC p-values": [t1, t2, t3], "level": level,
+                         "family sizes": {f: len(v) for f, v in tests.items()},
+                         "smallest p": {f: min(v["p_values"]) for f, v in result["families"].items()},
+                         "elapsed_seconds": round(result["elapsed_seconds"], 1)}
+    return result, pending
 
 
 def publish_verification(result: dict, pending: dict, out_dir: Path, manifests: Path, attempt: dict | None,
                          code: dict) -> None:
-    """The study's last act: write the manifests and publish verification.json (nothing is printed after it, so
-    no failure can follow a publication). A record run first checks that its code is still the code it took
+    """Write the manifests and publish verification.json: the last act of an attempt (nothing is printed before
+    the attempt is recorded as completed). A record run first checks that its code is still the code it took
     when it started."""
     if attempt is not None:
         require_same_code(code, REPO, "verification")
+    manifests.mkdir(parents=True, exist_ok=True)
     for name, text in pending.items():
         (manifests / name).write_text(text)
     if attempt is None:

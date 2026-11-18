@@ -1171,7 +1171,7 @@
     1025
   ],
   "calibration_null_lattice": {
-    "note": "numpy's binomial is not exact at large n: above 2**53 its results lie on a lattice of spacing at most np.spacing(2 * count), and for small expected counts its mean and variance are wrong, below 2**53 too (numerics.py numpy_binomial: at n = 1e15, 2**53 - 1 and 2**60 + 12345; not at 1e12 or 1e14). The BIG null of calibration.py stays where neither matters: the lattice spacing is at most 'worst' standard deviations of a BIG state count, and every numpy binomial call with n above numpy_calls_large_n.n_above has an expected count of at least its smallest_expected_count (asserted here to be at least 1e12); numerics.py measures numpy at that call's own n and p",
+    "note": "numpy's binomial is not exact at large n: above 2**53 its results lie on a lattice of spacing at most np.spacing(2 * count), and for small expected counts its mean and variance are wrong, below 2**53 too (numerics.py numpy_binomial, 4,000,000 draws per row: wrong at n = 1e15, 2**53 - 1 and 2**60 + 12345; no error visible with that many draws at 1e12 or 1e14). The BIG null of calibration.py stays where neither matters: the lattice spacing is at most 'worst' standard deviations of a BIG state count, and every numpy binomial call with n above numpy_calls_large_n.n_above has an expected count of at least its smallest_expected_count (asserted here to be at least 1e12); numerics.py measures numpy at that call's own n and p",
     "cells_above_2_53": 42,
     "worst": {
       "size": 1152921504606859321,

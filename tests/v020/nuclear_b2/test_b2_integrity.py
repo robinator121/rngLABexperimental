@@ -92,6 +92,7 @@ def test_a_sink_cannot_change_the_plan_it_runs_with(branching, ns):
         "del categories": lambda: delattr(plan, "categories"),
         "p_small made writable": lambda: plan.interval_plans[delta][0].p_small.setflags(write=True),
         "law replaced": lambda: setattr(plan.interval_plans[delta][0], "law", None),
+        "_source_plans[...] = another": lambda: plan._source_plans.__setitem__((delta, 0), None),
     }
     succeeded = []
 
@@ -106,6 +107,8 @@ def test_a_sink_cannot_change_the_plan_it_runs_with(branching, ns):
     run = simulate_aggregate(branching, {"Xa-400": 10000}, TIMES, _stream(ns, "plan"), plan=plan, sink=vandal)
     assert succeeded == []
     assert run.digest == reference.digest
+    again = simulate_aggregate(branching, {"Xa-400": 10000}, TIMES, _stream(ns, "plan"), plan=plan)
+    assert again.digest == reference.digest                        # the next run with the same plan too
     again = simulate_aggregate(branching, {"Xa-400": 10000}, TIMES, _stream(ns, "plan"), plan=plan)
     assert again.digest == reference.digest       # the reused plan is unchanged
 
@@ -398,12 +401,16 @@ def _calibration_record(rv, repo, results, protocol, frozen, **change):
     """A record calibration and its completed attempt record, as the record procedure leaves them."""
     spec, batteries = protocol["calibration"], protocol["calibration"]["batteries"]
     code = rv.record_code(repo)
+    def family(k):
+        interval = rv.clopper_pearson(k, batteries)
+        return {"failed_batteries": k, "false_fail_rate": k / batteries, "false_fail_ci95": interval,
+                "C1_holds": interval[1] <= rv.C1_LIMIT}
     data = {"development": False, "namespace": spec["namespace"], "batteries": batteries, "protocol_files": frozen,
             "code": code, "environment": rv.environment(),
             "attempt": {"number": 1, "record": "attempts/calibration-1.json", "deviation": None},
-            "families": {"NC1": {"failed_batteries": 500, "false_fail_ci95": rv.clopper_pearson(500, batteries)}},
-            "R1_event": {"failed_batteries": 500, "batteries": batteries,
-                         "false_fail_ci95": rv.clopper_pearson(500, batteries)},
+            "families": {"NC1": family(500), "NC2": family(400)}, "C1": True,
+            "R1_event": {"failed_batteries": 900, "batteries": batteries,
+                         "false_fail_ci95": rv.clopper_pearson(900, batteries)},
             "replay_check": {"chunks_compared": 0, "mismatches": []}}
     data.update(change)
     (results / "attempts").mkdir(parents=True, exist_ok=True)
@@ -446,7 +453,11 @@ def test_the_verification_needs_a_matching_completed_record_calibration(tmp_path
                              (dict(data, replay_check={"mismatches": [{"attempt": 1}]}), "replay check"),
                              (dict(data, families={"NC1": {"failed_batteries": 950,
                                                             "false_fail_ci95": [0.001, 0.005]}}), "counts"),
-                             (dict(data, R1_event=dict(data["R1_event"], failed_batteries=5)), "R1 event")):
+                             (dict(data, R1_event=dict(data["R1_event"], failed_batteries=5)), "R1 event"),
+                             (dict(data, families={"NC1": data["families"]["NC1"]}), "not NC1 and NC2"),
+                             (dict(data, families=dict(data["families"], NC2=dict(data["families"]["NC2"],
+                                                                                 C1_holds=False))), "rate or C1"),
+                             (dict(data, C1=False), "its C1")):
         (results / "calibration.json").write_text(json.dumps(change))   # uncommitted, and no longer the record's
         with pytest.raises(SystemExit, match=message):
             rv.record_calibration(protocol, frozen, code, results, repo)
@@ -930,11 +941,17 @@ def test_a_result_published_before_its_record_was_finished_is_completed_on_the_n
     assert not rv.complete_published_attempt(tmp_path, "calibration", result)       # nothing left to finish
     other = tmp_path / "other"
     attempt = rv.begin_attempt(other, "calibration", code)
-    rv.end_attempt(attempt, "failed", error="x")
+    rv.end_attempt(attempt, "failed", error="OSError: [Errno 5] fsync after the link")  # a late publication error
     rv.release_attempt(attempt)
     rv.write_new(other / "calibration.json", json.dumps({"attempt": {"number": 1}, "code": code}))
+    assert rv.complete_published_attempt(other, "calibration", other / "calibration.json")
+    assert json.loads(attempt["path"].read_text())["completed_after_interruption"]["status_before"] == "failed"
+    third = tmp_path / "third"
+    attempt = rv.begin_attempt(third, "calibration", code)
+    rv.release_attempt(attempt)
+    rv.write_new(third / "calibration.json", json.dumps({"attempt": {"number": 1}, "code": {"git_commit": "d"}}))
     with pytest.raises(SystemExit, match="does not describe"):
-        rv.complete_published_attempt(other, "calibration", other / "calibration.json")
+        rv.complete_published_attempt(third, "calibration", third / "calibration.json")
 
 
 def test_a_record_calibration_whose_code_changed_while_it_ran_publishes_nothing(tmp_path, monkeypatch):
@@ -1033,8 +1050,7 @@ def test_the_verification_main_needs_the_committed_record_calibration_and_passes
 
     def fake_study(args, frozen, protocol, design, code, out_dir, manifests, attempt, calibration, tree):
         calls.append({"code": code, "attempt": attempt, "calibration": calibration, "tree": tree})
-        rv.write_new(out_dir / "verification.json", json.dumps({"attempt": {"number": 1}, "code": code}))
-        return 0
+        return {"verdicts": {"R1": "PASS"}, "code": code}, {"m.json": "{}"}      # main() publishes it
     monkeypatch.setattr(rv, "study", fake_study)
     monkeypatch.setattr(sys, "argv", ["run_verification.py"])
     with pytest.raises(SystemExit, match="missing"):
@@ -1051,8 +1067,12 @@ def test_the_verification_main_needs_the_committed_record_calibration_and_passes
     assert rv.main() == 0
     (call,) = calls
     assert call["calibration"]["R0"]["NC1"]["C1_holds"] and call["attempt"]["record"]["attempt"] == 1
-    assert call["tree"] == {"attempt_files": [], "other_changes": []} and call["code"]["git_dirty"] is False
+    assert call["tree"] == {"attempt_files": [], "other_changes": [], "ignored_allowed": []}
+    assert call["code"]["git_dirty"] is False
     assert json.loads((results / "attempts" / "verification-1.json").read_text())["status"] == "completed"
+    published = json.loads((results / "verification.json").read_text())         # through publish_verification
+    assert published["attempt"]["number"] == 1 and (results / "attempts" / "verification-1" / "manifests" /
+                                                    "m.json").exists()
 
 
 def test_the_calibration_main_needs_a_committed_tree_and_takes_its_code_when_it_starts(tmp_path, monkeypatch):
@@ -1075,7 +1095,7 @@ def test_the_calibration_main_needs_a_committed_tree_and_takes_its_code_when_it_
     assert cal.main() == 0
     (call,) = seen
     assert call["code"]["git_dirty"] is False and call["code"] == call["attempt"]["record"]["code"]
-    assert call["tree"] == {"attempt_files": [], "other_changes": []}
+    assert call["tree"] == {"attempt_files": [], "other_changes": [], "ignored_allowed": []}
     with pytest.raises(SystemExit, match="committed tree"):           # its result is not committed yet
         cal.main()
 
@@ -1197,9 +1217,11 @@ def test_a_live_process_is_an_earlier_attempt_only_if_its_start_time_matches(tmp
         other.wait()
 
 
-def test_publication_is_the_last_act_of_a_record_calibration(tmp_path, monkeypatch):
-    """The review's probe: a broken pipe while printing the summary, after the result had been published, left
-    the attempt 'failed' beside a published result that no later step could use."""
+def test_summaries_follow_completion_and_a_closed_output_cannot_fail_an_attempt(tmp_path, monkeypatch):
+    """The sixth review's probe: a broken pipe while printing the summary, after the result had been published,
+    left the attempt 'failed' beside a published result; the seventh: printing the summary before publication
+    showed statistics before completion. calibrate() now prints no statistic, main() prints the summary after
+    the completed record, and a closed output is ignored."""
     import builtins
     from types import SimpleNamespace
     cal, rv = _calibration(), _verification()
@@ -1215,11 +1237,14 @@ def test_publication_is_the_last_act_of_a_record_calibration(tmp_path, monkeypat
     monkeypatch.setattr(builtins, "print", broken)
     attempt = rv.begin_attempt(tmp_path, "calibration", {"git_commit": "c"})
     result = tmp_path / "c.json"
-    with pytest.raises(BrokenPipeError):
-        rv.run_attempt(attempt, lambda: cal.calibrate(rv, f"{B2_TEST_NAMESPACE}-publish-last", 2, result, {},
-                                                      SimpleNamespace(chunk=2, development=False), 1, attempt),
-                       result)
-    assert not result.exists() and json.loads(attempt["path"].read_text())["status"] == "failed"
+    assert rv.run_attempt(attempt, lambda: cal.calibrate(rv, f"{B2_TEST_NAMESPACE}-publish-last", 2, result, {},
+                                                         SimpleNamespace(chunk=2, development=False), 1, attempt),
+                          result) == 0
+    assert result.exists() and json.loads(attempt["path"].read_text())["status"] == "completed"
+    redirected = []
+    monkeypatch.setattr(rv.os, "dup2", lambda fd, target: redirected.append(target))
+    cal.print_summary(rv, json.loads(result.read_text()), result)     # the "NC1:" line hits a broken pipe
+    assert redirected == [sys.stdout.fileno()]
 
 
 def test_the_verification_publishes_last_and_only_with_the_code_it_started_with(tmp_path, monkeypatch):
@@ -1270,12 +1295,15 @@ def test_the_verification_main_refuses_an_untracked_module_beside_the_code(tmp_p
 
 
 def test_the_report_refuses_a_calibration_other_than_the_one_the_verification_read(tmp_path, monkeypatch):
-    """The review's mutation: disabling the report's sha256 check went unnoticed."""
+    """The review's mutations: disabling the report's sha256 check, or skipping a missing calibration file,
+    went unnoticed."""
     rt = _load("b2_integrity_report_tables", "research/v020-nuclear-b2-verify/report_tables.py")
     (tmp_path / "results").mkdir()
-    (tmp_path / "results" / "calibration.json").write_text("{}\n")
     (tmp_path / "results" / "verification.json").write_text(json.dumps({"calibration": {"sha256": "0" * 64}}))
     monkeypatch.setattr(rt, "HERE", tmp_path)
     monkeypatch.setattr(sys, "argv", ["report_tables.py"])
     with pytest.raises(SystemExit, match="not the file the verification read"):
-        rt.main()
+        rt.main()                                                     # calibration.json missing
+    (tmp_path / "results" / "calibration.json").write_text("{}\n")
+    with pytest.raises(SystemExit, match="not the file the verification read"):
+        rt.main()                                                     # another calibration.json

@@ -375,10 +375,13 @@ def main() -> int:
     workers = args.workers or allocated_cpus()
     code = verify.record_code(REPO)              # when the run starts: the code its workers load
     if args.development:
-        return calibrate(verify, namespace, batteries, out, frozen, args, workers, None, code=code)
-    attempt = verify.begin_attempt(out.parent, "calibration", code, deviation=args.deviation)
-    return verify.run_attempt(attempt, lambda: calibrate(verify, namespace, batteries, out, frozen, args, workers,
-                                                         attempt, tree, code=code), out)
+        status = calibrate(verify, namespace, batteries, out, frozen, args, workers, None, code=code)
+    else:
+        attempt = verify.begin_attempt(out.parent, "calibration", code, deviation=args.deviation)
+        status = verify.run_attempt(attempt, lambda: calibrate(verify, namespace, batteries, out, frozen, args,
+                                                               workers, attempt, tree, code=code), out)
+    print_summary(verify, json.loads(out.read_text()), out)        # after the completed record
+    return status
 
 
 def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, args, workers: int,
@@ -427,27 +430,39 @@ def calibrate(verify, namespace: str, batteries: int, out: Path, frozen: dict, a
                              "deviation": attempt["record"]["deviation"]}
         result["replay_check"] = replay_check(attempt)
         result["tree"] = tree
-    for family, f in summary.items():
-        print(f"{family}: {f['failed_batteries']} / {batteries} batteries fail under the null "
-              f"(rate {f['false_fail_rate']:.4f}, 95% CI [{f['false_fail_ci95'][0]:.4f}, {f['false_fail_ci95'][1]:.4f}]); "
-              f"C1 {'holds' if f['C1_holds'] else 'FAILS'}; batteries with errors {f['batteries_with_errors']}")
-        for t, row in sorted(f["types"].items()):
-            r = row["levels"][-1]
-            print(f"  {t:<12} x{row['instances']:<3} Holm level: {r['batteries_with_rejection']:>4} batteries, "
-                  f"rate / union bound {r['battery_rate_over_union_bound']:.2f} "
-                  f"[{r['battery_rate_ci95_over_union_bound'][0]:.2f}, {r['battery_rate_ci95_over_union_bound'][1]:.2f}]"
-                  f"   1e-2 mean/nominal {row['levels'][0]['mean_rejections_over_nominal']:.2f}")
-    r1 = result["R1_event"]
-    print(f"R1 event (NC1 or NC2 fails): {r1['failed_batteries']} / {batteries} batteries "
-          f"(rate {r1['false_fail_rate']:.4f}, 95% CI [{r1['false_fail_ci95'][0]:.4f}, {r1['false_fail_ci95'][1]:.4f}])")
-    print(f"publishing {out} ({result['elapsed_seconds']:.0f} s)", flush=True)
-    out.parent.mkdir(parents=True, exist_ok=True)       # publication is the last act: nothing is printed after it
-    if attempt is None:
+    out.parent.mkdir(parents=True, exist_ok=True)       # publication is the last act; main() prints the summary
+    if attempt is None:                                  # only after it (and after the completed record)
         out.write_text(json.dumps(result, indent=1) + "\n")
     else:
         verify.require_same_code(code, REPO, "calibration")
         verify.write_new(out, json.dumps(result, indent=1) + "\n")
     return 0
+
+
+def print_summary(verify, result: dict, out: Path) -> None:
+    """The calibration's counts, printed only after publication (for the record run, after its attempt is
+    recorded as completed), so that no statistic is shown before it completes; a closed standard output
+    cannot fail a completed attempt (run_verification.quiet_print)."""
+    lines, batteries = [], result.get("batteries")
+    for family, f in (result.get("families") or {}).items():
+        lines.append(f"{family}: {f['failed_batteries']} / {batteries} batteries fail under the null "
+                     f"(rate {f['false_fail_rate']:.4f}, 95% CI [{f['false_fail_ci95'][0]:.4f}, "
+                     f"{f['false_fail_ci95'][1]:.4f}]); C1 {'holds' if f['C1_holds'] else 'FAILS'}; "
+                     f"batteries with errors {f['batteries_with_errors']}")
+        for t, row in sorted(f["types"].items()):
+            r = row["levels"][-1]
+            lines.append(f"  {t:<12} x{row['instances']:<3} Holm level: {r['batteries_with_rejection']:>4} batteries, "
+                         f"rate / union bound {r['battery_rate_over_union_bound']:.2f} "
+                         f"[{r['battery_rate_ci95_over_union_bound'][0]:.2f}, "
+                         f"{r['battery_rate_ci95_over_union_bound'][1]:.2f}]"
+                         f"   1e-2 mean/nominal {row['levels'][0]['mean_rejections_over_nominal']:.2f}")
+    if result.get("R1_event"):
+        r1 = result["R1_event"]
+        lines.append(f"R1 event (NC1 or NC2 fails): {r1['failed_batteries']} / {batteries} batteries "
+                     f"(rate {r1['false_fail_rate']:.4f}, 95% CI [{r1['false_fail_ci95'][0]:.4f}, "
+                     f"{r1['false_fail_ci95'][1]:.4f}])")
+    lines.append(f"wrote {out} in {result.get('elapsed_seconds', 0.0):.0f} s")
+    verify.quiet_print(*lines)
 
 
 if __name__ == "__main__":

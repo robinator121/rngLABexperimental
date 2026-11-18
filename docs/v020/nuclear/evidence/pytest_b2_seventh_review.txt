@@ -1,0 +1,21 @@
+# v0.20 nuclear module, B2 after the seventh review (not frozen): test evidence
+tree: the commit that contains this file (code and tests as committed with it)
+date: 2026-11-18T22:49:42Z
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+1034 passed, 2 skipped, 3 warnings in 337.45s (0:05:37)
+
+(The wall-clock-dependent v0.19 test that failed once in the sixth-review run passed in this one.)
+
+## 2. Nuclear tests only (Layer A 115, B2 201 including 24 in test_b2_guards.py and 65 in test_b2_integrity.py): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider -W error::DeprecationWarning
+316 passed, 3 warnings in 64.62s
+
+The three warnings are RuntimeWarnings (overflow in the float64 matrix exponential) raised on purpose by
+test_b2_guards.py. Layer A is byte-identical to 526e9f7.
+
+## 3. Items 63-70 change no draw and no p-value
+run_verification.py --smoke on this tree against the smoke output of 0634618: the 16 digest fields and all 934
+p-value fields are identical; the result gains a "summary" field (what is printed after completion), and the
+manifests are published by main() through publish_verification. design.py regenerates design.json with one
+changed line (the note on numpy's binomial).

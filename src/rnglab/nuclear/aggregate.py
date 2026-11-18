@@ -361,13 +361,14 @@ class AggregatePlan(_Sealed):
             interval_plans[delta] = plans
         self.interval_plans = interval_plans
         self.diagnostics = diagnostics
-        self._source_plans = {(delta, i): source for delta, plans in interval_plans.items()
-                              for i, source in plans.items()}
+        self._source_plans = MappingProxyType({(delta, i): source for delta, plans in interval_plans.items()
+                                               for i, source in plans.items()})
         self._sealed = True
 
     def source_plan(self, delta: float, i: int) -> SourcePlan:
         """The source plan of nuclide i for intervals of length delta, without copying interval_plans (whose
-        every read copies the whole nested mapping)."""
+        every read copies the whole nested mapping). The index it reads is a read-only mapping; like every
+        private attribute it is protected against item assignment, not against deliberate bypasses."""
         return self._source_plans[(float(delta), int(i))]
 
     def layout(self) -> dict[str, Any]:
