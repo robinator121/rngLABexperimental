@@ -1,6 +1,6 @@
 # RNGLab v0.20 nuclear module: architecture and scientific assessment
 
-**Status: draft for the author's review, 2026-11-16.** Branch `feature/criticality-rng-sensitivity`, created from `feature/v020-stage-d-readiness` at `6b75205`; not pushed. Prepared for the author. Nothing here changes a frozen protocol, the Stage D pilot, its files or its namespaces.
+**Status: draft for the author's review, 2026-11-16; Sections 3, 4, 7, 8 and 10 updated on 2026-11-19 after milestone B2.** Branch `feature/criticality-rng-sensitivity`, created from `feature/v020-stage-d-readiness` at `6b75205`. Prepared for the author. Nothing here changes a frozen protocol, the Stage D pilot, its files or its namespaces.
 
 ## 1. Questions, scope and relation to the central hypothesis
 
@@ -29,7 +29,7 @@ Constraints carried over: freeze before generate; fresh seed namespaces; every n
 RandomSource  (healthy generator | fault adapter wrapping one | later: recorded physical stream)
   └─ WordStream: 8-byte big-endian words → uniforms (word >> 11)·2⁻⁵³; counts words, never buffers
        ├─ Layer A  decay           event engine (vectorised) + pure-Python reference engine   [implemented]
-       │                           aggregated multinomial mode                                [planned, B2]
+       │                           aggregated multinomial mode (milestone B2)                 [implemented]
        ├─ Layer B  branching and reduced kinetics                                             [planned]
        └─ Layer C  detector response: physical emissions → detector records                   [planned]
 analytic references (draw nothing): bateman.py; planned: PGF fixed points, moment equations
@@ -53,7 +53,14 @@ Design rules:
 - **Events.** Each event carries an identifier fixed by the layout (nucleus·D + step), the nucleus, the step, a timestamp, parent and daughter, channel, mode, a photon flag, a neutron flag and its predecessor (lineage). Emissions (α, e⁻, e⁺, γ, X-ray, n) are derived from events and sorted in time. Photons carry the decay's timestamp and are emitted with the channel's yield.
 - **Neutrons.** Only the β-delayed-neutron channel emits one. `DecayScheme.precursors()` lists the delayed-neutron precursors with their neutron emission probability per decay. The aggregate precursor groups of Layer B are a separate abstraction and will be checked against this event-level one.
 - **Not modelled.** Internal conversion and Auger electrons (a photon yield below 1 stands in for them), bremsstrahlung, neutrinos, annihilation photons, recoil, energies, geometry, environment dependence. Waiting times come from 53-bit uniforms, so they are capped at 53·ln 2/λ (about 36.7 mean lives); the sampled law differs from the exponential by at most 2⁻⁵³ in its distribution function.
-- **Macroscopic populations (planned, milestone B2).** For independent nuclei the joint law of what happens in a time bin is a multinomial over decay paths, with exact path probabilities from the Bateman path terms. Sampling it by binomial inversion keeps one uniform per binomial and a fixed consumption, so the aggregated mode is exact up to the numerical accuracy of the binomial distribution function. It will be checked against the event engine and the analytic laws.
+
+### Milestone B2: aggregated decay (implemented and verified)
+
+- **Model** (`aggregate.py`, `paths.py`, `binomial.py`). For independent nuclei, what happens to the nuclei of one nuclide over an interval is a multinomial over its decay-path categories. The category probabilities are closed-form Bateman terms evaluated in decimal arithmetic with adaptive precision (high precision, not certified interval arithmetic) and checked against the matrix exponential. The counts are sampled as conditional binomials by inversion, one uniform per draw, at the midpoint of the uniform's cell. Counts above 2⁵⁰ are split into parts with their own uniforms, because Boost's incomplete beta returns NaN near the centre of the distribution when n is close to 2⁵³. Photons are binomial in the decays; neutrons equal the β-delayed-neutron decays.
+- **Fixed consumption.** The layout `nuclear-aggregate-layout-v1` reads slots × parts words per interval. The number of parts is fixed by the total population (one part up to 2⁵⁰ nuclei), never by the outcomes, so 10¹² nuclei read as many words as 10⁵.
+- **Integrity.** Plans and results are immutable: attributes cannot be rebound, and arrays are fresh read-only views. A ledger pins the stream source and records its provenance. Runs can be checkpointed to JSON and resumed bit for bit, and outputs can be streamed to a sink instead of kept.
+- **Moments and comparisons** (`moments.py`, `comparison.py`, `precursors.py`): exact ensemble moments from the per-nucleus categorical law, the statistics that compare B2 with Layer A, and the precursor bookkeeping.
+- **Evidence.** Frozen study `research/v020-nuclear-b2-verify`: R1 PASS, R2 MET, and the calibration criterion C1 holds for both families (`NUCLEAR_B2_VALIDATION.md`). Numerical limits: `NUCLEAR_B2_NUMERICAL_LIMITS.md`. Single-machine timings: `NUCLEAR_B2_BENCHMARK.md`.
 
 ### Layer B: branching processes and reduced kinetics (planned)
 
@@ -83,6 +90,8 @@ Detection efficiency (thinning), background (independent Poisson superposition),
 - **Work unit.** One work unit is a (cell, replicate block), run as one task of a SLURM job array. Streams are regenerated from seed labels and never stored. Each task writes compact output packed into few files, because Komondor's Lustre quotas limit inodes (300k in scratch, 1M in project). A completion journal makes interrupted arrays restartable, aggregation is deterministic (sorted unit keys), and memory is bounded by the chunk size: Layer A holds chunk × K × 8 bytes of words plus the chunk's events.
 - **Storage classes.** (1) Raw physical RNG recordings: immutable, checksummed, read in chunks with offsets. (2) Synthetic streams: never stored. (3) Intermediate simulation data: per task, deleted after aggregation unless a retention rule keeps it. (4) Final results: small JSON or NPZ files.
 - **How the estimate will be made.** Peak storage and CPU-hours will be estimated from measured per-unit costs multiplied by the declared campaign matrix, after profiling. The local Layer A timings in the verification results are single-machine measurements, not HPC benchmarks.
+- **Threads, bytecode and locks on a cluster.** Record runs export OPENBLAS_NUM_THREADS, OMP_NUM_THREADS and MKL_NUM_THREADS as 1 before Python starts (in a SLURM batch script, before the srun line), so that each task or worker uses one core, and set PYTHONPYCACHEPREFIX to a fresh directory outside the repository. Attempt locks use flock: on Lustre this needs the `flock` mount option (`localflock` locks one node only), and one working copy runs a record.
+- **B2 costs on one workstation.** Measured, not projected: `NUCLEAR_B2_BENCHMARK.md` (time per interval, plan construction, checkpoints, memory, thread settings, independent processes). These are not HPC measurements; an HPC estimate needs profiling on the target nodes.
 
 ## 8. Status at this milestone
 
@@ -91,7 +100,7 @@ Detection efficiency (thinning), background (independent Poisson superposition),
 | RNG bridge (`streams.py`) | yes | unit tests | conventions checked against `RandomSource.random_float` | n/a |
 | Layer A event engines | yes | unit tests | frozen study against analytic laws: R1 PASS, R2 MET (`NUCLEAR_PHYSICS_VALIDATION.md`); code and protocol reviewed twice before the freeze | no: synthetic schemes have no experimental counterpart |
 | Layer A analytic references | yes | unit tests | two independent routes agree | n/a |
-| Layer A aggregated mode | no (B2) | — | — | — |
+| B2 aggregated decay (`aggregate.py`) | yes | 202 unit tests | frozen study against analytic laws and Layer A: R1 PASS, R2 MET, calibration C1 holds (`NUCLEAR_B2_VALIDATION.md`); code and protocol reviewed in eight rounds before the freeze | no: synthetic schemes have no experimental counterpart |
 | Layer B, Layer C | no | — | — | — |
 | Fault injection, campaigns | no (existing adapters identified) | — | — | — |
 | HPC execution and estimates | design only | — | — | — |
@@ -111,8 +120,20 @@ Detection efficiency (thinning), background (independent Poisson superposition),
 In a checkout of branch `feature/criticality-rng-sensitivity`, with the environment of the README:
 
 ```bash
-PYTHONPATH=src .venv/bin/python -m pytest tests/v020 -q     # Layer A unit tests
+PYTHONPATH=src .venv/bin/python -m pytest tests/v020 -q     # Layer A and B2 unit tests
 PYTHONPATH=src .venv/bin/python -m pytest tests -q          # whole suite
 ```
 
-Next milestone: B2 (aggregated decay mode), then Phase C (Layer B), each with its own frozen verification study in a fresh namespace.
+B2, with one BLAS/OpenMP thread (exported before Python starts; in a SLURM batch script, before the srun line):
+
+```bash
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+PYTHONPATH=src .venv/bin/python research/v020-nuclear-b2-verify/run_verification.py --smoke   # smoke sizes, not in Git
+PYTHONPATH=src .venv/bin/python research/v020-nuclear-b2-verify/report_tables.py              # tables from the record
+PYTHONPATH=src .venv/bin/python research/v020-nuclear-b2-numerics/report_tables.py
+PYTHONPATH=src .venv/bin/python research/v020-nuclear-b2-bench/report_tables.py
+```
+
+The record scripts (`calibration.py`, `run_verification.py`, `numerics.py`, `benchmark.py`) refuse to run again: their results exist and are never overwritten. A replication belongs in a new namespace under a new protocol version.
+
+Milestone B2 is complete. Next: Phase C (Layer B), with its own frozen verification study in a fresh namespace. Layers B and C have not been started.
