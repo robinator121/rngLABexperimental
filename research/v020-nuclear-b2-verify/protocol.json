@@ -1,6 +1,6 @@
 {
   "id": "rnglab-v020-nuclear-b2-verify-v1",
-  "status": "DRAFT_PENDING_INDEPENDENT_REVIEW",
+  "status": "FROZEN_BEFORE_GENERATION",
   "human_readable": "research/v020-nuclear-b2-verify/PROTOCOL.md",
   "scope": "Verification of the B2 aggregated decay engine (src/rnglab/nuclear/aggregate.py and its parts) against analytic laws and against the frozen Layer A engine, with healthy generators only. Not an RNG-sensitivity experiment, not evidence about branching processes, criticality or detectors, not a test of H1, H2 or H3, and not part of the Stage D pilot. Every nuclide and parameter is synthetic.",
   "namespace": "rnglab-v020-nuclear-b2-verify",
