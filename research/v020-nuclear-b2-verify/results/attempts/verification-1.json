@@ -1,0 +1,40 @@
+{
+ "schema": "rnglab-b2-attempt-v2",
+ "script": "verification",
+ "attempt": 1,
+ "status": "completed",
+ "started_utc": "2026-11-19T17:43:04.826458+00:00",
+ "host": "robiarch",
+ "pid": 17033,
+ "process_start": 365806,
+ "argv": [
+  "research/v020-nuclear-b2-verify/run_verification.py"
+ ],
+ "code": {
+  "module_files_sha256": {
+   "__init__.py": "1a2efc3f54e1c9f5dc7d2ffee49d88af0dde7d59f72fea11792a961542a0151e",
+   "aggregate.py": "a3f4c27343f4a6609430fc4715228088109f8fcbb13cbdbcf380e02ef7040252",
+   "bateman.py": "26433bfeba4aaff869415ce6def31631d2085d3baa01a929720bd845f47e16cc",
+   "binomial.py": "d151f401367ba0f78c8a801407f8fd5002073a203111def6638ff7ba5cee17e8",
+   "checks.py": "0977931ab30382b05b764ee55b3a234e6ba46b39bbce30c89c6255b962fa631e",
+   "comparison.py": "eb3bebc3c4270b3b265f010540c9e4bd638aa1b70195e2569b0a0861fad30b6d",
+   "decay.py": "dd564553f991cf57aa4e5055a26d612394262bcc13dd8e96c56b64992d5bbc2a",
+   "manifest.py": "2885abf0d2ac416da648ac7f7e9ad65c8a3973bd9ae9f32b2eae7aaffd5c36e5",
+   "moments.py": "e6cca5d483fcead20e7c2976ed3a25ff5b757de8f1fd1d9d9849f4c03cccafae",
+   "paths.py": "b02394b7546595a3fa4044e200435c6d78967ffa0280724016ab0e15b5a6d7be",
+   "precursors.py": "af13c1a0ad6f10652868bba275f5599805273a964ab91dbed49ad0d35c412715",
+   "streams.py": "27048bbfbde80f15350fa08c5df64f100ba18899407aac460093056def3d994b"
+  },
+  "git_commit": "e0d3b09af706d3a13a33479e29045f27268154d8",
+  "git_dirty": false,
+  "source_files_sha256": "ae7cae19186b8272f535fc327df6ac22736c8a5556dbdbb2263052c148e9065b"
+ },
+ "previous_attempts": [],
+ "interrupted_attempts": [],
+ "leftover_temporary_files": [],
+ "deviation": null,
+ "ended_utc": "2026-11-19T17:43:44.305558+00:00",
+ "exit_status": 0,
+ "result": "verification.json",
+ "result_sha256": "e43426908b6877624a09dcadc5541e686419cf6206cfd552c33e84bfc6345f67"
+}

@@ -1,0 +1,209 @@
+{
+ "schema": "rnglab-nuclear-aggregate-manifest-v2",
+ "experiment": "rnglab-v020-nuclear-b2-verify-v1",
+ "run_id": "NC2_S5",
+ "code": {
+  "module_files_sha256": {
+   "__init__.py": "1a2efc3f54e1c9f5dc7d2ffee49d88af0dde7d59f72fea11792a961542a0151e",
+   "aggregate.py": "a3f4c27343f4a6609430fc4715228088109f8fcbb13cbdbcf380e02ef7040252",
+   "bateman.py": "26433bfeba4aaff869415ce6def31631d2085d3baa01a929720bd845f47e16cc",
+   "binomial.py": "d151f401367ba0f78c8a801407f8fd5002073a203111def6638ff7ba5cee17e8",
+   "checks.py": "0977931ab30382b05b764ee55b3a234e6ba46b39bbce30c89c6255b962fa631e",
+   "comparison.py": "eb3bebc3c4270b3b265f010540c9e4bd638aa1b70195e2569b0a0861fad30b6d",
+   "decay.py": "dd564553f991cf57aa4e5055a26d612394262bcc13dd8e96c56b64992d5bbc2a",
+   "manifest.py": "2885abf0d2ac416da648ac7f7e9ad65c8a3973bd9ae9f32b2eae7aaffd5c36e5",
+   "moments.py": "e6cca5d483fcead20e7c2976ed3a25ff5b757de8f1fd1d9d9849f4c03cccafae",
+   "paths.py": "b02394b7546595a3fa4044e200435c6d78967ffa0280724016ab0e15b5a6d7be",
+   "precursors.py": "af13c1a0ad6f10652868bba275f5599805273a964ab91dbed49ad0d35c412715",
+   "streams.py": "27048bbfbde80f15350fa08c5df64f100ba18899407aac460093056def3d994b"
+  },
+  "git_commit": "e0d3b09af706d3a13a33479e29045f27268154d8",
+  "git_dirty": false,
+  "source_files_sha256": "ae7cae19186b8272f535fc327df6ac22736c8a5556dbdbb2263052c148e9065b"
+ },
+ "environment": {
+  "python": "3.14.9",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "platform": "Linux-7.2.14-arch1-1-x86_64-with-glibc2.44",
+  "machine": "x86_64"
+ },
+ "rng": {
+  "role": "physics",
+  "layout": "nuclear-aggregate-layout-v1",
+  "parts": 1,
+  "part_max": 1125899906842624,
+  "slots": 15,
+  "words_per_interval": 15,
+  "categories": 20,
+  "multinomial_slots": 14,
+  "photon_slots": 1,
+  "bytes_read": 480,
+  "first_source_byte": 0,
+  "first_word_of_run": 0,
+  "replay_identity": {
+   "generator": "rnglab14.sources.reference.Xoshiro256PlusPlusSource",
+   "parameters": {
+    "seed": 12159074174191232587
+   },
+   "start_word": 0
+  },
+  "source": {
+   "created_at": "2026-11-19T17:43:05.180279+00:00",
+   "family": "reference_prng",
+   "is_deterministic": true,
+   "is_physical": false,
+   "metadata": {
+    "generator": "Xoshiro256++"
+   },
+   "seed": 12159074174191232587,
+   "source_id": "xoshiro256pp_s12159074174191232587"
+  },
+  "source_consumed_bytes": 480,
+  "source_stream_sha256": "39339e3286475ce9535700ea3f534f67379cd9e97a5a487a146d9e59563a1700",
+  "word_convention": "8-byte big-endian words; uniform = (word >> 11) * 2**-53",
+  "words_read": 60,
+  "words_read_by_run": 60
+ },
+ "configuration": {
+  "scheme": {
+   "name": "S5-stiff-and-close",
+   "nuclides": [
+    {
+     "name": "Za-450",
+     "z": 180,
+     "a": 450,
+     "level": 0,
+     "half_life": 1000.0,
+     "channels": [
+      {
+       "daughter": "Zb-450",
+       "mode": "beta-",
+       "branching": 1.0,
+       "photon_yield": 0.0
+      }
+     ]
+    },
+    {
+     "name": "Zb-450",
+     "z": 181,
+     "a": 450,
+     "level": 0,
+     "half_life": 0.001,
+     "channels": [
+      {
+       "daughter": "Zc-446",
+       "mode": "alpha",
+       "branching": 1.0,
+       "photon_yield": 0.5
+      }
+     ]
+    },
+    {
+     "name": "Zc-446",
+     "z": 179,
+     "a": 446,
+     "level": 0,
+     "half_life": 10.0,
+     "channels": [
+      {
+       "daughter": "Zd-446",
+       "mode": "beta-",
+       "branching": 1.0,
+       "photon_yield": 0.0
+      }
+     ]
+    },
+    {
+     "name": "Zd-446",
+     "z": 180,
+     "a": 446,
+     "level": 0,
+     "half_life": 10.01,
+     "channels": [
+      {
+       "daughter": "Ze-446",
+       "mode": "beta-",
+       "branching": 0.7,
+       "photon_yield": 0.0
+      },
+      {
+       "daughter": "Ze-445",
+       "mode": "beta-n",
+       "branching": 0.3,
+       "photon_yield": 0.0
+      }
+     ]
+    },
+    {
+     "name": "Ze-446",
+     "z": 181,
+     "a": 446,
+     "level": 0,
+     "half_life": null,
+     "channels": []
+    },
+    {
+     "name": "Ze-445",
+     "z": 181,
+     "a": 445,
+     "level": 0,
+     "half_life": null,
+     "channels": []
+    }
+   ]
+  },
+  "scheme_sha256": "974476a3b7bac8b8bb5ec2bf4883b81ea4edf37773eafe155f80713828c57725",
+  "initial": {
+   "Za-450": 100000,
+   "Zb-450": 0,
+   "Zc-446": 0,
+   "Zd-446": 0,
+   "Ze-446": 0,
+   "Ze-445": 0
+  },
+  "times": [
+   "0.0",
+   "0.001",
+   "1.0",
+   "1000.0",
+   "3000.0"
+  ],
+  "engine": "vectorised"
+ },
+ "outputs": {
+  "engine": "vectorised",
+  "layout": {
+   "layout": "nuclear-aggregate-layout-v1",
+   "parts": 1,
+   "part_max": 1125899906842624,
+   "slots": 15,
+   "words_per_interval": 15,
+   "categories": 20,
+   "multinomial_slots": 14,
+   "photon_slots": 1
+  },
+  "first_interval": 0,
+  "intervals": 4,
+  "first_word": 0,
+  "words_read": 60,
+  "final_populations": {
+   "Za-450": 12619,
+   "Zb-450": 0,
+   "Zc-446": 115,
+   "Zd-446": 133,
+   "Ze-446": 61048,
+   "Ze-445": 26085
+  },
+  "digest": "abeba98730d73c986299583dafecaed7aae5d605020714f3de745c9f83d6bc20",
+  "plan_diagnostics": {
+   "max_abs_decimal_minus_tree": 1.5687451337953462e-13,
+   "tree_comparisons": 16,
+   "tree_comparisons_unavailable": 0,
+   "max_digits": 50
+  }
+ },
+ "extra": {
+  "seed_label": "rnglab-v020-nuclear-b2-verify/NC2/S5/physics"
+ }
+}
