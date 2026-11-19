@@ -1,0 +1,38 @@
+# v0.20 nuclear module, B2 after the frozen record runs: test evidence
+tree: the commit that contains this file. Nothing under src/, tests/ or research/v019-*/ changed since 563258b; the B2 protocol files are frozen (25ff551); record results, tables and reports were added since.
+date: 2026-11-19T18:12:41Z (on 4f79f6e, which this commit only extends by this file)
+python 3.14.9 | numpy 2.5.3 | scipy 1.18.1 | glibc 2.44
+
+## 1. Whole suite: PYTHONPATH=src python -m pytest tests -q -p no:cacheprovider
+1035 passed, 2 skipped, 3 warnings in 262.59s (0:04:22)
+
+## 2. Nuclear tests only (Layer A 115, B2 202 including 24 in test_b2_guards.py and 66 in test_b2_integrity.py): PYTHONPATH=src python -m pytest tests/v020 -q -p no:cacheprovider -W error::DeprecationWarning
+317 passed, 3 warnings in 46.48s
+
+The three warnings are RuntimeWarnings (overflow in the float64 matrix exponential) raised on purpose by two guard
+tests (test_plan_diagnostics_never_count_a_nan_as_agreement, test_d8_fails_on_a_nonfinite_reference).
+
+## 3. An earlier run of the same tree with PYTHONPYCACHEPREFIX set (not the documented command)
+2026-11-19T18:01:25Z, on 4f79f6e, with PYTHONPYCACHEPREFIX pointing at a new directory outside the repository:
+2 failed, 1033 passed, 2 skipped, 3 warnings in 347.53s; nuclear tests 317 passed.
+FAILED tests/v019/test_audit_integrity.py::test_killed_writer_never_leaves_a_run_that_passes_as_complete
+FAILED tests/v019/test_pilot_driver.py::test_killed_generation_resumes_to_the_same_store
+Both tests kill child processes after fixed wall-clock timeouts (0.25-0.45 s and 2.0-3.5 s). With the prefix set,
+each child compiled numpy from source instead of using its installed bytecode: `import numpy` took 0.41 s against
+0.16 s without the prefix, and 0.39 s on every start when PYTHONDONTWRITEBYTECODE=1 is also set, as the second test
+sets it. The first test's writer then rarely finished a run inside its window: 0 of 40 runs complete in that suite
+run, and 7 of 40 when the test was rerun alone on an idle machine with the prefix. Other applications were also
+using several cores during the suite run. Without the prefix both tests passed alone (2 passed in 13.58s) and in
+the whole suite of section 1. The record scripts require the prefix; the test suite is run without it.
+
+## 4. Frozen files and record runs
+sha256sum -c protocol.sha256 in research/v020-nuclear-b2-verify: protocol.json, design.json, design.py,
+run_verification.py, calibration.py: OK
+calibration.py (record): once, attempt 1 at 25ff551, completed; results/calibration.json sha256
+d8bba70025929535700d5db713cea87e28639bf813a75b5f4acd28c15c402294
+run_verification.py (record): once, attempt 1 at e0d3b09, completed; results/verification.json sha256
+e43426908b6877624a09dcadc5541e686419cf6206cfd552c33e84bfc6345f67
+numerics.py: once at d91cb45 (git_dirty false). benchmark.py: once at d91cb45 (git_dirty true: results/numerics.json
+was not yet committed when it started; its twelve module hashes equal the files of d91cb45).
+Layer A: research/v020-nuclear-a-verify and NUCLEAR_PHYSICS_VALIDATION.md unchanged since 526e9f7; decay.py,
+streams.py, bateman.py, checks.py, manifest.py and __init__.py of src/rnglab/nuclear unchanged since 526e9f7.
